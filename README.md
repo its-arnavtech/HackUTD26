@@ -8,7 +8,9 @@ HackUTD 2026 · Arnav and Lavanya · T-Mobile, NVIDIA (Nemotron) and Capital One
 
 - [POC and MVP plan](docs/POC_MVP.md): scope, architecture, API, screens, demo script, issue breakdown
 - [Data spec](docs/DATA_SPEC.md): exactly what Nemotron and Gemini receive, tool contracts, redaction
-- [Claude Code prompts](prompts/README.md): the prompts we use to scaffold, create issues and build
+- [Agent rules](AGENTS.md): shared rules for Claude Code, Codex and Cursor
+- [CHANGELOG](CHANGELOG.md): status board, in-progress handoffs, done log, decisions
+- [Prompts](prompts/README.md): which prompt goes to which tool, in order
 
 ## How it works
 

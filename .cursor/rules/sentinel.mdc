@@ -1,0 +1,8 @@
+---
+description: SentinelAI project rules (shared with Claude Code and Codex)
+alwaysApply: true
+---
+
+Read and follow `AGENTS.md` at the repo root for every task. It covers ownership, the one-agent-per-folder rule, the per-issue workflow, the CHANGELOG handoff protocol and the rules that must never break.
+
+In this repo, Cursor is Arnav's tool for coding, backend engineering and infrastructure. Its issues carry the `agent:cursor` label. Before you edit anything, read `CHANGELOG.md` and the issue's latest checkpoint comment.

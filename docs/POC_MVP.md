@@ -2,7 +2,9 @@
 
 HackUTD 2026 · Arnav and Lavanya · Tracks: T-Mobile, NVIDIA (Nemotron), Capital One (Nessie), plus HackUTD Best Design and General
 
-This is the build's source of truth. If another document disagrees with this one, this one wins. Data contracts live in [DATA_SPEC.md](DATA_SPEC.md).
+This is the build's source of truth. If another document disagrees with this one, this one wins. Data contracts live in [DATA_SPEC.md](DATA_SPEC.md). Rules for every coding agent live in [AGENTS.md](../AGENTS.md). Progress and handoffs live in [CHANGELOG.md](../CHANGELOG.md).
+
+**Who builds with what:** Arnav runs four agents: Claude Code (POCs, testing, data pipelines), Codex (Hugging Face and Nemotron connections on his laptop), Cursor (coding, backend engineering, infrastructure) and the 6.1 Sol model (frontend design). Lavanya runs Claude Code (core infrastructure plus the classifier, agent and Gemini work). Both Claude Code sessions use Opus 5.5. See section 12.
 
 ---
 
@@ -38,6 +40,8 @@ The POC answers five questions before we build the product. Each gate has a pass
 | P3 | Does Gemini grounded search return cited sources? | The demo query returns at least one source URL in the grounding metadata, in our JSON shape | Gemini becomes the second item in the cut order (section 11) |
 | P4 | Can we seed and read Nessie? | The seed script creates Linda's customer, accounts, purchases, the paid T-Mobile bill and the "unknown payee" account, and reads them back. Running it twice creates nothing new. | Use a local fixture that mirrors Nessie's schema, served through the replay cache |
 | P5 | Does redaction work? | Unit tests pass on 20 hand-written strings covering names, phone numbers, account digits, addresses and emails | Fix the regexes. The named-entity model is optional; regex alone is acceptable. |
+
+**Gate owners:** P1 is issue A1, P2 is A4, P3 is L4, P4 is A2, P5 is A3. Issue A8 runs all five and records the results in `docs/POC_RESULTS.md`.
 
 **POC exit:** P1 to P5 pass, or each failure has taken its pivot.
 
@@ -137,8 +141,13 @@ data/
   scenarios/             the three scenario messages
   fixtures/              replay cache
 eval/                    metrics JSON written by scripts
-docs/                    this file, DATA_SPEC.md
-prompts/                 Claude Code prompts
+docs/                    this file, DATA_SPEC.md, POC_RESULTS.md, WORKTREES.md
+prompts/                 prompts for each tool (see prompts/README.md)
+scripts/dev.ps1          starts backend and frontend on chosen ports
+.github/workflows/ci.yml pytest and frontend build on every PR
+AGENTS.md                rules for every coding agent (Claude Code, Codex, Cursor)
+CLAUDE.md                points Claude Code at AGENTS.md
+CHANGELOG.md             status board, in-progress handoffs, done log
 ```
 
 ---
@@ -177,6 +186,7 @@ The system prompt tells Nemotron which tools are relevant to which claims. For e
 - Primary: native tool calling (`tools=[...]`, `tool_choice="auto"`).
 - Fallback (if P2 fails): the JSON action protocol. Each turn, Nemotron returns `{"action": "call_tool", "tool": "...", "args": {...}, "why": "..."}` or `{"action": "finish", "result": {...}}`, and code dispatches.
 - Log latency per step. If one step takes longer than 10 seconds, cap the loop at 4 calls.
+- Optional local fallback (issue A5): a small quantized Nemotron Nano model from Hugging Face served on Arnav's laptop (RTX 4060, 8 GB VRAM) through an OpenAI-compatible server. Switching to it is only a change to `NEMOTRON_BASE_URL` and `NEMOTRON_MODEL`. Use it only if its tool calling passes the same P2 test.
 
 ### 7.4 Guardrails enforced in code
 
@@ -256,16 +266,16 @@ The phone frame is centered on a laptop screen. Judge-only pages (accuracy, camp
 
 ## 10. Build timeline
 
-H0 is when both people start building after the scaffold and issues exist.
+H0 is when the scaffold and issues exist. Each column is one agent working in its own folder (section 12).
 
-| Hours | Arnav | Lavanya |
-| --- | --- | --- |
-| H0 to H6 (POC) | A1 Nessie seed, A2 redaction, A3 replay cache, A4 phone shell on mock API | L1 baseline, L2 Nemotron smoke test, L3 Gemini smoke test |
-| H6 to H10 | A5 link and sender tools, A7 Nessie tools | L4 features, L5 classifier, L6 agent loop |
-| H10 to H14 | A8 result card and panels, G1 integration | L9 API and pipeline, G1 integration |
-| H14 to H18 | A6 campaigns, A9 recovery UI, A10 consent and campaign view | L7 Gemini tool, L8 recovery re-plan, L10 accuracy page |
-| H18 to H21 | G2 all scenarios, record fixtures, design polish | G2, eval report, Devpost |
-| H21 to H24 | A11 backup video, Capital One and design pitch, G3 rehearsal | L11 NVIDIA and T-Mobile pitch, G3 rehearsal |
+| Hours | Arnav: Claude Code | Arnav: Codex | Arnav: Cursor | Arnav: 6.1 Sol | Lavanya: Claude Code |
+| --- | --- | --- | --- | --- | --- |
+| H0 to H6 (POC) | A1 dataset and baseline, A2 Nessie seed, A3 redaction, then A8 POC report | A4 Nemotron, A5 Hugging Face | A6 CI, dev scripts, worktrees | A7 phone shell and inbox | L2 core runtime, L1 replay cache, L3 store and runner, L4 Gemini smoke test |
+| H6 to H10 | A9 features, A13 evaluation harness | Optional local Nemotron fallback | A10 link and sender tools, A11 Nessie tools | A14 result card and panels | L5 tool registry, L8 agent loop, L6 privacy log |
+| H10 to H14 | A12 campaigns, G1 check | Free: take overflow from Cursor | G1 integration | A14 continued | L9 API and pipeline, L7 classifier, G1 |
+| H14 to H18 | A18 end-to-end tests | | A17 frontend on the live API | A15 recovery UI, A16 consent, campaigns, accuracy | L10 Gemini tool, L11 recovery re-plan |
+| H18 to H21 | A19 fixtures, G2 | | G2, polish | Design polish | G2 |
+| H21 to H24 | A20 pitch, backup video, G3 | | | | L12 pitch and Devpost, G3 |
 
 **Hard rule:** if G1 (scenario 1 end to end) isn't done by H14, follow the cut order.
 
@@ -280,59 +290,114 @@ H0 is when both people start building after the scaffold and issues exist.
 | An API is down or slow at demo time | Replay mode with recorded fixtures (7.8), plus a backup video |
 | Nessie lacks a field we want (there is no "account locked" status) | Wording says what was checked (4.4) |
 | Judge asks why T-Mobile can see a bank account | Consent screen: the customer links their own bank to an assistant on their side |
-| Merge conflicts on shared files | `contracts.py` and `frontend/src/types.ts` change only through a PR both people see |
+| Merge conflicts on shared files | `contracts.py` and `frontend/src/types.ts` change only through a `[contracts]` PR both people see. CHANGELOG.md conflicts: keep every entry from both sides. |
+| An agent runs out of tokens mid-task | Checkpoint protocol in section 12.3 and AGENTS.md |
+| Two agents edit the same folder | One worktree per agent (12.2) |
 
 **Cut order (first to go):** 1. campaign view polish · 2. Gemini tool · 3. consent screen polish · 4. RDAP domain age. **Never cut:** scenario 3's bill check, the trail, the privacy panel, the accuracy table.
 
 ---
 
-## 12. Issue breakdown
+## 12. Agents, folders and handoff
 
-Claude Code creates exactly these issues (see `prompts/02-create-issues.md`). Titles start with the ID in brackets. Arnav's issues are assigned to `its-arnavtech`. Lavanya's are labeled `owner:lavanya` and left unassigned. Shared gates are labeled `owner:both` and assigned to `its-arnavtech`.
+### 12.1 Who uses which tool
+
+| Person | Tool | Used for | Folder | API and web ports |
+| --- | --- | --- | --- | --- |
+| Arnav | Cursor | Coding, backend engineering, infrastructure. Runs the scaffold. | `C:\HackUTD26` (main checkout) | 8000, 5173 |
+| Arnav | Claude Code (Opus 5.5) | POCs, testing, data pipelines. Creates the GitHub issues. | `C:\HackUTD26-cc` | 8001, 5174 |
+| Arnav | Codex | Hugging Face and Nemotron connections and laptop setup | `C:\HackUTD26-codex` | 8002, 5176 |
+| Arnav | 6.1 Sol | Frontend visual and interaction design | `C:\HackUTD26-design` | 8003, 5175 |
+| Lavanya | Claude Code (Opus 5.5) | Core infrastructure, classifier, Nemotron agent, Gemini tool, API | Her own clone | 8000, 5173 |
+
+Each issue has exactly one `agent:` label, so each tool only lists its own work.
+
+### 12.2 One agent per folder
+
+Two agents editing the same folder will overwrite each other. Arnav's four agents each get their own git worktree, created by the scaffold prompt:
+
+```powershell
+cd C:\HackUTD26
+git worktree add --detach ..\HackUTD26-cc origin/main
+git worktree add --detach ..\HackUTD26-codex origin/main
+git worktree add --detach ..\HackUTD26-design origin/main
+Copy-Item .env ..\HackUTD26-cc\.env; Copy-Item .env ..\HackUTD26-codex\.env; Copy-Item .env ..\HackUTD26-design\.env
+```
+
+Each agent then creates its issue branch inside its own folder: `git switch -c a1-dataset-baseline origin/main`. Each worktree sets `API_PORT` and `WEB_PORT` in its `.env` from the table above.
+
+### 12.3 Handoff through CHANGELOG.md
+
+Any agent can run out of tokens mid-task. `CHANGELOG.md` and the issue comments are how the next agent picks up exactly where the last one stopped. The full protocol is in `AGENTS.md`. In short:
+
+1. **Claim:** comment on the issue, set its row on the status board to `in progress`, and add an In progress block.
+2. **Checkpoint** after each sub-task, at least every 30 minutes, and immediately when context runs long: update the block (done, next step, files, notes), commit, push the branch, and post the same block as an issue comment.
+3. **Finish:** in the PR, move the block to the Done log and set the board row to `done`.
+4. **Resume:** read the latest checkpoint comment on the issue, switch to its branch, and continue from "Next step".
+
+`main`'s CHANGELOG shows everything finished and everything left. Issue comments show live in-progress work before it merges.
+
+## 13. Issue breakdown
+
+Claude Code creates exactly these issues (see `prompts/claude-code-01-issues.md`). Titles start with the ID in brackets. Every Arnav (`A*`) issue and every gate (`G*`) is assigned to `its-arnavtech`. Lavanya's (`L*`) issues are labeled `owner:lavanya` and left unassigned for her to claim.
 
 ### Milestone: POC
 
-| ID | Title | Owner | Depends on | Acceptance criteria |
-| --- | --- | --- | --- | --- |
-| L1 | Dataset loader, stratified split and baseline metrics | Lavanya | none | Loader maps T-Mobile fields to `contracts.Message`; 70/15/15 split saved with a fixed seed; `scripts/run_baseline.py` writes `eval/baseline_metrics.json` with per-category precision, recall, F1 and FPR |
-| L2 | Nemotron client and tool-calling smoke test | Lavanya | none | `integrations/nemotron.py` reads model and URL from env; a test with 2 dummy tools passes on 5 of 5 inputs or the JSON action protocol is in place; latency logged (gate P2) |
-| L3 | Gemini grounded search smoke test | Lavanya | none | `integrations/gemini.py` runs one grounded query and returns at least one cited URL in our JSON shape (gate P3) |
-| A1 | Nessie client and idempotent seed script | Arnav | none | `integrations/nessie.py` and `scripts/seed_nessie.py` create everything in 7.7, save IDs to `data/nessie_seed.json`, and running twice creates nothing new (gate P4) |
-| A2 | Redaction module | Arnav | none | `privacy/redact.py` returns redacted text plus a redaction report; 20 unit tests pass (gate P5) |
-| A3 | Record and replay cache | Arnav | none | `integrations/cache.py` supports live, record and replay; used by Nemotron, Gemini, Nessie and RDAP clients |
-| A4 | Phone shell, inbox and polling on the mock API | Arnav | scaffold | Phone frame, inbox list, "Checking…" state, polling `GET /api/messages/{id}/result` against the scaffold's mock responses |
+| ID | Title | Owner | Agent | Depends on | Acceptance criteria |
+| --- | --- | --- | --- | --- | --- |
+| A1 | Dataset loader, stratified split and baseline metrics | Arnav | claude-code | scaffold | Loader maps T-Mobile fields to `contracts.Message`; 70/15/15 split saved with a fixed seed; `scripts/run_baseline.py` writes `eval/baseline_metrics.json` with per-category precision, recall, F1 and FPR (gate P1) |
+| A2 | Nessie client and idempotent seed script | Arnav | claude-code | scaffold | `integrations/nessie.py` and `scripts/seed_nessie.py` create everything in 7.7, save IDs to `data/nessie_seed.json`, and a second run creates nothing new; real field names checked against DATA_SPEC section 6 (gate P4) |
+| A3 | Redaction module | Arnav | claude-code | scaffold | `privacy/redact.py` returns redacted text and the redaction report from DATA_SPEC section 5; 20 unit tests pass (gate P5) |
+| A4 | Nemotron connection and tool-calling smoke test | Arnav | codex | scaffold | NVIDIA key in `.env`; model picked from NVIDIA's HackUTD guide and confirmed with `GET /v1/models`; `integrations/nemotron.py` reads model and URL from env; a test with 2 dummy tools passes on 5 of 5 inputs or the JSON action protocol is in place; latency logged (gate P2) |
+| A5 | Hugging Face connection | Arnav | codex | scaffold | HF token in `.env` and `hf auth whoami` works; any challenge files hosted on Hugging Face downloaded to `data/raw/`; a small text-classification base model cached for L7's optional transformer; optional local Nemotron fallback (7.3) tested or documented as skipped |
+| A6 | Dev infrastructure: CI, dev scripts, worktrees | Arnav | cursor | scaffold | `.github/workflows/ci.yml` runs `pytest` and `npm run build` on every PR; `scripts/dev.ps1` starts backend and frontend on `API_PORT` and `WEB_PORT`; `docs/WORKTREES.md` matches section 12.2 and is verified |
+| A7 | Phone shell and inbox on the mock API | Arnav | design | scaffold | Phone frame, inbox list, "Checking…" state, polling against the scaffold's mocks; a `/gallery` route showing every screen in every state; follows section 8 design rules |
+| L1 | Record and replay cache | Lavanya | claude-code | scaffold | `integrations/cache.py` supports `live`, `record` and `replay`, keyed by a hash of the request; Nemotron, Gemini, Nessie and RDAP clients go through it (wrap A2 and A4 when they land); tests |
+| L2 | Core runtime: app factory, settings, logging, errors | Lavanya | claude-code | scaffold | App factory; settings validated at startup with clear messages for missing keys; structured logs that carry `message_id`; JSON error responses; `GET /api/health` shows each integration's mode; mocks switchable per route |
+| L3 | State store and background job runner | Lavanya | claude-code | L2 | SQLite store for messages, results and trail entries; background runner with `queued`, `running` and `done`; a trail-append function the agent calls; the result-poll route reads from the store |
+| L4 | Gemini grounded search smoke test | Lavanya | claude-code | scaffold | `integrations/gemini.py` runs one grounded query and returns at least one cited URL in our JSON shape (gate P3) |
+| A8 | POC gate report | Arnav | claude-code | A1, A2, A3, A4, L4 | Runs gates P1 to P5; writes `docs/POC_RESULTS.md` with pass or fail, the numbers, and any pivot taken; adds the decisions to CHANGELOG.md |
 
 ### Milestone: MVP
 
-| ID | Title | Owner | Depends on | Acceptance criteria |
-| --- | --- | --- | --- | --- |
-| G1 | Gate: scenario 1 end to end in the CLI | Both | A2, A5, A7, L4, L6 | `python -m scripts.run_scenario 1` prints the trail and a schema-valid verdict, using the baseline classifier if L5 isn't done |
-| L4 | Feature extraction | Lavanya | A2 | `features/extract.py` returns the `urls` and `features` objects from DATA_SPEC 3.1; tested on 10 messages |
-| L5 | Improved classifier and evaluation report | Lavanya | L1, L4 | Beats or matches the baseline on macro F1 without a worse FPR, or the P1 pivot is documented; `eval/metrics.json` has per-category rows and a redaction-cost row |
-| L6 | Agent loop with plan, re-plan and guardrails | Lavanya | L2 | Implements 7.2 and 7.4; plan logged before tools run; max 6 calls; invalid output retried once then `unsure`; trail entries match DATA_SPEC |
-| L7 | `public_scam_reports` tool | Lavanya | L3 | Implements DATA_SPEC section 4: fixed inputs, four questions, source ranking, stale flag, no phone numbers passed through |
-| L8 | Recovery mode re-plan | Lavanya | L6, A7 | `/clicked` reruns the loop in recovery mode; scenario 2 finds the planted transfer and returns it as a "Was this you?" item |
-| L9 | FastAPI endpoints and pipeline orchestration | Lavanya | L6 | All routes in 7.1 work against the real pipeline; background run with live trail updates |
-| L10 | Accuracy page | Lavanya | L5, A4 | Judge-facing page reads `GET /api/metrics`; per-category table, FPR and redaction cost |
-| A5 | `check_link` and `check_sender` tools | Arnav | A3 | Implements 7.6 rows 1 and 2; blocklist from the train split only; `data/brands.json` filled for the demo brands |
-| A6 | Campaign store and `match_campaign` | Arnav | A2 | SQLite store of fingerprints only; seeded from the train split; scenario 3 matches a campaign with a real count |
-| A7 | Nessie tools | Arnav | A1, A3 | `nessie_recent_activity` and `nessie_bill_status` return summaries with references, as in DATA_SPEC 3.2 |
-| A8 | Result card, "How we checked" and privacy panel | Arnav | A4, L9 | Follows wording rules 4.4; trail fills in live; privacy panel reads `GET /api/privacy/{id}` |
-| A9 | Recovery UI | Arnav | A8, L8 | "I clicked" button, "Was this you?" cards, checklist, every action behind a tap |
-| A10 | Consent screen and campaign view | Arnav | A6, A8 | Consent screen as in section 8; campaign view reads `GET /api/campaigns` |
-| G2 | Gate: all three scenarios end to end in the app | Both | all MVP issues | Each scenario runs in the UI in live mode and in replay mode |
+| ID | Title | Owner | Agent | Depends on | Acceptance criteria |
+| --- | --- | --- | --- | --- | --- |
+| L5 | Tool registry and runtime | Lavanya | claude-code | L2 | Each tool registers its name, argument and result models; JSON schemas exported for Nemotron; per-tool timeout; errors returned as data; every call's inputs recorded for the privacy log |
+| L6 | Privacy audit log and `/api/privacy` | Lavanya | claude-code | L3, L5 | Stores the redaction report and exactly what each model and tool received per message; `GET /api/privacy/{id}` returns it |
+| A9 | Feature extraction | Arnav | claude-code | A3 | `features/extract.py` returns the `urls` and `features` objects from DATA_SPEC 3.1; tested on 10 messages |
+| A10 | `check_link` and `check_sender` tools | Arnav | cursor | L1 | Implements 7.6 rows 1 and 2 as plain functions, registered with L5's registry once it exists; blocklist from the train split only; `data/brands.json` filled for the demo brands |
+| A11 | Nessie tools | Arnav | cursor | A2 | `nessie_recent_activity` and `nessie_bill_status` return summaries with references, as in DATA_SPEC 3.2 |
+| A12 | Campaign store, seeding and `match_campaign` | Arnav | claude-code | A1, A3 | SQLite store of fingerprints only; seeded from the train split; threshold set on the validation split; scenario 3 matches a campaign with a real count |
+| A13 | Evaluation harness | Arnav | claude-code | A1 | `scripts/evaluate.py` scores any model with a `predict()` interface on the test split; writes `eval/metrics.json` with per-category precision, recall and F1 against the baseline, FPR, and a redaction-cost row; a sample mode scores the full agent |
+| L7 | Improved classifier | Lavanya | claude-code | A1, A9, A13 | Beats or matches the baseline on macro F1 without a worse FPR, measured with A13, or the P1 pivot is documented; exposes `predict()` for the pipeline; an optional transformer uses A5's cached model |
+| L8 | Agent loop with plan, re-plan and guardrails | Lavanya | claude-code | A4, L5 | Implements 7.2 and 7.4; plan logged before tools run; at most 6 calls; invalid output retried once, then `unsure`; trail entries match DATA_SPEC 3.4 |
+| L9 | API endpoints and pipeline orchestration | Lavanya | claude-code | L3, L8 | Every route in 7.1 runs on the real pipeline through L3's runner; the trail updates live while the agent works |
+| G1 | Gate: scenario 1 end to end in the CLI | Both | any | A3, A9, A10, A11, L8 | `python -m scripts.run_scenario 1` prints the trail and a schema-valid verdict, using the baseline classifier if L7 isn't done |
+| L10 | `public_scam_reports` tool | Lavanya | claude-code | L4, L5 | Implements DATA_SPEC section 4: fixed inputs, four questions, source ranking, stale flag, no phone numbers passed on |
+| L11 | Recovery mode re-plan | Lavanya | claude-code | L8, A11 | `/clicked` reruns the loop in recovery mode; scenario 2 finds the planted transfer and returns it as a "Was this you?" item |
+| A14 | Result card, "How we checked" and privacy panel | Arnav | design | A7 | Built against mocks; follows 4.4 and section 8; the trail animates in as entries arrive; privacy panel shows what was redacted and what each tool received |
+| A15 | Recovery UI | Arnav | design | A14 | "I clicked" button, "Was this you?" cards, checklist with tick boxes; every action behind a tap |
+| A16 | Consent screen, campaign view and accuracy page | Arnav | design | A7 | Consent screen and campaign view as in section 8; judge-facing accuracy page reads the metrics shape |
+| A17 | Frontend on the live API | Arnav | cursor | A14, A15, A16, L9 | Every screen works with `USE_MOCKS=false`; loading, error and retry states; polling stops at `done`; no console errors |
+| A18 | End-to-end scenario tests | Arnav | claude-code | G1 | `pytest` runs all three scenarios in replay mode and checks the plans differ, the verdicts, the Nessie findings and the guardrails; a Playwright smoke test clicks through scenario 1; both run in CI |
+| G2 | Gate: all three scenarios end to end in the app | Both | any | A17, A18, L10, L11 | Each scenario runs in the UI in live mode and in replay mode |
 
 ### Milestone: Demo
 
-| ID | Title | Owner | Depends on | Acceptance criteria |
-| --- | --- | --- | --- | --- |
-| L11 | NVIDIA and T-Mobile pitch, Devpost paragraphs | Lavanya | G2 | One Devpost paragraph per track naming its criteria and the demo moment; accuracy talking points |
-| A11 | Replay fixtures, backup video, Capital One and design pitch | Arnav | G2 | Fixtures recorded for all three scenarios; a backup video under 3 minutes; Capital One and Best Design talking points |
-| G3 | Rehearse the 3-minute demo three times | Both | L11, A11 | Three timed run-throughs in replay mode, each under 3:00 |
+| ID | Title | Owner | Agent | Depends on | Acceptance criteria |
+| --- | --- | --- | --- | --- | --- |
+| A19 | Replay fixtures and backup video | Arnav | claude-code | G2 | Fixtures for all three scenarios recorded with `DEMO_MODE=record`; a run with Wi-Fi off passes; Arnav records a backup video under 3 minutes |
+| A20 | Capital One and Best Design pitch | Arnav | any | G2 | Talking points for both tracks tied to the demo moments in section 2 |
+| L12 | NVIDIA and T-Mobile pitch, Devpost | Lavanya | claude-code | G2 | One Devpost paragraph per track naming its criteria and demo moment; accuracy talking points from `eval/metrics.json` |
+| G3 | Rehearse the 3-minute demo three times | Both | any | A19, A20, L12 | Three timed run-throughs in replay mode, each under 3:00 |
+
+**Totals:** Arnav 20 issues (Claude Code 9, Codex 2, Cursor 4, 6.1 Sol 4, any 1). Lavanya 12. Shared gates 3.
+
+**Lavanya's work order:** L2, L1, L3, L4, then L5, L8, L6, L9, L7, L10, L11, L12. L8 needs A4 (Codex) and L7 needs A9 and A13 (Arnav's Claude Code), so those three are Arnav's top priorities.
 
 ---
 
-## 13. Definition of done
+## 14. Definition of done
 
 - [ ] The classifier beats or matches T-Mobile's baseline on held-out messages, shown by category with the false positive rate
 - [ ] A new message triggers the Nemotron agent without anyone typing a prompt
