@@ -72,7 +72,17 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - Resumed by: <tool> from <tool>, if any
 ```
 
-_None yet._
+### SETUP: scaffold, folders, issues (no issue)
+- Agent: Claude Code (Opus 5.5) · Person: Arnav · Folder: C:\HackUTD26 · Branch: main
+- Started: 2026-11-07 17:47 · Last checkpoint: 2026-11-07 17:47
+- Done so far:
+  - Checked tooling: `python` on PATH is 3.10, so the backend venv uses `py -3.13`; Node 24, gh logged in as its-arnavtech
+  - Read AGENTS.md, CHANGELOG.md, POC_MVP.md, DATA_SPEC.md, prompts/README.md
+- Next step (exact): scaffold the backend per `prompts/cursor-01-scaffold.md` section 1
+- Files touched: CHANGELOG.md
+- How to run or test: n/a yet
+- Notes and gotchas: scaffold is run by Claude Code instead of Cursor; worktrees and issues follow after the scaffold push
+- Resumed by: 
 
 ---
 
