@@ -14,7 +14,7 @@ Your job is the **scaffold only**: structure, shared contracts, mocks, stubs, se
 
 1. Create the layout from `POC_MVP.md` section 6, with `__init__.py` files so `python -m` works from `backend/`.
 2. `requirements.txt` with pinned versions: fastapi, uvicorn[standard], pydantic (v2), pydantic-settings, httpx, openai (for NVIDIA's OpenAI-compatible API), google-genai, huggingface_hub, scikit-learn, pandas, numpy, tldextract, rapidfuzz, python-dotenv, pytest. Don't add spaCy, torch or transformers; the README notes they're optional (issues A3, A5 and L7 decide).
-3. `app/config.py`: settings from env: `NVIDIA_API_KEY`, `NEMOTRON_BASE_URL` (default `https://integrate.api.nvidia.com/v1`), `NEMOTRON_MODEL`, `GEMINI_API_KEY`, `GEMINI_MODEL`, `NESSIE_API_KEY`, `NESSIE_BASE_URL` (default `http://api.nessieisreal.com`), `HF_TOKEN`, `DEMO_MODE` (`live`, `record` or `replay`; default `live`), `USE_MOCKS` (default `true`), `PHONE_HASH_SALT`, `API_PORT` (default 8000), `WEB_PORT` (default 5173).
+3. `app/config.py`: settings from env: `NVIDIA_API_KEY`, `NEMOTRON_BASE_URL` (default `https://integrate.api.nvidia.com/v1`), `NEMOTRON_MODEL`, `GEMINI_API_KEY`, `GEMINI_MODEL`, `NESSIE_API_KEY`, `NESSIE_BASE_URL` (default `http://api.nessieisreal.com`), `NEMOTRON_EMBED_MODEL`, `DEEPSEEK_API_KEY`, `DEEPSEEK_BASE_URL` (default `https://api.deepseek.com`), `DEEPSEEK_MODEL`, `HF_TOKEN`, `DEMO_MODE` (`live`, `record` or `replay`; default `live`), `USE_MOCKS` (default `true`), `PHONE_HASH_SALT`, `API_PORT` (default 8000), `WEB_PORT` (default 5173).
 4. `app/contracts.py`: Pydantic v2 models and enums for **every** JSON object in `DATA_SPEC.md`: message, redaction report, URL info, features, classifier output, agent input (3.1), each tool's args and result (3.2), Gemini input and output (4.1, 4.3), agent result (3.3), trail entry (3.4), campaign, metrics, privacy view, inbox item, result-poll response. Enums for verdict, confidence words, actions, sender type, trail kind, source type, demo mode.
 5. `app/mocks/`: JSON mocks for every API route, valid against the contracts, based on the three scenarios in `POC_MVP.md` section 4.3.
 6. `app/main.py`: every route in section 7.1. While `USE_MOCKS=true`, routes return mocks. `GET /api/messages/{id}/result` simulates progress: `queued`, then `running` with the trail growing by one entry per poll, then `done`. Mark mock code `# MOCK: replaced by L9`.
@@ -34,10 +34,10 @@ Your job is the **scaffold only**: structure, shared contracts, mocks, stubs, se
 
 1. `data/brands.json`: Capital One (`capitalone.com`) and T-Mobile (`t-mobile.com`) with `official_domains`, and empty `official_short_codes` and `official_sender_ids` arrays marked TODO. Don't invent short codes.
 2. `data/scenarios/scenario_1.json`, `scenario_2.json`, `scenario_3.json` from section 4.3, shaped like the `POST /api/messages` body. Scenario 2 also records the "I clicked" tap.
-3. `.gitkeep` in `data/raw/`, `data/fixtures/` and `eval/`.
+3. `.gitkeep` in `data/raw/`, `data/generated/`, `data/fixtures/` and `eval/`, and a `data/taxonomy.json` placeholder for A21.
 4. `.env.example` listing every variable from config.py with a one-line comment each.
 5. `.gitignore`: `.env`, `.venv/`, `__pycache__/`, `node_modules/`, `dist/`, `*.sqlite`, and `data/raw/*` except `.gitkeep`. Fixtures and `eval/` are committed.
-6. README "Setup" section with PowerShell commands: venv in `backend/`, install, copy `.env.example` to `.env`, `uvicorn app.main:app --reload --port $env:API_PORT` from `backend/`, `npm install` and `npm run dev` in `frontend/`, `pytest`. T-Mobile's files go in `data/raw/`.
+6. README "Setup" section with PowerShell commands: venv in `backend/`, install, copy `.env.example` to `.env`, `uvicorn app.main:app --reload --port $env:API_PORT` from `backend/`, `npm install` and `npm run dev` in `frontend/`, `pytest`. Public datasets go in `data/raw/`; our generated set goes in `data/generated/`.
 
 ## 4. Verify and push
 

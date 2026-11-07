@@ -6,7 +6,7 @@ Paste everything below the line.
 
 ---
 
-Create the GitHub issues for SentinelAI in `its-arnavtech/HackUTD26`. Pull `main` first, then read `AGENTS.md`, `CHANGELOG.md` and `docs/POC_MVP.md`. Section 13 of `POC_MVP.md` is the exact issue list: 20 Arnav issues, 12 Lavanya issues and 3 shared gates. Don't add, drop or merge issues.
+Create the GitHub issues for SentinelAI in `its-arnavtech/HackUTD26`. Pull `main` first, then read `AGENTS.md`, `CHANGELOG.md` and `docs/POC_MVP.md`. Section 13 of `POC_MVP.md` is the exact issue list: 22 Arnav issues, 12 Lavanya issues and 3 shared gates (37 in all). Don't add, drop or merge issues.
 
 Use the `gh` CLI. Run `gh auth status` first. If it isn't authenticated, stop and tell me to run `gh auth login`.
 
@@ -40,10 +40,10 @@ Create every issue in section 13 in table order. Before each one, check whether 
 - **Milestone:** the table it sits in.
 - **Labels:**
   - one `owner:` label;
-  - one `agent:` label from the Agent column (`claude-code`, `codex`, `cursor`, `design`, `any`);
+  - one `agent:` label from the Agent column (`claude-code`, `codex`, `cursor`, `design`, `any`); A21 gets `area:data` and `area:ml`, A22 gets `area:demo`;
   - one or two `area:` labels;
   - every `track:` label it serves;
-  - `priority:p0` for every POC issue plus L5, L8, L9, A9, A11, A13, A14, A17, G1 and G2; `priority:p1` for the rest.
+  - `priority:p0` for every POC issue (including A21 and A22) plus L5, L8, L9, A9, A11, A13, A14, A17, G1 and G2; `priority:p1` for the rest.
 - **Assignee:** every `A*` and `G*` issue goes to `its-arnavtech`. **Every `L*` issue stays unassigned.**
 - **Body:** this template, filled in only from the docs:
 

@@ -13,8 +13,8 @@ I'm Lavanya, building SentinelAI with Arnav at HackUTD 2026 for the T-Mobile, NV
 1. If the repo isn't cloned: `git clone https://github.com/its-arnavtech/HackUTD26.git`, then `cd HackUTD26`. Otherwise `git pull` on `main`.
 2. Read `AGENTS.md` (the rules for every agent, including the CHANGELOG handoff protocol in section 5), `CHANGELOG.md`, `docs/POC_MVP.md` and `docs/DATA_SPEC.md` completely.
 3. In `backend/`: create and activate a venv, `pip install -r requirements.txt`.
-4. Copy `.env.example` to `.env` at the repo root. Ask me to paste my keys into it myself: `GEMINI_API_KEY`, and `NVIDIA_API_KEY` plus `NEMOTRON_MODEL` (Arnav's Codex records the model ID in CHANGELOG Decisions). Never print or commit keys.
-5. Ask me whether T-Mobile's dataset files are in `data/raw/`. Arnav's Claude Code owns loading and splitting them (A1), so I only need them to run my classifier later.
+4. Copy `.env.example` to `.env` at the repo root. Ask me to paste my keys into it myself: `NVIDIA_API_KEY` and `NEMOTRON_MODEL` (Nemotron 3.5 Bolt E4B; Arnav's Codex records the exact ID in CHANGELOG Decisions) tonight, and `GEMINI_API_KEY` on Sunday morning. Never print or commit keys.
+5. T-Mobile doesn't provide data. Arnav's Claude Code generates our dataset (A21) and splits it (A1), so I only need it when I train the classifier (L7).
 6. Run `pytest` from `backend/` to confirm the scaffold works. Fix setup problems before writing features.
 
 ## 2. Claim my issues
@@ -31,7 +31,7 @@ I'm Lavanya, building SentinelAI with Arnav at HackUTD 2026 for the T-Mobile, NV
 | 1 | L2 | Core runtime: app factory, settings, logging, errors | Everything else runs on it |
 | 2 | L1 | Record and replay cache | Arnav's Nessie, Nemotron and RDAP clients wrap it |
 | 3 | L3 | State store and background job runner | The API and agent trail need it |
-| 4 | L4 | Gemini grounded search smoke test | Gate P3 |
+| 4 | L4 | Gemini grounded search smoke test | Gate P3. Needs the Gemini key, so do it first thing Sunday morning and move on to L5 tonight. |
 | 5 | L5 | Tool registry and runtime | Arnav's tools register with it |
 | 6 | L8 | Agent loop with plan, re-plan and guardrails | Needs A4 (Arnav's Nemotron client) and L5 |
 | 7 | L6 | Privacy audit log and `/api/privacy` | Feeds the privacy panel |
@@ -54,6 +54,8 @@ If an issue's dependency isn't merged, take the next unblocked one and say so.
 5. **Checkpoint** after each sub-task, every 30 minutes, and right away if this conversation is getting long: update the In progress block, commit, push, and post the block as an issue comment. If I run out of tokens, the next session resumes from it.
 6. **Finish:** tick the checkboxes, move the CHANGELOG block to the Done log, set the row to `done`, open a PR with `Closes #<n>`.
 7. Tell me in two or three lines what changed and how to check it, then wait for me to say "next".
+
+Deadlines: initial Devpost draft by 11:00 PM Saturday (Arnav submits it), final Devpost by 12:00 PM Sunday, judging 1:00 to 4:00 PM.
 
 ## 5. Coordination
 

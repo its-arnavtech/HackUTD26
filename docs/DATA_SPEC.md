@@ -13,19 +13,20 @@ Nemotron never sees the raw text message or any raw bank record. It sees a redac
 | Nessie tools (local code) | The demo customer's ID and a time window or payee name | Message text |
 | Gemini lookup | Brand, scam category, link domain, a generic lure phrase from our list | Anything else from the message, and any bank data |
 
-All data is synthetic: T-Mobile's provided message set and Capital One's Nessie mock banking data.
+All data is synthetic or public: our generated message set, a public SMS spam set, and Capital One's Nessie mock banking data.
 
 ## 2. Data sources
 
 | Source | Provided by | What we use | How we use it |
 | --- | --- | --- | --- |
-| Synthetic message set | T-Mobile | Message text, sender, scam/legit label, taxonomy category | Train and test the classifier; replay as the demo inbox |
-| Scam taxonomy | T-Mobile | The fixed list of categories | The only categories the classifier and Nemotron may output |
-| Baseline classifier | T-Mobile | Its predictions on our held-out test split | The score to beat, per category |
+| Generated message set | Us (DeepSeek, issue A21) | Message text, sender, scam/legit label, category | Train and test the classifier; replay as the demo inbox |
+| Public SMS spam set | Public dataset via Hugging Face (A5) | Real messages labeled spam or legitimate | Second test set: spam recall and false positives on real text |
+| Taxonomy | `data/taxonomy.json` (T-Mobile's if they share one) | The fixed list of categories | The only categories the classifier and Nemotron may output |
+| Baseline | Us (A1) | Keyword rules plus TF-IDF and logistic regression | The score to beat, per category |
 | Nessie mock bank | Capital One | Accounts, purchases, transfers, bills, merchants | Verify the scam's claim; find activity after a click |
 | Campaign store | Us | Anonymized fingerprints | Group similar messages into campaigns |
 
-Split: 70/15/15 train, validation and test, stratified by category, fixed seed. The test split is never used for training, tuning, building blocklists or campaign seeds, or writing prompts. Field names follow T-Mobile's files and are mapped once in the loader. **Category names in the examples below are placeholders: use T-Mobile's exact taxonomy labels.**
+Split: 70/15/15 train, validation and test, stratified by category, fixed seed. The test split is generated from a separate prompt set and includes the hand-written messages. It is never used for training, tuning, building blocklists or campaign seeds, or writing prompts. DeepSeek is used only to generate training and test data offline; it never sees a customer message. **Category names in the examples below are placeholders: use the labels in `data/taxonomy.json`.**
 
 ## 3. Nemotron
 
@@ -213,7 +214,8 @@ Confirm field names against the Nessie docs on first call; adjust `integrations/
 
 | Measure | Compared against | Reported as |
 | --- | --- | --- |
-| Precision, recall, F1 per category | T-Mobile's baseline, same held-out test split | One row per category |
+| Precision, recall, F1 per category | Our baseline, same held-out test split | One row per category |
+| Spam recall and FPR on real text | Baseline, on the public SMS set | One row |
 | False positive rate on legitimate messages | Baseline | One number beside recall |
 | Cost of redaction | Our model on unredacted vs. redacted text | One row |
 | Agent verdict accuracy | Test labels, on a sample run through the full agent | Share correct, share `unsure` |

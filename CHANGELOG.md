@@ -17,7 +17,8 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 | ID | Issue | Owner | Agent | Milestone | Depends on | Status | Branch / PR |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| A1 | Dataset loader, stratified split and baseline metrics | Arnav | Claude Code | POC | scaffold | todo | |
+| A21 | Synthetic message dataset generator | Arnav | Claude Code | POC | scaffold | todo | |
+| A1 | Dataset loader, stratified split and baseline metrics | Arnav | Claude Code | POC | A21 | todo | |
 | A2 | Nessie client and idempotent seed script | Arnav | Claude Code | POC | scaffold | todo | |
 | A3 | Redaction module | Arnav | Claude Code | POC | scaffold | todo | |
 | A4 | Nemotron connection and tool-calling smoke test | Arnav | Codex | POC | scaffold | todo | |
@@ -27,7 +28,8 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | L1 | Record and replay cache | Lavanya | Claude Code | POC | scaffold | todo | |
 | L2 | Core runtime: app factory, settings, logging, errors | Lavanya | Claude Code | POC | scaffold | todo | |
 | L3 | State store and background job runner | Lavanya | Claude Code | POC | L2 | todo | |
-| L4 | Gemini grounded search smoke test | Lavanya | Claude Code | POC | scaffold | todo | |
+| L4 | Gemini grounded search smoke test (Sunday morning, when the Gemini key is set) | Lavanya | Claude Code | POC | scaffold | todo | |
+| A22 | Initial Devpost draft by 11:00 PM Saturday | Arnav | any | POC | none | todo | |
 | A8 | POC gate report | Arnav | Claude Code | POC | A1, A2, A3, A4, L4 | todo | |
 | L5 | Tool registry and runtime | Lavanya | Claude Code | MVP | L2 | todo | |
 | L6 | Privacy audit log and `/api/privacy` | Lavanya | Claude Code | MVP | L3, L5 | todo | |
@@ -97,6 +99,10 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 
 ## Decisions
 
+- 2026-11-07 18:00 · Deadlines from the opening ceremony: initial Devpost draft by 11:00 PM Saturday, final Devpost by 12:00 PM Sunday, judging 1:00 to 4:00 PM Sunday.
+- 2026-11-07 18:00 · T-Mobile doesn't provide a message set. We generate one with DeepSeek (A21), with a separate prompt set and hand-written messages for test, and validate on a public real SMS spam set from Hugging Face (A5). Our baseline is keyword rules plus TF-IDF and logistic regression (A1).
+- 2026-11-07 18:00 · Agent model: Nemotron 3.5 Bolt E4B (`nvidia/nemotron-3.5-bolt-e4b`, confirm with `GET /v1/models`). Optional: `nemotron-3.5-embed-1b` for campaign similarity and classifier features. Local fallback: the same Bolt model from Hugging Face on Arnav's laptop.
+- 2026-11-07 18:00 · DeepSeek key stands in for Gemini until Sunday morning, for dataset generation only. The Gemini tool (L4, L10) waits for the Gemini key. DeepSeek never produces public-report results, because it can't cite sources.
 - 2026-11-07 · Arnav uses Claude Code (POCs, testing, data pipelines), Codex (Hugging Face and Nemotron connections), Cursor (coding, backend, infrastructure) and 6.1 Sol (frontend design). Lavanya uses Claude Code for core infrastructure plus the classifier, agent, Gemini and API work. Both Claude Code sessions use Opus 5.5.
 - 2026-11-07 · Each of Arnav's agents works in its own git worktree with its own ports (POC_MVP.md section 12.2).
 - 2026-11-07 · Tracks: T-Mobile, NVIDIA and Capital One, plus HackUTD Best Design and General.
@@ -105,6 +111,7 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 
 ## Blockers and open questions
 
-- Exact Nemotron model ID: take it from NVIDIA's HackUTD guide (A4).
+- Exact Nemotron model ID string: confirm with `GET /v1/models` (A4).
+- Gemini key arrives Sunday morning; L4 and L10 wait for it.
 - Official short codes and sender IDs for the demo brands: fill `data/brands.json` from the brands' own pages (A10).
-- T-Mobile dataset field names and taxonomy labels: confirm on load (A1).
+- Taxonomy: use T-Mobile's if a mentor shares one, otherwise ours in `data/taxonomy.json` (A21).
