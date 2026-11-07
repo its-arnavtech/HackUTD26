@@ -8,7 +8,7 @@ This is the build's source of truth. If another document disagrees with this one
 
 **Data:** T-Mobile does not provide a message set, so we generate our own (issue A21) and validate on a public real-world SMS spam set (section 7.5).
 
-**Who builds with what:** Arnav runs four agents: Claude Code (POCs, testing, data pipelines), Codex (Hugging Face and Nemotron connections on his laptop), Cursor (coding, backend engineering, infrastructure) and the 6.1 Sol model (frontend design). Lavanya runs Claude Code (core infrastructure plus the classifier, agent and Gemini work). Both Claude Code sessions use Opus 5.5. See section 12.
+**Who builds with what:** Arnav runs four agents: Claude Code (POCs, testing, data pipelines), Codex (Hugging Face and Nemotron connections on his laptop), Cursor (coding, backend engineering, infrastructure) and a second Codex session running GPT 6 Astra (frontend design). Lavanya runs Claude Code (core infrastructure plus the classifier, agent and Gemini work). Both Claude Code sessions use Opus 5.5. See section 12.
 
 ---
 
@@ -277,7 +277,7 @@ The phone frame is centered on a laptop screen. Judge-only pages (accuracy, camp
 
 H0 is when the scaffold and issues exist, about 7:00 PM Saturday. Each column is one agent working in its own folder (section 12). **Real deadlines win over this table:** A22 (initial Devpost draft) by 11:00 PM Saturday, G1 by about 2:00 AM, G2 by about 9:00 AM, code freeze and fixtures by 10:30 AM, final Devpost by 12:00 PM Sunday.
 
-| Hours | Arnav: Claude Code | Arnav: Codex | Arnav: Cursor | Arnav: 6.1 Sol | Lavanya: Claude Code |
+| Hours | Arnav: Claude Code | Arnav: Codex (connections) | Arnav: Cursor | Arnav: Codex design (GPT 6 Astra) | Lavanya: Claude Code |
 | --- | --- | --- | --- | --- | --- |
 | H0 to H6 (POC) | A21 generate dataset, A1 split and baseline, A2 Nessie seed, A3 redaction, A22 Devpost draft, then A8 POC report | A4 Nemotron, A5 Hugging Face | A6 CI, dev scripts, worktrees | A7 phone shell and inbox | L2 core runtime, L1 replay cache, L3 store and runner, L4 Gemini smoke test |
 | H6 to H10 | A9 features, A13 evaluation harness | Optional local Nemotron fallback | A10 link and sender tools, A11 Nessie tools | A14 result card and panels | L5 tool registry, L8 agent loop, L6 privacy log |
@@ -318,7 +318,7 @@ H0 is when the scaffold and issues exist, about 7:00 PM Saturday. Each column is
 | Arnav | Cursor | Coding, backend engineering, infrastructure. Runs the scaffold. | `C:\HackUTD26` (main checkout) | 8000, 5173 |
 | Arnav | Claude Code (Opus 5.5) | POCs, testing, data pipelines. Creates the GitHub issues. | `C:\HackUTD26-cc` | 8001, 5174 |
 | Arnav | Codex | Hugging Face and Nemotron connections and laptop setup | `C:\HackUTD26-codex` | 8002, 5176 |
-| Arnav | 6.1 Sol | Frontend visual and interaction design | `C:\HackUTD26-design` | 8003, 5175 |
+| Arnav | Codex design (GPT 6 Astra) | Frontend visual and interaction design | `C:\HackUTD26-design` | 8003, 5175 |
 | Lavanya | Claude Code (Opus 5.5) | Core infrastructure, classifier, Nemotron agent, Gemini tool, API | Her own clone | 8000, 5173 |
 
 Each issue has exactly one `agent:` label, so each tool only lists its own work.
@@ -404,7 +404,7 @@ Claude Code creates exactly these issues (see `prompts/claude-code-01-issues.md`
 | L12 | NVIDIA and T-Mobile pitch, Devpost | Lavanya | claude-code | G2 | One Devpost paragraph per track naming its criteria and demo moment; accuracy talking points from `eval/metrics.json` |
 | G3 | Rehearse the 3-minute demo three times | Both | any | A19, A20, L12 | Three timed run-throughs in replay mode, each under 3:00 |
 
-**Totals:** Arnav 22 issues (Claude Code 10, Codex 2, Cursor 4, 6.1 Sol 4, any 2). Lavanya 12. Shared gates 3. 37 in all.
+**Totals:** Arnav 22 issues (Claude Code 10, Codex 2, Cursor 4, Codex design (GPT 6 Astra) 4, any 2). Lavanya 12. Shared gates 3. 37 in all.
 
 **Lavanya's work order:** L2, L1, L3, L4, then L5, L8, L6, L9, L7, L10, L11, L12. L8 needs A4 (Codex) and L7 needs A9 and A13 (Arnav's Claude Code), so those three are Arnav's top priorities.
 

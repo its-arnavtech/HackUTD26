@@ -1,6 +1,6 @@
 # Resume: pick up where another agent stopped (any tool)
 
-Use this when an agent runs out of tokens or usage, or when you switch tools mid-issue (for example Claude Code to Cursor). It works in Claude Code, Codex, Cursor or 6.1 Sol. Fill in the two blanks.
+Use this when an agent runs out of tokens or usage, or when you switch tools mid-issue (for example Claude Code to Cursor). It works in Claude Code, Codex, Cursor or Codex design (GPT 6 Astra). Fill in the two blanks.
 
 ---
 

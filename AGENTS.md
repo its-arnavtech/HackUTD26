@@ -18,7 +18,7 @@ SentinelAI is a scam protection agent built at HackUTD 2026 by Arnav (`its-arnav
 | Arnav | Claude Code | POCs, testing, data pipelines | `gh issue list --assignee its-arnavtech --label agent:claude-code` |
 | Arnav | Codex | Hugging Face and Nemotron connections | `gh issue list --label agent:codex` |
 | Arnav | Cursor | Coding, backend engineering, infrastructure | `gh issue list --label agent:cursor` |
-| Arnav | 6.1 Sol | Frontend design | `gh issue list --label agent:design` |
+| Arnav | Codex design (GPT 6 Astra) | Frontend design | `gh issue list --label agent:design` |
 | Lavanya | Claude Code | Core infrastructure, classifier, agent, Gemini, API | `gh issue list --label owner:lavanya` |
 | Both | any | Gates G1 to G3 | `gh issue list --label owner:both` |
 

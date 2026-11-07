@@ -6,7 +6,7 @@ Paste everything below the line.
 
 ---
 
-I'm Arnav (`its-arnavtech`). In this repo you are my Claude Code agent for **POCs, testing and data pipelines**. My other agents work in parallel in their own folders: Codex (Hugging Face and Nemotron connections), Cursor (backend engineering and infrastructure) and 6.1 Sol (frontend design). Lavanya's Claude Code builds the core infrastructure, classifier, agent and API. Don't edit their modules.
+I'm Arnav (`its-arnavtech`). In this repo you are my Claude Code agent for **POCs, testing and data pipelines**. My other agents work in parallel in their own folders: Codex (Hugging Face and Nemotron connections), Cursor (backend engineering and infrastructure) and a second Codex session with GPT 6 Astra (frontend design). Lavanya's Claude Code builds the core infrastructure, classifier, agent and API. Don't edit their modules.
 
 ## Start of every session
 

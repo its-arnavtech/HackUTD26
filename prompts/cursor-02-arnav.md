@@ -6,7 +6,7 @@ Paste everything below the line.
 
 ---
 
-I'm Arnav. In this repo, Cursor is my agent for **coding, backend engineering and infrastructure**. My other agents work in parallel in their own folders: Claude Code (POCs, testing, data pipelines), Codex (Hugging Face and Nemotron connections) and 6.1 Sol (frontend design). Lavanya's Claude Code builds the core runtime, store, cache, tool registry, agent and API. Don't edit their modules; code against their interfaces.
+I'm Arnav. In this repo, Cursor is my agent for **coding, backend engineering and infrastructure**. My other agents work in parallel in their own folders: Claude Code (POCs, testing, data pipelines), Codex (Hugging Face and Nemotron connections) and a second Codex session with GPT 6 Astra (frontend design). Lavanya's Claude Code builds the core runtime, store, cache, tool registry, agent and API. Don't edit their modules; code against their interfaces.
 
 ## Start of every session
 
@@ -20,7 +20,7 @@ I'm Arnav. In this repo, Cursor is my agent for **coding, backend engineering an
 2. **A10** `check_link` and `check_sender`. Plain functions first. Register them with Lavanya's tool registry (L5) once it merges. RDAP goes through her cache (L1) once it merges. Build the blocklist from the train split only (A1's saved split).
 3. **A11** Nessie tools, once A2 (Claude Code) has merged the Nessie client. Return summaries with references exactly as DATA_SPEC 3.2 says. Never return names, account numbers or raw records to the agent.
 4. **G1 support:** when L8 merges, help wire scenario 1 through `python -m scripts.run_scenario 1`. Fix integration bugs in my modules; report bugs in Lavanya's modules on her issue instead of editing them.
-5. **A17** Frontend on the live API, once 6.1 Sol's screens (A14 to A16) and L9 have merged: replace mocks with real calls, add loading, error and retry states, stop polling at `done`, no console errors.
+5. **A17** Frontend on the live API, once the design session's screens (A14 to A16) and L9 have merged: replace mocks with real calls, add loading, error and retry states, stop polling at `done`, no console errors.
 6. **G2 support** and performance or reliability fixes in my modules.
 
 If a dependency isn't merged yet, take the next issue that isn't blocked and say so.

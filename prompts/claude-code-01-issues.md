@@ -52,7 +52,7 @@ Create every issue in section 13 in table order. Before each one, check whether 
 <one or two sentences>
 
 ## Owner and agent
-<Arnav | Lavanya | Both> · <Claude Code | Codex | Cursor | 6.1 Sol | any>
+<Arnav | Lavanya | Both> · <Claude Code | Codex | Cursor | Codex design (GPT 6 Astra) | any>
 
 ## Read first
 - AGENTS.md (workflow and the CHANGELOG handoff protocol)
@@ -88,7 +88,7 @@ When every issue exists, map each ID to its issue number. Edit every body so `De
 
 ## 5. Tracking issue
 
-Create `[BOARD] SentinelAI build tracker`, labeled `owner:both` and `agent:any`, assigned to `its-arnavtech`, and pin it with `gh issue pin`. Body: one section per milestone, and inside each a list per person and tool (Arnav: Claude Code, Codex, Cursor, 6.1 Sol; Lavanya: Claude Code; Both), each item a checkbox like `- [ ] #4 [A3] Redaction module`. End with: "Live status and handoffs: CHANGELOG.md. Hard rule: if G1 isn't done by hour 14, follow the cut order in POC_MVP.md section 11."
+Create `[BOARD] SentinelAI build tracker`, labeled `owner:both` and `agent:any`, assigned to `its-arnavtech`, and pin it with `gh issue pin`. Body: one section per milestone, and inside each a list per person and tool (Arnav: Claude Code, Codex, Cursor, Codex design (GPT 6 Astra); Lavanya: Claude Code; Both), each item a checkbox like `- [ ] #4 [A3] Redaction module`. End with: "Live status and handoffs: CHANGELOG.md. Hard rule: if G1 isn't done by hour 14, follow the cut order in POC_MVP.md section 11."
 
 ## 6. Update CHANGELOG.md
 

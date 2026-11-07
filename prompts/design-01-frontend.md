@@ -1,6 +1,6 @@
-# 6.1 Sol 01: Frontend design (Arnav)
+# Codex design 01: Frontend design with GPT 6 Astra (Arnav)
 
-**Tool:** 6.1 Sol in whichever app you run it (Cursor or Codex) · **Folder:** `C:\HackUTD26-design` (ports 8003 and 5175) · **Run:** after the issues exist
+**Tool:** Codex, model GPT 6 Astra (a separate Codex session from the connections one) · **Folder:** `C:\HackUTD26-design` (ports 8003 and 5175) · **Run:** after the issues exist
 
 Paste everything below the line.
 
@@ -27,6 +27,10 @@ Linda, 67, just got a text saying her bank account will be locked in 2 hours. Sh
 - The "How we checked" trail is the NVIDIA judges' favorite moment: each step slides in as it arrives, showing the tool, why it ran and what it found. Make the agent's thinking feel visible and orderly.
 - The privacy panel ("What we checked, what we never saw") should make redaction tangible: redacted tokens such as `<PERSON>` shown as soft chips, and a clear list of what each service received.
 - Must read well on a projector at 1280px wide: the phone frame sits centered, and the accuracy and campaign overview pages use the space around it.
+
+## Start from the design lab
+
+If `C:\HackUTD26-design-lab` exists (from `prompts/codex-00-design-lab.md`), read its `DESIGN.md` and `HANDOFF.md` first. Port its tokens, components and screens into `frontend/` instead of redesigning, and adapt them to the scaffold's `types.ts` and `api.ts`. Copy files across; don't edit the lab folder.
 
 ## What to build
 

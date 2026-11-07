@@ -1,6 +1,6 @@
 # CHANGELOG and handoff log
 
-This file is how any agent (Claude Code, Codex, Cursor, 6.1 Sol) or person sees what's done, what's in progress, and what's left, and picks up where another agent stopped. The protocol is in `AGENTS.md` section 5. Short version:
+This file is how any agent (Claude Code, Codex, Cursor) or person sees what's done, what's in progress, and what's left, and picks up where another agent stopped. The protocol is in `AGENTS.md` section 5. Short version:
 
 1. **Claim:** set your row to `in progress`, add an In progress block, comment on the issue, push.
 2. **Checkpoint** after each sub-task, every 30 minutes, and whenever context runs long: update your block, commit, push, and post the block as an issue comment.
@@ -24,7 +24,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A4 | Nemotron connection and tool-calling smoke test | Arnav | Codex | POC | scaffold | todo | |
 | A5 | Hugging Face connection | Arnav | Codex | POC | scaffold | todo | |
 | A6 | Dev infrastructure: CI, dev scripts, worktrees | Arnav | Cursor | POC | scaffold | todo | |
-| A7 | Phone shell and inbox on the mock API | Arnav | 6.1 Sol | POC | scaffold | todo | |
+| A7 | Phone shell and inbox on the mock API | Arnav | Codex design (GPT 6 Astra) | POC | scaffold | todo | |
 | L1 | Record and replay cache | Lavanya | Claude Code | POC | scaffold | todo | |
 | L2 | Core runtime: app factory, settings, logging, errors | Lavanya | Claude Code | POC | scaffold | todo | |
 | L3 | State store and background job runner | Lavanya | Claude Code | POC | L2 | todo | |
@@ -44,9 +44,9 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | G1 | Gate: scenario 1 end to end in the CLI | Both | any | MVP | A3, A9, A10, A11, L8 | todo | |
 | L10 | `public_scam_reports` tool | Lavanya | Claude Code | MVP | L4, L5 | todo | |
 | L11 | Recovery mode re-plan | Lavanya | Claude Code | MVP | L8, A11 | todo | |
-| A14 | Result card, "How we checked" and privacy panel | Arnav | 6.1 Sol | MVP | A7 | todo | |
-| A15 | Recovery UI | Arnav | 6.1 Sol | MVP | A14 | todo | |
-| A16 | Consent screen, campaign view and accuracy page | Arnav | 6.1 Sol | MVP | A7 | todo | |
+| A14 | Result card, "How we checked" and privacy panel | Arnav | Codex design (GPT 6 Astra) | MVP | A7 | todo | |
+| A15 | Recovery UI | Arnav | Codex design (GPT 6 Astra) | MVP | A14 | todo | |
+| A16 | Consent screen, campaign view and accuracy page | Arnav | Codex design (GPT 6 Astra) | MVP | A7 | todo | |
 | A17 | Frontend on the live API | Arnav | Cursor | MVP | A14, A15, A16, L9 | todo | |
 | A18 | End-to-end scenario tests | Arnav | Claude Code | MVP | G1 | todo | |
 | G2 | Gate: all three scenarios end to end in the app | Both | any | MVP | A17, A18, L10, L11 | todo | |
@@ -99,11 +99,12 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 
 ## Decisions
 
+- 2026-11-07 18:05 · Frontend design moves from 6.1 Sol to a second Codex session running GPT 6 Astra (`agent:design`). It starts now in a design lab outside the repo (`prompts/codex-00-design-lab.md`) and ports the prototype into `frontend/` for A7 and A14 to A16.
 - 2026-11-07 18:00 · Deadlines from the opening ceremony: initial Devpost draft by 11:00 PM Saturday, final Devpost by 12:00 PM Sunday, judging 1:00 to 4:00 PM Sunday.
 - 2026-11-07 18:00 · T-Mobile doesn't provide a message set. We generate one with DeepSeek (A21), with a separate prompt set and hand-written messages for test, and validate on a public real SMS spam set from Hugging Face (A5). Our baseline is keyword rules plus TF-IDF and logistic regression (A1).
 - 2026-11-07 18:00 · Agent model: Nemotron 3.5 Bolt E4B (`nvidia/nemotron-3.5-bolt-e4b`, confirm with `GET /v1/models`). Optional: `nemotron-3.5-embed-1b` for campaign similarity and classifier features. Local fallback: the same Bolt model from Hugging Face on Arnav's laptop.
 - 2026-11-07 18:00 · DeepSeek key stands in for Gemini until Sunday morning, for dataset generation only. The Gemini tool (L4, L10) waits for the Gemini key. DeepSeek never produces public-report results, because it can't cite sources.
-- 2026-11-07 · Arnav uses Claude Code (POCs, testing, data pipelines), Codex (Hugging Face and Nemotron connections), Cursor (coding, backend, infrastructure) and 6.1 Sol (frontend design). Lavanya uses Claude Code for core infrastructure plus the classifier, agent, Gemini and API work. Both Claude Code sessions use Opus 5.5.
+- 2026-11-07 · Arnav uses Claude Code (POCs, testing, data pipelines), Codex (Hugging Face and Nemotron connections), Cursor (coding, backend, infrastructure) and a second Codex session with GPT 6 Astra (frontend design). Lavanya uses Claude Code for core infrastructure plus the classifier, agent, Gemini and API work. Both Claude Code sessions use Opus 5.5.
 - 2026-11-07 · Each of Arnav's agents works in its own git worktree with its own ports (POC_MVP.md section 12.2).
 - 2026-11-07 · Tracks: T-Mobile, NVIDIA and Capital One, plus HackUTD Best Design and General.
 
