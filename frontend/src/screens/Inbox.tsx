@@ -55,9 +55,8 @@ export function InboxView({
   const empty = state === "empty" || (state === "ready" && items.length === 0);
   return (
     <div className="screen-pad inbox-screen">
-      <PageTitle eyebrow="Your messages" description="A pause between a worrying text and what you do next.">
-        One message.
-        <br />A clearer mind.
+      <PageTitle eyebrow="Your messages" description="A closer look at the texts that need your attention.">
+        Your messages
       </PageTitle>
       {notice && <Notice onClose={onDismissNotice}>{notice}</Notice>}
       {state === "error" ? (

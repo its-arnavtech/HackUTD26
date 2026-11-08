@@ -17,7 +17,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 | ID | Issue | Owner | Agent | Milestone | Depends on | Status | Branch / PR |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Design | Cybercore claymorphism refresh | Arnav | Codex design | Demo | A17 | in progress | #73 · `codex/clay-security-design` |
+| Design | Cybercore claymorphism refresh | Arnav | Codex design | Demo | A17 | done | #73 · `codex/clay-security-design` |
 | A21 | Synthetic message dataset generator | Arnav | Claude Code | POC | scaffold | done | #1 · #41 (arnav-shared) |
 | A1 | Dataset loader, stratified split and baseline metrics | Arnav | Claude Code | POC | A21 | done | #2 · #41 (arnav-shared) |
 | A2 | Nessie client and idempotent seed script | Arnav | Cursor | POC | scaffold | done | #3 · PR #44 |
@@ -60,15 +60,6 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 ---
 
 ## In progress
-
-### Design Cybercore claymorphism refresh (#73)
-- Agent: Codex (GPT-6) · Person: Arnav · Folder: `C:\HackUTD26\.worktrees\clay-design` · Branch: `codex/clay-security-design`
-- Started: 2026-11-08 00:50 · Last checkpoint: 2026-11-08 00:50
-- Done so far: reviewed project contracts and previous design handoffs; user authorized frontend presentation redesign.
-- Next step (exact): implement responsive workspace shell and silver/cobalt clay visual system; verify existing behavior and desktop/mobile layouts.
-- Files: frontend presentation, navigation tests, docs/FRONTEND_DESIGN.md, CHANGELOG.md.
-- How to test: frontend npm test and npm run build; backend python -m pytest.
-- Notes: reference images supply colors only; no contracts or backend behavior changes.
 
 <!-- One block per active issue. Copy the template, keep it current at every checkpoint. -->
 
@@ -159,6 +150,8 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 ## Done log
 
+- 2026-11-08 06:44 · Design #73 · Codex · PR pending · Responsive silver/cobalt clay workspace across all nine destinations; context-preserving message navigation, mobile disclosure with keyboard focus, existing phone gallery retained. 68 frontend tests, production build, and 688 backend tests pass; browser reviewed at 1280/390/320px with no observed console errors. Screenshots and rationale in docs/FRONTEND_DESIGN.md. Follow-up: review and merge the design PR.
+
 - 2026-11-08 01:01 · G2 technical evidence / A19 fixtures / reset safety · Codex (GPT-6) with Cursor reset fix · #69 (includes #68) · All three UI flows pass live, record, and offline replay with frozen L7 v2; actual $900 purchase/confirmation, bill paid/$0 due, privacy/campaigns/accuracy, no browser errors; reset-generation regression integrated; 688 backend and 50 frontend tests/build pass · G2 finished per Arnav explicit request; A17 remains separately with its owner; video/presentation excluded by user.
 
 - 2026-11-08 00:34 · A18 follow-up / L9 CI unblock · Codex (GPT-6) · #67 · Recovery tests clear the prior callback and wait for the current poller before sending a fake result; fixes CI race seen in #65 while preserving A17 application code; 50 frontend tests and build pass.
@@ -220,6 +213,8 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 ---
 
 ## Decisions
+
+- 2026-11-08 06:44 · User-requested #73 design refresh replaces the main phone-stage presentation with a responsive website workspace. Phone frames remain in the gallery. Silver/graphite/cobalt clay styling takes color inspiration only from the supplied cybercore references; no reference images are embedded. Customer action gates, API contracts, and verdict semantics are preserved.
 
 - 2026-11-08 01:07 · G2 refreshed after A17 #70 merged. Only CHANGELOG conflicts occurred; kept completed G2 evidence and all A17 history. No other open implementation dependency remains for #33. Merge #69 as soon as its refreshed CI is green, per Arnav.
 
@@ -325,3 +320,4 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 - **Resolved 2026-11-07 21:40: gate P4 passes** (third live run; see Decisions 21:43 and `docs/POC_RESULTS.md`). Seed `Created 33`, then `Created 0`. Scenario 2's $900 is now a purchase at "Unknown Payee". PRs #44 and #45 carry the code and `data/nessie_seed.json`. History of the first two runs follows. Gate P4 failed its first live run (2026-11-07 20:25), on two A2 bugs in PR #44 (details in `docs/POC_RESULTS.md`): (1) Nessie returns HTTP 404 "No transfers found" for an empty list and `NessieClient._get_list` raises instead of returning `[]`, so the seed stops before any transfer, and the planted $900 transfer doesn't exist yet; (2) Nessie stores purchase amounts as whole dollars ($49.30 → 49), so the seed's `(description, date, amount)` match misses and every run re-creates purchases (Nessie now holds 48, 24 planned). Fix in A2 (Cursor), delete the 24 duplicate purchases, then rerun the seed twice and update P4. **Handed to Cursor** on 2026-11-07 at about 20:30 at Arnav's request: fixes, cleanup, tests and rerun steps are in the PR #44 comment. The rerun needs `NESSIE_API_KEY`, which Cursor's cloud agent doesn't have, so Arnav runs it or adds the key to Cursor secrets. **20:36:** a P4 rerun was requested, but PR #44's branch was still at `94bc769` (20:29, before the handoff), with no `--dedupe` and no 404 fix (`cursor/g1-…` and `cursor/a11-…` don't have them either), so it wasn't run; nothing was created or deleted. **20:43:** reran on PR #44 `f07cf08` (Cursor's fixes). The preview works (35 present, 24 duplicates, 4 transfers to create), but Nessie rejects both writes: `DELETE /purchases/{id}` → 403 "Missing Authentication Token" (no such route), and `POST /accounts/{id}/transfers` → 400, `medium` and `payee_id` "extra fields not permitted". Nothing changed in Nessie and no `data/nessie_seed.json` exists yet. Handed back to Cursor on PR #44. If transfers can't name a payee, pivot for transfers only (local fixture via replay); reads and bills work.
 - T-Mobile's official texting short codes: not published on T-Mobile's pages (checked 2026-11-07). Ask a T-Mobile mentor, then fill `data/brands.json` (A10 follow-up).
 - Taxonomy: ours (v1) is in `data/taxonomy.json` (A21). If a mentor shares T-Mobile's, map it and regenerate.
+

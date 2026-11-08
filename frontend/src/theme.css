@@ -2,15 +2,15 @@
 /* All theme tokens live here. No default green is used for brand, controls, or progress. */
 @theme {
   --font-sans: "Source Sans 3", sans-serif;
-  --font-serif: "Newsreader Variable", Georgia, serif;
-  --color-canvas: #f3f1eb;
-  --color-paper: #faf8f1;
-  --color-surface: #fffef9;
-  --color-ink: #233b4d;
-  --color-ink-hover: #182c3b;
-  --color-muted: #5c666a;
-  --color-line: #dcded7;
-  --color-soft-ink: #eaf0f3;
+  --font-serif: "Source Sans 3", sans-serif;
+  --color-canvas: #e9edf5;
+  --color-paper: #f0f3fa;
+  --color-surface: #f9faff;
+  --color-ink: #26324b;
+  --color-ink-hover: #1b2640;
+  --color-muted: #5c6982;
+  --color-line: #d5ddec;
+  --color-soft-ink: #e5eafa;
   --color-caution: #795117;
   --color-caution-bg: #fbf0d7;
   --color-caution-line: #d0b271;
@@ -18,7 +18,7 @@
   --color-uncertain-bg: #eceeed;
   --color-safe: #286044;
   --color-safe-bg: #eaf3e9;
-  --color-focus: #855c17;
+  --color-focus: #353be6;
   --text-body: 18px;
   --text-body--line-height: 1.45;
   --radius-control: 12px;

@@ -216,10 +216,10 @@ export default function Gallery() {
   const [search, setSearch] = useSearchParams();
   const group = search.get("group") || "all";
   return (
-    <main className="gallery-page">
+    <section className="gallery-page" aria-label="Screen gallery">
       <header className="gallery-heading">
         <div>
-          <p className="eyebrow">Steady · The complete screen collection</p>
+          <p className="eyebrow">SentinelAI · The complete screen collection</p>
           <h1>
             Every moment,
             <br />
@@ -229,7 +229,7 @@ export default function Gallery() {
         <p>
           A calm interface, even when the evidence isn’t.
           <br />
-          {galleryItems.length} phone states + judge-facing accuracy · Synthetic fixtures
+          {" "}{galleryItems.length} phone states + judge-facing accuracy · Synthetic fixtures
         </p>
       </header>
       <nav className="gallery-filters" aria-label="Gallery screens">
@@ -260,9 +260,9 @@ export default function Gallery() {
         </section>
       )}
       <footer className="gallery-footer">
-        Deep ink for actions. Amber for caution. Green only for likely safe.
-        <span>Source Sans 3 + Newsreader · Bundled locally</span>
+        Cobalt for actions. Amber for caution. Green only for likely safe.
+        <span>Silver clay · Source Sans 3 · Bundled locally</span>
       </footer>
-    </main>
+    </section>
   );
 }

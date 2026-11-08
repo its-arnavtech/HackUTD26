@@ -132,7 +132,7 @@ export function AccuracyView({
   const fpr = showing === "public" ? publicSet?.false_positive_rate : metrics?.false_positive_rate;
   const agent = metrics?.agent_sample;
   return (
-    <main className="accuracy-page">
+    <section className="accuracy-page" aria-label="Accuracy evaluation">
       <div className="accuracy-heading">
         <div>
           <p className="eyebrow">For the judges · Evaluation workspace</p>
@@ -314,7 +314,7 @@ export function AccuracyView({
       <footer className="accuracy-footer">
         SentinelAI · HackUTD 2026 <span>{showing === "public" ? "Public SMS evaluation" : "Synthetic test data"} · No live customer data</span>
       </footer>
-    </main>
+    </section>
   );
 }
 

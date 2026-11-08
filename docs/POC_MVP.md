@@ -243,7 +243,7 @@ Every external call (Nemotron, Gemini, Nessie, RDAP) goes through `integrations/
 
 ## 8. Frontend design
 
-The phone frame is centered on a laptop screen. Judge-only pages (accuracy, campaigns overview) sit outside the frame.
+The primary app uses a responsive website workspace with grouped navigation and supporting privacy/scenario tiles (user-requested redesign, #73, 2026-11-08). The screen gallery retains phone frames for reviewing individual states. Accuracy remains a full-width judge-facing page. See [FRONTEND_DESIGN.md](FRONTEND_DESIGN.md) for the silver/cobalt clay visual system.
 
 | Screen | Contents |
 | --- | --- |
