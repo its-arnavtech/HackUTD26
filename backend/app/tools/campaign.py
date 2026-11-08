@@ -21,10 +21,11 @@ from app.contracts import (AgentInput, Campaign, MatchCampaignArgs, MatchCampaig
                            MessageSource)
 from app.features.extract import detect_claimed_brand, extract_features, extract_urls
 from app.privacy.redact import redact
-from app.tools.campaign_store import ALGORITHM, CampaignStore, Fingerprint, Member, stamp, utc
+from app.tools.campaign_store import ALGORITHM, DEFAULT_FILENAME, CampaignStore, Fingerprint, Member, stamp, utc
 
 SPLITS_PATH = DATA_DIR / "generated" / "splits.json"
 EMPTY_TEMPLATE = hashlib.sha256(b"").hexdigest()
+SEMANTIC_WEIGHTS = (0.0, 0.25, 0.5, 0.75)
 THRESHOLDS = tuple(round(value / 100, 2) for value in range(55, 101, 5))
 _PREVIEWS = {
     "bank_impersonation": "<BRAND>: account-security claim; verify using <URL>.",
@@ -47,7 +48,7 @@ def _taxonomy() -> dict[str, bool]:
 
 @lru_cache(maxsize=1)
 def default_store() -> CampaignStore:
-    return CampaignStore(DATA_DIR / "campaigns.sqlite3")
+    return CampaignStore(DATA_DIR / DEFAULT_FILENAME)
 
 
 def _event_hash(message_id: str) -> str:
@@ -100,6 +101,40 @@ def _simhash(tokens: list[str]) -> str:
     return f"{sum(1 << bit for bit, vote in enumerate(votes) if vote > 0):016x}"
 
 
+# Fixed intent/context bits are part of the wording fingerprint, not stored
+# feature text. Intent overlap tolerates messages that omit optional details.
+_INTENT_MASK = (1 << 8)-1
+
+
+def _semantic_signature(agent_input: AgentInput) -> str:
+    feature = agent_input.features
+    asks = set(feature.asks_for)
+    action = feature.requested_action
+    bits = set()
+    if action in {"click_link_and_pay", "make_payment"} or "payment" in asks:
+        bits.add(0)
+    if action in {"click_link_and_verify", "verify_account", "share_credentials"} or asks.intersection({"login", "password", "card_details", "account_details", "personal_information"}):
+        bits.add(1)
+    if action == "reply_with_code" or "one_time_code" in asks:
+        bits.add(2)
+    for value, bit in (("download_app", 3), ("click_link", 4), ("reply", 5), ("call_number", 6), ("open_official_app", 7)):
+        if action == value:
+            bits.add(bit)
+    if feature.threat in {"account_lock", "service_suspension", "account_deletion"}:
+        bits.add(8)
+    if feature.threat == "payment_penalty":
+        bits.add(9)
+    if feature.threat == "legal_action":
+        bits.add(10)
+    if feature.money_amount_claimed is not None:
+        bits.add(11)
+    if feature.urgency_deadline is not None:
+        bits.add(12)
+    if agent_input.urls:
+        bits.add(13)
+    return f"{sum(1 << bit for bit in bits):016x}"
+
+
 def fingerprint(agent_input: AgentInput) -> dict[str, str]:
     """Hash a redacted message; discard all wording after constructing the hashes."""
     category = agent_input.classifier.category
@@ -110,7 +145,7 @@ def fingerprint(agent_input: AgentInput) -> dict[str, str]:
     brand = detect_claimed_brand(agent_input.sender.claimed_brand or "") or detect_claimed_brand(agent_input.text_redacted) or ""
     canonical, tokens = _wording(agent_input.text_redacted, brand)
     return asdict(Fingerprint(_event_hash(agent_input.message_id), _domain_pattern(agent_input),
-                             hashlib.sha256(canonical.encode("utf-8")).hexdigest(), _simhash(tokens), brand,
+                             hashlib.sha256(canonical.encode("utf-8")).hexdigest(), _simhash(tokens) + _semantic_signature(agent_input), brand,
                              category, stamp(agent_input.received_at)))
 
 
@@ -118,14 +153,24 @@ def _fp(agent_input: AgentInput) -> Fingerprint:
     return Fingerprint(**fingerprint(agent_input))
 
 
-def similarity(left: Fingerprint, right: Fingerprint) -> float:
+def similarity(left: Fingerprint, right: Fingerprint, *, semantic_weight: float = 0.0) -> float:
     if EMPTY_TEMPLATE in (left.template_hash, right.template_hash):
         return 0.0
     if left.claimed_brand and right.claimed_brand and left.claimed_brand != right.claimed_brand:
         return 0.0
-    wording = 1.0 if left.template_hash == right.template_hash else 1 - (int(left.wording_simhash, 16) ^ int(right.wording_simhash, 16)).bit_count() / 64
+    words = 1.0 if left.template_hash == right.template_hash else 1 - (int(left.wording_simhash[:16], 16) ^ int(right.wording_simhash[:16], 16)).bit_count() / 64
+    left_semantic, right_semantic = int(left.wording_simhash[16:], 16), int(right.wording_simhash[16:], 16)
+    overlap = left_semantic & right_semantic
+    comparable = bool(overlap & _INTENT_MASK) and overlap.bit_count() >= 2
+    semantic = overlap.bit_count() / min(left_semantic.bit_count(), right_semantic.bit_count()) if comparable else words
+    wording = (1-semantic_weight) * words + semantic_weight * semantic
     return (0.75 * wording + 0.10 * (left.domain_pattern == right.domain_pattern)
             + 0.10 * (left.claimed_brand == right.claimed_brand) + 0.05 * (left.category == right.category))
+
+
+def _score(store: CampaignStore):
+    weight = store.semantic_weight
+    return lambda left, right: similarity(left, right, semantic_weight=weight)
 
 
 def _manifest(path: Path) -> dict[str, list[str]]:
@@ -194,7 +239,9 @@ def message_input(message: Message) -> AgentInput:
 
 def calibrate_threshold(train_set: list[Message], validation_set: list[Message], *, store: CampaignStore | None = None,
                         splits_path: Path = SPLITS_PATH) -> dict:
-    """Select max family-proxy F1 on validation; ties favor the higher threshold.
+    """Select semantic blend/threshold on validation family-proxy F1 only.
+
+    Ties favor a higher threshold and then a smaller semantic contribution.
 
     Labels are brand/category family proxies, not campaign annotations. Held-out
     validation fingerprints are discarded and never inserted into the store.
@@ -204,25 +251,26 @@ def calibrate_threshold(train_set: list[Message], validation_set: list[Message],
     training = [_fp(message_input(message)) for message in train_set if message.is_scam]
     if not training or not any(message.is_scam for message in validation_set) or not any(not message.is_scam for message in validation_set):
         raise ValueError("Calibration needs training scams and both validation classes")
-    trials = []
-    for message in validation_set:
-        query = _fp(message_input(message))
-        scored = sorted(((similarity(query, candidate), candidate) for candidate in training),
-                        key=lambda pair: (-pair[0], pair[1].event_hash))
-        score, candidate = scored[0]
-        correct_family = (candidate.category == query.category and candidate.claimed_brand == query.claimed_brand)
-        trials.append((score, bool(message.is_scam), correct_family))
+    queries = [(_fp(message_input(message)), bool(message.is_scam)) for message in validation_set]
     reports = []
-    for threshold in THRESHOLDS:
-        tp = sum(score >= threshold and scam and correct for score, scam, correct in trials)
-        fp = sum(score >= threshold and not (scam and correct) for score, scam, correct in trials)
-        fn = sum(scam and not (score >= threshold and correct) for score, scam, correct in trials)
-        precision = tp / (tp + fp) if tp + fp else 0.0
-        recall = tp / (tp + fn) if tp + fn else 0.0
-        f1 = 2 * precision * recall / (precision + recall) if precision + recall else 0.0
-        reports.append({"threshold": threshold, "true_positive": tp, "false_positive": fp, "false_negative": fn,
-                        "precision": precision, "recall": recall, "f1": f1})
-    selected = max(reports, key=lambda report: (report["f1"], report["threshold"]))
+    for weight in SEMANTIC_WEIGHTS:
+        trials = []
+        for query, scam in queries:
+            scored = sorted(((similarity(query, candidate, semantic_weight=weight), candidate) for candidate in training),
+                            key=lambda pair: (-pair[0], pair[1].event_hash))
+            score, candidate = scored[0]
+            correct_family = candidate.category == query.category and candidate.claimed_brand == query.claimed_brand
+            trials.append((score, scam, correct_family))
+        for threshold in THRESHOLDS:
+            tp = sum(score >= threshold and scam and correct for score, scam, correct in trials)
+            fp = sum(score >= threshold and not (scam and correct) for score, scam, correct in trials)
+            fn = sum(scam and not (score >= threshold and correct) for score, scam, correct in trials)
+            precision = tp / (tp + fp) if tp + fp else 0.0
+            recall = tp / (tp + fn) if tp + fn else 0.0
+            f1 = 2 * precision * recall / (precision + recall) if precision + recall else 0.0
+            reports.append({"threshold": threshold, "semantic_weight": weight, "true_positive": tp, "false_positive": fp,
+                            "false_negative": fn, "precision": precision, "recall": recall, "f1": f1})
+    selected = max(reports, key=lambda report: (report["f1"], report["threshold"], -report["semantic_weight"]))
     digest = hashlib.sha256(json.dumps({name: sorted(saved[name]) for name in ("train", "val")}, sort_keys=True).encode()).hexdigest()
     report = {"algorithm": ALGORITHM, "split_digest": digest, "training_fingerprints": len(training),
               "validation_rows": len(validation_set), "validation_positive": sum(bool(message.is_scam) for message in validation_set), **selected}
@@ -234,7 +282,8 @@ def seed_campaigns(train_set: list[Message], *, store: CampaignStore | None = No
     """Insert new training-scam fingerprints only; repeated seeds insert zero."""
     _guard(train_set, "train", _manifest(splits_path))
     fingerprints = [_fp(message_input(message)) for message in train_set if message.is_scam]
-    return (store if store is not None else default_store()).add(fingerprints, similarity)
+    active = store if store is not None else default_store()
+    return active.add(fingerprints, _score(active))
 
 
 def record_message(agent_input: AgentInput, *, store: CampaignStore | None = None) -> int:
@@ -242,7 +291,8 @@ def record_message(agent_input: AgentInput, *, store: CampaignStore | None = Non
     fp = _fp(agent_input)
     if not _taxonomy()[fp.category] or fp.template_hash == EMPTY_TEMPLATE:
         return 0
-    return (store if store is not None else default_store()).add([fp], similarity, link=(fp.event_hash, agent_input.message_id))
+    active = store if store is not None else default_store()
+    return active.add([fp], _score(active), link=(fp.event_hash, agent_input.message_id))
 
 
 def _preview(fp: Fingerprint) -> str:
@@ -280,7 +330,8 @@ def match_campaign(args: MatchCampaignArgs, agent_input: AgentInput, *, store: C
     members = store.members(as_of=now, exclude=query.event_hash)
     if not members or query.template_hash == EMPTY_TEMPLATE:
         return MatchCampaignResult()
-    scored = sorted(((similarity(query, member.fingerprint), member) for member in members),
+    score_fn = _score(store)
+    scored = sorted(((score_fn(query, member.fingerprint), member) for member in members),
                     key=lambda pair: (-pair[0], pair[1].fingerprint.event_hash))
     score, closest = scored[0]
     if score < store.threshold:

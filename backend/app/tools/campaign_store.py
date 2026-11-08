@@ -11,11 +11,12 @@ import re
 import sqlite3
 import threading
 from collections.abc import Callable, Iterable
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 
-ALGORITHM = "a12-simhash-v1"
+ALGORITHM = "a12-simhash-v4"
+DEFAULT_FILENAME = "campaigns-v4.sqlite3"
 
 
 def utc(value: datetime) -> datetime:
@@ -42,7 +43,7 @@ class Fingerprint:
         for field in (self.event_hash, self.template_hash):
             if not re.fullmatch(r"[a-f0-9]{64}", field):
                 raise ValueError("Invalid campaign hash")
-        if not re.fullmatch(r"[a-f0-9]{16}", self.wording_simhash):
+        if not re.fullmatch(r"[a-f0-9]{32}", self.wording_simhash):
             raise ValueError("Invalid wording fingerprint")
         if stamp(datetime.fromisoformat(self.observed_at)) != self.observed_at:
             raise ValueError("Campaign timestamps must be canonical UTC")
@@ -93,15 +94,20 @@ class CampaignStore:
             raise ValueError("Campaign algorithm changed; rebuild a fresh store")
         return report["threshold"]
 
+    @property
+    def semantic_weight(self) -> float:
+        _ = self.threshold  # Validate presence/version first.
+        return self.calibration["semantic_weight"]
+
     def set_calibration(self, report: dict) -> None:
-        keys = {"algorithm", "split_digest", "threshold", "training_fingerprints", "validation_rows",
+        keys = {"algorithm", "split_digest", "threshold", "semantic_weight", "training_fingerprints", "validation_rows",
                 "validation_positive", "true_positive", "false_positive", "false_negative", "precision", "recall", "f1"}
         if set(report) != keys or report["algorithm"] != ALGORITHM or not re.fullmatch(r"[a-f0-9]{64}", report["split_digest"]):
             raise ValueError("Invalid campaign calibration metadata")
         numbers = [value for key, value in report.items() if key not in {"algorithm", "split_digest"}]
         if any(not isinstance(value, (int, float)) or not math.isfinite(value) or value < 0 for value in numbers):
             raise ValueError("Calibration must contain aggregate numbers only")
-        if not 0 < report["threshold"] <= 1:
+        if not 0 < report["threshold"] <= 1 or not 0 <= report["semantic_weight"] <= 1:
             raise ValueError("Invalid campaign threshold")
         with self._lock, self._db:
             previous = self.calibration

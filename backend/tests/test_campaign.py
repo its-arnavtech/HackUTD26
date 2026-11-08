@@ -271,3 +271,55 @@ def test_cli_uses_saved_partitions_and_aggregate_report(corpus, tmp_path, monkey
     assert report["stored_fingerprints"] == 3 and report["new_fingerprints"] == 3
     assert BILL not in capsys.readouterr().out
     assert cli.main() == 0 and json.loads(report_path.read_text())["new_fingerprints"] == 0
+
+
+
+def test_semantic_fingerprint_compares_paraphrases_without_storing_features():
+    first = c.message_input(message("wording-one", "T-Mobile: please pay $20 at https://tmobile-pay.example/"))
+    second = c.message_input(message("wording-two", "T-Mobile: settle your balance of $30 via https://tmobile-bill.example/"))
+    left, right = Fingerprint(**c.fingerprint(first)), Fingerprint(**c.fingerprint(second))
+    assert c.similarity(left, right, semantic_weight=0.75) > c.similarity(left, right, semantic_weight=0)
+    assert "click_link_and_pay" not in json.dumps(c.fingerprint(first))
+
+
+def test_semantic_weight_is_selected_and_stored_by_validation(seeded):
+    store, report = seeded
+    assert report["semantic_weight"] in c.SEMANTIC_WEIGHTS
+    assert store.semantic_weight == report["semantic_weight"]
+
+
+
+
+def test_semantic_overlap_allows_optional_detail_but_requires_shared_intent():
+    short = c.message_input(message("short", "T-Mobile: pay your balance at https://tmobile-pay.example/"))
+    detailed = c.message_input(message("detailed", "T-Mobile: settle your bill of $30 within 2 hours to avoid service suspension at https://tmobile-pay.example/"))
+    unrelated = c.message_input(message("other", "T-Mobile: visit https://tmobile-pay.example/"))
+    left, right, other = (Fingerprint(**c.fingerprint(item)) for item in (short, detailed, unrelated))
+    assert c.similarity(left, right, semantic_weight=0.75) > c.similarity(left, right)
+    assert c.similarity(left, other, semantic_weight=0.75) == c.similarity(left, other)
+
+
+
+def test_real_train_validation_bootstrap_and_authored_scenario_have_real_counts():
+    from app.config import DATA_DIR
+    train, validation = c.load_training_validation()
+    saved = json.loads(c.SPLITS_PATH.read_text())
+    store = CampaignStore()
+    try:
+        calibration = c.calibrate_threshold(train, validation, store=store)
+        assert c.seed_campaigns(train, store=store) == sum(bool(message.is_scam) for message in train)
+        before = store.count()
+        probe = cli.verify_scenario3(store, DATA_DIR / "scenarios" / "scenario_3.json")
+        assert probe["matched_real_campaign"]
+        members = store.members(as_of=datetime.fromisoformat(probe["query_time"]))
+        cohort = [member for member in members if member.campaign_id == probe["campaign_id"]]
+        assert probe["historical_support"] == len(cohort) > 1
+        cutoff = datetime.fromisoformat(probe["query_time"])-timedelta(hours=24)
+        assert probe["similar_last_24h"] == sum(datetime.fromisoformat(member.fingerprint.observed_at) >= cutoff for member in cohort)
+        forbidden = {c._event_hash(key) for key in saved["val"]+saved["test"]+["scenario_3"]}
+        assert not forbidden.intersection(member.fingerprint.event_hash for member in store.members())
+        assert store.count() == before
+        report = json.loads((DATA_DIR / "campaign_calibration.json").read_text())
+        assert report["calibration"] == calibration
+    finally:
+        store.close()

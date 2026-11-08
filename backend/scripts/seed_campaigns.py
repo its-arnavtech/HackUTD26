@@ -14,7 +14,7 @@ from app.config import DATA_DIR
 from app.contracts import MatchCampaignArgs, Message
 from app.tools.campaign import (calibrate_threshold, list_campaigns, load_training_validation,
                                 match_campaign, message_input, seed_campaigns)
-from app.tools.campaign_store import CampaignStore
+from app.tools.campaign_store import DEFAULT_FILENAME, CampaignStore
 
 
 def verify_scenario3(store: CampaignStore, path: Path) -> dict:
@@ -52,7 +52,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--generated-dir", type=Path, default=DATA_DIR / "generated")
     parser.add_argument("--splits", type=Path, default=DATA_DIR / "generated" / "splits.json")
-    parser.add_argument("--database", default=str(DATA_DIR / "campaigns.sqlite3"))
+    parser.add_argument("--database", default=str(DATA_DIR / DEFAULT_FILENAME))
     parser.add_argument("--report", type=Path, default=DATA_DIR / "campaign_calibration.json")
     parser.add_argument("--verify-scenario3", action="store_true")
     parser.add_argument("--scenario", type=Path, default=DATA_DIR / "scenarios" / "scenario_3.json")
@@ -67,6 +67,7 @@ def main() -> int:
     except Exception as exc:
         # Provider/Pydantic exceptions can contain raw input; never echo them.
         print(f"Campaign seed failed: {type(exc).__name__}")
+        print("If source fingerprints or calibration changed, use a fresh --database path.")
         return 1
 
 
