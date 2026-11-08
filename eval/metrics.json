@@ -1,0 +1,158 @@
+{
+  "generated_at": "2026-11-08T02:17:17.731343Z",
+  "split": "test",
+  "n_test": 388,
+  "categories": [
+    {
+      "category": "bank_impersonation",
+      "support": 30,
+      "ours": {
+        "precision": 0.6429,
+        "recall": 0.6,
+        "f1": 0.6207
+      },
+      "baseline": {
+        "precision": 0.6429,
+        "recall": 0.6,
+        "f1": 0.6207
+      }
+    },
+    {
+      "category": "billing_scam",
+      "support": 30,
+      "ours": {
+        "precision": 0.8462,
+        "recall": 0.7333,
+        "f1": 0.7857
+      },
+      "baseline": {
+        "precision": 0.8462,
+        "recall": 0.7333,
+        "f1": 0.7857
+      }
+    },
+    {
+      "category": "delivery_scam",
+      "support": 30,
+      "ours": {
+        "precision": 0.8824,
+        "recall": 1.0,
+        "f1": 0.9375
+      },
+      "baseline": {
+        "precision": 0.8824,
+        "recall": 1.0,
+        "f1": 0.9375
+      }
+    },
+    {
+      "category": "account_security",
+      "support": 30,
+      "ours": {
+        "precision": 0.7097,
+        "recall": 0.7333,
+        "f1": 0.7213
+      },
+      "baseline": {
+        "precision": 0.7097,
+        "recall": 0.7333,
+        "f1": 0.7213
+      }
+    },
+    {
+      "category": "toll_government",
+      "support": 30,
+      "ours": {
+        "precision": 0.8667,
+        "recall": 0.8667,
+        "f1": 0.8667
+      },
+      "baseline": {
+        "precision": 0.8667,
+        "recall": 0.8667,
+        "f1": 0.8667
+      }
+    },
+    {
+      "category": "prize_refund",
+      "support": 30,
+      "ours": {
+        "precision": 0.7941,
+        "recall": 0.9,
+        "f1": 0.8438
+      },
+      "baseline": {
+        "precision": 0.7941,
+        "recall": 0.9,
+        "f1": 0.8438
+      }
+    },
+    {
+      "category": "job_offer",
+      "support": 29,
+      "ours": {
+        "precision": 0.913,
+        "recall": 0.7241,
+        "f1": 0.8077
+      },
+      "baseline": {
+        "precision": 0.913,
+        "recall": 0.7241,
+        "f1": 0.8077
+      }
+    },
+    {
+      "category": "conversation_lure",
+      "support": 29,
+      "ours": {
+        "precision": 0.7407,
+        "recall": 0.6897,
+        "f1": 0.7143
+      },
+      "baseline": {
+        "precision": 0.7407,
+        "recall": 0.6897,
+        "f1": 0.7143
+      }
+    },
+    {
+      "category": "legit",
+      "support": 150,
+      "ours": {
+        "precision": 0.8129,
+        "recall": 0.84,
+        "f1": 0.8262
+      },
+      "baseline": {
+        "precision": 0.8129,
+        "recall": 0.84,
+        "f1": 0.8262
+      }
+    }
+  ],
+  "macro_f1": {
+    "ours": 0.7915,
+    "baseline": 0.7915
+  },
+  "false_positive_rate": {
+    "ours": 0.16,
+    "baseline": 0.16
+  },
+  "public_set": {
+    "dataset": "ucirvine/sms_spam",
+    "n": 5574,
+    "spam_recall": {
+      "ours": 0.1767,
+      "baseline": 0.1767
+    },
+    "false_positive_rate": {
+      "ours": 0.0342,
+      "baseline": 0.0342
+    }
+  },
+  "redaction_cost": {
+    "macro_f1_unredacted": 0.8068,
+    "macro_f1_redacted": 0.7915
+  },
+  "agent_sample": null
+}
