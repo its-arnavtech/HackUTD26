@@ -39,6 +39,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A12 | Campaign store, seeding and `match_campaign` | Arnav | Codex | MVP | A1, A3 | done | #20 · PR #49 (arnav-shared) |
 | A13 | Evaluation harness | Arnav | Claude Code | MVP | A1 | done | #21 · PR #49 (arnav-shared) |
 | L7 | Improved classifier | Arnav | Codex | MVP | A1, A9, A13 | done | #22 · #58 (arnav-shared); public gate failed, pivot documented |
+| L7b | Public SMS generalization follow-up | Arnav | Codex | MVP | L7 | in progress | #59 · codex-shared |
 | L8 | Agent loop with plan, re-plan and guardrails | Lavanya | Claude Code | MVP | A4, L5 | done | #23 · PR #56 |
 | L9 | API endpoints and pipeline orchestration | Lavanya | Claude Code | MVP | L3, L8 | todo | #24 |
 | G1 | Gate: scenario 1 end to end in the CLI | Both | any | MVP | A3, A9, A10, A11, L8 | in progress | #25 · PR #46 merged (prep: stand-in agent until L8) |
@@ -58,6 +59,15 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 ---
 
 ## In progress
+
+### L7b Public SMS generalization follow-up (#59)
+- Agent: Codex (GPT-6) · Person: Arnav · Folder: C:\HackUTD26-codex · Branch: codex-shared (origin/arnav-shared)
+- Started: 2026-11-07 23:28 · Last checkpoint: 2026-11-07 23:28
+- Done so far: Merged PR #58 with merge commit 9e778488; pulled with rebase=merges. Arnav explicitly authorizes repurposing 50% of the previously evaluation-only public SMS dataset for development. V1 metrics remain archived for comparison.
+- Next step (exact): Save seeded, binary-stratified 50/50 public development/holdout IDs with normalized exact-duplicate groups kept together; reserve 20% of development as public validation. Implement hierarchical binary + synthetic-category training; fit on synthetic train/public fit, select only on synthetic/public validation. Freeze before one final scoring pass.
+- Files touched: classifier modules/scripts/tests, public split manifest/datasheet, eval aggregate reports, docs/CLASSIFIER.md, data/generated/README.md, CHANGELOG.md.
+- How to run or test: New follow-up CLI to be added; existing .\.venv\Scripts\python.exe -m pytest tests/test_classifier.py -q.
+- Notes and gotchas: User instruction supersedes old evaluation-only rule for public development rows, never synthetic test/public holdout. Public labels are binary and cannot be fabricated as eight scam categories. Partitioning may hash source text solely to keep duplicate groups together before holdout is defined; afterward only selected rows are decoded. No public text in git/logs/tests. Heldout half was part of v1 evaluation; call it held out from this follow-up, not never-seen data. Preserve old full-public numbers and compare v1/new on the same new holdout once. No campaign/blocklist changes. Final target result must be reported even if missed.
 
 <!-- One block per active issue. Copy the template, keep it current at every checkpoint. -->
 
@@ -174,6 +184,8 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 ---
 
 ## Decisions
+
+- 2026-11-07 23:28 · Arnav authorizes L7 follow-up #59: public SMS may now supply a saved 50% development half (including internal validation) with binary labels; the remaining half is reserved for this follow-up's final scoring. This supersedes the old public-evaluation-only restriction for designated development IDs only. The entire public set and synthetic test were already evaluated in v1; report that prior exposure and changed sample sizes.
 
 - 2026-11-07 23:20 · L7 integration with newer main: kept all changelog entries/statuses while merging L8/G1 and the completed Cursor work. G1 now treats an absent ignored L7 artifact as explicitly unavailable and uses its existing labeled baseline fallback (with train command), rather than crashing on FileNotFoundError. No model/selection changes or held-out rescore. 26 L7 tests; integrated suite 586 passed/15 recorded-world skips, with MODEL_PATH set to an absent file to simulate fresh CI.
 
