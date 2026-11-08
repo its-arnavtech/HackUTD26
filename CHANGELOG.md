@@ -108,6 +108,7 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 
 ## Decisions
 
+- 2026-11-07 21:30 · Codex (both sessions) is out of usage until about 23:00. Claude Code resumes A12's finish and fixes PR #49's conflicts, snapshots the design lab to branch `design-lab-snapshot`, and finishes A2's live Nessie work on Cursor's branches (it has the key). Cursor stays off #44 and #45 and ports the design lab into `frontend/` for A7 and A14. Codex design picks up A15, A16 and polish when it's back. Live Nessie has no DELETE for purchases and rejects `medium` and `payee_id` on transfers (see PR #44 comments).
 - 2026-11-07 20:19 · L5 tool contract: a tool is a plain function `fn(args: ArgsModel, agent_input: AgentInput) -> ResultModel` in its own module; the registry imports and registers it in `builtin_tools()`, so tool authors don't touch the registry. Raise `NotImplementedError` until built (the agent sees "unavailable"). `match_campaign`'s `message_id` is filled in by code from the agent input, not by the model.
 - 2026-11-07 19:32 · A4/A5 integration after L1 merge: removed scaffold bypasses from Nemotron and HF bootstrap; cached_call now receives the selected DEMO_MODE explicitly. Offline tests verify recording, credential-free replay and strict misses with no network. Local-fallback doc updated; production scenarios still need A19 fixtures. Full merged backend suite: 219 passed; test process clears inherited service credentials because L2 make_settings ignores .env but still reads environment variables (no global or .env changes).
 
