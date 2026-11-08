@@ -8,7 +8,7 @@ import resultLegitJson from "../../backend/app/mocks/result_legit.json";
 import resultScenario1Json from "../../backend/app/mocks/result_scenario_1.json";
 import resultScenario2Json from "../../backend/app/mocks/result_scenario_2.json";
 import resultScenario3Json from "../../backend/app/mocks/result_scenario_3.json";
-import { claimedBrand, maskLinks, redactedText } from "./present";
+import { claimedBrand, maskLinks, minutesAfter, redactedText } from "./present";
 import type { AgentResult, Campaign, InboxItem, Metrics, PrivacyView, ResultPoll, TrailEntry } from "./types";
 
 const clone = <T>(value: T): T => structuredClone(value);
@@ -114,4 +114,12 @@ export function checkedInbox(): InboxItem[] {
       ? { ...item, status: "done", verdict: result.verdict, confidence_words: result.confidence_words }
       : item;
   });
+}
+
+/** Scenario 2 after the customer taps "I clicked": the recovery poll and its first "Was this you?" item. */
+export function recoverySpecimen() {
+  const poll = mockResult("scenario2");
+  const item = poll.was_this_you_items[0];
+  const message = mockInbox().find((row) => row.message_id === poll.message_id);
+  return { poll, item, minutesAfterMessage: minutesAfter(message?.received_at, item?.at) };
 }

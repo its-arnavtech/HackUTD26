@@ -45,7 +45,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | L10 | `public_scam_reports` tool | Lavanya | Claude Code | MVP | L4, L5 | todo | #26 |
 | L11 | Recovery mode re-plan | Lavanya | Claude Code | MVP | L8, A11 | todo | #27 |
 | A14 | Result card, "How we checked" and privacy panel | Arnav | Cursor (covering for Codex design) | MVP | A7 | done | #28 · `cursor/a14-result-trail-privacy-55c7` |
-| A15 | Recovery UI | Arnav | Claude Code (covering for Codex design) | MVP | A14 | in progress | #29 · `a15-recovery` |
+| A15 | Recovery UI | Arnav | Claude Code (covering for Codex design) | MVP | A14 | done | #29 · `a15-recovery` |
 | A16 | Consent screen, campaign view and accuracy page | Arnav | Codex design (GPT 6 Astra) | MVP | A7 | todo | #30 |
 | A17 | Frontend on the live API | Arnav | Cursor | MVP | A14, A15, A16, L9 | todo | #31 |
 | A18 | End-to-end scenario tests | Arnav | Claude Code | MVP | G1 | todo | #32 |
@@ -74,16 +74,6 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - Resumed by: <tool> from <tool>, if any
 ```
 
-### A15 Recovery UI (#29)
-- Agent: Claude Code (Opus 5.5) · Person: Arnav · Folder: C:\HackUTD26 · Branch: a15-recovery (from `cursor/a14-result-trail-privacy-55c7`, since #52 and #53 aren't merged)
-- Started: 2026-11-07 22:09 · Last checkpoint: 2026-11-07 22:09
-- Done so far:
-  - Claimed. Read the lab's `Recovery.tsx`; `WasThisYouCard` and `ChecklistItem` are already ported in `components/index.tsx`.
-- Next step (exact): port `design-lab/src/screens/Recovery.tsx` into `frontend/src/screens/Recovery.tsx` on `postClicked`, `useResult` and `confirmTransaction`; fill the four recovery gallery slots.
-- Files touched: CHANGELOG.md
-- How to run or test: `cd frontend; npm test; npm run build`
-- Notes and gotchas: covering for Codex design (out of usage); port, don't redesign.
-
 
 ---
 
@@ -91,6 +81,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID · tool · PR · summary · follow-ups`.
 
+- 2026-11-07 22:16 · A15 · Claude Code (Opus 5.5) · PR (a15-recovery) · Recovery ported from the design lab without redesign: "I clicked and entered my info" posts `/clicked` only after the tap, then polls the recovery run (a stale check-mode poll still shows "Checking…"); one "Was this you?" card per `was_this_you_items` entry (amount, payee, time, minutes after the text computed from the inbox `received_at`), answered through `confirmTransaction` only on a tap; checklist with tick boxes built from the recovery actions (the lab's three steps as the default), progress recorded in React state only; "I only opened the link" goes straight to the checklist; skipped linking sends the button to `/consent`; four gallery slots filled; 36 frontend tests (8 new) · follow-ups: A16 consent writes the same `sentinel-linked` flag; A17 decides whether linking moves to the API
 - 2026-11-07 22:05 · A14 · Cursor (Claude Opus 5.5) · #53 · Result card, live trail and privacy panel ported from the design lab onto `ResultPoll` and `PrivacyView`: verdict and confidence in words, one primary action after a tap, "I clicked this link", trail steps animate in as polls arrive, privacy shows the redacted message and what each check received; gallery slots filled (unsure and mixed are display specimens); 28 frontend tests · follow-ups: A15 recovery, A16 consent, campaigns and accuracy
 - 2026-11-07 21:55 · A7 · Cursor (Claude Opus 5.5) · #52 · Design lab (`design-lab-snapshot` 813a3c1) ported without redesign: tokens, bundled fonts, all lab components on the contract types, stage shell with react-router, inbox polling the mocks ("Checking…" then a verdict chip), `/gallery` with all 21 states rendered from `backend/app/mocks` (no fetch); Vitest + Testing Library set up and run in CI, 18 tests · follow-ups: A14 fills the result, trail and privacy gallery slots; A15/A16 fill recovery, consent, campaigns and accuracy
 - 2026-11-07 20:19 · L5 · Claude Code (Opus 5.5, Lavanya) · #48 · `agent/registry.py`: `ToolRegistry` with the six built-in tools registered (tool modules untouched); OpenAI `tools=[...]` schemas with refs inlined and injected fields hidden; `call_tool` validates args, runs with a per-tool timeout (Gemini 20 s, others 10 s), returns `ToolCall` with errors as data (`unknown_tool`, `invalid_args`, `timeout`, `unavailable`, `tool_error`) and generic messages; `on_call` gets a `PrivacyRecipient` with exactly what the tool received; 33 tests (266 pass) · follow-ups: L8 uses `openai_tool_schemas()` and `call_tool`; L6 stores the `on_call` records
@@ -118,6 +109,7 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 
 ## Decisions
 
+- 2026-11-07 22:16 · A15 recovery rules: `useResult(messageId, enabled)` polls only once enabled, so recovery starts polling after the customer taps "I clicked". Whether an account is linked lives in `src/linking.ts` (`sessionStorage` key `sentinel-linked`, default linked, as in the lab); A16's consent screen sets it. Checklist copy is keyed by action in `present.ts` (`recoverySteps`); nothing was added to `types.ts`.
 - 2026-11-07 22:05 · A14 display rules: the result card shows one primary action (the agent's first action; a billing result leads with "Use the official app", as in the lab). The message bubble uses the privacy log's redacted text only when that text is the redacted form of the inbox message. `unsure` and `mixed` are gallery specimens derived from scenario 1, because the mock files have no poll in those states. Nothing was added to `types.ts`.
 - 2026-11-07 21:55 · Frontend structure after the A7 port: each screen exports a presentational `*View` that takes contract types and a default container that loads data through `src/api.ts` (hooks in `src/hooks.ts`). `/gallery` renders the views from `src/fixtures.ts`, which imports `backend/app/mocks/*.json`, so the gallery never fetches. Lab display fields that the contracts lack (`brand`, `activity_summary`, `next_step`) are derived in the UI; nothing was added to `types.ts`. The inbox shows the real sender, formatted, not the brand the text claims.
 - 2026-11-07 21:30 · Codex (both sessions) is out of usage until about 23:00. Claude Code resumes A12's finish and fixes PR #49's conflicts, snapshots the design lab to branch `design-lab-snapshot`, and finishes A2's live Nessie work on Cursor's branches (it has the key). Cursor stays off #44 and #45 and ports the design lab into `frontend/` for A7 and A14. Codex design picks up A15, A16 and polish when it's back. Live Nessie has no DELETE for purchases and rejects `medium` and `payee_id` on transfers (see PR #44 comments).

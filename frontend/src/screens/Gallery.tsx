@@ -1,7 +1,15 @@
 import type { ReactNode } from "react";
 import { useSearchParams } from "react-router-dom";
 import { PhoneFrame } from "../components";
-import { checkedInbox, galleryMessage, galleryVerdict, mockPrivacy, mockResult, runningPoll } from "../fixtures";
+import {
+  checkedInbox,
+  galleryMessage,
+  galleryVerdict,
+  mockPrivacy,
+  mockResult,
+  recoverySpecimen,
+  runningPoll,
+} from "../fixtures";
 import { newestFirst, withProgress } from "../hooks";
 import AccuracyPage from "./AccuracyPage";
 import CampaignView from "./CampaignView";
@@ -9,8 +17,9 @@ import Consent from "./Consent";
 import { TrailView } from "./HowWeChecked";
 import { InboxView } from "./Inbox";
 import { PrivacyView } from "./PrivacyPanel";
-import Recovery from "./Recovery";
+import { RecoveryView } from "./Recovery";
 import { ResultError, ResultView } from "./ResultCard";
+import { recoveryChecklist } from "../present";
 import type { ResultPoll } from "../types";
 
 function resultSpecimen(poll: ResultPoll, messageId: string) {
@@ -26,6 +35,9 @@ function checkingInbox() {
   );
   return { items: newestFirst(items), progress: { msg_0003: poll } };
 }
+
+/** Scenario 2 after "I clicked": the $900 transfer to confirm, then its checklist. */
+const recovery = recoverySpecimen();
 
 type GalleryItem = { id: string; group: string; label: string; detail: string; screen: ReactNode };
 
@@ -99,21 +111,21 @@ export const galleryItems: GalleryItem[] = [
     group: "recovery",
     label: "10 · I clicked",
     detail: "A calm start · authored scenario 2",
-    screen: <Recovery />,
+    screen: <RecoveryView stage="intro" />,
   },
   {
     id: "transfer",
     group: "recovery",
     label: "11 · Was this you?",
     detail: "A $900 transfer, 17 minutes after the text",
-    screen: <Recovery />,
+    screen: <RecoveryView stage="transfer" {...recovery} />,
   },
   {
     id: "checklist",
     group: "recovery",
     label: "12 · Recovery checklist",
     detail: "Customer-controlled progress",
-    screen: <Recovery />,
+    screen: <RecoveryView stage="checklist" poll={recovery.poll} />,
   },
   {
     id: "billing",
@@ -148,7 +160,7 @@ export const galleryItems: GalleryItem[] = [
     group: "more",
     label: "17 · Checklist complete",
     detail: "Progress is recorded, never inferred",
-    screen: <Recovery />,
+    screen: <RecoveryView stage="checklist" poll={recovery.poll} checked={recoveryChecklist(recovery.poll.result)} />,
   },
   {
     id: "empty",

@@ -28,3 +28,15 @@ describe("result wording", () => {
     expect(redactionMatches("Hi Mom, landed safe. Will call you after dinner tonight.", redactedText(mockPrivacy())!)).toBe(false);
   });
 });
+
+describe("recovery wording", () => {
+  it("builds the checklist from the recovery actions and times the activity from the message", async () => {
+    const { defaultRecoverySteps, minutesAfter, recoveryChecklist } = await import("./present");
+    expect(recoveryChecklist(mockResult("scenario2").result)).toEqual(["freeze_card", "change_password", "call_number_on_card"]);
+    expect(recoveryChecklist(undefined)).toEqual(defaultRecoverySteps);
+    expect(recoveryChecklist({ ...mockResult("scenario2").result!, actions: ["ignore"] })).toEqual(defaultRecoverySteps);
+    expect(minutesAfter("2026-11-08T09:14:00-06:00", "2026-11-08T09:31:00-06:00")).toBe(17);
+    expect(minutesAfter("2026-11-08T09:31:00-06:00", "2026-11-08T09:14:00-06:00")).toBeUndefined();
+    expect(minutesAfter(undefined, "2026-11-08T09:31:00-06:00")).toBeUndefined();
+  });
+});

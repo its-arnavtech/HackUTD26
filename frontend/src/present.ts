@@ -57,6 +57,45 @@ export const actionReceipts: Record<Action, string> = {
   ignore: "Message dismissed in this demo.",
 };
 
+/**
+ * Recovery checklist copy, keyed by the agent's actions (lab `recoveryItems`).
+ * Ticking a box records progress only; SentinelAI never freezes, changes or calls anything.
+ */
+export const recoverySteps: Partial<Record<Action, { label: string; detail: string }>> = {
+  freeze_card: {
+    label: "Review your card controls",
+    detail: "Use the official Capital One app to freeze your card if needed.",
+  },
+  change_password: {
+    label: "Change your bank password",
+    detail: "Open the official app yourself. Use a password you haven’t used before.",
+  },
+  call_number_on_card: {
+    label: "Contact your bank",
+    detail: "Call the number on the back of your card and tell them what happened.",
+  },
+  alert_trusted_contact: {
+    label: "Tell someone you trust",
+    detail: "Ask a family member or friend to sit with you while you take these steps.",
+  },
+};
+
+/** The lab's three steps, used before the recovery check has returned its actions. */
+export const defaultRecoverySteps: Action[] = ["freeze_card", "change_password", "call_number_on_card"];
+
+/** The checklist for a recovery result: its actions that have a step, or the default three. */
+export function recoveryChecklist(result?: AgentResult | null): Action[] {
+  const steps = (result?.actions ?? []).filter((action) => recoverySteps[action]);
+  return steps.length > 0 ? steps : defaultRecoverySteps;
+}
+
+/** Whole minutes from the message to the activity, or undefined when it came before or can't be read. */
+export function minutesAfter(messageAt?: string | null, activityAt?: string | null): number | undefined {
+  if (!messageAt || !activityAt) return undefined;
+  const minutes = Math.round((Date.parse(activityAt) - Date.parse(messageAt)) / 60000);
+  return Number.isFinite(minutes) && minutes >= 0 ? minutes : undefined;
+}
+
 /** Shown on the primary button once its receipt is in. */
 export const actionDone: Partial<Record<Action, string>> = {
   block_sender: "Sender blocked",

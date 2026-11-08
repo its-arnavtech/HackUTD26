@@ -102,8 +102,11 @@ export function useInbox() {
 /** Errors in a row before a check is shown as unavailable. A 404 fails at once. */
 const MAX_POLL_ERRORS = 3;
 
-/** Poll one message's result until it is done. `retry` starts polling again after an error. */
-export function useResult(messageId: string) {
+/**
+ * Poll one message's result until it is done. `retry` starts polling again after an error.
+ * With `enabled` false nothing is polled (recovery waits for the customer's tap).
+ */
+export function useResult(messageId: string, enabled = true) {
   const [poll, setPoll] = useState<ResultPoll>();
   const [error, setError] = useState(false);
   const [attempt, setAttempt] = useState(0);
@@ -111,6 +114,7 @@ export function useResult(messageId: string) {
   useEffect(() => {
     setPoll(undefined);
     setError(false);
+    if (!enabled) return;
     let failures = 0;
     const stop = pollResult(
       messageId,
@@ -127,7 +131,7 @@ export function useResult(messageId: string) {
       },
     );
     return stop;
-  }, [messageId, attempt]);
+  }, [messageId, attempt, enabled]);
 
   const retry = useCallback(() => setAttempt((n) => n + 1), []);
   return { poll, error, retry };
