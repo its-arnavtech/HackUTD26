@@ -19,12 +19,12 @@ I'm Arnav (`its-arnavtech`). In this repo you are my Claude Code agent for **POC
 
 1. **A21** Synthetic message dataset generator. T-Mobile gives us no data, so this blocks everything downstream. Use DeepSeek (`DEEPSEEK_API_KEY`, `DEEPSEEK_BASE_URL`, `DEEPSEEK_MODEL` in `.env`; its API is OpenAI-compatible). Aim for about 2,000 to 3,000 messages across the categories in `data/taxonomy.json`, with at least a third legitimate, including hard look-alikes (real-style bank alerts, carrier bill notices, one-time codes, delivery updates). Generate test from a separate prompt set and personas, ask me for about 50 hand-written test messages (or draft them for my approval), dedupe, and write the datasheet. Cache generation calls so reruns are free.
 2. **A1** Split and baseline (gate P1). Write the baseline's macro F1 and FPR into CHANGELOG Decisions as soon as you have them; the P1 pivot depends on it.
-3. **A3** Redaction module (gate P5).
+3. ~~A3~~ moved to Codex on 2026-11-07. Skip it.
 4. ~~A2~~ moved to Cursor on 2026-11-07. Skip it.
-5. **A9** Feature extraction. Lavanya's classifier (L7) waits on it.
+5. ~~A9~~ moved to Codex. Skip it.
 6. **A13** Evaluation harness. L7 waits on it too. Score both test sets: the synthetic test split and the public real SMS set from Codex's A5.
-7. **A8** POC gate report, once A1, A2, A3, A4 (Codex) and L4 (Lavanya) are done. If A4 or L4 isn't done, report what's known and mark the rest pending.
-8. **A12** Campaign store, seeding and `match_campaign`.
+7. **A8** POC gate report, once A1, A2 (Cursor), A3 (Codex), A4 (Codex) and L4 (Lavanya) are done. If A4 or L4 isn't done, report what's known and mark the rest pending.
+8. ~~A12~~ moved to Codex. Skip it.
 9. **A18** End-to-end scenario tests, after gate G1.
 10. **A19** Replay fixtures, after gate G2.
 

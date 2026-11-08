@@ -20,7 +20,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A21 | Synthetic message dataset generator | Arnav | Claude Code | POC | scaffold | done | #1 · #41 (arnav-shared) |
 | A1 | Dataset loader, stratified split and baseline metrics | Arnav | Claude Code | POC | A21 | in progress | #2 · `arnav-shared` |
 | A2 | Nessie client and idempotent seed script | Arnav | Cursor | POC | scaffold | todo | #3 |
-| A3 | Redaction module | Arnav | Claude Code | POC | scaffold | todo | #4 |
+| A3 | Redaction module | Arnav | Codex | POC | scaffold | todo | #4 |
 | A4 | Nemotron connection and tool-calling smoke test | Arnav | Codex | POC | scaffold | done | #41 (arnav-shared) |
 | A5 | Hugging Face connection | Arnav | Codex | POC | scaffold | done | #41 (arnav-shared) |
 | A6 | Dev infrastructure: CI, dev scripts, worktrees | Arnav | Cursor | POC | scaffold | todo | #7 |
@@ -33,10 +33,10 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A8 | POC gate report | Arnav | Claude Code | POC | A1, A2, A3, A4, L4 | todo | #14 |
 | L5 | Tool registry and runtime | Lavanya | Claude Code | MVP | L2 | todo | #15 |
 | L6 | Privacy audit log and `/api/privacy` | Lavanya | Claude Code | MVP | L3, L5 | todo | #16 |
-| A9 | Feature extraction | Arnav | Claude Code | MVP | A3 | todo | #17 |
+| A9 | Feature extraction | Arnav | Codex | MVP | A3 | todo | #17 |
 | A10 | `check_link` and `check_sender` tools | Arnav | Cursor | MVP | L1 | todo | #18 |
 | A11 | Nessie tools | Arnav | Cursor | MVP | A2 | todo | #19 |
-| A12 | Campaign store, seeding and `match_campaign` | Arnav | Claude Code | MVP | A1, A3 | todo | #20 |
+| A12 | Campaign store, seeding and `match_campaign` | Arnav | Codex | MVP | A1, A3 | todo | #20 |
 | A13 | Evaluation harness | Arnav | Claude Code | MVP | A1 | todo | #21 |
 | L7 | Improved classifier | Lavanya | Claude Code | MVP | A1, A9, A13 | todo | #22 |
 | L8 | Agent loop with plan, re-plan and guardrails | Lavanya | Claude Code | MVP | A4, L5 | todo | #23 |
@@ -118,6 +118,7 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 
 - 2026-11-07 19:07 · A4 verified `nvidia/nemotron-3.5-bolt-e4b` via GET /v1/models: native 5/5 (median step 3082ms, worst 3908ms); JSON action fallback 5/5 (1128ms, 2171ms). Use NEMOTRON_PROTOCOL=native. Initial failures were corrected by separating tool dispatch from final schema and making protocol envelopes explicit; retain one invalid-output retry. `nvidia/nemotron-3.5-embed-1b` returns 2048 dimensions. L1 remains a scaffold; live-only TODO, record/replay fail closed.
 
+- 2026-11-07 19:15 · A3 (#4), A9 (#17) and A12 (#20) move from Claude Code to Codex (connections session), on the shared `arnav-shared` branch. Claude Code keeps A1, A13, A8, A18 and A19. A12 may use `nemotron-3.5-embed-1b` for similarity. Local Nemotron fallback scored 3/5 and is not used; replay mode is the fallback.
 - 2026-11-07 18:55 · A2 (Nessie client and seed, #3) moves from Claude Code to Cursor: Cursor was idle and A11 needs A2, while Claude Code's queue is long. Branch commands now use `--no-track` plus `git push -u` (AGENTS.md section 4).
 - 2026-11-07 18:20 · Arnav's Claude Code and Codex (connections) share the remote branch `arnav-shared` (AGENTS.md section 4, exception). Cursor and the Codex design session keep a branch per issue.
 - 2026-11-07 18:06 · Scaffold was run by Claude Code instead of Cursor.
