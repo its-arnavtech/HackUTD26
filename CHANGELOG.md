@@ -17,6 +17,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 | ID | Issue | Owner | Agent | Milestone | Depends on | Status | Branch / PR |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| Design | Cybercore claymorphism refresh | Arnav | Codex design | Demo | A17 | in progress | #73 · `codex/clay-security-design` |
 | A21 | Synthetic message dataset generator | Arnav | Claude Code | POC | scaffold | done | #1 · #41 (arnav-shared) |
 | A1 | Dataset loader, stratified split and baseline metrics | Arnav | Claude Code | POC | A21 | done | #2 · #41 (arnav-shared) |
 | A2 | Nessie client and idempotent seed script | Arnav | Cursor | POC | scaffold | done | #3 · PR #44 |
@@ -59,6 +60,15 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 ---
 
 ## In progress
+
+### Design Cybercore claymorphism refresh (#73)
+- Agent: Codex (GPT-6) · Person: Arnav · Folder: `C:\HackUTD26\.worktrees\clay-design` · Branch: `codex/clay-security-design`
+- Started: 2026-11-08 00:50 · Last checkpoint: 2026-11-08 00:50
+- Done so far: reviewed project contracts and previous design handoffs; user authorized frontend presentation redesign.
+- Next step (exact): implement responsive workspace shell and silver/cobalt clay visual system; verify existing behavior and desktop/mobile layouts.
+- Files: frontend presentation, navigation tests, docs/FRONTEND_DESIGN.md, CHANGELOG.md.
+- How to test: frontend npm test and npm run build; backend python -m pytest.
+- Notes: reference images supply colors only; no contracts or backend behavior changes.
 
 <!-- One block per active issue. Copy the template, keep it current at every checkpoint. -->
 
