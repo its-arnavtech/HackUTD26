@@ -30,7 +30,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | L3 | State store and background job runner | Lavanya | Claude Code | POC | L2 | done | #11 · PR #47 |
 | L4 | Gemini grounded search smoke test (Sunday morning, when the Gemini key is set) | Lavanya | Claude Code | POC | scaffold | todo | #12 |
 | A22 | Initial Devpost draft by 11:00 PM Saturday | Arnav | any | POC | none | todo | #13 |
-| A8 | POC gate report | Arnav | Claude Code | POC | A1, A2, A3, A4, L4 | in progress | #14 · `arnav-shared` |
+| A8 | POC gate report | Arnav | Claude Code | POC | A1, A2, A3, A4, L4 | done | #14 · #49 (arnav-shared) |
 | L5 | Tool registry and runtime | Lavanya | Claude Code | MVP | L2 | todo | #15 |
 | L6 | Privacy audit log and `/api/privacy` | Lavanya | Claude Code | MVP | L3, L5 | todo | #16 |
 | A9 | Feature extraction | Arnav | Codex | MVP | A3 | in progress | codex-shared / #17 |
@@ -87,15 +87,6 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - Resumed by: <tool> from <tool>, if any
 ```
 
-### A8 POC gate report (#14)
-- Agent: Claude Code (Opus 5.5) · Person: Arnav · Folder: `C:\HackUTD26-cc` · Branch: `arnav-shared`
-- Started: 2026-11-07 20:21 · Last checkpoint: 2026-11-07 20:21
-- Done so far:
-  - Claimed. A13 finished in PR #49 (PR #41 merged before A13 landed).
-- Next step (exact): rerun each gate's check (P1 `run_baseline`, P2 A4 smoke in replay or its recorded result, P4 A2 status, P5 redaction tests), write `docs/POC_RESULTS.md`; P3 (L4) is pending until the Gemini key arrives Sunday morning.
-- Files touched: `CHANGELOG.md`
-- How to run or test: see `docs/POC_RESULTS.md` once written
-- Notes and gotchas: A2 (Nessie, Cursor) was still `todo` at claim time; report P4 as pending if it hasn't landed.
 
 
 
@@ -105,6 +96,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID · tool · PR · summary · follow-ups`.
 
+- 2026-11-07 20:25 · A8 · Claude Code (Opus 5.5) · #49 · `docs/POC_RESULTS.md`: reran the gates. P1 pass (0.807 / 0.127, no pivot), P2 pass (5/5 native, median 2,635 ms), P5 pass (20/20); P3 pending (Gemini key Sunday morning, L4), P4 pending (A2 in review in PR #44, live seed not run); 254 tests pass · follow-ups: update the P3 and P4 rows when they run
 - 2026-11-07 20:20 · A13 · Claude Code (Opus 5.5) · #49 · `scripts/evaluate.py`: any model via a `(train, val)` factory, scored against the baseline on A1's saved test split and the public SMS set, on redacted text, plus a redaction-cost row and an agent sample mode; writes `eval/metrics.json` + `metrics_details.json`; ours = baseline stand-in until L7; 251 tests pass · follow-ups: L7 exposes a factory and reruns; agent sample once L8/L9 land; A3 brand over-redaction (Decisions)
 - 2026-11-07 19:32 · A3 · Codex (GPT-6) · #41 · Local redactor, HMAC phone/sender handling, private URL ordering and report; P5 20/20, 50 redaction tests; full merged backend 219 passed in credential-free child process; real L1 adapters synced · follow-ups: A9, A13 redaction-cost evaluation; regex name/address limits documented
 
@@ -127,6 +119,8 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 ---
 
 ## Decisions
+
+- 2026-11-07 20:25 · **POC gates (A8, `docs/POC_RESULTS.md`):** P1 pass (baseline test macro F1 0.807, FPR 0.127; no pivot), P2 pass (5/5 native tool calls, median step 2,635 ms, worst 4,161 ms; keep `NEMOTRON_PROTOCOL=native`), P5 pass (20/20 gate strings). P3 pending until the Gemini key arrives Sunday morning (L4); P4 pending until A2's live seed runs with the Nessie key (PR #44). No pivot taken. Whoever runs P3 or P4 updates its row in `docs/POC_RESULTS.md`.
 
 - 2026-11-07 20:20 · **A13 harness interface (for L7):** `cd backend; python -m scripts.evaluate --model <module>:<factory>`. The factory is called as `factory(train, val)` with A1's saved split (train 1,818, val 390) and returns an object whose `predict(messages: list[Message]) -> list[str]` gives one taxonomy id per message. It never receives test or the public set. Main rows score both models on **redacted** text (`app.privacy.redact`, phone hash tags collapsed to `<PHONE_HASH>` so scores don't depend on the salt); the redaction-cost row is ours on raw vs. redacted. Until L7 ships a factory, `eval/metrics.json` uses the baseline as a stand-in for "ours", so ours = baseline on every row.
 - 2026-11-07 20:20 · **A13 numbers (baseline, redacted text):** test macro F1 **0.791**, FPR **0.160** (raw: 0.807 / 0.127, same as A1). Redaction cost 0.807 → 0.791. Public `ucirvine/sms_spam` (5,574): spam recall **0.177**, FPR **0.034** (raw text: 0.253 / 0.041). The public spam is mostly 2012-era UK premium-rate prize and ringtone spam, largely outside our US smishing taxonomy, so low recall is expected from a model trained on our synthetic data. L7 must not train on it (external evaluation only); the pitch should present it honestly as a real-world stress test.
@@ -169,6 +163,7 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 
 ## Blockers and open questions
 
-- Gemini key arrives Sunday morning; L4 and L10 wait for it.
+- Gemini key arrives Sunday morning; L4 and L10 wait for it. Gate P3 is pending until then (update `docs/POC_RESULTS.md`).
+- Gate P4 is pending: A2's live Nessie seed (PR #44) needs a run with `NESSIE_API_KEY` (twice, to prove idempotency), then update `docs/POC_RESULTS.md`.
 - Official short codes and sender IDs for the demo brands: fill `data/brands.json` from the brands' own pages (A10).
 - Taxonomy: ours (v1) is in `data/taxonomy.json` (A21). If a mentor shares T-Mobile's, map it and regenerate.
