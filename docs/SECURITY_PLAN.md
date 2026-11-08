@@ -112,6 +112,36 @@ New tests use `httpx.MockTransport` and `monkeypatch` from the standard toolkit,
 
 Who writes which: `test_security.py` (this PR) covers body limits, secret leakage, the TLS validator, the `verify=False` ban and outbound imports. `test_crypto.py` (this PR) covers round trip, tamper, wrong key and rotation. The rows that depend on L8, L9, L3 and A3 are added to those issues' acceptance criteria as hostile-input checklists, so each owner writes them alongside the feature.
 
+## Privacy and trust additions
+Privacy is a headline of the product, not just a background control. These four items come from an outside review (2026-11-07) and fill gaps that neither `POC_MVP.md` nor this plan covered.
+
+**1. Retention and deletion (L3, L6, A14)**
+- L3 deletes stored messages, results and trail entries after `RETENTION_HOURS` (default 24, set in `.env`). The cleanup runs when the app starts and before each new message is stored. That's polling, with no new scheduler.
+- New route `DELETE /api/messages/{id}`, plus a reset that deletes everything for the demo user. It removes the encrypted text, the result, the trail and the L6 privacy-log entries for that message. Campaign fingerprints (A12) stay, because they contain no message text.
+- The privacy panel (A14) gets a "Delete my data" button and shows the retention period: "Messages are deleted after 24 hours."
+- Failure-path tests: a deleted message returns 404, a deleted message's privacy log is gone, and cleanup never deletes campaign fingerprints. The new route and its response shape need a `[contracts]` PR.
+
+**2. SSRF protection for link checks (A10, Arnav)**
+Scammers write the links that `check_link` checks, so treat each one as an attack on our own server.
+- Preferred: never fetch the link. Use parsing, `tldextract`, brand lookalike matching and RDAP on the registered domain only.
+- If anything must fetch a URL or follow redirects: `https` and `http` schemes only; resolve the host and reject private, loopback, link-local, multicast and cloud metadata addresses (`10/8`, `172.16/12`, `192.168/16`, `127/8`, `169.254/16`, `::1`, `fc00::/7`). Check again after every redirect, allow at most 3 redirects, a 5 second timeout and a 1 MB response cap. Never render the fetched content.
+- Tests: `http://127.0.0.1`, `http://169.254.169.254`, a public URL that redirects to a private address, `file://` and `javascript:` are all refused, and the tool returns "couldn't check", not an error.
+
+**3. Label what kind of claim each finding is (L8, A14)**
+Every finding in the result is tagged as one of three kinds:
+- `verified`: a tool returned it from a real source (RDAP date, Nessie transaction, cited public report).
+- `inferred`: the model or classifier concluded it.
+- `unavailable`: we tried and couldn't check (timeout, no key, replay miss).
+
+The result card shows the label next to each finding. "Very likely scam" needs at least two `verified` findings from different tools, which tightens the existing guardrail. This changes the finding shape, so it goes in a `[contracts]` PR, and `source_type` on public reports stays as it is.
+
+**4. Honest wording**
+- Call the L6 log **content-free audit logging** or **privacy-preserving audit logging**, never "zero-knowledge".
+- Pitch line: "Designed with OWASP Top 10 (web and LLM) and NIST-inspired controls." Never say bank-certified, SOC 2, PCI or FedRAMP.
+- Don't say messages are processed "on your device". Redaction runs on our server before any AI service sees the message. If we demo the local Nemotron mode (`docs/LOCAL_NEMOTRON.md`), we can say "Nemotron ran on this laptop" for that run.
+- Production roadmap slide, not built: user accounts with MFA, role-based admin access, KMS or HSM key storage, NeMo Guardrails, on-device redaction.
+- If a slide says "AES-256", `app/crypto.py` must use AES-256-GCM (`cryptography`'s `AESGCM` with a versioned key ID for rotation) instead of Fernet (AES-128). Decide before L3 stores anything.
+
 ## Optional phase: only if we host publicly
 Use HTTPS from the host. Add a security-headers middleware (CSP `default-src 'self'`, HSTS, `nosniff`, `frame-ancestors 'none'`, `Referrer-Policy`). Add a simple per-IP rate limit on `POST /api/messages`. Protect `demo_reset` and the action routes with a shared demo token from `.env`. Keep CORS off, or limit it to the single frontend origin.
 
