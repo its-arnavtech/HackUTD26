@@ -43,7 +43,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | L9 | API endpoints and pipeline orchestration | Lavanya | Claude Code | MVP | L3, L8 | todo | #24 |
 | G1 | Gate: scenario 1 end to end in the CLI | Both | any | MVP | A3, A9, A10, A11, L8 | done | #25 · PR #46 (prep), PR #61 |
 | L10 | `public_scam_reports` tool | Arnav | Claude Code | MVP | L4, L5 | todo | #26 |
-| L11 | Recovery mode re-plan | Arnav | Codex | MVP | L8, A11 | in progress | #27 · codex/wrap-up (implementation complete, PR pending) |
+| L11 | Recovery mode re-plan | Arnav | Codex | MVP | L8, A11 | done | #27 · PR #63 |
 | A14 | Result card, "How we checked" and privacy panel | Arnav | Cursor (covering for Codex design) | MVP | A7 | done | #28 · PR #53 |
 | A15 | Recovery UI | Arnav | Claude Code (covering for Codex design) | MVP | A14 | done | #29 · PR #55 (#54 closed as superseded) |
 | A16 | Consent screen, campaign view and accuracy page | Arnav | Claude Code (covering for Codex design) | MVP | A7 | done | #30 · PR #55 |
@@ -61,26 +61,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 <!-- One block per active issue. Copy the template, keep it current at every checkpoint. -->
 
-### L11 Recovery mode re-plan (#27)
-- Agent: Codex (GPT-6) · Person: Arnav · Folder: C:/HackUTD26/.worktrees/wrap-up · Branch: codex/wrap-up
-- Started: 2026-11-07 23:42 · Last checkpoint: 2026-11-07 23:42
-- Done so far: Read specs, handoff and live G1 results; merged #61, #55 and #60 with merge commits; resolved #57's changelog-only conflict without dropping decisions. No existing L11 branch or claim. User authorized wrapping up remaining work.
-- Next step (exact): Implementation complete: mandatory read-only activity check since message receipt, verified Nessie refs, recovery actions, app-only detail hydration, current-run confirmation storage, and conflicting ignore action removed. Full backend: 601 passed / 30 expected replay skips before final API test; 10 recovery tests now pass. Next: PR/CI, then A18/A19 replay and browser testing around Lavanya L9 and active A17.
-- Files touched: CHANGELOG.md, backend/app/agent/{recovery,loop,guardrails}.py, backend/app/{state,main}.py, backend/tests/{test_recovery,test_runtime,test_state}.py.
-- How to run or test: C:/HackUTD26/backend/.venv/Scripts/python.exe -m pytest -q from this worktree's backend.
-- Notes and gotchas: L9 remains actively owned by Lavanya. Never forward payee names or banking detail to Nemotron; no protective action without a tap. Gemini key still missing. Do not close G2/A19/G3 without actual evidence.
-- Resumed by: Codex from unclaimed L11; user-authorized wrap-up.
 
-
-
-
-
-
-
-
-
-
-```
 ### <ID> <title> (#<issue>)
 - Agent: <tool> (<model>) · Person: <Arnav | Lavanya> · Folder: <path> · Branch: <branch>
 - Started: YYYY-MM-DD HH:MM · Last checkpoint: YYYY-MM-DD HH:MM
@@ -128,6 +109,8 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 ---
 
 ## Done log
+
+- 2026-11-07 23:55 · L11 · Codex (GPT-6) · #63 · Mandatory read-only activity check after /clicked, verified Nessie refs even if Nemotron omits them or later fails, local detail hydration, current-run customer confirmations, recovery checklist actions; full backend 601 passed/30 expected fixture skips plus final API test (10 recovery tests pass) · follow-ups: L9 live pipeline integration and G2/A19 replay proof remain separate.
 
 Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID · tool · PR · summary · follow-ups`.
 
