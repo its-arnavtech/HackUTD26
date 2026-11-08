@@ -55,7 +55,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A20 | Capital One and Best Design pitch | Arnav | any | Demo | G2 | todo | #35 |
 | L12 | NVIDIA and T-Mobile pitch, Devpost | Lavanya | Claude Code | Demo | G2 | todo | #36 |
 | G3 | Rehearse the 3-minute demo three times | Both | any | Demo | A19, A20, L12 | todo | #37 |
-| SYN | Synthetic linked scenarios, payment schema, multiclass SMS | Arnav | Cursor | Demo | A21 | done | cursor/synthetic-linked-scenarios-6119 |
+| SYN | Synthetic linked scenarios, payment schema, multiclass SMS | Arnav | Cursor | Demo | A21 | done | #72 · cursor/synthetic-linked-scenarios-6119 |
 
 ---
 
@@ -150,7 +150,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 ## Done log
 
-- 2026-11-08 04:30 · SYN · Cursor (Grok 4.7) · synthetic linked scenarios · Seeded generator (no LLM) writes multiclass SMS (200 per taxonomy id, sets A/B, 70/15/15), 32 campaigns, URL/RDAP rows, 320 linked scenarios (40% benign), telecom events, canonical payment schema, six source mappings, and per-scenario Nessie exports. A21 `messages.jsonl`, splits, and eval files were not changed. Datasheet: `data/generated/SYNTHETIC_LINKED_README.md`. Public-set notes: `docs/PUBLIC_DATASETS.md`.
+- 2026-11-08 04:30 · SYN · Cursor (Grok 4.7) · #72 · Seeded generator (no LLM) writes multiclass SMS (200 per taxonomy id, sets A/B, 70/15/15), 32 campaigns, URL/RDAP rows, 320 linked scenarios (40% benign), telecom events, canonical payment schema, six source mappings, and per-scenario Nessie exports. A21 `messages.jsonl`, splits, and eval files were not changed. Datasheet: `data/generated/SYNTHETIC_LINKED_README.md`. Public-set notes: `docs/PUBLIC_DATASETS.md`. 699 backend tests passed.
 
 - 2026-11-08 01:01 · G2 technical evidence / A19 fixtures / reset safety · Codex (GPT-6) with Cursor reset fix · #69 (includes #68) · All three UI flows pass live, record, and offline replay with frozen L7 v2; actual $900 purchase/confirmation, bill paid/$0 due, privacy/campaigns/accuracy, no browser errors; reset-generation regression integrated; 688 backend and 50 frontend tests/build pass · G2 finished per Arnav explicit request; A17 remains separately with its owner; video/presentation excluded by user.
 
