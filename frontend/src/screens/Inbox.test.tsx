@@ -36,6 +36,7 @@ describe("InboxView", () => {
     );
     render(<InboxView items={items} progress={{ msg_0003: runningPoll("scenario3", 1) }} />);
     expect(screen.getByText("Checking…")).toBeInTheDocument();
+    expect(screen.getByText("Checking…").closest("button")).toBeDisabled();
     const plan = mockResult("scenario3").trail[0].finding!;
     expect(screen.getByText(plan)).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /Check a new demo text/ })).not.toBeInTheDocument();
@@ -122,6 +123,7 @@ describe("Inbox on the mock API", () => {
   });
 
   it("goes to the result for the tapped message", async () => {
+    api.getInbox.mockResolvedValue(checkedInbox());
     renderInbox();
     fireEvent.click((await screen.findAllByRole("button"))[0]);
     expect(await screen.findByText("Result page")).toBeInTheDocument();

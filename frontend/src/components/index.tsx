@@ -123,7 +123,7 @@ export function PageTitle({
     </div>
   );
 }
-const excerpt = (text: string, max = 70) =>
+export const excerpt = (text: string, max = 70) =>
   text.length <= max ? text : `${text.slice(0, max).replace(/\s+\S*$/, "")}…`;
 /** `text` must already be redacted: placeholder tokens render as privacy chips. */
 export function MessageBubble({

@@ -24,7 +24,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A4 | Nemotron connection and tool-calling smoke test | Arnav | Codex | POC | scaffold | done | #41 (arnav-shared) |
 | A5 | Hugging Face connection | Arnav | Codex | POC | scaffold | done | #41 (arnav-shared) |
 | A6 | Dev infrastructure: CI, dev scripts, worktrees | Arnav | Cursor | POC | scaffold | done | #7 · PR #40 |
-| A7 | Phone shell and inbox on the mock API | Arnav | Cursor (covering for Codex design) | POC | scaffold | in progress | #8 · `cursor/a7-phone-inbox-55c7` |
+| A7 | Phone shell and inbox on the mock API | Arnav | Cursor (covering for Codex design) | POC | scaffold | done | #8 · `cursor/a7-phone-inbox-55c7` |
 | L1 | Record and replay cache | Lavanya | Claude Code | POC | scaffold | done | #9 · PR #42 |
 | L2 | Core runtime: app factory, settings, logging, errors | Lavanya | Claude Code | POC | scaffold | done | #10 · PR #39 |
 | L3 | State store and background job runner | Lavanya | Claude Code | POC | L2 | done | #11 · PR #47 |
@@ -61,24 +61,6 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 <!-- One block per active issue. Copy the template, keep it current at every checkpoint. -->
 
-### A7 Phone shell and inbox on the mock API (#8)
-- Agent: Cursor (Claude Opus 5.5, cloud agent), covering for Codex design until about 23:00 · Person: Arnav · Folder: Cursor cloud VM (`/workspace`) · Branch: `cursor/a7-phone-inbox-55c7`
-- Started: 2026-11-07 21:30 · Last checkpoint: 2026-11-07 21:47
-- Done so far:
-  - Claimed (CHANGELOG only)
-  - Frontend tests: Vitest + Testing Library + jsdom (`npm test`, config in `vite.config.ts`, setup in `src/test/setup.ts`). CI's frontend job runs `npm test` after the build
-  - Ported from `design-lab-snapshot` (813a3c1), no redesign: `theme.css` verbatim (replaces `index.css`), bundled fonts + OFL licenses, favicon, every lab component in `src/components/index.tsx` (props switched to the contract types: `MessageBubble` takes redacted text, `WasThisYouCard` takes a `WasThisYouItem`, `CampaignCard`/`MetricTable` take contract `Campaign`/`CategoryMetrics`), the stage shell and routes in `App.tsx` (react-router), the inbox, and `/gallery` with all 20 lab states plus "Messages unavailable"
-  - Inbox: `InboxView` is presentational; the default export uses `useInbox()` (`src/hooks.ts`), which loads `getInbox()` and polls every unfinished row with `pollResult` until done ("Checking…" then a verdict chip). "Check a new demo text" posts synthetic scenario 1 after a tap. Sender shows the real sender, formatted, not a brand name
-  - Gallery renders from `src/fixtures.ts`, which imports `backend/app/mocks/*.json` directly (no fetch). Screens not yet ported (A14, A15, A16) show restyled placeholders in their gallery slots
-  - 18 frontend tests pass; `npm run build` passes
-- Next step (exact): take 1280px gallery screenshots against the mock API, finish the CHANGELOG entry, open the A7 PR. Then A14 on `cursor/a14-result-trail-privacy-55c7`: port `Result.tsx`, `Trail.tsx`, `Privacy.tsx` as views over `ResultPoll`/`PrivacyView` and fill their gallery slots
-- Files touched: `CHANGELOG.md`, `.github/workflows/ci.yml`, `frontend/package.json`, `frontend/package-lock.json`, `frontend/index.html`, `frontend/vite.config.ts`, `frontend/tsconfig.json`, `frontend/public/*`, `frontend/src/{main.tsx,App.tsx,theme.css,hooks.ts,fixtures.ts,fixtures.test.ts,api.test.ts}`, `frontend/src/components/*`, `frontend/src/screens/{Inbox,Gallery}.tsx` and their tests, `frontend/src/test/setup.ts`
-- How to run or test: `npm run build` and `npm test` in `frontend/`; `scripts/dev.ps1` for the app on the mocks, then `/inbox` and `/gallery`
-- Notes and gotchas: data access stays in `src/api.ts`; screens never fetch. No contract changes without a separate `[contracts]` PR. UI copy follows POC_MVP 4.4 exactly. Lab display fields that aren't in the contracts (`brand`, `activity_summary`, `next_step`, grouped privacy recipients) are derived in the UI, never added to `types.ts`. `vite.config.ts` allows the dev server to read `backend/app/mocks` only (not the repo root, which holds `.env`)
-- Resumed by: Cursor from Codex design (not started by Codex)
-
-
-
 ```
 ### <ID> <title> (#<issue>)
 - Agent: <tool> (<model>) · Person: <Arnav | Lavanya> · Folder: <path> · Branch: <branch>
@@ -99,6 +81,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID · tool · PR · summary · follow-ups`.
 
+- 2026-11-07 21:55 · A7 · Cursor (Claude Opus 5.5) · PR pending · Design lab (`design-lab-snapshot` 813a3c1) ported without redesign: tokens, bundled fonts, all lab components on the contract types, stage shell with react-router, inbox polling the mocks ("Checking…" then a verdict chip), `/gallery` with all 21 states rendered from `backend/app/mocks` (no fetch); Vitest + Testing Library set up and run in CI, 18 tests · follow-ups: A14 fills the result, trail and privacy gallery slots; A15/A16 fill recovery, consent, campaigns and accuracy
 - 2026-11-07 20:19 · L5 · Claude Code (Opus 5.5, Lavanya) · #48 · `agent/registry.py`: `ToolRegistry` with the six built-in tools registered (tool modules untouched); OpenAI `tools=[...]` schemas with refs inlined and injected fields hidden; `call_tool` validates args, runs with a per-tool timeout (Gemini 20 s, others 10 s), returns `ToolCall` with errors as data (`unknown_tool`, `invalid_args`, `timeout`, `unavailable`, `tool_error`) and generic messages; `on_call` gets a `PrivacyRecipient` with exactly what the tool received; 33 tests (266 pass) · follow-ups: L8 uses `openai_tool_schemas()` and `call_tool`; L6 stores the `on_call` records
 - 2026-11-07 19:32 · A3 · Codex (GPT-6) · #41 · Local redactor, HMAC phone/sender handling, private URL ordering and report; P5 20/20, 50 redaction tests; full merged backend 219 passed in credential-free child process; real L1 adapters synced · follow-ups: A9, A13 redaction-cost evaluation; regex name/address limits documented
 
@@ -124,6 +107,7 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 
 ## Decisions
 
+- 2026-11-07 21:55 · Frontend structure after the A7 port: each screen exports a presentational `*View` that takes contract types and a default container that loads data through `src/api.ts` (hooks in `src/hooks.ts`). `/gallery` renders the views from `src/fixtures.ts`, which imports `backend/app/mocks/*.json`, so the gallery never fetches. Lab display fields that the contracts lack (`brand`, `activity_summary`, `next_step`) are derived in the UI; nothing was added to `types.ts`. The inbox shows the real sender, formatted, not the brand the text claims.
 - 2026-11-07 21:30 · Codex (both sessions) is out of usage until about 23:00. Claude Code resumes A12's finish and fixes PR #49's conflicts, snapshots the design lab to branch `design-lab-snapshot`, and finishes A2's live Nessie work on Cursor's branches (it has the key). Cursor stays off #44 and #45 and ports the design lab into `frontend/` for A7 and A14. Codex design picks up A15, A16 and polish when it's back. Live Nessie has no DELETE for purchases and rejects `medium` and `payee_id` on transfers (see PR #44 comments).
 - 2026-11-07 20:19 · L5 tool contract: a tool is a plain function `fn(args: ArgsModel, agent_input: AgentInput) -> ResultModel` in its own module; the registry imports and registers it in `builtin_tools()`, so tool authors don't touch the registry. Raise `NotImplementedError` until built (the agent sees "unavailable"). `match_campaign`'s `message_id` is filled in by code from the agent input, not by the model.
 - 2026-11-07 19:32 · A4/A5 integration after L1 merge: removed scaffold bypasses from Nemotron and HF bootstrap; cached_call now receives the selected DEMO_MODE explicitly. Offline tests verify recording, credential-free replay and strict misses with no network. Local-fallback doc updated; production scenarios still need A19 fixtures. Full merged backend suite: 219 passed; test process clears inherited service credentials because L2 make_settings ignores .env but still reads environment variables (no global or .env changes).

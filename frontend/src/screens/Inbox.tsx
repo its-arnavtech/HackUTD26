@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { ArrowUpRight, LoaderCircle, MessageSquareText, ScanLine } from "lucide-react";
 import { useInbox } from "../hooks";
-import { ActionButton, EmptyState, PageTitle, VerdictBadge } from "../components";
+import { ActionButton, EmptyState, PageTitle, VerdictBadge, excerpt } from "../components";
 import type { InboxItem, ResultPoll } from "../types";
 
 const time = (value: string) =>
@@ -74,6 +74,7 @@ export function InboxView({
               key={item.message_id}
               className={`inbox-message ${i === 0 ? "featured-message" : ""}`}
               onClick={() => onOpen?.(item.message_id)}
+              disabled={isChecking(item)}
             >
               <div className="inbox-sender">
                 <span className="message-avatar">
@@ -82,7 +83,7 @@ export function InboxView({
                 <strong>{senderLabel(item.sender)}</strong>
                 <span className="metadata">{time(item.received_at)}</span>
               </div>
-              <p>{item.text}</p>
+              <p>{excerpt(item.text)}</p>
               {isChecking(item) ? (
                 <span className="checking-chip" role="status">
                   <LoaderCircle className="spin" size={17} />
