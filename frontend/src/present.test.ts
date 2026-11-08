@@ -1,6 +1,16 @@
 import { describe, expect, it } from "vitest";
 import { mockPrivacy, mockResult } from "./fixtures";
-import { activitySummary, maskLinks, nextStep, primaryAction, receivedLines, redactedText, redactionMatches } from "./present";
+import {
+  activitySummary,
+  isRedactionTag,
+  maskLinks,
+  nextStep,
+  primaryAction,
+  receivedLines,
+  redactedText,
+  redactionMatches,
+  splitRedacted,
+} from "./present";
 
 describe("result wording", () => {
   it("says what was checked, and never that the account is fine", () => {
@@ -26,6 +36,15 @@ describe("result wording", () => {
     const raw = "Capital One Alert: unusual sign-in for Linda. Your account will be locked in 2 hours. Verify now: https://capone-verify-alert.com/verify";
     expect(redactionMatches(raw, redactedText(mockPrivacy())!)).toBe(true);
     expect(redactionMatches("Hi Mom, landed safe. Will call you after dinner tonight.", redactedText(mockPrivacy())!)).toBe(false);
+  });
+
+  it("recognizes every A3 tag shape, including lowercase hex phone hashes", () => {
+    for (const tag of ["<PERSON>", "<URL_1>", "<ACCOUNT_DIGITS>", "<UNKNOWN_SENDER>", "<PHONE_HASH_2ae6f01c9b3d4e57>", "<PHONE_HASH_2ae6…>"]) {
+      expect(isRedactionTag(tag)).toBe(true);
+    }
+    for (const text of ["<b>", "<phone_hash_2ae6>", "< PERSON>", "<PERSON> hi"]) expect(isRedactionTag(text)).toBe(false);
+    expect(splitRedacted("Call <PHONE_HASH_2ae6f01c> now")).toEqual(["Call ", "<PHONE_HASH_2ae6f01c>", " now"]);
+    expect(redactionMatches("Call 555-010-4477 about your parcel today please", "Call <PHONE_HASH_2ae6f01c> about your parcel today please")).toBe(true);
   });
 });
 
