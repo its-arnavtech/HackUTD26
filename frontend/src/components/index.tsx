@@ -21,6 +21,7 @@ import {
   X,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import type { Failure } from "../api";
 import { isRedactionTag, splitRedacted } from "../present";
 import type {
   ActivityType,
@@ -510,11 +511,13 @@ export function MetricTable({
 export function EmptyState({
   error = false,
   onRetry,
+  retryLabel,
   title,
   description,
 }: {
   error?: boolean;
   onRetry?: () => void;
+  retryLabel?: string;
   title?: string;
   description?: string;
 }) {
@@ -540,10 +543,70 @@ export function EmptyState({
           onClick={onRetry}
           icon={error ? <ScanLine size={20} /> : <Link2 size={20} />}
         >
-          {error ? "Try the check again" : "Try a demo message"}
+          {retryLabel ?? (error ? "Try the check again" : "Try a demo message")}
         </ActionButton>
       )}
     </div>
+  );
+}
+
+/** Why a screen couldn't load: what the API said, or that it ran too long. */
+export type LoadFailureKind = Failure | "slow";
+
+const failureCopy: Partial<Record<LoadFailureKind, { title: string; description: string }>> = {
+  offline: {
+    title: "We can’t reach SentinelAI right now.",
+    description: "Nothing was changed. Try again in a moment.",
+  },
+  not_found: {
+    title: "We couldn’t find this message.",
+    description: "It may have been cleared when the demo was reset. Nothing was changed.",
+  },
+  not_wired: {
+    title: "This part isn’t connected yet.",
+    description: "Its live service hasn’t been switched on for this demo. Nothing was changed.",
+  },
+  slow: {
+    title: "This check is taking longer than usual.",
+    description: "We haven’t reached a verdict yet. Don’t use the link while you wait.",
+  },
+};
+
+/**
+ * The error state every API-backed screen shares. Offline, not found, not connected yet and slow
+ * have their own wording; anything else uses the screen's `title` and `description`.
+ */
+export function LoadFailure({
+  failure,
+  title,
+  description,
+  onRetry,
+  retryLabel = "Try again",
+}: {
+  failure?: LoadFailureKind;
+  title?: string;
+  description?: string;
+  onRetry?: () => void;
+  retryLabel?: string;
+}) {
+  const copy = failure ? failureCopy[failure] : undefined;
+  const missing = failure === "not_found";
+  return (
+    <>
+      <EmptyState
+        error
+        title={copy?.title ?? title}
+        description={copy?.description ?? description}
+        onRetry={missing ? undefined : onRetry}
+        retryLabel={retryLabel}
+      />
+      {missing && (
+        <Link className="row-link" to="/inbox">
+          Back to your messages
+          <ChevronRight size={18} />
+        </Link>
+      )}
+    </>
   );
 }
 export function PrivacyFootnote({ messageId }: { messageId?: string }) {

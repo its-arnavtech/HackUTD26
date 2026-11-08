@@ -62,8 +62,8 @@ export function TrailView({
 export default function HowWeChecked() {
   const { messageId = "" } = useParams();
   const navigate = useNavigate();
-  const { poll, error, retry } = useResult(messageId);
-  if (error) return <ResultError onRetry={retry} />;
+  const { poll, failure, retry } = useResult(messageId);
+  if (failure) return <ResultError failure={failure} onRetry={retry} />;
   return (
     <TrailView
       trail={poll?.trail ?? []}

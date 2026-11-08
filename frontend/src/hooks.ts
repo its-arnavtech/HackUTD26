@@ -1,28 +1,57 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { DependencyList } from "react";
-import { ApiError, getInbox, pollResult, postMessage } from "./api";
+import { ApiError, failureOf, getHealth, getInbox, pollResult, postMessage, type Failure, type Health } from "./api";
 import type { InboxItem, ResultPoll } from "./types";
 
+/** Load once per `deps`. `retry` loads again; `failure` says why it failed (offline, not found, not wired yet). */
 export function useData<T>(loader: () => Promise<T>, deps: DependencyList = []) {
   const [data, setData] = useState<T>();
-  const [error, setError] = useState(false);
+  const [failure, setFailure] = useState<Failure>();
+  const [attempt, setAttempt] = useState(0);
   useEffect(() => {
     let active = true;
     setData(undefined);
-    setError(false);
+    setFailure(undefined);
     loader()
       .then((value) => {
         if (active) setData(value);
       })
-      .catch(() => {
-        if (active) setError(true);
+      .catch((err: unknown) => {
+        if (active) setFailure(failureOf(err));
       });
     return () => {
       active = false;
     };
-  }, deps);
-  return { data, error };
+  }, [...deps, attempt]);
+  const retry = useCallback(() => setAttempt((n) => n + 1), []);
+  return { data, error: failure !== undefined, failure, loading: data === undefined && failure === undefined, retry };
 }
+
+let health: Promise<Health | undefined> | undefined;
+
+/** `/api/health`, fetched once per page load. Undefined while loading, or if it failed (then it's asked again next time). */
+export function useHealth() {
+  const [value, setValue] = useState<Health>();
+  useEffect(() => {
+    let active = true;
+    health ??= getHealth().catch(() => {
+      health = undefined;
+      return undefined;
+    });
+    void health.then((h) => {
+      if (active) setValue(h);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
+  return value;
+}
+
+/** Tests only: forget the cached health answer. */
+export const forgetHealth = () => {
+  health = undefined;
+};
 
 /** Synthetic scenario 1 text (POC_MVP 4.3) for the "check a new demo text" button. */
 export const DEMO_MESSAGE = {
@@ -44,10 +73,19 @@ export function withProgress(item: InboxItem, poll?: ResultPoll): InboxItem {
 export const newestFirst = (rows: InboxItem[]) =>
   [...rows].sort((a, b) => Date.parse(b.received_at) - Date.parse(a.received_at));
 
+/** Errors in a row before a check is shown as unavailable. A 404 fails at once. */
+const MAX_POLL_ERRORS = 3;
+
+/** A check still running after this long stops polling and offers a retry instead of spinning forever. */
+export const MAX_CHECK_MS = 180_000;
+
+export type ResultFailure = Failure | "slow";
+
 /** Inbox rows, newest first, with every unfinished check polled until it is done. */
 export function useInbox() {
   const [items, setItems] = useState<InboxItem[]>();
-  const [error, setError] = useState(false);
+  const [failure, setFailure] = useState<Failure>();
+  const [notice, setNotice] = useState("");
   const [posting, setPosting] = useState(false);
   const [progress, setProgress] = useState<Record<string, ResultPoll>>({});
   const pollers = useRef(new Map<string, () => void>());
@@ -55,21 +93,34 @@ export function useInbox() {
   const watch = useCallback((rows: InboxItem[]) => {
     for (const row of rows) {
       if (row.status === "done" || pollers.current.has(row.message_id)) continue;
-      const stop = pollResult(row.message_id, (poll) =>
-        setProgress((current) => ({ ...current, [row.message_id]: poll })),
+      let failures = 0;
+      const stop = pollResult(
+        row.message_id,
+        (poll) => {
+          failures = 0;
+          setProgress((current) => ({ ...current, [row.message_id]: poll }));
+        },
+        // A row whose check can't be read stops polling; reloading the inbox (retry) starts it again.
+        (err) => {
+          failures += 1;
+          if ((err instanceof ApiError && err.notFound) || failures >= MAX_POLL_ERRORS) {
+            stop();
+            pollers.current.delete(row.message_id);
+          }
+        },
       );
       pollers.current.set(row.message_id, stop);
     }
   }, []);
 
   const load = useCallback(async () => {
-    setError(false);
+    setFailure(undefined);
     try {
       const rows = await getInbox();
       setItems(rows);
       watch(rows);
-    } catch {
-      setError(true);
+    } catch (err) {
+      setFailure(failureOf(err));
     }
   }, [watch]);
 
@@ -84,57 +135,72 @@ export function useInbox() {
 
   const checkNew = useCallback(async () => {
     setPosting(true);
+    setNotice("");
     try {
       await postMessage({ ...DEMO_MESSAGE, received_at: new Date().toISOString() });
       await load();
     } catch {
-      setError(true);
+      setNotice("That didn’t go through. No message was added. Please try again.");
     } finally {
       setPosting(false);
     }
   }, [load]);
 
+  const dismissNotice = useCallback(() => setNotice(""), []);
   const rows = items && newestFirst(items.map((item) => withProgress(item, progress[item.message_id])));
 
-  return { items: rows, progress, error, posting, retry: load, checkNew };
+  return {
+    items: rows,
+    progress,
+    error: failure !== undefined,
+    failure,
+    notice,
+    dismissNotice,
+    posting,
+    retry: load,
+    checkNew,
+  };
 }
-
-/** Errors in a row before a check is shown as unavailable. A 404 fails at once. */
-const MAX_POLL_ERRORS = 3;
 
 /**
  * Poll one message's result until it is done. `retry` starts polling again after an error.
  * With `enabled` false nothing is polled (recovery waits for the customer's tap).
+ * A check still unfinished after `maxMs` stops with the failure "slow".
  */
-export function useResult(messageId: string, enabled = true) {
+export function useResult(messageId: string, enabled = true, maxMs = MAX_CHECK_MS) {
   const [poll, setPoll] = useState<ResultPoll>();
-  const [error, setError] = useState(false);
+  const [failure, setFailure] = useState<ResultFailure>();
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     setPoll(undefined);
-    setError(false);
+    setFailure(undefined);
     if (!enabled) return;
     let failures = 0;
+    const started = Date.now();
     const stop = pollResult(
       messageId,
       (next) => {
         failures = 0;
         setPoll(next);
+        if (next.status !== "done" && Date.now() - started > maxMs) {
+          stop();
+          setFailure("slow");
+        }
       },
       (err) => {
         failures += 1;
-        if ((err instanceof ApiError && err.status === 404) || failures >= MAX_POLL_ERRORS) {
+        if ((err instanceof ApiError && err.notFound) || failures >= MAX_POLL_ERRORS) {
           stop();
-          setError(true);
+          setFailure(failureOf(err));
         }
       },
     );
     return stop;
-  }, [messageId, attempt, enabled]);
+  }, [messageId, attempt, enabled, maxMs]);
 
   const retry = useCallback(() => setAttempt((n) => n + 1), []);
-  return { poll, error, retry };
+  return { poll, error: failure !== undefined, failure, retry };
 }
 
 /** The inbox row for one message, for the text shown above its result. */

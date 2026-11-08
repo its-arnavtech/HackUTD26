@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 import { getCampaigns, getInbox } from "../api";
 import { useData } from "../hooks";
-import { CampaignCard, EmptyState, PageTitle, PrivacyChip, excerpt } from "../components";
+import { CampaignCard, EmptyState, LoadFailure, PageTitle, PrivacyChip, excerpt } from "../components";
+import type { Failure } from "../api";
 import { maskLinks } from "../present";
 import type { Campaign, InboxItem } from "../types";
 
@@ -22,6 +23,7 @@ export function CampaignListView({
   inbox = [],
   expanded = [],
   error = false,
+  failure,
   onToggle,
   onOpenMessage,
   onRetry,
@@ -30,6 +32,7 @@ export function CampaignListView({
   inbox?: InboxItem[];
   expanded?: string[];
   error?: boolean;
+  failure?: Failure;
   onToggle?: (campaignId: string) => void;
   onOpenMessage?: (messageId: string) => void;
   onRetry?: () => void;
@@ -44,14 +47,18 @@ export function CampaignListView({
         <br />
         not just a text.
       </PageTitle>
-      {error ? (
-        <EmptyState
-          error
+      {error || failure ? (
+        <LoadFailure
+          failure={failure === "not_found" ? undefined : failure}
           title="We couldn’t load the patterns."
           description="Nothing was changed. Each message is still checked on its own."
           onRetry={onRetry}
         />
-      ) : campaigns && campaigns.length === 0 ? (
+      ) : !campaigns ? (
+        <div className="loading-screen" role="status">
+          Loading the patterns…
+        </div>
+      ) : campaigns.length === 0 ? (
         <EmptyState
           title="No patterns to show yet."
           description="We have not matched any messages to a campaign. A single text can still need a closer look."
@@ -88,8 +95,7 @@ export function CampaignListView({
 
 export default function CampaignView() {
   const navigate = useNavigate();
-  const [attempt, setAttempt] = useState(0);
-  const { data, error } = useData(() => getCampaigns(), [attempt]);
+  const { data, failure, retry } = useData(() => getCampaigns(), []);
   const { data: inbox } = useData(() => getInbox(), []);
   const [expanded, setExpanded] = useState<string[]>([]);
   return (
@@ -97,10 +103,10 @@ export default function CampaignView() {
       campaigns={data}
       inbox={inbox}
       expanded={expanded}
-      error={error}
+      failure={failure}
       onToggle={(id) => setExpanded((all) => (all.includes(id) ? all.filter((x) => x !== id) : [...all, id]))}
       onOpenMessage={(id) => navigate(`/result/${encodeURIComponent(id)}`)}
-      onRetry={() => setAttempt((n) => n + 1)}
+      onRetry={retry}
     />
   );
 }

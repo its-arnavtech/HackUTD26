@@ -48,10 +48,10 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A14 | Result card, "How we checked" and privacy panel | Arnav | Cursor (covering for Codex design) | MVP | A7 | done | #28 · PR #53 |
 | A15 | Recovery UI | Arnav | Claude Code (covering for Codex design) | MVP | A14 | done | #29 · PR #55 (#54 closed as superseded) |
 | A16 | Consent screen, campaign view and accuracy page | Arnav | Claude Code (covering for Codex design) | MVP | A7 | done | #30 · PR #55 |
-| A17 | Frontend on the live API | Arnav | Cursor | MVP | A14, A15, A16, L9 | in progress | #31 · a17-live-api (no PR yet; left with Claude Code) |
+| A17 | Frontend on the live API | Arnav | Claude Code (implementation); Cursor (publish) | MVP | A14, A15, A16, L9 | done | #31 · `a17-live-api` `b2ad7f05` |
 | A18 | End-to-end scenario tests | Arnav | Codex | MVP | G1 | done | #32 · PR #64 |
-| G2 | Gate: all three scenarios end to end in the app | Both | any | MVP | A17, A18, L10, L11 | in progress | #33 · cursor/demo-readiness-f47e |
-| A19 | Replay fixtures and backup video | Arnav | Codex | Demo | G2 | in progress | #34 · codex/a18-replay; resumed cursor/demo-readiness-f47e |
+| G2 | Gate: all three scenarios end to end in the app | Both | any | MVP | A17, A18, L10, L11 | in progress | #33 · PR #69 (`codex/g2-replay-only`, not merged) |
+| A19 | Replay fixtures and backup video | Arnav | Codex | Demo | G2 | in progress | #34 · codex/a18-replay; recordings on PR #69 |
 | A20 | Capital One and Best Design pitch | Arnav | any | Demo | G2 | todo | #35 |
 | L12 | NVIDIA and T-Mobile pitch, Devpost | Lavanya | Claude Code | Demo | G2 | todo | #36 |
 | G3 | Rehearse the 3-minute demo three times | Both | any | Demo | A19, A20, L12 | todo | #37 |
@@ -89,10 +89,10 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
   - Merged L9 #65 with a merge commit (`21fbea5`). Head was still `d039b223`, the reviewed SHA.
   - Reset now bumps a demo generation so an in-flight job cannot write a result, trail, or privacy row onto a reseeded message that reused the same id and run number. Superseded runs in the same generation still keep their privacy records.
   - Recovery test race landed in #67 (wait for the current poller). This branch keeps that test.
-  - A17 (`a17-live-api`, tip `b2ad7f0`) still has no pull request. Its files were not copied. L10 merged in #66; the live Gemini citation gate stays blocked on quota. Do not invent a public citation.
+  - A17's implementation stays on `a17-live-api` at `b2ad7f05`. This publish merges that commit and does not move the owner branch. L10 is merged; the live Gemini citation gate stays blocked. Do not invent a public citation.
   - Codex opened #69 with app-gate fixtures and a socket-limited replay gate, and reports all three scenarios passed record and offline replay on the main frontend and on an A17 candidate. That PR conflicts with main and is left on `codex/g2-replay-only`. This branch does not absorb it.
   - Browser on this VM, `USE_MOCKS=false`, `DEMO_MODE=replay`, CLI fixtures, no keys: scenarios 1 and 3 end "We're not sure" (no app-shaped Nemotron fixture). Recovery still shows the $900 purchase at Unknown Payee (`txn_28`); answering "No" is the confirm tap and then the checklist. Campaign cards say 0 similar texts today.
-- Next step (exact): rebase #69 onto current main and merge it with a merge commit after CI. Do not mark G2 done in this PR. A17 still needs its own PR. Do not mark the backup video done until Arnav records it.
+- Next step (exact): after A17's publish merge, rebase #69 onto that main commit and merge it with a merge commit. Do not close #33 or #34 from the A17 publish. Do not mark the backup video done until Arnav records it.
 - Files touched: `backend/app/state.py`, `backend/tests/test_state.py`, `CHANGELOG.md`, `docs/DEMO_RUNBOOK.md`
 - How to run or test: `cd backend; python -m pytest`; `cd frontend; npm test; npm run build; npm run test:e2e`
 - Notes and gotchas: campaign counts are historical. Scenario 3's cluster is 28 on record and 0 in the last 24 hours. Do not narrate that as recent activity. The planted $900 is a purchase at Unknown Payee, not a transfer.
@@ -133,6 +133,8 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 ---
 
 ## Done log
+
+- 2026-11-08 01:02 · A17 · Claude Code (Opus 5.5) implementation, published by Cursor (Grok 4.7) · #70 · Loading, error, retry and stop-at-done polling from `a17-live-api` `b2ad7f05`, merged onto main after #68. Kept #60 privacy chips, #62 public-holdout accuracy labels, #67 recovery poller wait, and #68's reset generation. `a17-live-api` itself was not moved. · follow-ups: rebase #69 onto this merge; do not close #33 or #34; live Gemini citation stays blocked
 
 - 2026-11-08 00:42 · L9 · Claude Code (Opus 5.5, Lavanya); merged by Cursor (Grok 4.7) · #65 · Real pipeline behind every 7.1 route: redact, features, classify (L7 or baseline), Nemotron on L3's runner; trail fills in on poll; demo inbox loads at startup and reset. Merge commit `21fbea5`, not a squash. · follow-ups: changelog status finished here; recovery poller race landed separately in #67; demo-generation fix is PR #68
 - 2026-11-08 00:37 · Recovery test · Codex (GPT-6) · #67 · Recovery tests clear the prior callback and wait for the current poller before sending a fake result; fixes the CI race seen in #65 while preserving A17 application code; 50 frontend tests and build pass.
