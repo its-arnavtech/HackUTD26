@@ -1,0 +1,12 @@
+{
+  "key": "e7bada4bfea4eb41ea7f52884e6afec3",
+  "recorded_at": "2026-11-08T06:01:10+00:00",
+  "request": {
+    "body": null,
+    "method": "GET",
+    "path": "/accounts/83dce5c6-2962-4a67-9281-0b2e4c0f7fde/bills"
+  },
+  "response": [],
+  "service": "nessie",
+  "version": 1
+}

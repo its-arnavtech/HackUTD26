@@ -1,0 +1,31 @@
+{
+  "key": "df26f8bbfc01be6dad632d2bc3d6de7d",
+  "recorded_at": "2026-11-08T06:01:10+00:00",
+  "request": {
+    "body": null,
+    "method": "GET",
+    "path": "/customers/8756d0aa-0be6-4f5d-a1b2-c60c8d4ab82c/accounts"
+  },
+  "response": [
+    {
+      "_id": "4983d467-9369-4b9b-b46c-227a9b3a9115",
+      "account_number": "4108402473506071",
+      "balance": 4200,
+      "customer_id": "8756d0aa-0be6-4f5d-a1b2-c60c8d4ab82c",
+      "nickname": "Linda Everyday Checking",
+      "rewards": 0,
+      "type": "Checking"
+    },
+    {
+      "_id": "83dce5c6-2962-4a67-9281-0b2e4c0f7fde",
+      "account_number": "8967593757245492",
+      "balance": 640,
+      "customer_id": "8756d0aa-0be6-4f5d-a1b2-c60c8d4ab82c",
+      "nickname": "Linda Rewards Card",
+      "rewards": 1200,
+      "type": "Credit Card"
+    }
+  ],
+  "service": "nessie",
+  "version": 1
+}
