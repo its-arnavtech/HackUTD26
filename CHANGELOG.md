@@ -85,13 +85,17 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 ### A21 Synthetic message dataset generator (#1)
 - Agent: Claude Code (Opus 5.5) · Person: Arnav · Folder: `C:\HackUTD26-cc` · Branch: `arnav-shared`
-- Started: 2026-11-07 18:40 · Last checkpoint: 2026-11-07 18:40
+- Started: 2026-11-07 18:40 · Last checkpoint: 2026-11-07 19:10
 - Done so far:
   - Claimed. Created `.venv` (Python 3.12) in `C:\HackUTD26-cc`.
-- Next step (exact): define the final categories in `data/taxonomy.json`, then write `backend/scripts/generate_dataset.py`.
-- Files touched: `CHANGELOG.md`
-- How to run or test: `cd backend; ..\.venv\Scripts\python -m scripts.generate_dataset`
-- Notes and gotchas: `cache.py` (L1) isn't built yet, so DeepSeek calls are cached by the script itself under `data/generated/cache/`.
+  - `data/taxonomy.json` v1: 8 scam categories (`bank_impersonation`, `billing_scam`, `delivery_scam`, `account_security`, `toll_government`, `prize_refund`, `job_offer`, `conversation_lure`) plus `legit`, each with generator subtypes.
+  - `backend/scripts/dataset_prompts.py`: prompt sets `train_v1` (varied writers) and `test_v1` (quiz-card framing, varied recipients, extra brands).
+  - `backend/scripts/generate_dataset.py`: job plan, cached DeepSeek calls, phone rewrite to 555-01XX, quality filter, dedupe (exact, near, test vs train), trim, synthetic senders and times. Smoke run (1 call per category) looked good.
+  - Full run started (423 calls, `deepseek-flash`).
+- Next step (exact): when the full run ends, read `data/generated/quality_report.json` and spot-check messages; then draft ~50 hand-written test messages in `data/generated/handwritten.jsonl` for Arnav's approval, write tests and the datasheet.
+- Files touched: `CHANGELOG.md`, `.gitignore`, `data/taxonomy.json`, `backend/scripts/generate_dataset.py`, `backend/scripts/dataset_prompts.py`
+- How to run or test: `cd backend; ..\.venv\Scripts\python -m scripts.generate_dataset` (add `--dry-run` for the plan, `--offline` to rebuild from cache)
+- Notes and gotchas: `cache.py` (L1) isn't built yet, so DeepSeek calls are cached by the script itself under `data/generated/cache/` (committed so reruns are free). `deepseek-flash` reasons before answering and sometimes returns empty content; the script retries and never caches a bad response. Changing a prompt or `MAX_TOKENS` changes every cache key.
 
 ---
 
