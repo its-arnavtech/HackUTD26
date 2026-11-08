@@ -21,6 +21,7 @@ import {
   X,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { isRedactionTag, splitRedacted } from "../present";
 import type {
   ActivityType,
   AgentResult,
@@ -146,15 +147,9 @@ export function MessageBubble({
       <p className="message-text">
         {small
           ? `“${excerpt(text)}”`
-          : text
-              .split(/(<[A-Z][A-Z0-9_]*>)/g)
-              .map((part, i) =>
-                /^<[A-Z][A-Z0-9_]*>$/.test(part) ? (
-                  <PrivacyChip key={i} token={part} />
-                ) : (
-                  part
-                ),
-              )}
+          : splitRedacted(text).map((part, i) =>
+              isRedactionTag(part) ? <PrivacyChip key={i} token={part} /> : part,
+            )}
       </p>
       {!small && receivedAt && (
         <span className="metadata">

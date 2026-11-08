@@ -13,10 +13,21 @@ export function activitySummary(result: AgentResult): string {
   return "Your bank activity wasn’t checked for this message.";
 }
 
+/**
+ * A3's redaction tags: `<PERSON>`, `<URL_1>`, `<ACCOUNT_DIGITS>`, and `<PHONE_HASH_2ae6…>`, whose digest is
+ * lowercase hex (a display may shorten it with an ellipsis). The name is uppercase; segments after it may not be.
+ */
+const TAG = "<[A-Z][A-Z0-9]*(?:_[A-Za-z0-9…]+)*>";
+
+export const isRedactionTag = (part: string) => new RegExp(`^${TAG}$`).test(part);
+
+/** Splits redacted text into plain runs and tags, in order, so each tag can render as a chip. */
+export const splitRedacted = (text: string) => text.split(new RegExp(`(${TAG})`, "g")).filter((part) => part !== "");
+
 /** True when `redacted` is the redacted form of this message, not another fixture's text. */
 export function redactionMatches(raw: string, redacted: string): boolean {
   const pieces = redacted
-    .split(/<[A-Z][A-Z0-9_]*>/)
+    .split(new RegExp(TAG))
     .map((part) => part.replace(/\s+/g, " ").trim())
     .filter((part) => part.length >= 12);
   return pieces.length > 0 && pieces.every((part) => raw.includes(part));
