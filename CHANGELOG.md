@@ -43,7 +43,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | L9 | API endpoints and pipeline orchestration | Lavanya | Claude Code | MVP | L3, L8 | todo | #24 |
 | G1 | Gate: scenario 1 end to end in the CLI | Both | any | MVP | A3, A9, A10, A11, L8 | done | #25 · PR #46 (prep), PR #61 |
 | L10 | `public_scam_reports` tool | Arnav | Claude Code | MVP | L4, L5 | todo | #26 |
-| L11 | Recovery mode re-plan | Lavanya | Claude Code | MVP | L8, A11 | todo | #27 |
+| L11 | Recovery mode re-plan | Arnav | Codex | MVP | L8, A11 | in progress | #27 · codex/wrap-up |
 | A14 | Result card, "How we checked" and privacy panel | Arnav | Cursor (covering for Codex design) | MVP | A7 | done | #28 · PR #53 |
 | A15 | Recovery UI | Arnav | Claude Code (covering for Codex design) | MVP | A14 | done | #29 · PR #55 (#54 closed as superseded) |
 | A16 | Consent screen, campaign view and accuracy page | Arnav | Claude Code (covering for Codex design) | MVP | A7 | done | #30 · PR #55 |
@@ -60,6 +60,18 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 ## In progress
 
 <!-- One block per active issue. Copy the template, keep it current at every checkpoint. -->
+
+### L11 Recovery mode re-plan (#27)
+- Agent: Codex (GPT-6) · Person: Arnav · Folder: C:/HackUTD26/.worktrees/wrap-up · Branch: codex/wrap-up
+- Started: 2026-11-07 23:42 · Last checkpoint: 2026-11-07 23:42
+- Done so far: Read specs, handoff and live G1 results; merged #61, #55 and #60 with merge commits; resolved #57's changelog-only conflict without dropping decisions. No existing L11 branch or claim. User authorized wrapping up remaining work.
+- Next step (exact): Derive recovery refs only from successful Nessie tool results; ensure since=message receipt, recovery actions, and local detail resolution. Add real-loop tests. Integrate L9 when its owner finishes it.
+- Files touched: CHANGELOG.md; planned agent recovery module/loop/tests and confirmation route/state.
+- How to run or test: C:/HackUTD26/backend/.venv/Scripts/python.exe -m pytest -q from this worktree's backend.
+- Notes and gotchas: L9 remains actively owned by Lavanya. Never forward payee names or banking detail to Nemotron; no protective action without a tap. Gemini key still missing. Do not close G2/A19/G3 without actual evidence.
+- Resumed by: Codex from unclaimed L11; user-authorized wrap-up.
+
+
 
 
 
