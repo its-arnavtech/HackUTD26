@@ -27,7 +27,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A7 | Phone shell and inbox on the mock API | Arnav | Codex design (GPT 6 Astra) | POC | scaffold | todo | #8 |
 | L1 | Record and replay cache | Lavanya | Claude Code | POC | scaffold | done | #9 · PR #42 |
 | L2 | Core runtime: app factory, settings, logging, errors | Lavanya | Claude Code | POC | scaffold | done | #10 · PR #39 |
-| L3 | State store and background job runner | Lavanya | Claude Code | POC | L2 | todo | #11 |
+| L3 | State store and background job runner | Lavanya | Claude Code | POC | L2 | in progress | #11 · `l3-state-store` |
 | L4 | Gemini grounded search smoke test (Sunday morning, when the Gemini key is set) | Lavanya | Claude Code | POC | scaffold | todo | #12 |
 | A22 | Initial Devpost draft by 11:00 PM Saturday | Arnav | any | POC | none | todo | #13 |
 | A8 | POC gate report | Arnav | Claude Code | POC | A1, A2, A3, A4, L4 | todo | #14 |
@@ -74,7 +74,16 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - Resumed by: <tool> from <tool>, if any
 ```
 
-_None yet._
+### L3 State store and background job runner (#11)
+- Agent: Claude Code (Opus 5.5) · Person: Lavanya · Folder: Lavanya's clone (`HackUTD26`) · Branch: `l3-state-store`
+- Started: 2026-11-07 19:24 · Last checkpoint: 2026-11-07 19:24
+- Done so far:
+  - Claimed; read the issue, DATA_SPEC 3.4 and 5, contracts and `pipeline.py`
+- Next step (exact): write `backend/app/state.py` (in-memory SQLite store + job runner), then wire the non-mock routes in `main.py`
+- Files touched: CHANGELOG.md
+- How to run or test: `cd backend` then `.venv/Scripts/python.exe -m pytest`
+- Notes and gotchas: DATA_SPEC 5 keeps message text in memory only, so SQLite runs as `:memory:`; runner must copy the context so logs keep `message_id`
+- Resumed by:
 
 ---
 
