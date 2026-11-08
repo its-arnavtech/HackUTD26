@@ -17,7 +17,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 | ID | Issue | Owner | Agent | Milestone | Depends on | Status | Branch / PR |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| A21 | Synthetic message dataset generator | Arnav | Claude Code | POC | scaffold | todo | #1 |
+| A21 | Synthetic message dataset generator | Arnav | Claude Code | POC | scaffold | in progress | #1 · `arnav-shared` |
 | A1 | Dataset loader, stratified split and baseline metrics | Arnav | Claude Code | POC | A21 | todo | #2 |
 | A2 | Nessie client and idempotent seed script | Arnav | Claude Code | POC | scaffold | todo | #3 |
 | A3 | Redaction module | Arnav | Claude Code | POC | scaffold | todo | #4 |
@@ -83,6 +83,15 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - How to run or test: From backend, .\.venv\Scripts\python.exe -m pytest
 - Notes and gotchas: cache.py is the L1 stub; use prompt-authorized TODO(L1) until merged. Main venv points at missing uv Python 3.12; installed Python 3.13 available. Never print secrets. API_PORT=8002, WEB_PORT=5176.
 
+### A21 Synthetic message dataset generator (#1)
+- Agent: Claude Code (Opus 5.5) · Person: Arnav · Folder: `C:\HackUTD26-cc` · Branch: `arnav-shared`
+- Started: 2026-11-07 18:40 · Last checkpoint: 2026-11-07 18:40
+- Done so far:
+  - Claimed. Created `.venv` (Python 3.12) in `C:\HackUTD26-cc`.
+- Next step (exact): define the final categories in `data/taxonomy.json`, then write `backend/scripts/generate_dataset.py`.
+- Files touched: `CHANGELOG.md`
+- How to run or test: `cd backend; ..\.venv\Scripts\python -m scripts.generate_dataset`
+- Notes and gotchas: `cache.py` (L1) isn't built yet, so DeepSeek calls are cached by the script itself under `data/generated/cache/`.
 
 ---
 
