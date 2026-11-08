@@ -6,8 +6,9 @@ JSON error handlers and mounts the routes. The module-level `app` is what
 
 Each route serves its mock from `app/mocks/` while `Settings.route_is_mocked()`
 says so (`USE_MOCKS`, `MOCK_ROUTES`, `LIVE_ROUTES`). Otherwise the inbox,
-message, result, clicked and reset routes use L3's state store and job runner
-(the job is `pipeline.pipeline_job`, filled in by L9); the rest raise
+message, result, clicked, reset and privacy routes use L3's state store and job
+runner (the job is `pipeline.pipeline_job`, filled in by L9; privacy is L6's
+`privacy_log.view`); the rest raise
 `NotImplementedYetError` until their issue lands.
 """
 
@@ -23,7 +24,7 @@ from fastapi import APIRouter, Depends, FastAPI, Request
 from pydantic import BaseModel
 
 from app import contracts as c
-from app import mocks
+from app import mocks, privacy_log
 from app.config import ROUTES, Settings, get_settings, integration_modes, validate_settings
 from app.errors import ErrorResponse, NotFoundError, NotImplementedYetError, install_error_handlers
 from app.logs import RequestContextMiddleware, configure_logging
@@ -245,9 +246,10 @@ def post_action(body: c.ActionRequest, settings: SettingsDep) -> c.ActionRespons
 
 
 @router.get("/privacy/{message_id}", response_model=c.PrivacyView)
-def get_privacy(message_id: str, settings: SettingsDep) -> c.PrivacyView:
+def get_privacy(message_id: str, settings: SettingsDep, store: StoreDep) -> c.PrivacyView:
     """What was redacted and exactly what each tool and model received (L6)."""
-    _require_mock(settings, "privacy", "L6")
+    if not settings.route_is_mocked("privacy"):
+        return privacy_log.view(store, message_id)
     _known(message_id)
     return mocks.load("privacy.json").model_copy(update={"message_id": message_id})
 

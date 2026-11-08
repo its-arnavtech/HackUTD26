@@ -34,6 +34,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any
 
+from app import privacy_log
 from app.agent import guardrails, prompts, registry
 from app.agent.registry import PrivacyHook, ToolCall
 from app.contracts import (
@@ -165,6 +166,7 @@ class _Run:
         self.on_call = on_call
 
         self.messages = prompts.build_messages(agent_input)
+        privacy_log.record_model("nemotron", json.loads(self.messages[-1]["content"]))  # L6: exactly what Nemotron gets
         self.step = 0
         self.calls = 0
         self.max_calls = MAX_TOOL_CALLS
@@ -355,6 +357,7 @@ class _Run:
 
     def tool_message(self, pending: _Pending, call: ToolCall) -> None:
         payload = json.dumps(call.to_tool_message(), ensure_ascii=False, default=str)
+        privacy_log.record_tool_result("nemotron", json.loads(payload))  # L6: every result sent back, skipped ones too
         if self.protocol == "json_action" and pending.id.startswith("json_"):
             self.messages.append({"role": "user", "content": json.dumps({"tool": pending.name, "result": json.loads(payload)}, ensure_ascii=False)})
         else:
