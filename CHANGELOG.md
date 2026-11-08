@@ -59,12 +59,12 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | L13 | Full authentication and security pillars | Lavanya | Claude Code | Demo | G2 | in review | #71 · `l14-live-demo` (auth off by default) |
 | L14 | Live demo: System view, check any message, plug into any system, agent tool-call fix | Lavanya | Claude Code | Demo | G2, SYN | in review | `l14-live-demo` · docs/L14_LIVE_DEMO_REVIEW.md |
 | L15 | Agent accuracy, any payment system as agent source, trusted contact, scam waves | Lavanya | Claude Code | Demo | L14, SYN | in review | `l15-agent-eval-and-alerts` · docs/L15_FEATURES_POC.md |
+| L16 | Trusted-contact phone call and email | Arnav | Cursor | Demo | L15 | done | `l16-alert-backend` (no PR; Claude Code merges the UI) |
 | SYN | Synthetic linked scenarios, payment schema, multiclass SMS | Arnav | Cursor | Demo | A21 | done | #72 · cursor/synthetic-linked-scenarios-6119 |
 
 ---
 
 ## In progress
-
 
 ### L13 Full authentication and security pillars (#71)
 - Agent: Claude Code (Opus 5.5) · Person: Lavanya · Folder: `C:\Users\gocomets\Downloads\HackUTD26` · Branch: `sec-auth`
@@ -164,6 +164,8 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 ## Done log
 
+- 2026-11-08 09:38 · L16 · Cursor (Grok 4.7) · no PR (Claude Code merges the frontend) · A tap on alert trusted contact places a Twilio call and, unless a person answers, a plain-text Gmail message. `POST /api/actions` keeps its body and adds `alert`. `GET /api/trusted-contact/alerts/{message_id}` returns it or 404. Flag off and replay simulate. 864 backend tests passed. · follow-ups: Claude Code UI; `AlertStatus` stays in `app/alerts.py`
+
 - 2026-11-08 07:33 · #73 cyberwave redesign · Cursor (Grok 4.7), resumed from Codex (GPT-6 Astra) · #75 · Replaced the phone-stage shell with a Zero Day desk: black and deep violet, electric purple actions, magenta emphasis, cyan for navigation and finished checks, amber only for scam warnings. Editorial headline, selectable redact / investigate / you-decide diagram, nine-section navigation, ledger inbox, and restyled result, evidence, privacy, recovery, patterns, accuracy, and gallery. 68 frontend tests and production build pass. Browser review on the mock API at 1440, 1100, 390, and 320. · follow-up: PR #74’s clay direction is superseded by this pass; wording rules in POC_MVP 4.4 are unchanged.
 
 - 2026-11-08 04:30 · SYN · Cursor (Grok 4.7) · #72 · Seeded generator (no LLM) writes multiclass SMS (200 per taxonomy id, sets A/B, 70/15/15), 32 campaigns, URL/RDAP rows, 320 linked scenarios (40% benign), telecom events, canonical payment schema, six source mappings, and per-scenario Nessie exports. A21 `messages.jsonl`, splits, and eval files were not changed. Datasheet: `data/generated/SYNTHETIC_LINKED_README.md`. Public-set notes: `docs/PUBLIC_DATASETS.md`. 699 backend tests passed.
@@ -229,6 +231,8 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 ---
 
 ## Decisions
+
+- 2026-11-08 09:38 · L16 voice alert. `AlertStatus` is in `app/alerts.py`, not the shared contracts. The words in the call, the voicemail, the email, and `alert_text` are `trusted_contact.alert_text` (the sentence inside `alert_note`). The dialed number and the inbox are `TRUSTED_CONTACT_PHONE` and `TRUSTED_CONTACT_EMAIL` from the environment. The in-memory L15 contact stays masked inside `note` and is not what gets called. `VOICE_ALERTS_ENABLED` defaults to false. With the flag off, or `DEMO_MODE=replay`, nothing is dialed or emailed: after about 3 seconds the status is `no_answer`, `email_sent` true, `simulated` true. A real call emails only when a person did not answer (`voicemail`, `no_answer`, `busy`, `canceled`, `failed`, or a Twilio error). One alert per message every 60 seconds. `GET /api/trusted-contact/alerts/{message_id}` is `messages:read` in L13's route table. That one line in `auth/deps.py` is outside the owned file list: deny-by-default refuses a route that has no rule, including with auth off.
 
 - 2026-11-08 08:20 · PR #76 lands on the Zero Day desk. `/` and the customer routes stay the night desk from PR #75. The live console (system view, check any message, plug into any system, security) is at `/system`, `/customer`, `/r/:id`, `/patterns`, `/connect`, and `/security`. Auth stays off unless `AUTH_ENABLED` is set. #71 stays open.
 

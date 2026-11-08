@@ -71,6 +71,7 @@ ROUTE_PERMISSIONS: dict[tuple[str, str], str] = {
     ("DELETE", "/api/connect/active"): "messages:write",
     ("GET", "/api/agent-metrics"): "metrics:read",
     ("GET", "/api/trusted-contact"): "messages:read",
+    ("GET", "/api/trusted-contact/alerts/{message_id}"): "messages:read",
     ("PUT", "/api/trusted-contact"): "messages:write",
     ("DELETE", "/api/trusted-contact"): "messages:write",
     ("GET", "/api/waves"): "campaigns:read",
