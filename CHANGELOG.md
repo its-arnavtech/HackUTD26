@@ -34,7 +34,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | L5 | Tool registry and runtime | Lavanya | Claude Code | MVP | L2 | todo | #15 |
 | L6 | Privacy audit log and `/api/privacy` | Lavanya | Claude Code | MVP | L3, L5 | todo | #16 |
 | A9 | Feature extraction | Arnav | Codex | MVP | A3 | todo | #17 |
-| A10 | `check_link` and `check_sender` tools | Arnav | Cursor | MVP | L1 | todo | #18 |
+| A10 | `check_link` and `check_sender` tools | Arnav | Cursor | MVP | L1 | done | #18 · PR #43 |
 | A11 | Nessie tools | Arnav | Cursor | MVP | A2 | todo | #19 |
 | A12 | Campaign store, seeding and `match_campaign` | Arnav | Codex | MVP | A1, A3 | todo | #20 |
 | A13 | Evaluation harness | Arnav | Claude Code | MVP | A1 | todo | #21 |
@@ -87,6 +87,7 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 
 - 2026-11-07 19:18 · A1 · Claude Code (Opus 5.5) · #41 · Loader into `Message`, saved 70/15/15 split (`data/generated/splits.json`: train 1,818 / val 390 / test 388, test = `test_v1` + hand-written), baseline keyword rules + TF-IDF + LR; `eval/baseline_metrics.json` test macro F1 0.807, FPR 0.127; `eval/baseline_details.json` adds val, per-subset scores and confusion; 121 tests pass · follow-ups: rescore on redacted text once A3 lands (A13 redaction cost)
 - 2026-11-07 19:07 · A5 · Codex (GPT-6) · #41 · HF login and .env token verified; public SMS 5574 rows downloaded; DistilBERT cached; pinned revisions/checksums; local Bolt 3/5, stopped and documented; full shared backend suite 108 passed · follow-ups: A13/L7 use handoff; local fallback not selected
+- 2026-11-07 18:58 · A10 · Cursor (Claude Opus 5.5, cloud agent) · #43 · `check_link` (look-alike, official domain, shortener, TLD, blocklist, RDAP age) and `check_sender` (official short codes, long codes, sender IDs, email domains) as plain functions; `integrations/rdap.py`; blocklist from a provisional train split; Capital One channels in `brands.json` from its own SMS terms page ; RDAP goes through L1's `cached_call` (a replay miss counts as "lookup not available") · follow-ups: register both specs when L5 merges; point the blocklist builder at A1's split (`data/generated/splits.json` ids, not the `data/splits/train.jsonl` it expects) and rerun `python -m scripts.build_blocklist`
 
 - 2026-11-07 19:00 · A21 · Claude Code (Opus 5.5) · #41 · Taxonomy v1 (8 scam categories + `legit`); DeepSeek generator with separate `train_v1`/`test_v1` prompt sets, cached calls, quality filter, dedupe incl. test-vs-train; 2,596 messages (train_v1 2,208, test_v1 338, hand-written 50), 38% legit; datasheet `data/generated/README.md`; 100 tests pass incl. offline rebuild · follow-ups: hand-written set approved by Arnav; A1 splits per the Decisions entry; mock `metrics.json` says `legitimate`, real id is `legit` (A13)
 - 2026-11-07 19:07 · A4 · Codex (GPT-6) · #41 · Hosted Bolt native 5/5 (median 3082ms, worst 3908ms), JSON fallback also 5/5 (1128ms, 2171ms), embedding 2048D; mocked tests pass · follow-ups: L1 cache and L8 production loop
@@ -109,6 +110,8 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 - 2026-11-07 19:32 · A4/A5 integration after L1 merge: removed scaffold bypasses from Nemotron and HF bootstrap; cached_call now receives the selected DEMO_MODE explicitly. Offline tests verify recording, credential-free replay and strict misses with no network. Local-fallback doc updated; production scenarios still need A19 fixtures. Full merged backend suite: 219 passed; test process clears inherited service credentials because L2 make_settings ignores .env but still reads environment variables (no global or .env changes).
 
 - 2026-11-07 19:25 · A3 P5: local regex redaction with span priorities (whole URLs before embedded emails/phones/digits), occurrence counts, HMAC-SHA256 phone tags truncated to 16 hex chars, and no fixed salt fallback. US phone formatting and extensions normalize to one tag. Known brands/IDs come from data/brands.json; amounts/deadlines and contextual short codes remain. Regex names/addresses are heuristic; redact(text, person_names=...) accepts known customer names locally. Unknown alphanumeric sender values are suppressed to <UNKNOWN_SENDER>. All incoming phone/URL redaction placeholders fail closed: raw text is untrusted, and forged tags must not bypass masking or corrupt A9 URL mapping. raw_urls stays private/in memory; no contract changes.
+- 2026-11-07 18:58 · A10: `data/brands.json` lists only channels found on the brand's own pages. T-Mobile's pages don't publish its texting numbers, so `check_sender` reports `official_channels_known: false` for T-Mobile until a T-Mobile page or mentor confirms them. `check_link` never visits a link (`final_redirect_domain` stays null). The demo scenario domains aren't registered, so live RDAP reports "no registration record found" for them rather than an age.
+- 2026-11-07 18:58 · A10: until A1 saves `data/splits/train.jsonl`, the blocklist is built from `data/provisional/train.jsonl` (18 hand-written synthetic messages, no scenario domains). The builder refuses any file that isn't a train split and switches to A1's split automatically.
 
 - 2026-11-07 19:16 · **Gate P1 baseline (A1):** keyword rules + TF-IDF + logistic regression, fit on train only (1,818), no tuning. Test (388 = `test_v1` 338 + hand-written 50): **macro F1 0.807, FPR 0.127** (legit messages flagged as scam), scam recall 0.882. Validation: macro F1 0.898, FPR 0.054. Macro F1 is well under 0.97, so no P1 pivot: the accuracy story is "beat the baseline per category and cut false alarms". Weakest categories on test: `bank_impersonation` 0.64, `conversation_lure` 0.70, `account_security` 0.75. Raw text (A3 redaction not built yet). Split saved in `data/generated/splits.json`; L7 and A13 must use it.
 
@@ -145,5 +148,5 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 ## Blockers and open questions
 
 - Gemini key arrives Sunday morning; L4 and L10 wait for it.
-- Official short codes and sender IDs for the demo brands: fill `data/brands.json` from the brands' own pages (A10).
+- T-Mobile's official texting short codes: not published on T-Mobile's pages (checked 2026-11-07). Ask a T-Mobile mentor, then fill `data/brands.json` (A10 follow-up).
 - Taxonomy: ours (v1) is in `data/taxonomy.json` (A21). If a mentor shares T-Mobile's, map it and regenerate.

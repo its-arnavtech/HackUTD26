@@ -1,18 +1,43 @@
 {
+  "_note": "Official channels come only from each brand's own pages, checked by hand. Leave a list empty rather than guess. brand_terms are lowercase strings that, inside a non-official domain, suggest impersonation (check_link).",
   "brands": [
     {
       "name": "Capital One",
+      "aliases": ["capital one", "capitalone", "capital one bank"],
+      "brand_terms": ["capitalone", "capital-one", "capone"],
       "official_domains": ["capitalone.com"],
-      "official_short_codes": [],
+      "official_short_codes": ["227898", "227767", "227373", "22767", "61869", "80101"],
+      "official_long_codes": ["+18009460332"],
       "official_sender_ids": [],
-      "_todo": "A10: fill official_short_codes and official_sender_ids from Capital One's own pages and check them by hand. Don't invent them."
+      "sources": [
+        {
+          "url": "https://www.capitalone.com/digital/sms-terms/",
+          "checked": "2026-11-07",
+          "says": "Account servicing and fraud alerts from 227898, 227767 and 227373; auto finance from +1 (800) 946-0332, 227898 and 22767; bank account servicing from 61869; app download from 80101. Page last modified 02/09/2026."
+        }
+      ]
     },
     {
       "name": "T-Mobile",
+      "aliases": ["t-mobile", "tmobile", "t mobile"],
+      "brand_terms": ["tmobile", "t-mobile"],
       "official_domains": ["t-mobile.com"],
       "official_short_codes": [],
+      "official_long_codes": [],
       "official_sender_ids": [],
-      "_todo": "A10: fill official_short_codes and official_sender_ids from T-Mobile's own pages and check them by hand. Don't invent them."
+      "sources": [
+        {
+          "url": "https://www.t-mobile.com/privacy-center/education/online-safety-cybersecurity",
+          "checked": "2026-11-07",
+          "says": "T-Mobile never asks you to confirm sensitive information in an unsolicited text; forward suspicious texts to 7726 (that number is for reporting, not a sender). The page doesn't list the numbers T-Mobile texts from."
+        },
+        {
+          "url": "https://www.t-mobile.com/responsibility/consumer-info/additional-info/avoiding-bill-shock",
+          "checked": "2026-11-07",
+          "says": "Usage and roaming alerts arrive as free T-Mobile text messages; the #646#, #674#, #932# and #225# codes are dialed by the customer, not senders. No sending short codes are listed."
+        }
+      ],
+      "_todo": "T-Mobile's own pages checked on 2026-11-07 don't publish its sending short codes. Fill official_short_codes only if a T-Mobile page or mentor confirms them."
     }
   ]
 }
