@@ -107,6 +107,8 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 ## Done log
 
+- 2026-11-08 00:34 · A18 follow-up / L9 CI unblock · Codex (GPT-6) · PR pending · Recovery tests clear the prior callback and wait for the current poller before sending a fake result; fixes CI race seen in #65 while preserving A17 application code; 50 frontend tests and build pass.
+
 - 2026-11-08 00:06 · A18 · Codex (GPT-6), resumed Claude Code · #64 · All three real-agent authored scenarios now required in socket-blocked replay; 31 service recordings; Playwright inbox/result/trail/privacy smoke and browser CI; 617 backend passed with no skips, 49 frontend tests/build, Chromium pass · follow-ups: G2 app recordings and A19 backup video still pending L9/A17; CLI profile deliberately uses real A1 baseline, public search unavailable.
 
 - 2026-11-07 23:55 · L11 · Codex (GPT-6) · #63 · Mandatory read-only activity check after /clicked, verified Nessie refs even if Nemotron omits them or later fails, local detail hydration, current-run customer confirmations, recovery checklist actions; full backend 601 passed/30 expected fixture skips plus final API test (10 recovery tests pass) · follow-ups: L9 live pipeline integration and G2/A19 replay proof remain separate.
