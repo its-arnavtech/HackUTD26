@@ -486,6 +486,18 @@ def test_classifier_disagreement_applied_in_the_loop():
     assert "disagreed" in trail[-1].why
 
 
+def test_weak_legit_score_does_not_override_verified_evidence():
+    """L15, seen live: a PayPal look-alike scam scored legit 0.65; it must not be forced to unsure."""
+    weak = LEGIT_CLASSIFIER.model_copy(update={"score": 0.65, "top3": [("legit", 0.65)]})
+    chat = FakeChat(tools_turn(("check_link", {"url_id": "URL_1"}), ("check_sender", {"claimed_brand": "Capital One"})), final_turn(GOOD_FINAL))
+    res, _ = run(chat, agent_input=INPUT.model_copy(update={"classifier": weak}))
+    assert res.verdict == c.Verdict.likely_scam
+    confident = LEGIT_CLASSIFIER.model_copy(update={"score": 0.85, "top3": [("legit", 0.85)]})
+    chat = FakeChat(tools_turn(("check_link", {"url_id": "URL_1"}), ("check_sender", {"claimed_brand": "Capital One"})), final_turn(GOOD_FINAL))
+    res, _ = run(chat, agent_input=INPUT.model_copy(update={"classifier": confident}))
+    assert res.verdict == c.Verdict.unsure  # a confident "legit" still means mixed signals
+
+
 def test_runs_through_the_real_registry_and_tool():
     """Default `call_tool` and schemas: the L5 registry with A10's real check_sender (local, no network)."""
     chat = FakeChat(tools_turn(("check_sender", {"claimed_brand": "Capital One"})), final_turn({**GOOD_FINAL, "confidence_words": "likely"}))

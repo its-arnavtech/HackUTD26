@@ -1,0 +1,382 @@
+{
+  "_note": "Companies added for typed-message checks (L15). Official websites are each company's own domain; sending short codes are left empty because they were not verified on the brand's own pages. Kept separate from brands.json on purpose: the campaign matcher (A12) and redaction keep using brands.json only, so campaign calibration and the recorded demo replays stay valid.",
+  "brands": [
+    {
+      "name": "Verizon",
+      "aliases": [
+        "verizon",
+        "verizon wireless"
+      ],
+      "brand_terms": [
+        "verizon"
+      ],
+      "official_domains": [
+        "verizon.com",
+        "vzw.com"
+      ],
+      "official_short_codes": [],
+      "official_long_codes": [],
+      "official_sender_ids": [],
+      "sources": [
+        {
+          "url": "https://www.verizon.com/",
+          "checked": "2026-11-08",
+          "says": "Official website is the company's own domain. Sending short codes not verified, so left empty."
+        }
+      ]
+    },
+    {
+      "name": "Chase",
+      "aliases": [
+        "chase",
+        "chase bank",
+        "jpmorgan chase"
+      ],
+      "brand_terms": [
+        "chase",
+        "jpmorganchase"
+      ],
+      "official_domains": [
+        "chase.com"
+      ],
+      "official_short_codes": [],
+      "official_long_codes": [],
+      "official_sender_ids": [],
+      "sources": [
+        {
+          "url": "https://www.chase.com/",
+          "checked": "2026-11-08",
+          "says": "Official website is the company's own domain. Sending short codes not verified, so left empty."
+        }
+      ]
+    },
+    {
+      "name": "Wells Fargo",
+      "aliases": [
+        "wells fargo",
+        "wellsfargo"
+      ],
+      "brand_terms": [
+        "wellsfargo",
+        "wells-fargo"
+      ],
+      "official_domains": [
+        "wellsfargo.com"
+      ],
+      "official_short_codes": [],
+      "official_long_codes": [],
+      "official_sender_ids": [],
+      "sources": [
+        {
+          "url": "https://www.wellsfargo.com/",
+          "checked": "2026-11-08",
+          "says": "Official website is the company's own domain. Sending short codes not verified, so left empty."
+        }
+      ]
+    },
+    {
+      "name": "PayPal",
+      "aliases": [
+        "paypal",
+        "pay pal"
+      ],
+      "brand_terms": [
+        "paypal",
+        "paypa1"
+      ],
+      "official_domains": [
+        "paypal.com"
+      ],
+      "official_short_codes": [],
+      "official_long_codes": [],
+      "official_sender_ids": [],
+      "sources": [
+        {
+          "url": "https://www.paypal.com/",
+          "checked": "2026-11-08",
+          "says": "Official website is the company's own domain. Sending short codes not verified, so left empty."
+        }
+      ]
+    },
+    {
+      "name": "Amazon",
+      "aliases": [
+        "amazon",
+        "amazon.com"
+      ],
+      "brand_terms": [
+        "amazon",
+        "amzn"
+      ],
+      "official_domains": [
+        "amazon.com"
+      ],
+      "official_short_codes": [],
+      "official_long_codes": [],
+      "official_sender_ids": [],
+      "sources": [
+        {
+          "url": "https://www.amazon.com/",
+          "checked": "2026-11-08",
+          "says": "Official website is the company's own domain. Sending short codes not verified, so left empty."
+        }
+      ]
+    },
+    {
+      "name": "Apple",
+      "aliases": [
+        "apple",
+        "apple id",
+        "icloud"
+      ],
+      "brand_terms": [
+        "apple",
+        "appleid",
+        "icloud"
+      ],
+      "official_domains": [
+        "apple.com",
+        "icloud.com"
+      ],
+      "official_short_codes": [],
+      "official_long_codes": [],
+      "official_sender_ids": [],
+      "sources": [
+        {
+          "url": "https://www.apple.com/",
+          "checked": "2026-11-08",
+          "says": "Official website is the company's own domain. Sending short codes not verified, so left empty."
+        }
+      ]
+    },
+    {
+      "name": "Google",
+      "aliases": [
+        "google",
+        "gmail"
+      ],
+      "brand_terms": [
+        "google",
+        "gmail"
+      ],
+      "official_domains": [
+        "google.com"
+      ],
+      "official_short_codes": [],
+      "official_long_codes": [],
+      "official_sender_ids": [],
+      "sources": [
+        {
+          "url": "https://www.google.com/",
+          "checked": "2026-11-08",
+          "says": "Official website is the company's own domain. Sending short codes not verified, so left empty."
+        }
+      ]
+    },
+    {
+      "name": "Microsoft",
+      "aliases": [
+        "microsoft",
+        "outlook",
+        "office 365"
+      ],
+      "brand_terms": [
+        "microsoft",
+        "outlook",
+        "office365"
+      ],
+      "official_domains": [
+        "microsoft.com",
+        "live.com",
+        "outlook.com"
+      ],
+      "official_short_codes": [],
+      "official_long_codes": [],
+      "official_sender_ids": [],
+      "sources": [
+        {
+          "url": "https://www.microsoft.com/",
+          "checked": "2026-11-08",
+          "says": "Official website is the company's own domain. Sending short codes not verified, so left empty."
+        }
+      ]
+    },
+    {
+      "name": "Netflix",
+      "aliases": [
+        "netflix"
+      ],
+      "brand_terms": [
+        "netflix"
+      ],
+      "official_domains": [
+        "netflix.com"
+      ],
+      "official_short_codes": [],
+      "official_long_codes": [],
+      "official_sender_ids": [],
+      "sources": [
+        {
+          "url": "https://www.netflix.com/",
+          "checked": "2026-11-08",
+          "says": "Official website is the company's own domain. Sending short codes not verified, so left empty."
+        }
+      ]
+    },
+    {
+      "name": "Walmart",
+      "aliases": [
+        "walmart"
+      ],
+      "brand_terms": [
+        "walmart"
+      ],
+      "official_domains": [
+        "walmart.com"
+      ],
+      "official_short_codes": [],
+      "official_long_codes": [],
+      "official_sender_ids": [],
+      "sources": [
+        {
+          "url": "https://www.walmart.com/",
+          "checked": "2026-11-08",
+          "says": "Official website is the company's own domain. Sending short codes not verified, so left empty."
+        }
+      ]
+    },
+    {
+      "name": "Target",
+      "aliases": [
+        "target"
+      ],
+      "brand_terms": [
+        "target"
+      ],
+      "official_domains": [
+        "target.com"
+      ],
+      "official_short_codes": [],
+      "official_long_codes": [],
+      "official_sender_ids": [],
+      "sources": [
+        {
+          "url": "https://www.target.com/",
+          "checked": "2026-11-08",
+          "says": "Official website is the company's own domain. Sending short codes not verified, so left empty."
+        }
+      ]
+    },
+    {
+      "name": "UPS",
+      "aliases": [
+        "ups"
+      ],
+      "brand_terms": [
+        "ups"
+      ],
+      "official_domains": [
+        "ups.com"
+      ],
+      "official_short_codes": [],
+      "official_long_codes": [],
+      "official_sender_ids": [],
+      "sources": [
+        {
+          "url": "https://www.ups.com/",
+          "checked": "2026-11-08",
+          "says": "Official website is the company's own domain. Sending short codes not verified, so left empty."
+        }
+      ]
+    },
+    {
+      "name": "FedEx",
+      "aliases": [
+        "fedex"
+      ],
+      "brand_terms": [
+        "fedex"
+      ],
+      "official_domains": [
+        "fedex.com"
+      ],
+      "official_short_codes": [],
+      "official_long_codes": [],
+      "official_sender_ids": [],
+      "sources": [
+        {
+          "url": "https://www.fedex.com/",
+          "checked": "2026-11-08",
+          "says": "Official website is the company's own domain. Sending short codes not verified, so left empty."
+        }
+      ]
+    },
+    {
+      "name": "USPS",
+      "aliases": [
+        "usps",
+        "us postal service"
+      ],
+      "brand_terms": [
+        "usps"
+      ],
+      "official_domains": [
+        "usps.com"
+      ],
+      "official_short_codes": [],
+      "official_long_codes": [],
+      "official_sender_ids": [],
+      "sources": [
+        {
+          "url": "https://www.usps.com/",
+          "checked": "2026-11-08",
+          "says": "Official website is the company's own domain. Sending short codes not verified, so left empty."
+        }
+      ]
+    },
+    {
+      "name": "LinkedIn",
+      "aliases": [
+        "linkedin"
+      ],
+      "brand_terms": [
+        "linkedin"
+      ],
+      "official_domains": [
+        "linkedin.com"
+      ],
+      "official_short_codes": [],
+      "official_long_codes": [],
+      "official_sender_ids": [],
+      "sources": [
+        {
+          "url": "https://www.linkedin.com/",
+          "checked": "2026-11-08",
+          "says": "Official website is the company's own domain. Sending short codes not verified, so left empty."
+        }
+      ]
+    },
+    {
+      "name": "Indeed",
+      "aliases": [
+        "indeed"
+      ],
+      "brand_terms": [
+        "indeed"
+      ],
+      "official_domains": [
+        "indeed.com"
+      ],
+      "official_short_codes": [],
+      "official_long_codes": [],
+      "official_sender_ids": [],
+      "sources": [
+        {
+          "url": "https://www.indeed.com/",
+          "checked": "2026-11-08",
+          "says": "Official website is the company's own domain. Sending short codes not verified, so left empty."
+        }
+      ]
+    }
+  ]
+}

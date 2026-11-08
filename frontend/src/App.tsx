@@ -8,7 +8,7 @@ import Connect from "./console/Connect";
 import Console, { ResultPage } from "./console/Console";
 import { PatternsPage, SecurityPage } from "./console/Pages";
 import SystemView from "./console/SystemView";
-import { AgentAccuracyPage, WavesPage } from "./console/features";
+import { AgentAccuracyPage, ModelAccuracyPage, WavesPage } from "./console/features";
 import { PrivacyCenterPage } from "./console/protection";
 import { useHealth } from "./hooks";
 import {
@@ -369,6 +369,7 @@ export default function App() {
       <Route path="/patterns" element={<AuthGate><PatternsPage /></AuthGate>} />
       <Route path="/connect" element={<AuthGate><Connect /></AuthGate>} />
       <Route path="/agent-accuracy" element={<AuthGate><AgentAccuracyPage /></AuthGate>} />
+      <Route path="/model-accuracy" element={<AuthGate><ModelAccuracyPage /></AuthGate>} />
       <Route path="/waves" element={<AuthGate><WavesPage /></AuthGate>} />
       <Route path="/privacy-center" element={<AuthGate><PrivacyCenterPage /></AuthGate>} />
       <Route path="/security" element={<SecurityPage />} />

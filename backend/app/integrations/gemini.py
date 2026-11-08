@@ -55,8 +55,9 @@ def _hostname(value: str) -> str:
 
 
 def _source(host: str, brand: str) -> SourceType:
-    brands = json.loads((DATA_DIR / "brands.json").read_text(encoding="utf-8"))["brands"]
-    official = next((b.get("official_domains", []) for b in brands if b["name"] == brand), [])
+    from app.tools.brands import load_brands  # core + brands_extra.json (L15)
+
+    official = next((b.official_domains for b in load_brands() if b.name == brand), [])
     if any(host == domain or host.endswith("."+domain) for domain in official):
         return SourceType.official
     if host.endswith(".gov"):

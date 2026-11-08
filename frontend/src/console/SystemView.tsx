@@ -26,7 +26,7 @@ import type { InboxItem, PrivacyView, ResultPoll } from "../types";
 import { Shell } from "./Shell";
 import { toolTitles } from "./timeline";
 import { ActiveSourceNote, TrustedContactCard, WaveNotice, useActiveSource } from "./features";
-import { InterruptionCard, MemoryCard, NextSteps, RiskSummary } from "./protection";
+import { IncomingAlert, InterruptionCard, LinkSenderPanel, MemoryCard, NextSteps, RiskSummary } from "./protection";
 
 // ---------------------------------------------------------------------------
 // Agent transcript (GET /api/messages/{id}/agent, local L14 endpoint)
@@ -380,7 +380,7 @@ async function getSamples(category: string): Promise<{ categories: string[]; sam
   return res.json();
 }
 
-function CheckAnyMessage({ busy, onCheck }: { busy: boolean; onCheck: (text: string, sender: string, truth?: Truth) => void }) {
+function CheckAnyMessage({ busy, onCheck }: { busy: boolean; onCheck: (text: string, sender: string, truth?: Truth, incoming?: boolean) => void }) {
   const [text, setText] = useState("");
   const [sender, setSender] = useState("");
   const [category, setCategory] = useState("");
@@ -394,17 +394,17 @@ function CheckAnyMessage({ busy, onCheck }: { busy: boolean; onCheck: (text: str
       .catch(() => undefined);
   }, []);
 
-  const surprise = async () => {
+  const surprise = async (incoming = false) => {
     setProblem(undefined);
     try {
-      const { samples } = await getSamples(category);
+      const { samples } = await getSamples(incoming ? "" : category);
       const s = samples[0];
       if (!s) return;
       const t = { category: s.category, is_scam: s.truth.is_scam, source: s.scenario_id };
       setText(s.text);
       setSender(s.sender);
       setTruth(t);
-      onCheck(s.text, s.sender, t); // run it right away: a fresh message for every judge
+      onCheck(s.text, s.sender, t, incoming); // run it right away: a fresh message for every judge
     } catch {
       setProblem("Could not load a sample message.");
     }
@@ -451,6 +451,9 @@ function CheckAnyMessage({ busy, onCheck }: { busy: boolean; onCheck: (text: str
               Surprise me
             </button>
           </div>
+          <button className="cx-button" disabled={busy} onClick={() => void surprise(true)}>
+            Simulate an incoming text
+          </button>
           {problem && <p className="cx-alert">{problem}</p>}
         </div>
       </div>
@@ -491,6 +494,7 @@ export default function SystemView() {
   const [busy, setBusy] = useState(false);
   const [truth, setTruth] = useState<Truth>();
   const [autoClick, setAutoClick] = useState(false);
+  const [incoming, setIncoming] = useState(false);
   const seen = useRef<Set<string> | null>(null);
 
   const load = useCallback(async () => {
@@ -531,9 +535,10 @@ export default function SystemView() {
       setBusy(false);
     }
   };
-  const open = (id: string, opts: { truth?: Truth; autoClick?: boolean } = {}) => {
+  const open = (id: string, opts: { truth?: Truth; autoClick?: boolean; incoming?: boolean } = {}) => {
     seen.current?.add(id);
     setTruth(opts.truth);
+    setIncoming(Boolean(opts.incoming));
     setAutoClick(Boolean(opts.autoClick));
     setSelected(id);
     setVersion((v) => v + 1);
@@ -576,11 +581,11 @@ export default function SystemView() {
       <WaveNotice />
       <CheckAnyMessage
         busy={busy}
-        onCheck={(text, sender, t) =>
+        onCheck={(text, sender, t, isIncoming) =>
           void run(async () => {
             const { message_id } = await postMessage({ text, sender, received_at: new Date().toISOString() });
             await load();
-            open(message_id, { truth: t });
+            open(message_id, { truth: t, incoming: isIncoming });
           })
         }
       />
@@ -590,6 +595,8 @@ export default function SystemView() {
         busy={busy}
         truth={truth}
         autoClick={autoClick}
+        incoming={incoming}
+        onDismissIncoming={() => setIncoming(false)}
         onClicked={() =>
           void run(async () => {
             if (!selected) return;
@@ -609,12 +616,16 @@ function SystemBody({
   busy,
   truth,
   autoClick = false,
+  incoming = false,
+  onDismissIncoming,
 }: {
   message?: InboxItem;
   onClicked: () => void;
   busy: boolean;
   truth?: Truth;
   autoClick?: boolean;
+  incoming?: boolean;
+  onDismissIncoming?: () => void;
 }) {
   const { poll, privacy, agent } = useSystem(message);
   const clicked = useRef(false);
@@ -635,7 +646,18 @@ function SystemBody({
       </div>
       <TruthBadge truth={truth} poll={poll} />
       <Outcome message={message} poll={poll} onClicked={onClicked} busy={busy} />
+      {incoming && (
+        <IncomingAlert
+          poll={poll}
+          onView={() => {
+            document.querySelector(".sx-risk, .sx-outcome")?.scrollIntoView({ behavior: "smooth", block: "start" });
+            onDismissIncoming?.();
+          }}
+          onDismiss={() => onDismissIncoming?.()}
+        />
+      )}
       <RiskSummary poll={poll} privacy={privacy} />
+      <LinkSenderPanel poll={poll} privacy={privacy} />
       <InterruptionCard poll={poll} privacy={privacy} />
       <NextSteps key={`steps-${message?.message_id}-${poll?.mode}`} message={message} poll={poll} />
       <TrustedContactCard key={`${message?.message_id}-${poll?.mode}`} message={message} poll={poll} />

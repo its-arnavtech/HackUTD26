@@ -50,12 +50,20 @@ def _normalize_host(value: str) -> str:
         return idna.encode(value, uts46=True, std3_rules=True).decode("ascii").lower()
 
 
-@lru_cache(maxsize=1)
-def _brands() -> tuple[_Brand, ...]:
-    """Project registry only; restart the process after registry changes."""
+@lru_cache(maxsize=2)
+def _brands(include_extra: bool = False) -> tuple[_Brand, ...]:
+    """Project registry; restart the process after registry changes.
+
+    `include_extra` adds `brands_extra.json` (L15) for brand detection on new messages. The
+    campaign matcher and URL fingerprints use the core registry only, so A12's calibration holds.
+    """
     data = json.loads((DATA_DIR / "brands.json").read_text(encoding="utf-8"))
+    rows = list(data["brands"])
+    extra_path = DATA_DIR / "brands_extra.json"
+    if include_extra and extra_path.exists():
+        rows += json.loads(extra_path.read_text(encoding="utf-8"))["brands"]
     result = []
-    for row in data["brands"]:
+    for row in rows:
         name = row["name"]
         domains = tuple(_normalize_host(value) for value in row.get("official_domains", []))
         aliases = (*_ALIASES.get(name, ()), *row.get("aliases", []))
@@ -70,9 +78,18 @@ def _brands() -> tuple[_Brand, ...]:
     return tuple(result)
 
 
-def detect_claimed_brand(text_redacted: str) -> str | None:
-    """First registry-name/alias mention in the redacted body, not in a URL."""
-    mentions = [(match.start(), index, brand.name) for index, brand in enumerate(_brands())
+def _at_label_start(term: str, host: str) -> bool:
+    """`term` begins at the start of the host or right after "." or "-" (L15: no "chase" in "purchase")."""
+    return re.search(r"(?:^|[.\-])" + re.escape(term), host) is not None
+
+
+def detect_claimed_brand(text_redacted: str, *, core_only: bool = False) -> str | None:
+    """First registry-name/alias mention in the redacted body, not in a URL.
+
+    New messages are checked against core + extra brands (L15); the campaign matcher passes
+    `core_only=True` so its fingerprints match what it was calibrated on.
+    """
+    mentions = [(match.start(), index, brand.name) for index, brand in enumerate(_brands(not core_only))
                 if (match := brand.mention.search(text_redacted)) is not None]
     return min(mentions)[2] if mentions else None
 
@@ -116,17 +133,18 @@ def extract_urls(redacted: RedactedMessage) -> list[UrlInfo]:
     if tags != [str(i) for i in range(1, len(redacted.raw_urls) + 1)]:
         raise ValueError("URL placeholders do not match the private URL list")
     brands = _brands()
-    claimed = detect_claimed_brand(redacted.text_redacted)
+    claimed = detect_claimed_brand(redacted.text_redacted, core_only=True)
     relevant = [brand for brand in brands if claimed is None or brand.name == claimed]
     output = []
     for index, raw_url in enumerate(redacted.raw_urls, start=1):
         host = _url_host(raw_url)
         domain = _registered_domain(host)
         terms = sorted({term for brand in brands for term in brand.terms}, key=lambda term: (-len(term), term))
-        brand_term = next((term for term in terms if term in host), None)
+        brand_term = next((term for term in terms if _at_label_start(term, host)), None)
         if brand_term is None:
+            # Hyphen-free fallback ("capital-one" written "capitalone") only for long, distinctive terms.
             compact_host = re.sub(r"[.-]", "", host)
-            brand_term = next((term for term in terms if term.replace("-", "") in compact_host), None)
+            brand_term = next((term for term in terms if len(term) >= 7 and term.replace("-", "") in compact_host), None)
         official = any(host == allowed or host.endswith("." + allowed)
                        for brand in relevant for allowed in brand.domains)
         output.append(UrlInfo(id=f"URL_{index}", registered_domain=domain,

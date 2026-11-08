@@ -67,12 +67,16 @@ def _overlap(start: int, end: int, spans: Sequence[tuple[int, int]]) -> bool:
     return any(start < right and end > left for left, right in spans)
 
 
-@lru_cache(maxsize=1)
-def _brand_data() -> tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]:
+@lru_cache(maxsize=2)
+def _brand_data(include_extra: bool = True) -> tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]:
     """Only project-maintained brand metadata; never derive it from test rows."""
     data = json.loads((DATA_DIR / "brands.json").read_text(encoding="utf-8"))
+    rows = list(data["brands"])
+    extra = DATA_DIR / "brands_extra.json"  # L15: so "Wells Fargo" is kept as a brand, not hidden as a name
+    if include_extra and extra.exists():
+        rows += json.loads(extra.read_text(encoding="utf-8"))["brands"]
     names, short_codes, sender_ids = [], [], []
-    for brand in data["brands"]:
+    for brand in rows:
         names.append(brand["name"])
         short_codes.extend(brand.get("official_short_codes", []))
         sender_ids.extend(brand.get("official_sender_ids", []))
@@ -131,7 +135,7 @@ def _person_span(text: str, start: int, end: int, *, contextual: bool) -> tuple[
     return start + kept[0].start(), right
 
 
-def redact(text: str, *, person_names: Sequence[str] = ()) -> RedactedMessage:
+def redact(text: str, *, person_names: Sequence[str] = (), core_brands_only: bool = False) -> RedactedMessage:
     """Redact locally and count replaced occurrences, resolving overlapping spans.
 
     person_names optionally supplies customer names already known locally. It
@@ -142,7 +146,7 @@ def redact(text: str, *, person_names: Sequence[str] = ()) -> RedactedMessage:
     """
     if re.search(r"<(?:PHONE_HASH_[^>]*|URL_\d+)>", text):
         raise ValueError("Pre-redacted URL/phone tags are not valid raw message input")
-    brands, public_codes, _ = _brand_data()
+    brands, public_codes, _ = _brand_data(not core_brands_only)
     tags = [match.span() for match in _TAG.finditer(text)]
     brand_spans = _literal_spans(text, brands)
     amount_spans = [match.span() for match in _AMOUNT.finditer(text)]

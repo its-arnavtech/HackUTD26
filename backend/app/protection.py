@@ -31,8 +31,10 @@ BRANDS = DATA_DIR / "brands.json"
 @lru_cache(maxsize=1)
 def _brands() -> dict[str, dict[str, Any]]:
     data = json.loads(BRANDS.read_text(encoding="utf-8")) if BRANDS.exists() else {"brands": []}
+    extra = DATA_DIR / "brands_extra.json"
+    rows = list(data.get("brands", [])) + (json.loads(extra.read_text(encoding="utf-8"))["brands"] if extra.exists() else [])
     out: dict[str, dict[str, Any]] = {}
-    for b in data.get("brands", []):
+    for b in rows:
         for name in [b["name"], *b.get("aliases", [])]:
             out[name.strip().lower()] = b
     return out

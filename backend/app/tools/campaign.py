@@ -142,7 +142,8 @@ def fingerprint(agent_input: AgentInput) -> dict[str, str]:
         raise ValueError("Unknown campaign category")
     # Only registry brand names can enter persistent metadata, never arbitrary
     # sender/model-provided free text.
-    brand = detect_claimed_brand(agent_input.sender.claimed_brand or "") or detect_claimed_brand(agent_input.text_redacted) or ""
+    brand = (detect_claimed_brand(agent_input.sender.claimed_brand or "", core_only=True)
+             or detect_claimed_brand(agent_input.text_redacted, core_only=True) or "")
     canonical, tokens = _wording(agent_input.text_redacted, brand)
     return asdict(Fingerprint(_event_hash(agent_input.message_id), _domain_pattern(agent_input),
                              hashlib.sha256(canonical.encode("utf-8")).hexdigest(), _simhash(tokens) + _semantic_signature(agent_input), brand,
@@ -228,8 +229,8 @@ def message_input(message: Message) -> AgentInput:
     """Local bootstrap adapter; known dataset labels are metadata, not predictions."""
     if message.received_at is None or message.category not in _taxonomy():
         raise ValueError("Campaign input needs a timestamp and known category")
-    redacted = redact(message.text)
-    brand = detect_claimed_brand(redacted.text_redacted)
+    redacted = redact(message.text, core_brands_only=True)  # calibrated on the core brand registry
+    brand = detect_claimed_brand(redacted.text_redacted, core_only=True)
     return AgentInput(message_id=message.message_id, mode="check", received_at=message.received_at,
                       sender={"type": "unknown", "value": "<UNKNOWN_SENDER>", "claimed_brand": brand},
                       text_redacted=redacted.text_redacted, urls=extract_urls(redacted), features=extract_features(redacted.text_redacted),

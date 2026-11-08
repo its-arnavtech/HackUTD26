@@ -1264,3 +1264,32 @@
   background: var(--cx-accent);
   transition: width 200ms;
 }
+
+/* L15d incoming alert: a phone-style notification, existing tokens only */
+.sx-toast {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 30;
+  width: min(380px, calc(100vw - 32px));
+  display: grid;
+  gap: 6px;
+  padding: 14px 16px;
+  background: var(--cx-surface);
+  border: 1px solid var(--cx-line);
+  border-left: 4px solid var(--cx-accent);
+  border-radius: var(--cx-radius);
+  box-shadow: var(--cx-shadow);
+  animation: cx-in 200ms ease-out both;
+}
+.sx-toast-likely_scam {
+  border-left-color: var(--cx-scam);
+}
+.sx-toast-likely_safe {
+  border-left-color: var(--cx-safe);
+}
+@media (prefers-reduced-motion: reduce) {
+  .sx-toast {
+    animation: none;
+  }
+}

@@ -36,7 +36,9 @@ def lure_phrase_for(scam_category: str) -> str:
 
 def build_gemini_input(args: PublicScamReportsArgs) -> GeminiInput:
     """The only data Gemini gets. (L10)"""
-    brands = {brand["name"] for brand in json.loads((DATA_DIR / "brands.json").read_text(encoding="utf-8"))["brands"]}
+    from app.tools.brands import load_brands  # core + brands_extra.json (L15)
+
+    brands = {brand.name for brand in load_brands()}
     if args.claimed_brand not in brands | {"Unknown brand"}:
         raise ValueError("Unknown claimed brand")
     domain = args.link_domain

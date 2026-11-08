@@ -43,13 +43,20 @@ def _official_owner(domain: str, brands: tuple[Brand, ...]) -> Optional[Brand]:
     return None
 
 
+def _at_start(term: str, label: str) -> bool:
+    import re
+
+    return bool(term) and re.search(r"(?:^|-)" + re.escape(term), label) is not None
+
+
 def _lookalike(label: str, url: UrlInfo, brands: tuple[Brand, ...]) -> tuple[Optional[Brand], Optional[str]]:
     """The brand a non-official domain imitates and the brand term found, if any."""
     raw = label.lower()
     normalized = normalize_label(label)
     for brand in brands:
         for term in brand.brand_terms:
-            if term in raw or normalize_label(term) in normalized:
+            # Only at the start of the label or after "-" (L15: no "chase" in "purchase").
+            if _at_start(term, raw) or _at_start(normalize_label(term), normalized):
                 return brand, term
     for brand in brands:
         for official in brand.official_domains:

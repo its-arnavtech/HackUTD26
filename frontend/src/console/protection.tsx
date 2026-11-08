@@ -410,3 +410,137 @@ export function NextSteps({ message, poll }: { message?: InboxItem; poll?: Resul
     </section>
   );
 }
+
+// ---------------------------------------------------------------------------
+// Link and sender safety: exactly what the checks found. Links are never clickable.
+// ---------------------------------------------------------------------------
+
+interface LinkResult {
+  domain?: string;
+  domain_age_days?: number | null;
+  on_blocklist?: boolean;
+  lookalike_of?: string | null;
+  final_redirect_domain?: string | null;
+  signals?: string[];
+}
+interface SenderResult {
+  sender_type?: string;
+  matches_official_channel?: boolean;
+  official_channels_known?: boolean;
+  note?: string;
+}
+interface RawTool {
+  ok: boolean;
+  tool: string;
+  result?: LinkResult & SenderResult;
+}
+
+export function LinkSenderPanel({ poll, privacy }: { poll?: ResultPoll; privacy?: PrivacyView }) {
+  if (poll?.status !== "done") return null;
+  const results = (privacy?.recipients.find((r) => r.recipient === "nemotron")?.payload?.tool_results as RawTool[] | undefined) ?? [];
+  const link = results.find((r) => r.tool === "check_link");
+  const sender = results.find((r) => r.tool === "check_sender");
+  if (!link && !sender) return null;
+  const l = link?.result;
+  const s = sender?.result;
+  return (
+    <section className="cx-card sx-trusted" aria-label="Link and sender safety">
+      <div className="cx-row-top">
+        <ShieldCheck size={16} aria-hidden="true" />
+        <strong>Link and sender safety</strong>
+        <span className="cx-muted cx-small">What our checks found. We never open the link for you.</span>
+      </div>
+      <div className="sx-interrupt-grid">
+        {link && (
+          <div>
+            <span className="cx-eyebrow">The link</span>
+            {link.ok && l ? (
+              <>
+                <p>
+                  Goes to <strong className="cx-mono">{l.domain}</strong>
+                  {l.lookalike_of ? (
+                    <>
+                      , a look-alike of <strong>{l.lookalike_of}</strong>
+                    </>
+                  ) : null}
+                </p>
+                <ul className="sx-list">
+                  {l.on_blocklist && <li>On a known scam blocklist</li>}
+                  {l.domain_age_days != null && <li>Registered {l.domain_age_days} days ago</li>}
+                  {l.final_redirect_domain && <li>Redirects to {l.final_redirect_domain}</li>}
+                  {(l.signals ?? []).map((sig) => (
+                    <li key={sig}>{sig}</li>
+                  ))}
+                </ul>
+                {!l.lookalike_of && !l.on_blocklist && (l.signals ?? []).length === 0 && (
+                  <p className="cx-muted cx-small">No warning signs found. That does not make the link safe; open the company&apos;s app instead.</p>
+                )}
+              </>
+            ) : (
+              <p className="cx-muted">This link could not be checked. Treat it as unverified.</p>
+            )}
+          </div>
+        )}
+        {sender && (
+          <div>
+            <span className="cx-eyebrow">The sender</span>
+            {sender.ok && s ? (
+              <>
+                <p>
+                  {s.matches_official_channel
+                    ? "Matches one of the company's official texting numbers."
+                    : s.official_channels_known
+                      ? "Not one of the company's official texting numbers."
+                      : "We could not confirm it: the company does not publish its texting numbers."}
+                </p>
+                {s.note && <p className="cx-muted cx-small">{s.note}</p>}
+              </>
+            ) : (
+              <p className="cx-muted">The sender could not be checked.</p>
+            )}
+            <p className="cx-small">
+              <strong>Caller ID and sender numbers can be faked.</strong> A familiar name or number does not prove who sent it.
+            </p>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Simulated incoming alert: a phone-style notification for a synthetic incoming text.
+// ---------------------------------------------------------------------------
+
+export function IncomingAlert({ poll, onView, onDismiss }: { poll?: ResultPoll; onView: () => void; onDismiss: () => void }) {
+  const result = poll?.status === "done" ? poll.result : undefined;
+  if (!result) {
+    return (
+      <div className="sx-toast" role="status" aria-live="polite">
+        <span className="cx-eyebrow">SentinelAI · simulated incoming text</span>
+        <p>New message received. Checking it now…</p>
+      </div>
+    );
+  }
+  const headline =
+    result.verdict === "likely_scam"
+      ? "Potential scam detected"
+      : result.verdict === "unsure"
+        ? "We could not confirm this message"
+        : "No scam signs found";
+  return (
+    <div className={`sx-toast sx-toast-${result.verdict}`} role="alert">
+      <span className="cx-eyebrow">SentinelAI · simulated incoming text · now</span>
+      <strong>{headline}</strong>
+      <p>{result.reason}</p>
+      <div className="cx-actions">
+        <button className="cx-button cx-button-primary" onClick={onView}>
+          See why and what to do
+        </button>
+        <button className="cx-button cx-button-ghost" onClick={onDismiss}>
+          Dismiss
+        </button>
+      </div>
+    </div>
+  );
+}

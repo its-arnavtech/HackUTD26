@@ -12,6 +12,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from app.config import DATA_DIR
 
 BRANDS_PATH = DATA_DIR / "brands.json"
+EXTRA_PATH = DATA_DIR / "brands_extra.json"  # L15: more real companies (see its _note)
 
 
 class BrandSource(BaseModel):
@@ -44,7 +45,10 @@ def _key(name: str) -> str:
 @lru_cache(maxsize=4)
 def load_brands(path: Path = BRANDS_PATH) -> tuple[Brand, ...]:
     data = json.loads(path.read_text(encoding="utf-8"))
-    return tuple(Brand.model_validate(item) for item in data["brands"])
+    items = list(data["brands"])
+    if path == BRANDS_PATH and EXTRA_PATH.exists():  # the core registry stays first, so its matches win
+        items += json.loads(EXTRA_PATH.read_text(encoding="utf-8"))["brands"]
+    return tuple(Brand.model_validate(item) for item in items)
 
 
 def find_brand(name: str, brands: tuple[Brand, ...] | None = None) -> Optional[Brand]:

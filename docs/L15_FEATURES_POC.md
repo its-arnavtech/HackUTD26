@@ -218,3 +218,20 @@ This works. "Simulate a wave" replays a 15-variant Walmart campaign (rotating wo
   - turning it off deletes what was kept
 
 Tests: `tests/test_protection.py`. Backend 839 passed, frontend 82 passed.
+
+## L15d: stays in the console, correct answers for typed scams, two more features
+
+**No more jumps to the main site.** The console's "Accuracy" now opens the classifier accuracy screen inside the console (`/model-accuracy`), and the "Desk" link is gone. A browser walk across every tab stayed inside the console.
+
+**Typed scam messages.** `python -m scripts.typed_check` runs 9 realistic typed messages (7 scams impersonating real companies with real-looking links, 2 genuine) through the live pipeline. Before: PayPal was missed and the Wells Fargo scam was explained as "not an official Capital One channel". After: **6 of 7 scams caught, none called safe.** The remaining one, a Wells Fargo "reply with the code" text with no link, is honestly "not sure", because no tool can verify a code request. The fixes:
+1. **More real companies** in `data/brands_extra.json` (Verizon, Chase, Wells Fargo, PayPal, Amazon, Apple, Google, Microsoft, Netflix, Walmart, Target, UPS, FedEx, USPS, LinkedIn, Indeed). Official websites only; sending short codes are left empty because they weren't verified.
+   - It's kept separate from `brands.json` on purpose: the campaign matcher (A12) and its calibration, and the recorded demo replays (A19), still use the original registry only. `core_only` / `core_brands_only` flags make sure of that, and all replay tests pass unchanged.
+2. **Redaction keeps brand names.** "Wells Fargo" was being hidden as `<PERSON>`, so the agent never knew the claimed brand.
+3. **Brand terms match at a domain-label boundary,** so "chase" no longer fires inside "purchase" and "ups" no longer fires inside "groups" (`features/extract.py`, `tools/link.py`, *Arnav's area*).
+4. **Symmetric disagreement guardrail.** A weak "legit" score (below 0.7) no longer forces "not sure" over verified tool evidence; a confident one still does. The "very likely" rule (two independent findings) is unchanged.
+
+**New features.**
+- **Link and sender safety** panel: the link's domain, look-alike brand, blocklist status, age and signals, or "could not be checked". The link is shown as plain text and is never clickable. The sender is shown as official, not official, or "could not confirm", always with "caller ID and sender numbers can be faked".
+- **Simulated incoming text:** a phone-style notification ("Potential scam detected …") for a random real-company message, run through the same live pipeline. It's labelled as a simulation; "See why and what to do" scrolls to the result.
+
+Tests: backend 840 passed, frontend 87 passed (new `alert.test.tsx`), plus the live browser walk.

@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { AlertTriangle, BarChart3, Database, Phone, Radio, Send, UserRound, Waves } from "lucide-react";
 import { categoryLabel } from "../components";
 import type { InboxItem, ResultPoll } from "../types";
+import AccuracyPage from "../screens/AccuracyPage";
 import { Shell } from "./Shell";
 import { toolTitles } from "./timeline";
 
@@ -369,6 +370,17 @@ export function WavesPage() {
             )}
           </article>
         ))}
+      </div>
+    </Shell>
+  );
+}
+
+/** The classifier accuracy screen inside the console frame, so the console never jumps to the main site. */
+export function ModelAccuracyPage() {
+  return (
+    <Shell>
+      <div className="cx-legacy">
+        <AccuracyPage />
       </div>
     </Shell>
   );

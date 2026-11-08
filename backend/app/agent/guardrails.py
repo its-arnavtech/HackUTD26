@@ -175,7 +175,10 @@ def _classifier_says_scam(classifier: ClassifierOutput) -> bool:
 
 
 def _classifier_says_legit(classifier: ClassifierOutput) -> bool:
-    return classifier.category == LEGIT_CATEGORY
+    # Symmetric with `_classifier_says_scam` (L15): a weak "legit" (below 0.7) no longer overrides
+    # verified tool evidence. Seen live: a PayPal look-alike link scam scored legit 0.65 and was
+    # forced to "not sure" although the link check proved the impersonation.
+    return classifier.category == LEGIT_CATEGORY and classifier.score >= CLASSIFIER_SCAM_SCORE
 
 
 def apply_guardrails(

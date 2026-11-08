@@ -25,7 +25,7 @@ const links: [string, string][] = [
   ["/agent-accuracy", "Agent accuracy"],
   ["/waves", "Scam waves"],
   ["/patterns", "Scam patterns"],
-  ["/accuracy", "Accuracy"],
+  ["/model-accuracy", "Classifier accuracy"],
   ["/privacy-center", "Privacy center"],
   ["/security", "Security"],
 ];
@@ -45,9 +45,6 @@ export function Shell({ children, wide = false }: { children: ReactNode; wide?: 
               {label}
             </NavLink>
           ))}
-          <NavLink to="/inbox" className="cx-nav-quiet">
-            Desk
-          </NavLink>
         </nav>
         <div className="cx-header-right">
           <ModeBadge />
