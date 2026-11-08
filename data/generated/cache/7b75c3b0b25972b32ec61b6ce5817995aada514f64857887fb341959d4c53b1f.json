@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake prize, reward or refund (scam).\nWhat this category covers: Promises money or a gift: prize or giveaway winner, expiring reward points, gift card, unclaimed refund, survey reward.\nAngle for this batch: you won a giveaway.\nClaimed sender or brand: Amazon.\nWho writes it: a scammer using a friendly, casual tone to lower suspicion.\nStyle: brand prefix like 'BRAND:' at the start.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Amazon: Congrats! You won our $250 gift card giveaway. Claim in 24h: amzn-prize.co/claim\",\"Amazon: Hey! Your entry in our Spring Giveaway came up lucky #7. Reply YES and we'll send your $100 code.\",\"Amazon: Good news—you're our weekly giveaway winner! Your $500 reward is on hold. Call 888-555-0177 and give claim code 4471 to release it.\",\"Amazon: Your giveaway prize ($150 gift card) is ready. Just cover $3.99 shipping at amzn-rewarddesk.com/pay to get it sent.\",\"Amazon: We picked your number for a $1,000 Amazon shopping spree! Reply with your ZIP and email so we can confirm your giveaway address.\",\"Amazon: Final notice—your $50 giveaway bonus expires tonight. Tap amzn-bonus.click/now to keep it.\",\"Amazon: Lucky you! You won an Echo Dot in our customer giveaway. Cover the $1.95 delivery fee here: amzn-giftdept.shop/echo\",\"Amazon: You're a giveaway winner! Text the 6-digit code we just sent to 855-555-0129 so we can verify and send your $200 card.\"]}"
+}

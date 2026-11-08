@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: retail promotion or loyalty points update.\nClaimed sender or brand: Walmart.\nWho writes it: the company's automated notification system.\nStyle: terse, like an automated system.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Walmart: You have 1,250 points. $5 reward ready. Redeem at walmart.com by 3/15. Reply STOP to opt out.\",\"Walmart Rewards: $10 off your next $50 order. Expires 2/28. Use code SAVE10 at checkout. Details: walmart.com\",\"Walmart: 500 bonus points added for your recent purchase. New balance: 3,420. View at walmart.com\",\"Walmart+: Your free trial ends in 3 days. Keep free delivery for $12.99/mo. Manage at walmart.com\",\"Walmart: Flash deal - 20% off home goods today only. Shop walmart.com. Reply STOP to unsubscribe.\",\"Walmart Loyalty Update: You earned 300 points on 2/12. 200 points expire 3/1. Redeem 1,000 points for $10 off at walmart.com. No action needed to keep earning.\",\"Walmart: Your $15 reward is waiting. Claim by 2/29 at walmart.com. Not valid on gift cards. Reply HELP for help.\",\"Walmart: Your February loyalty statement is ready. You earned 1,150 points and saved $22.50 with member prices. 1,000 points = $10 off. Redeem at walmart.com before 3/31. Reply STOP to cancel.\"]}"
+}

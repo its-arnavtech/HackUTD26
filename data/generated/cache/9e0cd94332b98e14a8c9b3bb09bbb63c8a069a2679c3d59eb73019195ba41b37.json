@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Fake prize, reward or refund. The correct answer for these cards is: scam.\nBackground: Promises money or a gift: prize or giveaway winner, expiring reward points, gift card, unclaimed refund, survey reward.\nScenario for these cards: unclaimed refund or rebate, sent as Starbucks.\nThe person receiving the text: a retiree in Florida who banks online.\nTone of the text: short and urgent.\nDraft 8 cards, each a different realistic text. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"STARBUCKS: You have an unclaimed $47.82 refund from a recent order. Claim within 2 hours: sbux-refund.co/claim?r=8841\", \"Starbucks Rewards: Your $50 gift card refund is pending. Reply YES to confirm your address and release funds.\", \"URGENT: Starbucks rebate of $63.19 unclaimed. Call 305-555-0182 now to verify your debit card.\", \"Starbucks: Final notice - your $38.50 refund expires today. Confirm at starbucks-rebates.net/FL\", \"Starbucks customer: We tried to refund $29.99 but your bank rejected it. Text your card number back to 555-0147.\", \"Your Starbucks refund of $52.10 is on hold. Verify your online banking login at sbux-verify.com/refund\", \"Starbucks: You won a $100 refund bonus! Reply REFUND to claim. Ends midnight.\", \"Starbucks: Unclaimed rebate $41.25. Send a $5 activation fee via Zelle to refund@sbux-pay.net to release.\"]}"
+}

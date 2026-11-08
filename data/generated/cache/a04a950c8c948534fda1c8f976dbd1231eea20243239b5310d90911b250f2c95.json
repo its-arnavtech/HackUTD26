@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Bank impersonation (scam).\nWhat this category covers: Pretends to be a bank or card issuer: fraud alert, locked or suspended account, card declined, verify your identity, confirm a charge by link or callback.\nAngle for this batch: fraud alert asking to verify a charge.\nClaimed sender or brand: Bank of America.\nWho writes it: a scammer using a friendly, casual tone to lower suspicion.\nStyle: brand prefix like 'BRAND:' at the start.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Bank of America: Hey! We saw a $312.47 charge at Best Buy on your debit card ending 8821. If that wasn't you, reply NO and we'll lock it. Thanks!\",\"BANK OF AMERICA: Fraud alert - a $1,249.00 purchase at Apple was just attempted on your card ending 0934. Did you make it? Reply Y or N. If unsure call 704-555-0182.\",\"Bank of America: yo, did you just try to send $850 via Zelle to a new contact? If not, verify at https://boa-securecheck.com/zelle now or your account gets limited. - BofA\",\"Bank of America: $47.99 at Netflix on card ending 2210. You? Reply 1 yes, 2 no.\",\"Bank of America: Hi, this is the fraud team. A $672.15 charge at Home Depot came through on your Visa ending 5567. Please call us back at 214-555-0143 to verify. Thanks!\",\"Bank of America: Someone tried to use your card ending 4019 for $89.99 at DoorDash. If this was you, no action needed. If not, click https://boa-alerts.net/verify/4019 to cancel the charge.\",\"Bank of America: Urgent - a $2,300 wire transfer was initiated from your account. Reply STOP to cancel or call 888-555-0177 now. If you didn't do this, we need to verify your identity.\",\"Bank of America: Hey, we noticed a $15.99 charge at Spotify on your card ending 7732. If that's not yours, reply with the 6-digit code we just texted to confirm and we'll reverse it. Thanks!\"]}"
+}

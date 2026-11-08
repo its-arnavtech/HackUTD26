@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake bill or payment demand (scam).\nWhat this category covers: Fake bill, overdue balance or failed payment from a phone carrier, utility, or subscription, with a threat of shut-off and a link to pay.\nAngle for this batch: utility shut-off notice.\nClaimed sender or brand: Verizon.\nWho writes it: a careful scammer who avoids obvious red-flag words.\nStyle: all caps for key words.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"VERIZON: Your service is scheduled for shut-off today due to a past due balance. To avoid interruption, pay at vzw-payhelp.com or call 877-555-0123.\",\"FINAL NOTICE: Verizon account 5-4482 has an OVERDUE balance of $87.43. Service will be disconnected in 24 hrs. Reply PAY to get a secure payment link.\",\"We were unable to process your Verizon payment of $62.10. To keep your line active, please confirm your payment method here: vzw-billing-update.com. Questions? 800-555-0198.\",\"Verizon: PAST DUE. Service off in 48 hrs. Pay now: vz-payments.net\",\"Hi, this is Verizon billing. Your autopay failed and your account is PAST DUE. To avoid a SHUT-OFF, call 888-555-0142 or reply YES and we'll send a payment link.\",\"VERIZON: To lift the SHUT-OFF on your line, reply with the 6-digit verification code we just sent to your phone. This confirms your payment arrangement.\",\"Your Verizon bill is 14 days OVERDUE. A $25 late fee has been added and your service will be DISCONNECTED on 03/15. Pay the full amount at vzw-billpay.net or call 877-555-0177.\",\"FINAL WARNING from Verizon: account ending 8832 has a BALANCE DUE of $104.22. To prevent service interruption, send payment via Zelle to billing@vzw-payment.net or call 800-555-0164.\"]}"
+}

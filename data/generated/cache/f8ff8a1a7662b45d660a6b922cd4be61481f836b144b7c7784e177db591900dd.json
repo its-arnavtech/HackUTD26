@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: real-style bank fraud check that asks only for a YES or NO reply.\nClaimed sender or brand: Citi.\nWho writes it: a small local business owner.\nStyle: all caps for key words.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"CITI FRAUD ALERT: $22.50 at SUBWAY on card ending 1187. Did you make this purchase? Reply YES or NO.\",\"CITI: We blocked a $219.00 charge at BEST BUY on your business card. Was this you? Reply YES or NO only. Questions? Call 800-555-0199. Never share codes.\",\"CITI ALERT: A $1,250.00 transfer from your checking was attempted at 2:14 AM. Did you AUTHORIZE this? Reply YES or NO. Reply STOP to opt out.\",\"CITI fraud check: We saw a $9.99 gas station hold in TULSA, OK on your debit card. Is this YOURS? Reply YES or NO. Call 918-555-0167 if unsure.\",\"CITI: Your card was used for a $384.16 purchase at a HOME DEPOT in AUSTIN, TX. If this is FRAUD, reply NO. If you made it, reply YES.\",\"CITI SECURITY: A new device tried to access your business account from OHIO. We BLOCKED it. Was it you? Reply YES or NO. For help visit citi.com/help (never share passwords).\",\"CITI ALERT: $76.44 at WALMART SUPERCENTER on card ending 4402 was DECLINED. Did you try this? Reply YES or NO. We'll follow up by phone if NO.\",\"CITI: Did you just spend $512.30 at a hardware store in BOISE, ID? Reply YES or NO. If NO, we'll lock the card and call the number on file. Don't send account info.\"]}"
+}

@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake account security alert (scam).\nWhat this category covers: Pretends to protect a non-bank account (carrier, Apple, Amazon, email, social media): login alert, password reset, SIM change, or asks the person to send back a one-time code.\nAngle for this batch: asks the person to reply with a verification code.\nClaimed sender or brand: Google.\nWho writes it: a scammer whose first language isn't English, with slightly odd grammar.\nStyle: terse, like an automated system.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Google: We detect sign-in from new device. If this not you, reply with the 6-digit code we sent to your phone. Do not ignore.\", \"Gmail security alert: Someone try to reset your password. Reply the verification code now to block. Account will lock in 1 hour.\", \"Your Google account was access from another country. To verify you, please reply with code we just send. Thank you.\", \"Google Verification: Send back the 6-digit code you received. This is for your security. Do not share with anyone else. Reply code now.\", \"We noticed unusual activity. Reply with the code from SMS to verify identity. If you not request this, ignore. Google Support.\", \"Google Security Alert: SIM change detected. Reply the code from your phone to cancel. Or call 650-555-0143.\", \"To protect your Gmail, we need verify. Reply 6-digit code we sent. This is automated message. Do not reply if you not request.\", \"Your account is temporarily lock. Reply with verification code to unlock immediately. Visit google-verify.net if no code. Google Support.\"]}"
+}

@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake bill or payment demand (scam).\nWhat this category covers: Fake bill, overdue balance or failed payment from a phone carrier, utility, or subscription, with a threat of shut-off and a link to pay.\nAngle for this batch: utility shut-off notice.\nClaimed sender or brand: Duke Energy.\nWho writes it: a careful scammer who avoids obvious red-flag words.\nStyle: includes a reference or case number.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Duke Energy notice: acct 8842-1093. Payment failed for $187.44. Service disconnection scheduled 06/14. To avoid interruption, update payment at dukeenergy-billing.com/pay or call 704-555-0192. Ref: DE-4472910\", \"Hi, this is Duke Energy. Your case #DE-88213 shows a past due balance of $94.17. Please reply YES to confirm you received this, or call 800-555-0147 to arrange payment before shutoff on 6/18.\", \"Duke Energy: final reminder for account ending 3321. Balance $212.09 is past due. Disconnection is set for 06/12. Pay at dukeenergy-payments.net/DE7734 (case DE-7734) or call 866-555-0188.\", \"ALERT: Duke Energy service at 1420 Maple St will be disconnected 6/15 unless $156.20 is paid. Call 919-555-0163. Reference #DE-55902. This is an automated message.\", \"Duke Energy case DE-99104: We have not received payment of $78.55. To keep your power on, pay by 6/20 at dukeenergy-pay.info/DE99104. Questions? Call 704-555-0155.\", \"Duke Energy: Your account 5520-8831 has an overdue balance of $301.47. A shut-off order is pending for 06/16. Please call 800-555-0129 and reference case DE-33018 to resolve.\", \"Duke Energy final notice. Case #DE-12045. Payment of $142.88 was returned. Service will be interrupted on 6/19 unless you update payment info at dukeenergy-billpay.com/DE12045 or reply PAY.\", \"This is Duke Energy. Your payment of $64.30 did not process. To avoid disconnection on 6/17, please call 888-555-0177 with case DE-88231. Or pay at dukeenergy-secure.net/DE88231.\"]}"
+}

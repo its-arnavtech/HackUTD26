@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Legitimate message. The correct answer for these cards is: legitimate, not a scam.\nBackground: Real messages people get, including hard look-alikes of every scam category above.\nScenario for these cards: personal message from a friend or family member, sent as a sibling.\nThe person receiving the text: a parent who shops online often.\nTone of the text: short and urgent.\nDraft 8 cards, each a different realistic text. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Mom, I'm at the mall and forgot my wallet. Can you Venmo me $40 for a gift? Need it in 15 min before the store closes. Urgent!\", \"Dad, my car broke down on the highway. Tow truck needs $75 cash. Can you bring it to the gas station on 5th? ASAP.\", \"Mom, I'm locked out of the house. Can you come home? I need to leave for work in 20 min. Call me at 555-0142. Hurry!\", \"Dad, I'm at the airport. Flight got delayed. Can you pick me up at 8pm instead of 6? Text me back.\", \"Mom, I'm at the pharmacy. My prescription is $45. Can you bring cash? They close in 10 min. Urgent.\", \"Dad, I'm at the vet. My dog ate something bad. They need $200 for treatment. Can you bring cash? It's urgent.\", \"Mom, I'm at the parking garage. Lost my ticket. They want $30 to let me out. Can you come pay? Need it in 5 min.\", \"Dad, I sent you a photo of the damage. Check it here: familypics.test/car. Need your advice now.\"]}"
+}

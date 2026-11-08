@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Wrong-number or family impersonation (scam).\nWhat this category covers: Starts a personal conversation to build trust: a fake wrong-number text, a relative or friend writing from a 'new number' who needs money, or a romance opener.\nAngle for this batch: friend stuck abroad needs help.\nClaimed sender or brand: no brand.\nWho writes it: a scammer whose first language isn't English, with slightly odd grammar.\nStyle: includes a reference or case number.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Hi it's me. My phone broke, this is new number. I am stuck in London, need $850 for hotel. Case ref #LN-5532. Can you send? Please reply.\",\"Hello dear, this is your friend Mark from trip. I lost wallet and passport in Madrid. Police gave me case number ES-7781. I need help with 600 dollar for emergency flight. Can you reply to this number? God bless.\",\"It's Sarah. I'm in trouble abroad, my bag stolen. Please call me back at 312-555-0198. Reference case #BAG-2207. I need your help urgently, don't tell mom.\",\"Hey it's your cousin Jake. I'm stuck in Paris, lost everything. Can you help? I made a case with embassy, ref FR-4410. Details here: parishelp-embassy.site/claim. Need 400 euro. Reply yes.\",\"Hi, wrong number? Sorry. But maybe you can help. My friend is stranded in Rome, case #IT-3355. Need $300. Reply if you can.\",\"Good day. I am writing from new number because my phone stolen in Berlin. I am friend of your brother from work. He said you can help. My case number DE-8823. I need money for train, 250 dollar. Or if easier, send gift code. Please reply.\",\"It's me, I'm stuck at airport in Barcelona. They want 500 for visa fine. Case ref: SP-6699. You can call 646-555-0123 or see bcn-airport-help.com/pay. Please hurry, I have no one else.\",\"Hey, it's your old roommate. I'm abroad and in hospital, need $200. Case #HOS-7788. Can you reply? I'll explain later.\"]}"
+}

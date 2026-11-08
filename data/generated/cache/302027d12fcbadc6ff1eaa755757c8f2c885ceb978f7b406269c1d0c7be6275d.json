@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Legitimate message. The correct answer for these cards is: legitimate, not a scam.\nBackground: Real messages people get, including hard look-alikes of every scam category above.\nScenario for these cards: real-style bank transaction or balance alert, sent as Discover.\nThe person receiving the text: a parent who shops online often.\nTone of the text: short and urgent.\nDraft 8 cards, each a different realistic text. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Discover Alert: $487.32 at BLUEPARCEL was just approved on card ending 4821. If this wasn't you, call 800-555-0147 now. discover.com\",\"Discover: Balance $3,842.19. Payment of $127.00 is due tomorrow. Pay today at discover.com or call 800-555-0192.\",\"Discover Fraud Alert: We blocked a $912.44 charge at MINTKART. Reply YES if you recognize it. If not, call 800-555-0164.\",\"Discover Alert: $64.99 at PAPERTRAIL was charged to card ending 7710. If this wasn't you, call 800-555-0188 immediately. discover.com\",\"Discover: A $1,250.00 transfer from your account was initiated today. If you did not authorize it, call 800-555-0139 now. discover.com\",\"Discover Security: New sign-in to your account from a new device. If this was you, no action needed. If not, call 800-555-0175. discover.com\",\"Discover Alert: Card ending 3095 used for $219.87 at HOMESTACK. If you don't recognize this, call 800-555-0126. discover.com\",\"Discover: Payment reminder: $89.50 minimum due today. Avoid a late fee. Pay now at discover.com. Questions? Call 800-555-0158.\"]}"
+}

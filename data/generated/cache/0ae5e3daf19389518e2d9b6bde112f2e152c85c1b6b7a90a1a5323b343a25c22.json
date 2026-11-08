@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake job or easy money offer (scam).\nWhat this category covers: Unsolicited job or income offer: remote task jobs with daily pay, recruiter who wants to move to a chat app, reshipping, crypto or investment opportunities.\nAngle for this batch: mystery shopper or reshipping job.\nClaimed sender or brand: no brand.\nWho writes it: an organized fraud ring copying the brand's official alert template closely.\nStyle: terse, like an automated system.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"MYSTERY SHOPPER ASSIGNMENT: Get paid $150 to evaluate a store. Reply YES to accept. Details at mshp-assign.com. Call 702-555-0198.\",\"Reshipping agent needed. Receive packages, forward them. $40 per box. Apply at rshp-jobs.net/apply or reply START to 305-555-0167.\",\"EASY MONEY: $300/day remote task work. No exp. Start today. Text START to 469-555-0133.\",\"Your application for Remote Package Handler is pending. Confirm your address at pkg-forward.co/confirm to receive first shipment. Pay $25 onboarding fee.\",\"MYSTERY SHOPPER: You have been selected for a paid evaluation. Deposit our check, keep $200, wire remainder. Reply for instructions.\",\"Reshipping agent needed. Receive electronics, reship to our partners. $500/wk. Must pay $35 background check. Visit reship-central.org/start.\",\"ALERT: Your remote work account is inactive. Verify at taskpay-jobs.com/verify to claim $450 weekly pay. Call 646-555-0112.\",\"Mystery shopper needed for local store. $75 per visit. Text your ZIP to 312-555-0145 for assignment.\"]}"
+}

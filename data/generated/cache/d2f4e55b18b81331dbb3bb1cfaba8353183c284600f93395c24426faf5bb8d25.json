@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Legitimate message. The correct answer for these cards is: legitimate, not a scam.\nBackground: Real messages people get, including hard look-alikes of every scam category above.\nScenario for these cards: retail promotion or loyalty points update, sent as Home Depot.\nThe person receiving the text: a commuter who drives on toll roads.\nTone of the text: formal and polite.\nDraft 8 cards, each a different realistic text. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Home Depot: Your $25 Rewards certificate is now available and expires on 07/15. View it at https://www.homedepot.com/rewards. Reply STOP to opt out.\",\"Home Depot: A $10 off $50 coupon has been added to your Rewards account for July 12–14. See details at https://www.homedepot.com/coupons. Reply STOP to unsubscribe.\",\"Home Depot: Your Rewards balance is $42.18 and will expire in 14 days. Review your points at https://www.homedepot.com/rewards. Questions? Call 800-555-0147. Reply STOP to opt out.\",\"Home Depot: Thank you for being a Rewards member. You have earned 320 points from recent purchases. View your statement at https://www.homedepot.com/rewards. Reply STOP to opt out.\",\"Home Depot: This weekend only, Rewards members receive $15 off a $75 purchase with code JULY15. Offer ends Sunday at 11:59 p.m. See terms at https://www.homedepot.com/promotions. Reply STOP to unsubscribe.\",\"Home Depot: Your $5 Rewards certificate expires tomorrow, 07/09. Redeem it in store or at https://www.homedepot.com/rewards. Reply STOP to opt out.\",\"Home Depot: A loyalty points adjustment of 150 points was posted to your account on 07/03. View the details at https://www.homedepot.com/rewards. Reply STOP to opt out.\",\"Home Depot: Commuter Appreciation Week: Rewards members can get $20 off a $100 purchase through 07/20. See details at https://www.homedepot.com/promotions. Reply STOP to unsubscribe.\"]}"
+}

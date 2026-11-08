@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Fake bill or payment demand. The correct answer for these cards is: scam.\nBackground: Fake bill, overdue balance or failed payment from a phone carrier, utility, or subscription, with a threat of shut-off and a link to pay.\nScenario for these cards: streaming or software subscription renewal failed, sent as Hulu.\nThe person receiving the text: a new immigrant still learning English.\nTone of the text: formal and polite.\nDraft 8 cards, each a different realistic text. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Dear Hulu customer, our records show that your subscription renewal payment of $12.99 did not go through. To keep your service active, please confirm your payment method at hulu-billing-check.com within 24 hours. Thank you.\",\"Hello, this is Hulu Account Services. Your monthly renewal was declined by your bank. Please call us at 888-555-0164 to verify your payment details and avoid interruption. We appreciate your prompt attention.\",\"Hulu renewal notice: We were unable to charge your saved card for this month's subscription. Kindly reply YES to confirm you received this message, and a representative will assist you. Thank you for being a valued customer.\",\"Dear subscriber, your Hulu payment of $18.99 could not be processed. To prevent your account from being suspended, please update your billing information at secure-hulu-renewal.net/pay. We apologize for any inconvenience.\",\"Hulu Billing Department: Your subscription is past due. Please send a digital payment of $12.99 via Zelle to billing@hulu-renewals.com so we can restore your service today. Thank you for your cooperation.\",\"Important: Your Hulu renewal failed because your card expired. Please reply with the 6-digit verification code sent to your phone so we can update your payment method. Thank you for your help.\",\"Dear Hulu member, we attempted to renew your plan but the payment was not approved. For your convenience, please contact our billing team at 214-555-0198 between 9am and 6pm to complete the renewal. Thank you.\",\"Hulu Account Notice: Your subscription renewal did not complete. To avoid service interruption, please visit hulu-payment-support.org/verify and enter your account email and payment details. We appreciate your immediate response.\"]}"
+}

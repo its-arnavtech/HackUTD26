@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: real-style bank transaction or balance alert.\nClaimed sender or brand: Wells Fargo.\nWho writes it: the company's automated notification system.\nStyle: brand prefix like 'BRAND:' at the start.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Wells Fargo: Balance $2,310.88 as of 04/14 8:02 AM ET. Reply BAL for details.\", \"Wells Fargo: Your chk acct bal is $842.19 as of 7:42 AM PT on 04/14. Available balance may be less. Reply HELP for help, STOP to cancel.\", \"Wells Fargo: A $32.17 purchase at CVS #04412 on card ending 2198 was approved 04/13. If you don't recognize it, call 1-800-555-0176.\", \"Wells Fargo: We blocked a $212.00 attempt at BEST BUY on card ending 6612 on 04/13. Reply YES if you made it, or call 1-800-555-0154 if not.\", \"Wells Fargo Alert: We noticed a $1,299.99 charge at APPLE STORE on your card ending 3345 on 04/12. If this wasn't you, call us immediately at 1-800-555-0143. No action needed if you made this purchase.\", \"Wells Fargo: Your statement for account ending 9087 is ready. Please review by 04/30 at wellsfargo.com/statements. No action required if you're enrolled in paperless.\", \"Wells Fargo: Confirmation #WF-229104. Your deposit of $845.00 from ACME PAYROLL posted to checking ending 5520 on 04/12. Questions? 1-800-555-0188.\", \"Wells Fargo: Low balance alert. Your checking ending 9033 has $36.22, below your $100 threshold. Transfer funds at wellsfargo.com or call 1-800-555-0129.\"]}"
+}

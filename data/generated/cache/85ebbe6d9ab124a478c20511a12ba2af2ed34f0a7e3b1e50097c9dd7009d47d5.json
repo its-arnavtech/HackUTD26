@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Legitimate message. The correct answer for these cards is: legitimate, not a scam.\nBackground: Real messages people get, including hard look-alikes of every scam category above.\nScenario for these cards: appointment or pharmacy reminder, sent as a pediatric clinic.\nThe person receiving the text: a commuter who drives on toll roads.\nTone of the text: warm and reassuring.\nDraft 8 cards, each a different realistic text. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Hi, this is Sunny Hills Pediatrics. Friendly reminder: Mia's well-child visit is Tue, May 14 at 9:20 AM with Dr. Patel. Reply C to confirm or R to reschedule. Need to cancel? Call 312-555-0187. Thanks!\",\"Hi, Sunny Hills Pediatrics pharmacy here. Amoxicillin for Noah is ready at our office dispensary until Fri at 5:30 PM. No payment needed today; just bring your ID. Questions? Call 312-555-0142.\",\"Hi, it's Sunny Hills Pediatrics. We know rush hour is tough, so Layla's checkup is Wed, June 5 at 4:10 PM. If traffic on the tollway delays you, call 312-555-0168 and we'll hold your spot. Reply C to confirm.\",\"Sunny Hills Pediatrics: Check-in code for Leo's appointment tomorrow at 10:40 AM is 4821. Show it at the front desk kiosk. Call 312-555-0119 if you're running late so we can reassure the care team.\",\"Hi, Sunny Hills Pediatrics: Ava's school physical is Thu, Aug 22 at 2:15 PM. Your estimated visit balance is $35.00; pay at check-in or online at sunnyhillspeds.com. Reply C to confirm. Call 312-555-0134 with questions.\",\"Sunny Hills Pediatrics: Eli's albuterol refill is ready for pickup at the office pharmacy. It will be held until 6:00 PM Fri. No card needed; pay at the counter if there's a balance. Call 312-555-0171 with questions.\",\"Hi, Sunny Hills Pediatrics. Quick note: Sofia's 12-month vaccines are due by Sept 30. We have openings Sat morning and after 4 PM on weekdays for commuters. Reply V to see times or call 312-555-0196. Most insurance plans cover the visit.\",\"Sunny Hills Pediatrics: Reminder, Mason's telehealth follow-up is Mon at 7:30 PM. You can join from home after your commute at sunnyhillspeds.com/visit. If the tollway is slow, the visit can start up to 10 minutes late. Reply C to confirm.\"]}"
+}

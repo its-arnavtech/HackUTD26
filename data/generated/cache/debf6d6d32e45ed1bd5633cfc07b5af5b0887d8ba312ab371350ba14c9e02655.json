@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake bill or payment demand (scam).\nWhat this category covers: Fake bill, overdue balance or failed payment from a phone carrier, utility, or subscription, with a threat of shut-off and a link to pay.\nAngle for this batch: overdue phone bill with suspension threat.\nClaimed sender or brand: AT&T.\nWho writes it: a scammer creating panic with deadlines and threats.\nStyle: includes a reference or case number.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"AT&T: Acct past due. Case #AT-58291. Service shut off 3/15. Pay now: att-billpay-secure.com/pay\",\"AT&T Billing: We couldn't process your $87.43 payment. Ref AT-77120. To avoid suspension today call 214-555-0187.\",\"ATT notice: ur bill is 14 days overdue. Case # 445-AT-2091. Service will be suspended in 24 hrs unless u update payment. Reply YES for link or call 800-555-0142.\",\"AT&T: Final reminder for acct ending 4821. Balance $132.07 overdue. Case AT-90873. Suspend 2/28. Verify payment at att-account-check.net\",\"AT&T: To keep your service on, send a $45 payment via Zelle to billing@att-support-pay.com and reply with confirmation code. Case #AT-33218.\",\"AT&T alert: Your auto-pay failed on 03/02. Ref# AT-66104. Update card now at https://attpay-update.com or service stops 03/04.\",\"AT&T: We've suspended your voicemail due to unpaid balance. Case 7712-ATT. Call 888-555-0163 to pay $54.20 and restore.\",\"AT&T: Overdue $201.99. Case #AT-11942. Avoid shutoff: reply PAY to get secure payment link. Msg&data rates may apply.\"]}"
+}

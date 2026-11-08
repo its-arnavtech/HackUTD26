@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: toll account statement or auto-replenish notice.\nClaimed sender or brand: E-ZPass.\nWho writes it: the company's automated notification system.\nStyle: includes a reference or case number.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"E-ZPass: Statement ready. Ref #EZ-88213. View at ezpass.com.\",\"E-ZPass auto-replenish: $35.00 added to your account on 04/12. New balance $72.50. Ref: AR-559021. Questions? Call 214-555-0143.\",\"E-ZPass notice: Your monthly statement for account ending 9920 is now available. Total tolls: $18.75. Ref #ST-2024-0412-778. Review at https://ezpass.com/account. Automated message.\",\"E-ZPass: Low balance alert. Your balance is $9.20, below your $25 threshold. Auto-replenish of $40 will occur on 04/15. Ref: LB-33109. Manage at ezpass.com.\",\"E-ZPass: March statement ready. Ref #EZ-774512. Amount due $0.00 (auto-pay). View at ezpass.com. Reply STOP to opt out.\",\"E-ZPass: Auto-replenish successful. $50.00 charged to card ending 1122 on 04/10. New balance $63.40. Ref #AR-90813. No action required.\",\"E-ZPass: A statement for your account (ref case #EZ-2024-5567) was mailed on 04/08. View it at ezpass.com/statements. For help call 214-555-0198.\",\"E-ZPass: Your account ending 3388 has a new statement. Total charges: $27.40. Ref: STMT-44102. View at https://ezpass.com/login. Thank you.\"]}"
+}

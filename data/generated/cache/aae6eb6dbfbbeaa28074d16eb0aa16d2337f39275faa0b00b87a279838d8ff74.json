@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Fake prize, reward or refund. The correct answer for these cards is: scam.\nBackground: Promises money or a gift: prize or giveaway winner, expiring reward points, gift card, unclaimed refund, survey reward.\nScenario for these cards: loyalty bonus from a store, sent as Publix.\nThe person receiving the text: a college student with a part-time job.\nTone of the text: warm and reassuring.\nDraft 8 cards, each a different realistic text. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Hi there! This is Publix Loyalty. You've earned a $50 reward from your recent shopping. It expires tonight, so just tap here to claim: publix-rewards.net/claim. We'd hate for you to miss it! - Your Publix family\",\"Good news! Your Publix loyalty points just unlocked a $25 gift card. To confirm your spot, reply YES and we'll send it right over. No catch, just our way of saying thanks!\",\"Hey! We noticed you're a valued Publix shopper. There's an unclaimed $75 refund from your last order waiting for you. Call 800-555-0173 to verify and we'll process it today. Warmly, Publix Rewards Team\",\"You've been selected for our Publix Student Bonus! A $100 e-gift card is reserved under your phone number. Just cover the $1.95 activation fee here: publixstudentbonus.com/activate. It's quick and secure!\",\"Hi! Publix here. Your loyalty reward of $40 is ready, but we need a quick reply to confirm you're still at this number. Text BONUS and we'll send your code. Thanks for being part of our family!\",\"Friendly reminder: your Publix reward points are expiring in 2 hours. Don't lose your $30 bonus! Verify your account by sending the 6-digit code we just texted to 855-555-0198. We're here to help!\",\"Congrats! You're a winner in our Publix Loyalty Giveaway. Your $250 shopping spree is waiting. Just click publixgiveaway.net/claim and enter your info to receive it. No fees, no hassle—promise!\",\"Hey there! Publix Rewards wants to send you a $20 thank-you gift card for being a loyal customer. To get it, just reply with the best email and we'll deliver it within minutes. Enjoy!\"]}"
+}

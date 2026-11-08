@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Fake bill or payment demand. The correct answer for these cards is: scam.\nBackground: Fake bill, overdue balance or failed payment from a phone carrier, utility, or subscription, with a threat of shut-off and a link to pay.\nScenario for these cards: overdue phone bill with suspension threat, sent as Cricket Wireless.\nThe person receiving the text: a small-business owner who gets many texts a day.\nTone of the text: formal and polite.\nDraft 8 cards, each a different realistic text. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Cricket Wireless: Our records show your business account ending 4821 has an overdue balance of $127.40. To avoid suspension of service on 06/14, please pay at https://cricket-billing-support.example/pay or call 214-555-0187. Thank you.\",\"Cricket Wireless: A payment of $89.15 for your account ending 7734 did not process. Please reply PAY to receive a secure payment link and keep your service active. For help, call 312-555-0142. We appreciate your prompt attention.\",\"Cricket Wireless Billing: Your account ending 2209 is past due by $64.70. Service suspension is scheduled for 06/16. To arrange payment, visit https://cricket-account-pay.example/settle or contact us at 407-555-0196. Thank you.\",\"Cricket Wireless: This is a courtesy reminder that your business line ending 9156 has an unpaid balance of $156.00. Please call 646-555-0119 to make a payment and prevent interruption. We are happy to assist.\",\"Cricket Wireless: Your autopay for account ending 3382 failed on 06/12. To avoid a late fee and suspension, please pay $45.25 at https://cricket-payment-check.example/autopay. For questions, reply HELP.\",\"Cricket Wireless: Your account ending 6607 has a past-due amount of $203.18. Please reply with the 6-digit verification code sent to your phone so we can update your payment method. Service may be suspended if unresolved.\",\"Cricket Wireless: We were unable to process your payment of $72.90 for account ending 1845. To keep your service on, please send payment via https://cricket-bill-settle.example/secure or call 702-555-0173. Thank you for your business.\",\"Cricket Wireless: Final notice: your account ending 5290 has an overdue balance of $118.55. Please call 213-555-0158 before 06/18 to prevent suspension. A payment arrangement can be made by phone.\"]}"
+}

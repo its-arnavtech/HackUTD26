@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Wrong-number or family impersonation (scam).\nWhat this category covers: Starts a personal conversation to build trust: a fake wrong-number text, a relative or friend writing from a 'new number' who needs money, or a romance opener.\nAngle for this batch: romance or dating opener.\nClaimed sender or brand: no brand.\nWho writes it: a careful scammer who avoids obvious red-flag words.\nStyle: chatty with one emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Hey, is this Dana? We matched on that hiking app last week and I lost your thread 😊 My new number is 312-555-0188 if you want to pick it back up.\",\"Hi! I think I saved your number under the wrong name, but you seem way more interesting than the guy I was trying to text 😅 Are you from around Austin? Reply and tell me I’m not crazy.\",\"Someone gave me this number and said to ask for Jamie — is that you? If not, no worries, but you have a very cute area code 😊\",\"Hey stranger, my cousin dared me to text the last number in my recents and say hi. You’re it 😄 Coffee this week if you’re brave?\",\"I saw your profile and had to say hi. I’m not great at these apps, so here’s my little page with a few pics: meetjules.page 😊 Reply if you want to chat.\",\"Hi, I think we met at the brewery on Saturday? I was the one with the green jacket. Text me back at 415-555-0127 if you remember 😉\",\"Hey it’s Nico from the dating app. My card is being weird and I’m stuck at the market — could you spot me $15? I’ll send it right back tomorrow 😅\",\"Hey it’s Ava from the app 😊 I’m setting up my new phone and the code went to your number by mistake — can you send me the 6 digits? I owe you a drink.\"]}"
+}

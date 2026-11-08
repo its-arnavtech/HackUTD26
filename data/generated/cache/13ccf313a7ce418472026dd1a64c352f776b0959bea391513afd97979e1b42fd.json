@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake toll or government notice (scam).\nWhat this category covers: Pretends to be a toll agency, the IRS, DMV, court, or another government office: unpaid toll, tax refund or debt, license suspension, fines.\nAngle for this batch: license or registration suspension.\nClaimed sender or brand: the DMV.\nWho writes it: a scammer using a friendly, casual tone to lower suspicion.\nStyle: all caps for key words.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Hey! DMV here. Your LICENSE is SUSPENDED. Call 555-0142 to fix it, no biggie.\", \"Hi, it's the DMV. We noticed your REGISTRATION is about to be SUSPENDED. Just reply YES and we'll send you the details.\", \"Good news! You can avoid LICENSE SUSPENSION by paying a small fee today. Visit dmv-fixnow.com and enter your info. Easy!\", \"Hey there! This is a friendly reminder from the DMV. Your vehicle REGISTRATION has been flagged for SUSPENSION due to an unpaid fee. No worries, just call 555-0188 and we'll sort it out together.\", \"DMV ALERT: Your driver's LICENSE will be SUSPENDED in 24 hrs. To keep it active, reply with the CODE we text you. Thanks!\", \"Hi! DMV here. We see your REGISTRATION is SUSPENDED. Don't panic—just go to dmv-renewals.net and pay the $35 fee to reinstate. Have a great day!\", \"URGENT: Your license is SUSPENDED. Call 555-0199 now to avoid a $200 fine. We're here to help!\", \"Hey, it's the DMV. Your registration is SUSPENDED. Reply with your ZIP code and we'll check what's up. No stress!\"]}"
+}

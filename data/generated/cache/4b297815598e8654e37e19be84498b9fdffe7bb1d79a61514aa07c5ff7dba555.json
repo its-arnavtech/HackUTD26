@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: recruiter or interview scheduling message.\nClaimed sender or brand: a hiring manager.\nWho writes it: a friend or family member texting casually.\nStyle: brand prefix like 'BRAND:' at the start.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Larkfield Health: Hey, it's Dana from recruiting—your interview with Dr. Patel is set for Thu 4/18 at 2:30pm in the second-floor conference room. Park in visitor lot B. Questions? Just reply here.\",\"Rivet Logistics: Quick reminder—your interview is tomorrow at 10am with Marcus in the ops office. Bring nothing, we have your resume. If you're running late text me at 312-555-0187.\",\"Blue Harbor: Hi, it's Lena (hiring manager). We need to move your 1:1 to Fri 9:15am—same link: blueharborcareers.com/schedule. No forms, no codes. Reply OK if that works.\",\"Cedar & Pine: Interview confirmed for Mon 8:45am at our downtown shop. Ask for Ana at the front. Plan 45 min. If you need to reschedule, reply here—don't use any other link.\",\"Mosaic Labs: Your panel is Wed 1:00–2:15pm in Room 3B. I won't ask for codes or payment. Text me if the time is wrong. —Jordan, recruiting\",\"Orbit Freight: Hey! It's Sam from HR. Your phone screen is today at 4:10pm. I'll call from 415-555-0122. No need to send anything ahead. Good luck!\",\"Hearthside Dental: Reminder: working interview Sat 9am–12pm. Wear comfortable shoes, lunch is provided. Bring ID only for check-in. Reply C to confirm or R to reschedule.\",\"Summit Ridge: Offer letter is ready in your candidate portal: summitridge.com/careers. Log in from the email we sent yesterday—I won't text you a code. Call 206-555-0149 if you hit a snag. —Priya\"]}"
+}

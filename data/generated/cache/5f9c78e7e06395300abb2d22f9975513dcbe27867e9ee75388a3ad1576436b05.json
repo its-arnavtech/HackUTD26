@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake prize, reward or refund (scam).\nWhat this category covers: Promises money or a gift: prize or giveaway winner, expiring reward points, gift card, unclaimed refund, survey reward.\nAngle for this batch: loyalty bonus from a store.\nClaimed sender or brand: Costco.\nWho writes it: a scammer creating panic with deadlines and threats.\nStyle: all caps for key words.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"COSTCO: Your $25 loyalty bonus EXPIRES in 1 HOUR. Claim at costco-bonus-now.com\",\"Costco member: $150 loyalty reward UNCLAIMED. Reply YES now or it will be FORFEITED. Offer ends TONIGHT.\",\"FINAL WARNING: Your Costco 5,000 bonus points are EXPIRING at MIDNIGHT. Redeem your $200 gift card at costco-points-redeem.net before they VANISH.\",\"Costco: You won a $500 loyalty bonus! To claim, text back the 6-digit code we just sent. If no reply in 30 MINUTES, prize is VOID.\",\"URGENT: Costco reward account LOCKED. $75 loyalty credit will be REMOVED unless you verify at costco-verify-reward.com. ACT NOW or lose it FOREVER.\",\"You have a $42.17 Costco loyalty refund pending. Reply REFUND to get it sent to your card. Must reply within 30 MINUTES or it's CANCELLED.\",\"Costco bonus: $100 e-gift card waiting. Just pay $3.99 shipping at costco-gift-claim.org to activate. Expires in 2 HOURS.\",\"FINAL NOTICE: Your Costco loyalty tier is at risk. Confirm by calling 888-555-0122 and provide the code we text you. Your $250 bonus VANISHES in 20 MINUTES. Don't ignore.\"]}"
+}

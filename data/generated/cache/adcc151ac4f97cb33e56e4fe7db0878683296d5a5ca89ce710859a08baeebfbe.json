@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Wrong-number or family impersonation. The correct answer for these cards is: scam.\nBackground: Starts a personal conversation to build trust: a fake wrong-number text, a relative or friend writing from a 'new number' who needs money, or a romance opener.\nScenario for these cards: romance or dating opener, sent as no brand.\nThe person receiving the text: a nurse working night shifts.\nTone of the text: formal and polite.\nDraft 8 cards, each a different realistic text. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Good evening. My name is Elliot. I believe we matched on a dating app last week, but I lost the conversation. I would be glad to reconnect if you are open to it. Please reply to this message so I know it is you. I hope your night shift is going smoothly.\",\"Hello, this is Harper. We exchanged a few messages on a dating site, and I wanted to continue our conversation. I am usually awake late, so your night schedule is not a problem. Could you confirm by replying here? I would enjoy getting to know you better.\",\"Good morning. I hope this is not too forward. My name is Morgan, and I found your profile quite interesting. I am a bit old-fashioned and prefer to talk by phone. You can reach me at 312-555-0187 when you have a quiet moment after your shift. I would be pleased to hear from you.\",\"Hello, I am Riley. We briefly chatted on a dating app, and I mentioned I would send you a link to a private conversation space I use. Here it is: https://meet-safely.chat/riley. It is a simple way to keep in touch without the app. I hope your night shift is calm. Please let me know if the link works.\",\"Good evening. My name is Casey. I understand you work night shifts, so I wanted to leave a message you can read whenever you are free. I am looking for a genuine connection and thought we had a good start. To continue, could you reply with a short hello? I would appreciate knowing you received this.\",\"Hello, this is Avery. I hope you are well. I am writing because I need a small favor before we meet in person. I am having trouble with my payment app and need to send a verification code to a trusted contact. Could you reply with the six-digit code you receive? I will explain everything when we talk. Thank you for understanding.\",\"Good morning. My name is Quinn. We matched recently, and I wanted to see if you would like to meet for coffee after your shift. I am happy to cover the cost, but I need to confirm your availability first. Please reply to this message or call me at 646-555-0129. I look forward to hearing from you.\",\"Hello, I am Skyler. I hope this message finds you well. I prefer to be direct: I am interested in getting to know you, but I have been cautious after some bad experiences. Could you send a quick reply confirming you are the nurse I spoke with? I would also appreciate a small deposit of $20 through the app to show good faith. I will return it at our first date.\"]}"
+}

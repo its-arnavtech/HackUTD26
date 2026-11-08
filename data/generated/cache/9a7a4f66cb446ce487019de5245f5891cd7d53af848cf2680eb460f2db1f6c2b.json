@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Legitimate message. The correct answer for these cards is: legitimate, not a scam.\nBackground: Real messages people get, including hard look-alikes of every scam category above.\nScenario for these cards: delivery update from a carrier or retailer, sent as Amazon.\nThe person receiving the text: a commuter who drives on toll roads.\nTone of the text: slightly sloppy with a typo.\nDraft 8 cards, each a different realistic text. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Amazon: Your order #112-6045937-2281940 is out for deliverey today between 1:20 and 3:20 PM. Follow the driver at amazon.com/yourorders. No signature needed.\",\"Amazon: We tried to deliver your packge at 10:06 AM but couldnt access the building. It will be retried tommorow. Details at amazon.com/help. No action needed.\",\"Amazon: Your package is runing late because of a road closure on the toll route. New estimate is Thursday by 8 PM. Sorry for the delay. Track: amazon.com/orderstatus.\",\"Amazon: Order #114-8892301-6657820 was delivered to your mailroom at 4:18 PM. If you dont see it, check with the building desk first, then amazon.com/help. Thanks.\",\"Amazon: Your order total is $27.43 and will be charged after delivery. Your package is sceduled for Friday 9 AM-12 PM. No payment is needed now. View order: amazon.com/yourorders.\",\"Amazon: Delivery updte for order #113-5529014-7732086. The driver is 6 stops away. If you are out, it will go to the Amazon Hub locker at Riverton Station. Pickup details are in the app, not by text. amazon.com/help\",\"Amazon: Sorry, your delivery is delayed by one day due to weather. It should arive Saturday before 6 PM. You dont need to do anything. Updates: amazon.com/yourorders.\",\"Amazon: Your packge from order #111-7460392-8854107 is ready for pickup at the locker at Riverton Station. PIN 4820. No payment or reply needed. Details: amazon.com/help.\"]}"
+}

@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake toll or government notice (scam).\nWhat this category covers: Pretends to be a toll agency, the IRS, DMV, court, or another government office: unpaid toll, tax refund or debt, license suspension, fines.\nAngle for this batch: unpaid toll with late fee.\nClaimed sender or brand: the IRS.\nWho writes it: a scammer using a friendly, casual tone to lower suspicion.\nStyle: plain sentences, no emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Hi, this is the IRS. We show an unpaid toll of $12.50 plus a $5 late fee. Call 202-555-0143 to settle. Thanks.\", \"Hey there, IRS here. Looks like you forgot to pay a toll from last month. There's now a late fee added. Please reply YES and we'll send you the payment link.\", \"Good morning, this is a courtesy notice from the IRS. Our records show an outstanding toll balance of $23.75 with a $7.50 late fee. To avoid further penalties, visit https://irs-tollpay.com/pay and enter your case number 555-0199. Thanks!\", \"IRS notice: unpaid toll $8.00 + $3 late fee = $11 total. Please call 877-555-0121 to pay over the phone. We're here to help.\", \"Hi, it's the IRS. We tried to process your toll payment but it didn't go through. Now there's a $10 late fee. Can you text back the 6-digit code we sent to verify your account?\", \"Friendly reminder from the IRS: you have an unpaid toll of $15.00 and a late fee of $6.00. Total due $21.00. Pay now at https://toll-irs.net/settle to avoid a bigger fine.\", \"This is the IRS. We noticed you didn't pay a toll on your last trip. There's a $4.50 late fee added. Reply with PAY and we'll get this sorted out.\", \"IRS here. Your toll account shows a balance of $30.00 plus a $12.00 late fee. Please call 800-555-0167 to make a payment and avoid a lien. Thanks!\"]}"
+}

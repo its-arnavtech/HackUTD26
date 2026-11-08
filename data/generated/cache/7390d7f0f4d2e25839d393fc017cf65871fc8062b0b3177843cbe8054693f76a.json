@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: toll account statement or auto-replenish notice.\nClaimed sender or brand: E-ZPass.\nWho writes it: a friend or family member texting casually.\nStyle: all caps for key words.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Hey, my E-ZPass auto-replenish just hit. They took $35 from my card AGAIN. Statement says I went through the Jersey Turnpike 4 times last week. No idea how. You ever get double charged?\", \"Got a text from E-ZPass about a LOW BALANCE ALERT. Says I need to update payment info by FRIDAY or they charge a $25 fee. Is that real? The link looks legit but I'm paranoid.\", \"Your E-ZPass statement is ready. I opened mine and it shows a $12.50 toll at the Lincoln Tunnel on 3/15. That you? Because I wasn't in NYC that day.\", \"Just set my E-ZPass to AUTO-REPLENISH at $50. Got a confirmation text: 'AUTO-REPLENISH SUCCESSFUL. $50 added. New balance $62.75.' Feels good not worrying about it.\", \"E-ZPass said my account is PAST DUE. $18.40 for unpaid tolls from February. They gave me a code to pay online: EZP-8842. Should I just pay it or wait?\", \"Heads up, E-ZPass sent a notice that my transponder is INACTIVE. They want me to call 1-800-555-0143 or go to ezpass.com. I think it's because I updated my card. You had this happen?\", \"My E-ZPass statement came in. It's all good, balance auto-replenished $30 on the 1st. But there's a $4.50 charge from a toll plaza I don't recognize. Weird.\", \"Just got a text: 'E-ZPass: Your account balance is LOW ($8.25). Auto-replenish will trigger at $10. Reply YES to add $25 now.' I'm replying NO because I want to check the site first.\"]}"
+}

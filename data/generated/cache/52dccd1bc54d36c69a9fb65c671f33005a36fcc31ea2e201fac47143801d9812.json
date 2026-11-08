@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: recruiter or interview scheduling message.\nClaimed sender or brand: a hiring manager.\nWho writes it: the company's automated notification system.\nStyle: includes a reference or case number.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Ridgeline Recruiting: Interview confirmed for Thu 2:30 PM. Ref HM-4821. Details: https://ridgeline-hiring.example/i/4821. Reply C to confirm.\",\"Hi, this is the automated scheduler for the hiring manager at Vantage Point Labs. Your interview for the Data Analyst role is pending. Case #VP-7719. Please pick a slot by Fri 5 PM: https://vantagepoint-hiring.example/schedule/VP-7719. If you need accommodations, reply here.\",\"Interview reimbursement update: your $45 travel stipend for case #A-30917 has been approved. No action needed. Questions? Reply to this text or visit https://meridian-talent.example/support.\",\"Reminder: your phone screen with the hiring manager is tomorrow at 10:15 AM ET. Reference: RC-55803. Reschedule link expires tonight: https://blueoak-hiring.example/r/55803. Reply HELP for help.\",\"Case 8842-HM: We received your application for the Recruiter role. The hiring manager will review by 6/14. No documents needed yet. Status: https://summitpath-hiring.example/c/8842HM.\",\"Your interview access code is 7319 for case #HM-2048. Join at 1:00 PM via the link in your calendar. Need help? https://crestline-hiring.example/help.\",\"Hi — this is the automated notification system for the hiring manager at Aspen Grid. Your interview on 7/8 at 9:40 AM has been moved to 7/9 at 2:10 PM. Ref: AG-19208. Confirm or reschedule here: https://aspengrid-hiring.example/ag19208. Sorry for the change.\",\"Recruiting: ur interview w/ the hiring mgr is set for Mon 11am. Case #HM-6612. Pls confirm by Sun 5pm: https://northstar-hiring.example/confirm/6612. Thx!\"]}"
+}

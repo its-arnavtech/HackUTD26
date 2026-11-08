@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake toll or government notice (scam).\nWhat this category covers: Pretends to be a toll agency, the IRS, DMV, court, or another government office: unpaid toll, tax refund or debt, license suspension, fines.\nAngle for this batch: tax debt or warrant threat.\nClaimed sender or brand: TxTag.\nWho writes it: a scammer using a friendly, casual tone to lower suspicion.\nStyle: terse, like an automated system.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"TxTag: Hey, your toll balance of $47.80 is past due. If we don't hear from you, this goes to tax debt and a warrant. Pay here: txtag-pay.info\", \"TxTag alert: unpaid toll $212.50. This will be filed as tax delinquency. Call 512-555-0198 now to avoid a warrant. Ref TX-88421.\", \"Final notice from TxTag. You owe $8.75. Late fee added. If not paid, we issue a tax debt notice and possible warrant. Settle: txgov-pay.net\", \"Automated: TxTag toll violation escalated to tax lien. Call 214-555-0173 immediately. Bench warrant may be issued. Case #TT-55902.\", \"Hi, it's TxTag. Quick heads up: $154.30 unpaid toll. We've prepared a warrant. Call 469-555-0164 to resolve before it goes to the county tax office.\", \"TxTag: Toll debt $12.50. Warrant pending. Pay: txtag-pay.info\", \"TxTag: You have 1 unpaid toll. Reply YES to confirm and we'll send a payment link. Avoid tax penalty and warrant. Do not ignore.\", \"TxTag: $33.20 toll unpaid. To avoid tax fraud review and arrest warrant, call 713-555-0112 or pay at tx-tag-settle.org. Case TT-77103.\"]}"
+}

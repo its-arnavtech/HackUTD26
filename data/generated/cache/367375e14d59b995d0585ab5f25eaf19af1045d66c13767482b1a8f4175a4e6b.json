@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: real-style bank transaction or balance alert.\nClaimed sender or brand: Navy Federal.\nWho writes it: a small local business owner.\nStyle: terse, like an automated system.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Navy Federal: $45.20 debit on card ending 1234 at Home Depot 04/12. No action needed.\",\"Navy Federal Alert: Your business checking balance is $2,341.09 as of 7:15 PM ET. View at navyfederal.org\",\"Navy Federal: A $1,200.00 transfer from your account ending 5678 to account ending 9012 is scheduled for 04/15. If this wasn't you, call 1-888-555-0142.\",\"Navy Federal: We detected a $89.99 charge on your debit card ending 4321 at Office Depot on 04/10 at 2:34 PM ET. If this was you, no action needed. If not, call 1-800-555-0199 or visit navyfederal.org. Do not reply to this text.\",\"Navy Federal: Low balance alert. Your business checking account ending 7890 has $112.45. Transfer funds at navyfederal.org\",\"Navy Federal: Your card ending 2468 was used for $12.50 at Starbucks on 04/11. If you did not make this purchase, call 1-877-555-0123.\",\"Navy Federal: A pending charge of $350.00 from your account ending 1357 at Ace Hardware will post on 04/13. Questions? Call 1-800-555-0177.\",\"Navy Federal: A verification code was sent to your phone for a $500 transfer from account ending 2468. If you didn't request this, call 1-800-555-0188.\"]}"
+}

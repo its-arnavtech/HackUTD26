@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake toll or government notice (scam).\nWhat this category covers: Pretends to be a toll agency, the IRS, DMV, court, or another government office: unpaid toll, tax refund or debt, license suspension, fines.\nAngle for this batch: license or registration suspension.\nClaimed sender or brand: SunPass.\nWho writes it: a hurried scammer sending thousands of texts with minimal effort.\nStyle: chatty with one emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"SunPass: ur registration suspended due to unpaid tolls. Pay now: sunpass-flpay.info 😊\",\"Hey this is SunPass. Our records show ur vehicle registration at risk for suspension cuz of unpaid toll balance. Call 407-555-0192 to fix today 🚨\",\"URGENT SunPass notice - ur license will be suspended in 48 hrs for unpaid tolls. Reply YES to confirm identity n we'll send payment link 😊\",\"SunPass: to avoid registration suspension, text the 6-digit code we just sent to verify ur account n pay the $3.50 toll. Reply with code now ⚠️\",\"SunPass alert: plate XKJ-482 has unpaid tolls. Ur registration flagged for suspension. Settle here: fl-tollpay.co/pay 😊\",\"This is SunPass. Ur vehicle registration will be suspended tomorrow unless u call 888-555-0147 about unpaid tolls 😊\",\"SunPass: reply PAY to get a link n stop ur registration suspension for unpaid tolls 😊\",\"Final notice from SunPass: ur registration is suspended due to $12.75 in unpaid tolls. Pay immediately at sunpass-tolls.info/settle to avoid license suspension 😊\"]}"
+}

@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: real-style bank fraud check that asks only for a YES or NO reply.\nClaimed sender or brand: Citi.\nWho writes it: the company's automated notification system.\nStyle: chatty with one emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Citi: Did you just spend $87.43 at Target? Reply YES or NO 😊\",\"Hey, it's Citi 👋 We saw a $1,250.00 charge at Best Buy on your card ending 4821. Did you make this purchase? Reply YES if yes, NO if not.\",\"Citi Fraud Alert: A $349.99 purchase at Apple Store was attempted on your card ending 7392 at 3:42 PM ET. Reply YES to confirm it's yours, or NO to block it. Need your reply within 24 hrs 🙏\",\"Hi from Citi! 😊 Quick check: did you authorize $12.99 at Netflix on your card ending 1058? Reply YES or NO. You can also visit citi.com for account info.\",\"Citi: Your card ending 6644 was used for $56.78 at Shell. If this was you, reply YES. If not, reply NO. Ref #F3A9 😊\",\"Citi here 👋 We're checking in because your card ending 2210 was just used for $499.00 at Walmart. We want to make sure it's really you. Reply YES if you made this purchase, or NO if you didn't. Thanks!\",\"Citi alert: $9.99 at Spotify on card ending 8731. Did you do this? Reply YES/NO 😊\",\"Citi: Saw a $750.00 charge at Delta Air Lines on your card ending 5502. Reply YES if you made this booking, NO if not. We're here to help 😊\"]}"
+}

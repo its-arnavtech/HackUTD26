@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Fake job or easy money offer. The correct answer for these cards is: scam.\nBackground: Unsolicited job or income offer: remote task jobs with daily pay, recruiter who wants to move to a chat app, reshipping, crypto or investment opportunities.\nScenario for these cards: remote part-time task job with daily pay, sent as a marketing agency.\nThe person receiving the text: a new immigrant still learning English.\nTone of the text: warm and reassuring.\nDraft 8 cards, each a different realistic text. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Hi! This is the team at Sunrise Marketing Partners. We're hiring remote part-time helpers for simple online tasks. Daily pay is $120-$240, and no experience is needed. We can start you today and help you step by step. Tap here to choose a time: https://sunrisemarketingtasks.com/start\",\"Good morning! I'm from Blue Harbor Marketing. We have a remote task job with daily pay and easy training. If you want to start, please reply READY and I will send the first task. We will go slow, so don't worry about your English.\",\"Hello! This is Greenline Marketing Agency. We are looking for part-time task workers. You can earn $150 a day from your phone, and we pay every evening. Please text YES to 646-555-0177 to get the welcome instructions. We are happy to help you.\",\"Hi, it's the support team at Bright Path Marketing. Your remote task position is ready. Before we send your first paid task, please confirm your start with a small $25 refundable materials fee. It will be returned with your first daily pay. Reply FEE and we will send the secure payment link.\",\"Welcome! We are so glad you applied for the part-time marketing task job. To verify your phone and release your $180 daily pay account, please reply with the 6-digit code we just sent to you. This is normal and only takes a minute. Thank you!\",\"Hi there! I'm the recruiter from Maple Street Marketing. Your English is fine, we promise. We use WhatsApp for daily task updates and payment. Please add me here to start: https://maplestreetmarketingteam.com/chat. The job is remote, part-time, and paid every day.\",\"Hello! This is Coastline Marketing. We have a simple remote job for you: receive and check product samples, then send them on. We pay $200 daily. Please call 305-555-0118 to start. We will explain everything slowly. No experience needed.\",\"Good afternoon! This is the onboarding team at Starlight Marketing. We can give you 3-4 easy online tasks today and pay $95 by evening. To keep your spot, please reply START, and we will send the task link. We are here to support you.\"]}"
+}

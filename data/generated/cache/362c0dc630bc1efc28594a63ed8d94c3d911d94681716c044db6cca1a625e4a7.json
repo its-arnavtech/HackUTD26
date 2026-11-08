@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: real-style bank transaction or balance alert.\nClaimed sender or brand: Citi.\nWho writes it: a friend or family member texting casually.\nStyle: includes a reference or case number.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Citi alert on my phone: $38.12 at CVS, ref 55901. Was that you?\",\"Hey, got a Citi balance alert for $742.18 and a pending charge of $61.40 at Exxon, case #4482-10. Did you grab gas on my card?\",\"Mom, Citi just sent me a fraud alert for $219.99 at Best Buy, ref CT-88341-7. I'm on hold with the number on my card but wanted to check if you used it for the gift. No rush.\",\"Citi app shows my balance at $1,046.33 with a $12.50 pending at Starbucks, ref 77120. I checked citi.com myself, all good. Just making sure you didn't need my card today.\",\"Citi ref 30917: $85.20 at Target posted. That yours?\",\"Just got a Citi alert: $450.00 transfer out, ref #TR-2291-08, effective today. I didn't do it so I'm calling the number on my statement. Did you move money for the rent?\",\"My Citi card sent a low balance alert—$88.14 left on the daily limit? Weird. Ref 615-4432. I'm at the coffee shop now, can you call me back when you see this?\",\"Citi texted me a code for a $27.89 charge at Subway, ref 90218. I'm not typing it anywhere—just checking if you used my card for lunch. If not I'll call Citi from the app.\"]}"
+}

@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Wrong-number or family impersonation (scam).\nWhat this category covers: Starts a personal conversation to build trust: a fake wrong-number text, a relative or friend writing from a 'new number' who needs money, or a romance opener.\nAngle for this batch: romance or dating opener.\nClaimed sender or brand: no brand.\nWho writes it: a careful scammer who avoids obvious red-flag words.\nStyle: terse, like an automated system.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Hi, is this Marcus? We matched on that dating app last night. My phone died before I got your number. Text me back at 305-555-0178 so we can pick up where we left off.\",\"hey stranger. you gave me your number at the bar friday but i think i wrote it down wrong. try me? 212-555-0143. don't leave me hanging\",\"This might be random but I think we met at the gym on Tuesday? You said you'd text me. I'm still waiting :) Reply if this is you?\",\"Hey it's Sam from the dating site. My account got suspended for no reason. Can we talk here? Send a quick hi to 415-555-0199 so I know it's you.\",\"I think you have the wrong number but you seem nice. I'm new in town. Want to grab a coffee? Text me back.\",\"hey, is this the girl from the bookstore? I lost your number. if this is you, text me at 646-555-0122. I'd love to continue our conversation.\",\"sorry if this is weird. i got your number from a friend. he said you were looking for someone? check my profile here: chat-now.fake/abc123. let's chat.\",\"Hi, I'm Alex. We chatted on that dating app but I lost the thread. Can you send me a message on 702-555-0166? I'd like to get to know you better.\"]}"
+}

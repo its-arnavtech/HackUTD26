@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake bill or payment demand (scam).\nWhat this category covers: Fake bill, overdue balance or failed payment from a phone carrier, utility, or subscription, with a threat of shut-off and a link to pay.\nAngle for this batch: failed autopay, update payment method.\nClaimed sender or brand: Spotify.\nWho writes it: a hurried scammer sending thousands of texts with minimal effort.\nStyle: plain sentences, no emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Spotify: Your autopay failed. Update payment in 24h or account paused. Pay at spotify-bill-fix.com\", \"We couldn't charge your card for Spotify Premium this month. To avoid interruption, update your payment method here: https://spotify-payments.info/update\", \"Spotify billing: last payment didn't go through. Reply YES to get a secure link to update your card. Or call 310-555-0192\", \"Your Spotify subscription is past due because autopay failed. Please update your payment info at my-spotify-billing.com/pay to keep your music.\", \"Spotify: card declined. Update now or service ends today. Link: spotify-renewal.co/update\", \"Hey, this is Spotify support. Your autopay didn't process. Need you to confirm your card details by replying with the 6-digit code we just sent. Thanks.\", \"Spotify payment failed. To reactivate, call 646-555-0177 or visit spotify-pay-fix.net. Don't ignore or you'll lose your playlists.\", \"Autopay for Spotify Premium failed on 3/12. Update your payment method within 48 hours to avoid cancellation: https://spotify-billing-update.org/pay\"]}"
+}

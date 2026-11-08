@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake delivery notice (scam).\nWhat this category covers: Fake package or postal notice: missed delivery, address problem, customs or redelivery fee, package held.\nAngle for this batch: delivery attempt failed, reschedule.\nClaimed sender or brand: DHL.\nWho writes it: a scammer using a friendly, casual tone to lower suspicion.\nStyle: includes a reference or case number.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Hi! DHL tried to deliver your parcel today but no one was home. Ref: DH-4821-993. Reschedule here: dhl-redelivery.co/rs/4821 or call 214-555-0177. Thanks!\",\"DHL notice: delivery attempt failed for package ref 7783-2210. We need a new address. Reply YES to reschedule or visit dhlpackages.support/a/7783. Thanks!\",\"Hey, it's DHL. We missed you today for delivery case #DHL-5590-118. To avoid return, reschedule at https://dhl-reschedule.info/5590118 or text back a time. Thx!\",\"Your DHL parcel (ref: 9042-6671) couldn't be delivered due to an address issue. Please call 877-555-0139 to arrange redelivery. A small $1.99 fee may apply.\",\"DHL: Delivery attempt failed. Case 3312-8845. Confirm your details and pay the $2.50 redelivery fee at dhl-fee-pay.com/c/33128845. Package held 48hrs.\",\"Hi from DHL! We tried delivering your package but need a gate code. Reply with the code and we'll retry. Ref: DHL-8821-004. Thanks!\",\"DHL alert: missed delivery for tracking 5521-7790. Reschedule now: https://dhl-delivery-help.net/r/55217790. If link fails, call 310-555-0182. Don't reply to this text.\",\"Package ref DHL-1109-7734 could not be delivered. Please reply R to reschedule or call 646-555-0121. A $3.99 redelivery fee applies. Thanks!\"]}"
+}

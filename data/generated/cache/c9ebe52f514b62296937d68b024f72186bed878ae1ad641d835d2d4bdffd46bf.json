@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake delivery notice (scam).\nWhat this category covers: Fake package or postal notice: missed delivery, address problem, customs or redelivery fee, package held.\nAngle for this batch: package held at warehouse.\nClaimed sender or brand: Amazon.\nWho writes it: a careful scammer who avoids obvious red-flag words.\nStyle: plain sentences, no emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Your Amazon package is being held at our warehouse due to an address issue. Please call 800-555-0142 to arrange pickup.\",\"Amazon here. We have a parcel for you at the warehouse that could not be delivered. Reply YES and we'll send the redelivery details.\",\"Hi, this is Amazon. A package for your address is currently at our holding facility. There's a small storage fee. You can settle it at amzn-hold.net/pay.\",\"We attempted delivery of your Amazon order but the address on file needs a quick confirmation. The package is now at our warehouse. Please visit amazon-verify.info/address to update it so we can release it.\",\"Amazon delivery notice: Your package is at our warehouse awaiting a delivery code. Reply with the 6-digit code from your order confirmation to release it.\",\"Your Amazon parcel has been at our warehouse for 3 days. To avoid return, call 888-555-0199 and provide your order number. We can hold it for 48 more hours.\",\"Amazon: package held at warehouse. Call 877-555-0164.\",\"Hello, Amazon logistics here. We have a package for you at our warehouse but the label is damaged. Please reply with your full name and address so we can reprint it.\"]}"
+}

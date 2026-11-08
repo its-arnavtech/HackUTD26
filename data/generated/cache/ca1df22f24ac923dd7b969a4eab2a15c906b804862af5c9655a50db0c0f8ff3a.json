@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Fake account security alert. The correct answer for these cards is: scam.\nBackground: Pretends to protect a non-bank account (carrier, Apple, Amazon, email, social media): login alert, password reset, SIM change, or asks the person to send back a one-time code.\nScenario for these cards: suspicious order placed on your account, sent as Netflix.\nThe person receiving the text: a college student with a part-time job.\nTone of the text: short and urgent.\nDraft 8 cards, each a different realistic text. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Netflix: Suspicious order placed on your account for a $49.99 annual gift subscription. If this wasn't you, cancel now at netflix-secure-billing.com/cancel\",\"Netflix Alert: A new device ordered a $89.99 premium upgrade. Not you? Reply YES to lock your account and stop the order now.\",\"Your Netflix account was charged $129.99 for an order shipped to 555-0177. To dispute, call 866-555-0198 immediately. Case #NF-4471.\",\"We blocked an order for 3 Netflix gift cards totaling $150 on your account. Confirm you didn't make it by sending the 6-digit code we just texted to 555-0163.\",\"Netflix: Unusual order attempt from a new location. Verify your account within 15 min at https://netflix-verify-account.net/confirm or your plan will be suspended.\",\"Your Netflix profile just ordered a $75.00 add-on using card ending 4417. If this isn't yours, reply NO and send back the 4-digit code from your email to stop the charge.\",\"Netflix Security: Someone ordered a $59.99 account upgrade. To cancel, text 555-0191 with your account email and the verification code we send. Do not ignore.\",\"Order confirmation: Netflix Premium 12-month, $199.99. If unauthorized, call our fraud line at 800-555-0129 now. Reference NF-8812.\"]}"
+}

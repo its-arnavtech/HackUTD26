@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Fake prize, reward or refund. The correct answer for these cards is: scam.\nBackground: Promises money or a gift: prize or giveaway winner, expiring reward points, gift card, unclaimed refund, survey reward.\nScenario for these cards: free gift card for a survey, sent as Kroger.\nThe person receiving the text: a retiree in Florida who banks online.\nTone of the text: short and urgent.\nDraft 8 cards, each a different realistic text. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"KROGER: You've won a $100 gift card! Complete our 30-sec survey now: kroger-gift.info/claim. Expires today.\",\"Final notice: Your free Kroger gift card is waiting. Reply YES to confirm your address. Must claim in 1 hour.\",\"Kroger Survey: $50 reward for your opinion. Call 850-555-0192 now. Limited spots.\",\"You have an unclaimed $100 Kroger gift card from our survey. Verify at kroger-rewards.co/verify before 6pm.\",\"Kroger: Reply with the 6-digit code we sent to claim your $100 gift card. Urgent.\",\"Your Kroger gift card is on hold. Small $1.95 shipping fee needed. Pay at kroger-giftcard.net/pay. Urgent.\",\"Congratulations! You are today's Kroger gift card winner. Claim at kroger-prize.xyz/win. Act fast.\",\"Kroger: Reply with your ZIP to see if you qualify for a free $100 gift card. Only 3 left in Florida.\"]}"
+}

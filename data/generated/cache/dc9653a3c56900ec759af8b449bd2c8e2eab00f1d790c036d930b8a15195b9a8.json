@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Bank impersonation (scam).\nWhat this category covers: Pretends to be a bank or card issuer: fraud alert, locked or suspended account, card declined, verify your identity, confirm a charge by link or callback.\nAngle for this batch: fraud alert asking to verify a charge.\nClaimed sender or brand: Navy Federal.\nWho writes it: a careful scammer who avoids obvious red-flag words.\nStyle: plain sentences, no emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Navy Federal: A $63.21 charge at Target was just attempted on your card. If this wasn't you, call 555-0147.\",\"Navy Federal fraud alert: We noticed a $212.45 purchase at Best Buy on your account. Please review at nfcu-review.site or call 555-0182 if you have questions.\",\"Navy Federal: Did you authorize a $9.99 charge at Spotify? Reply YES or NO. If unsure, call 555-0163.\",\"Navy Federal: Your card ending in 1234 was used for a $487.00 charge at Home Depot. If you did not make this purchase, please visit navyfederal-verify.info to confirm or call 555-0199.\",\"Navy Federal: $1.50 charge at Shell. Did you make it? Reply 1 for yes, 2 for no.\",\"Navy Federal: We noticed a $750.00 charge at Apple Store that we couldn't confirm. To verify, call 555-0122 or go to secure-nfcu-alert.com.\",\"Navy Federal: A $34.99 charge at CVS was flagged. To confirm you made it, reply with the 6-digit code sent to your phone. Or call 555-0155.\",\"Navy Federal: A $89.99 charge at Amazon is pending. If you didn't make it, please call 555-0134 or review at navyfederal-alerts.net.\"]}"
+}

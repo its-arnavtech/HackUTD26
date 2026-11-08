@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Bank impersonation (scam).\nWhat this category covers: Pretends to be a bank or card issuer: fraud alert, locked or suspended account, card declined, verify your identity, confirm a charge by link or callback.\nAngle for this batch: unusual sign-in on online banking.\nClaimed sender or brand: Wells Fargo.\nWho writes it: a scammer whose first language isn't English, with slightly odd grammar.\nStyle: chatty with one emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"We see unusual login to your Wells Fargo online banking from new device 😮 Please verify now at wf-security-check.com to avoid lock.\",\"Hello dear customer, this is Wells Fargo fraud team. We notice strange sign in on your account from unknown computer. For your safety please call us back at 214-555-0187. Thank you 😊\",\"Wells Fargo alert: We detected unusual sign-in attempt on your online banking. Did you try to log in just now? Reply YES or NO. If not, we lock account 😕\",\"Hi, it's Wells Fargo security. We see suspicious login on your online banking. To confirm it's you, please reply with the 6-digit code we just sent to your phone. 🙏\",\"Unusual sign-in to your Wells Fargo account. Verify identity here: wf-verify-online.net 😬\",\"Good day, we are from Wells Fargo bank. Somebody try to access your online banking from different location. This is not you? Please check link wf-alert-login.com and confirm. 😊\",\"Dear customer, Wells Fargo here. We notice an unusual sign-in on your online banking account from a device we don't recognize. Please call our fraud prevention line at 305-555-0122 to secure your account. Thank you 😊\",\"Wells Fargo: unusual sign-in on your online banking. To verify, reply with the code sent to your phone. If not you, call 312-555-0145 😮\"]}"
+}

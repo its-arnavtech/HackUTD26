@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake toll or government notice (scam).\nWhat this category covers: Pretends to be a toll agency, the IRS, DMV, court, or another government office: unpaid toll, tax refund or debt, license suspension, fines.\nAngle for this batch: benefits or stimulus payment.\nClaimed sender or brand: E-ZPass.\nWho writes it: an organized fraud ring copying the brand's official alert template closely.\nStyle: plain sentences, no emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"E-ZPass: $120 stimulus rebate waiting. Confirm at ezpass-rebate.co/c\",\"E-ZPass: Unclaimed toll credit $142.50. Claim at ezpass-relief.com/claim before it expires.\",\"E-ZPass benefit notice: Your account qualifies for a stimulus rebate. Reply YES to verify or call 1-800-555-0147.\",\"E-ZPass Alert: Final notice for your $75 toll stimulus payment. Confirm deposit info at ezpass-benefits.net/deposit within 24 hrs.\",\"E-ZPass: We tried to deposit your $95 toll rebate but your address is outdated. Update at ezpass-update.org/rebate or call 555-0139.\",\"E-ZPass: Your $200 stimulus payment is on hold. Text the 6-digit code from your bank alert to 555-0182 to release funds.\",\"E-ZPass: Your stimulus check was returned because your address is outdated. Reply with your ZIP code to confirm and receive your $150 toll relief payment.\",\"E-ZPass official notice: Our records show you have not claimed your 2024 toll stimulus payment of $187.23. This is your final reminder. To avoid forfeiture, verify your account details at ezpass-stimulus.org/verify or call 1-800-555-0164. Reference ID 88213.\"]}"
+}

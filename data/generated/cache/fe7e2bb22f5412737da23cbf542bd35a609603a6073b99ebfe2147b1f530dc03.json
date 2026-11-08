@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake account security alert (scam).\nWhat this category covers: Pretends to protect a non-bank account (carrier, Apple, Amazon, email, social media): login alert, password reset, SIM change, or asks the person to send back a one-time code.\nAngle for this batch: account will be deleted or disabled.\nClaimed sender or brand: T-Mobile.\nWho writes it: a scammer using a friendly, casual tone to lower suspicion.\nStyle: chatty with one emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Hi there! 👋 This is T-Mobile. We saw a login from an unknown device. If this wasn't you, your account may be deleted for security. Verify now at tmob-support.help/verify or call 888-555-0123.\", \"T-Mobile: Your account is scheduled for deletion due to a security check. Reply YES to keep it active. 😊\", \"Hey! It's T-Mobile support 😊 We're updating security and your account will be disabled unless you send us the 6-digit code we just texted you. Thanks!\", \"Urgent: your T-Mobile account will be disabled tomorrow due to unusual login attempts. Please call our security team at 214-555-0187 to restore access. 😊\", \"T-Mobile security alert: someone tried to reset your password. To avoid your account being deleted, confirm your identity here: secure-tmob.info/confirm 😊\", \"Hey friend! 😊 We're doing a quick security cleanup and your T-Mobile account hasn't been verified in a while. To stop it from being disabled, just reply with the one-time code we sent to your phone. Easy peasy!\", \"T-Mobile here! 👋 Your account is at risk of being deleted because of a SIM change request. If that wasn't you, please log in at tmobile-account.help/restore and confirm your details.\", \"T-Mobile: Acct will be disabled in 24 hrs for security reasons. Call 855-555-0192 now to verify. 😊\"]}"
+}

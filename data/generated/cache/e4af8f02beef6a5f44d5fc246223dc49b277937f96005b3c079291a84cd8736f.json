@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: recruiter or interview scheduling message.\nClaimed sender or brand: a recruiter from a mid-size company.\nWho writes it: a company's customer-care team writing a short service text.\nStyle: all caps for key words.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Hi Alex, this is Dana from HR at Corevista. CONFIRMED your interview for THU 2/13 at 10AM. Reply YES to confirm or call 312-555-0187. Thanks!\", \"Jordan, we've moved your interview to FRI 3/21 at 2:30 PM. Please CONFIRM by 5 PM today: corevista.com/interview. Questions? 415-555-0122.\", \"ALERT: Your interview slot for MON 4/7 at 9 AM is NOT confirmed. You have until 11:59 PM TONIGHT to respond. Reply 1 to CONFIRM, 2 to RESCHEDULE. – Northbridge Talent\", \"Your video interview link is ready. Use CODE 4821 to join at 1:00 PM CST. Go to northbridge.com/interviews. Do NOT share this code. – Recruiting\", \"Hi Sam, thanks for applying to the Operations Analyst role at Larkspur Group. We'd like to schedule a 30-min phone interview. Available times: TUE 6/10 11AM, WED 6/11 3PM, or THU 6/12 9AM. Reply with your pick. – Taylor, Recruiting Coordinator, 646-555-0149\", \"Reminder: Your onsite interview with Meridian Labs is TOMORROW at 8:45 AM. Please arrive 15 min early. Bring ID. Reschedule by 6 PM today: meridianlabs.com/schedule or 202-555-0163.\", \"Offer update: We've extended your deadline to accept the role to FRI 7/18 at 5 PM. Log in to the portal at quantumleap.com/offer to review. No action needed if you've already accepted. – HR\", \"FINAL REMINDER: Your background check authorization is due by MIDNIGHT. Complete it at vantagehr.com/check to keep your start date of 8/4. Questions? 503-555-0114.\"]}"
+}

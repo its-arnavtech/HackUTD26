@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake prize, reward or refund (scam).\nWhat this category covers: Promises money or a gift: prize or giveaway winner, expiring reward points, gift card, unclaimed refund, survey reward.\nAngle for this batch: free gift card for a survey.\nClaimed sender or brand: Amazon.\nWho writes it: a careful scammer who avoids obvious red-flag words.\nStyle: brand prefix like 'BRAND:' at the start.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"AMAZON: Thanks for being a Prime member. Complete a 30-sec survey and pick a $50 gift card. Details: amzn-survey.co/r/7f3k\", \"AMAZON: Order #123-4567890-1234567 qualifies for a $30 gift card after a 1-min survey. See options at amzn-gift.co/claim?o=1234567890\", \"AMAZON: You've been selected for a $100 gift card for completing our customer survey. Call 888-555-0142 to claim before it expires.\", \"AMAZON: Quick survey – tell us about your last delivery and get a $10 gift card. Reply 1 for yes, 2 for no.\", \"AMAZON: Your 250 reward points expire in 48 hrs. Convert them to a $25 gift card by answering 3 questions here: amzn-points.co/redeem?u=7d2f\", \"AMAZON: 30-sec survey = $20 gift card. Start: amzn-reward.co/s/9x2\", \"AMAZON: Complete your profile survey and receive a $50 gift card. Verify your email to get started: amzn-verify.co/email\", \"AMAZON: As a thank you for your recent purchase, you're invited to take a 2-minute survey. Finish it and choose a $40 gift card from our rewards page: amzn-thanks.co/survey/2m\"]}"
+}

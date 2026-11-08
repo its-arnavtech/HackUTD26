@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake account security alert (scam).\nWhat this category covers: Pretends to protect a non-bank account (carrier, Apple, Amazon, email, social media): login alert, password reset, SIM change, or asks the person to send back a one-time code.\nAngle for this batch: SIM or eSIM transfer warning.\nClaimed sender or brand: Microsoft.\nWho writes it: a scammer using a friendly, casual tone to lower suspicion.\nStyle: brand prefix like 'BRAND:' at the start.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Microsoft: We noticed a SIM transfer request on your account. If this wasn't you, verify now at msft-verify.co/sim or call 888-555-0123.\",\"Microsoft: Your eSIM was just moved to a new device. Didn't do it? Reply STOP to lock your account or visit ms-secure.link/esim.\",\"Microsoft: A SIM swap was attempted on your number. To cancel, go to microsoft-account-help.info/swap or text NO.\",\"Microsoft: Hey, we blocked an eSIM transfer for your account but need you to confirm you're the owner. Just reply with the 6-digit code we sent to your phone.\",\"Microsoft: Your SIM was changed on 3/14. If that was you, ignore this. If not, call 555-0142 immediately to secure your Microsoft account.\",\"Microsoft: eSIM activation pending. To stop transfer, send 'CANCEL' to 555-0199 or visit msft-support.help/esim-stop.\",\"Microsoft: We see a new SIM was requested for your account. That's not you? Click msft-security-check.com/verify to cancel or reply HELP.\",\"Microsoft: Your Microsoft account is at risk due to a SIM change. For your safety, please confirm your identity by sending the verification code you just received to this number.\"]}"
+}

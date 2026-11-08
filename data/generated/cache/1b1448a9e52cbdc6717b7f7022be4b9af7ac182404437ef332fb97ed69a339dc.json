@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Fake toll or government notice. The correct answer for these cards is: scam.\nBackground: Pretends to be a toll agency, the IRS, DMV, court, or another government office: unpaid toll, tax refund or debt, license suspension, fines.\nScenario for these cards: benefits or stimulus payment, sent as Illinois Tollway.\nThe person receiving the text: a nurse working night shifts.\nTone of the text: formal and polite.\nDraft 8 cards, each a different realistic text. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Illinois Tollway: You are eligible for a $175.00 stimulus benefit credit. To confirm your eligibility and receive payment, please visit https://il-tollway-benefits.com/claim and enter reference ILT-4821. This offer expires in 48 hours. Thank you.\", \"Dear Illinois Tollway customer, our records show an unclaimed benefit of $92.50 from the 2024 toll relief program. Please reply YES to verify your mailing address and receive your payment. For questions call 312-555-0147. Thank you.\", \"Illinois Tollway Notice: A stimulus payment of $250.00 is pending for your account. To release it, please call 800-555-0198 and provide your debit card number for verification. Reference: STIM-7734. We appreciate your prompt attention.\", \"Illinois Tollway: Your benefit check for $310.00 is ready. Please confirm your bank account details at https://illinoistollway-payments.com/verify within 24 hours to avoid cancellation. Thank you for your cooperation.\", \"Illinois Tollway: You have an unpaid balance of $46.20 that must be settled before your $200.00 stimulus benefit can be processed. Please pay securely at https://il-tollway-pay.com/benefit using reference 5590. Thank you.\", \"Illinois Tollway: To receive your $150.00 toll relief stimulus, please text the 6-digit code we just sent to your phone to 312-555-0162. This code verifies your identity. Reply STOP to opt out. Thank you.\", \"Illinois Tollway: Our records indicate you qualify for a $120.00 benefit. Please reply with your full name and date of birth to confirm eligibility. For assistance, call 800-555-0134. Reference: BEN-8821. Thank you.\", \"Illinois Tollway: Final notice—your $275.00 stimulus payment will be forfeited unless you update your payment information at https://illinoistollway-benefit.com/update. Please act before 11:59 PM today. Thank you.\"]}"
+}

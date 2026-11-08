@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Fake toll or government notice. The correct answer for these cards is: scam.\nBackground: Pretends to be a toll agency, the IRS, DMV, court, or another government office: unpaid toll, tax refund or debt, license suspension, fines.\nScenario for these cards: unpaid toll with late fee, sent as a county court.\nThe person receiving the text: a nurse working night shifts.\nTone of the text: warm and reassuring.\nDraft 8 cards, each a different realistic text. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Hi, this is a courtesy reminder from Cedarbrook County Court. Our records show an unpaid toll balance of $18.40 plus a $12.00 late fee. We know night shifts make errands hard, so you can resolve it securely today at https://cedarbrookcourt-pay.info. — Court Services\",\"Good morning, this is Cedarbrook County Court. We're sending a friendly notice that your toll payment is past due and a late fee has been added. To keep this from moving to a license hold, please call 855-555-0162 and we'll walk you through it. Thank you for your patience.\",\"Hi, Cedarbrook County Court here. We see the unpaid toll notice with late fee is still open on your record. If you're heading into a night shift, no need to worry—just reply YES and we'll text you the secure payment steps. We're happy to help.\",\"This is a warm reminder from Cedarbrook County Court: your toll balance of $27.75 and $15 late fee are due. You can reply PAY to receive a payment request, or call 877-555-0198. We want to help you clear this up before any court fee is added.\",\"Hello, Cedarbrook County Court courtesy notice. Your unpaid toll and late fee can still be handled without a court visit. Please use the secure portal at https://pay.cedarbrookcourt.info and enter notice TC-4827. If you need help after your shift, call 855-555-0134.\",\"Hi, this is Cedarbrook County Court. We're reaching out gently because a late fee was added to your unpaid toll. To verify we're speaking with the right person, please reply with the 6-digit code we just sent to your phone. Once confirmed, we'll share the payment options.\",\"Good evening, Cedarbrook County Court here. We know you're likely starting a night shift, so this is just a quick note: the unpaid toll plus late fee is still open. You can pay the $31.50 total at https://cedarbrookcourt-notice.org or call 866-555-0147 whenever it suits you.\",\"Hi, Cedarbrook County Court. We don't want this to worry you—your toll notice with late fee is still unpaid. Please call 855-555-0171 today so we can confirm your case and take payment by phone. We're here to make it simple.\"]}"
+}

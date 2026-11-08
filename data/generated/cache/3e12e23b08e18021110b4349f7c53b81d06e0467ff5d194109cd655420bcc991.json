@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Bank impersonation (scam).\nWhat this category covers: Pretends to be a bank or card issuer: fraud alert, locked or suspended account, card declined, verify your identity, confirm a charge by link or callback.\nAngle for this batch: card declined or frozen.\nClaimed sender or brand: Capital One.\nWho writes it: a scammer using a friendly, casual tone to lower suspicion.\nStyle: terse, like an automated system.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Capital One: We noticed a $487.23 charge at Walmart.com that we declined. If this was you, reply YES. If not, call 833-555-0127.\",\"C1 Alert: Your card ending 4472 is frozen due to unusual activity. Verify at capitalone-secure-verify.com/freeze to unlock. Don't ignore.\",\"Hi, this is Capital One fraud team. Did you just try $1,299.00 at Best Buy? Reply 1 for yes, 2 for no. Or call 800-555-0198.\",\"Capital One: Card declined at Target? We can fix it. Confirm your ZIP at capone-verify.net/zip to keep shopping.\",\"Your Capital One card is locked. Text 655-555-0142 with the 6-digit code we just sent to verify your identity and restore access.\",\"Fraud alert: A $92.17 gas station charge on your Capital One card was flagged. If authorized reply OK; if not call 888-555-0164 now.\",\"Capital One security: We blocked a $750.00 transfer from your account. Confirm you didn't request it: https://c1-secure-help.com/confirm. Failure to respond may freeze your card.\",\"C1: Card frozen. Pay $5 reactivation fee to 214-555-0139 via Zelle. Refunded after.\"]}"
+}

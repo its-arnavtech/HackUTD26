@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake prize, reward or refund (scam).\nWhat this category covers: Promises money or a gift: prize or giveaway winner, expiring reward points, gift card, unclaimed refund, survey reward.\nAngle for this batch: unclaimed refund or rebate.\nClaimed sender or brand: T-Mobile Tuesdays.\nWho writes it: a scammer using a friendly, casual tone to lower suspicion.\nStyle: includes a reference or case number.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Hey! T-Mobile Tuesdays here — you've got an unclaimed $18.42 rebate from your last promo. Case #TT-88412. Claim it in 24 hrs: tmobiletues-refund.com/claim?id=88412\",\"T-Mobile Tuesdays: You have an unclaimed refund of $6.75 (Ref RBT-20731). Reply YES and we'll send your claim link. Msg&data rates may apply.\",\"Hi! We tried reaching you about a $25 T-Mobile Tuesdays rebate that's still unclaimed. Case 551-4472. Call 888-555-0147 before Fri to verify. Thanks!\",\"T-Mobile Tuesdays reward update: case #A773-19. Your $12.00 rebate is ready but we need a quick confirmation. Text the 6-digit code we just sent to confirm. Don't share it with anyone else.\",\"Yooo T-Mobile Tuesdays — looks like your $9.99 refund from the giveaway didn't get picked up. Ref: #RX-3388. Grab it here before it expires tonight: tmob-tuesdays-rewards.co/rx3388\",\"T-Mobile Tuesdays: Unclaimed rebate $14.50, case TT-9012-6. Need a small $1.99 processing fee to release it. Pay at tmobile-rebate-help.com/pay/90126. Quick, expires today.\",\"Hey it's T-Mobile Tuesdays support. Case #4471-AB. Our system shows a $20 reward refund waiting on you. Just reply with your email and the last 4 of your card so we can send it over.\",\"T-Mobile Tuesdays: your $7.25 unclaimed rebate case #TT-2219 is about to expire. Verify your claim by calling 214-555-0183. Have your reference number handy. Thanks!\"]}"
+}

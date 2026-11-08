@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Bank impersonation (scam).\nWhat this category covers: Pretends to be a bank or card issuer: fraud alert, locked or suspended account, card declined, verify your identity, confirm a charge by link or callback.\nAngle for this batch: unusual sign-in on online banking.\nClaimed sender or brand: Capital One.\nWho writes it: an organized fraud ring copying the brand's official alert template closely.\nStyle: all caps for key words.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"CAPITAL ONE ALERT: Unusual sign-in from a new device. If this wasn't you, SECURE your account now: capone-secure-verify.com/alert or call 800-555-0199.\",\"Capital One: We noticed a SIGN-IN from an unrecognized browser on your online banking. To LOCK your account, reply YES. To confirm it was you, reply NO. Msg&data rates may apply.\",\"CAP ONE FRAUD: A new sign-in to your online banking was detected from Dallas, TX at 2:14 AM. If you did NOT authorize this, VERIFY your identity immediately at https://capitalone-verify-login.net/secure or call 888-555-0142. Do not ignore.\",\"Capital One: To verify your unusual sign-in, reply with the 6-digit code sent to your phone. We'll never ask for your password. Reply STOP to opt out.\",\"ALERT: Unusual sign-in on your Capital One online account. Your access is temporarily LIMITED. Call 877-555-0188 NOW to confirm your identity and restore access.\",\"Capital One: Unusual sign-in attempt BLOCKED. Confirm it was you: c1-online-secure.co/verify\",\"We saw a SIGN-IN to your Capital One account from an unknown IP. If this wasn't you, click https://capitalone-alerts-secure.org/login to SECURE your account. Ignore if you recognize this activity.\",\"CAPITAL ONE: Suspicious sign-in detected. Reply '1' to approve, '2' to DENY and lock your card. For help call 855-555-0167.\"]}"
+}

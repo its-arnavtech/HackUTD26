@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake account security alert (scam).\nWhat this category covers: Pretends to protect a non-bank account (carrier, Apple, Amazon, email, social media): login alert, password reset, SIM change, or asks the person to send back a one-time code.\nAngle for this batch: asks the person to reply with a verification code.\nClaimed sender or brand: T-Mobile.\nWho writes it: a scammer using a friendly, casual tone to lower suspicion.\nStyle: chatty with one emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Hey it’s T-Mobile 👋 We’re seeing a login from a new device on your account. If this wasn’t you, just reply with the 6-digit code we just sent so we can lock it down.\", \"T-Mobile here! 😊 Quick security check: someone tried changing your account PIN. Reply YES and send the verification code from the text to stop it.\", \"Hi! T-Mobile fraud team 🙌 We noticed a SIM swap request on your line. To verify it's really you, reply with the code you just got. Takes 10 sec.\", \"This is T-Mobile. Your account had a password reset attempt. If that wasn't you, reply back with the 4-digit security code so we can cancel it 🙂\", \"T-Mobile alert 📱 A new phone was added to your account. Not you? Reply with the verification code you received and we’ll reverse it right away.\", \"Hey, it's T-Mobile customer care 👋 We're holding a suspicious login to your account. Send us the 6-digit code from your text to confirm your identity and keep your line safe.\", \"T-Mobile security: your online account was accessed from a new location. If this wasn't you, text back the one-time code so we can secure it. Thanks! 😊\", \"Hi from T-Mobile! 🙏 We’re confirming a SIM change on your account. Please reply with the code we just sent to verify it was you. If not, we’ll block it.\"]}"
+}

@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: real-style bank fraud check that asks only for a YES or NO reply.\nClaimed sender or brand: Bank of America.\nWho writes it: a small local business owner.\nStyle: brand prefix like 'BRAND:' at the start.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Bank of America: Did you authorize a $47.82 charge at Office Depot on your business card? Reply YES or NO.\", \"Bank of America Fraud Alert: A $1,250.00 purchase at Home Depot was made on your business account ending 4321. If you made this purchase, reply YES. If not, reply NO. Details at bankofamerica.com. Case #BF-88213.\", \"Bank of America: A $299.99 charge at Staples was attempted on your business debit card. Reply YES if you authorized it, NO if you did not. Please reply within 24 hours to avoid a hold.\", \"Bank of America: $12.99 at Shell. Did you authorize? Reply YES or NO.\", \"Bank of America: We flagged a $3,450.00 wire transfer request from your business account. Did you initiate this? Reply YES or NO. If NO, we'll block it. No need to call unless you reply NO. Ref: WT-55892.\", \"Bank of America: Suspicious login to your business online banking from an unrecognized device. Was this you? Reply YES or NO. Learn more at bankofamerica.com.\", \"Bank of America: A $89.50 charge at FedEx Office on your business card ending 7890. Reply YES if legit, NO if fraud. We will never ask for your password or PIN by text.\", \"Bank of America: We noticed a $2,100.00 charge at Best Buy on your business credit card. This is a fraud check. Reply YES if you authorized this charge, or NO if you did not. If you reply NO, we will freeze the card and send a new one. Check your account at bankofamerica.com. Please do not reply with personal info. Case ID: FR-39402.\"]}"
+}

@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Bank impersonation (scam).\nWhat this category covers: Pretends to be a bank or card issuer: fraud alert, locked or suspended account, card declined, verify your identity, confirm a charge by link or callback.\nAngle for this batch: fraud alert asking to verify a charge.\nClaimed sender or brand: U.S. Bank.\nWho writes it: a careful scammer who avoids obvious red-flag words.\nStyle: plain sentences, no emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"U.S. Bank Fraud Alert: A $412.67 purchase at Target was attempted on your card ending 8842. If this wasn't you, verify at usbank-security-check.com/verify or call 800-555-0198.\",\"We noticed a charge of $89.99 to your U.S. Bank card at a gas station in Dallas, TX. Reply YES if you made this purchase. Reply NO to freeze your card and speak with fraud support.\",\"U.S. Bank: Your card ending 3317 was used for $1,250.00 at Best Buy in Chicago. If you did not authorize this, please call our fraud line at 312-555-0143 immediately. Do not reply to this text.\",\"U.S. Bank fraud alert: A $75.00 charge at Walgreens is pending. To confirm it's yours, reply with the 6-digit code we just sent to your phone.\",\"Did you authorize a $230.45 charge at a Shell station in Phoenix? If not, secure your account here: usbankcardverify.net/alert. Takes 2 minutes.\",\"U.S. Bank: A $16.99 charge from Netflix was declined on your card ending 9021. If this is your subscription, no action needed. If not, verify at usbank-fraud-alert.com/login.\",\"Fraud alert from U.S. Bank: We blocked a $540.00 purchase at Home Depot on your debit card. Call 614-555-0177 to verify. Reference case #US-4472.\",\"U.S. Bank: We've temporarily locked your card ending 5580 after a $2,100.00 charge at a jewelry store in Miami. To unlock and verify, please call 305-555-0129. If you're traveling, let us know.\"]}"
+}

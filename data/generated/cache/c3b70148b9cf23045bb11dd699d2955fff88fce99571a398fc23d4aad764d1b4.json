@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Legitimate message. The correct answer for these cards is: legitimate, not a scam.\nBackground: Real messages people get, including hard look-alikes of every scam category above.\nScenario for these cards: delivery update from a carrier or retailer, sent as USPS.\nThe person receiving the text: a retiree in Florida who banks online.\nTone of the text: warm and reassuring.\nDraft 8 cards, each a different realistic text. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Hi! USPS here with a quick update: your package is out for delivery today and should arrive by 7:30 PM. No action needed—just wanted to keep you posted. Track anytime at usps.com. — Your postal team\",\"Good morning! Your USPS package from the retailer is scheduled for delivery tomorrow between 10 AM and 2 PM. If you're not home, we'll leave it in a safe spot. Details: usps.com. Have a lovely day!\",\"Friendly USPS update: a signature is needed for your package arriving Friday. You can authorize release online at usps.com or we'll try again Saturday. No fee, no forms—just keeping you informed.\",\"USPS alert: your package is at the local Post Office and ready for pickup. Bring your photo ID and this notice; pickup code 4821 is for reference. Office hours today 9-5. Questions? Visit usps.com.\",\"Hi there! USPS tried to deliver your package today, but it needs a quick reschedule. No charge—just choose a new day by 8 PM at usps.com. We'll take care of the rest. Thanks!\",\"USPS delivery update: your package has cleared the Florida distribution center and is moving along. Expected in 2 days. You can follow it at usps.com. No reply needed—have a great afternoon!\",\"Hello! Your USPS package with the new medication is out for delivery. It will be left at your door if no one answers. If you need help, call 352-555-0187 or visit usps.com. Take care!\",\"USPS reminder: your package is scheduled for redelivery tomorrow. There's no fee and no information needed from you. If the time doesn't work, you can update it at usps.com. We're happy to help!\"]}"
+}

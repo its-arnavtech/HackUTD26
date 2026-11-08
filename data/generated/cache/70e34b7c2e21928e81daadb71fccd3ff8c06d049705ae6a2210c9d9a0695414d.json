@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Bank impersonation. The correct answer for these cards is: scam.\nBackground: Pretends to be a bank or card issuer: fraud alert, locked or suspended account, card declined, verify your identity, confirm a charge by link or callback.\nScenario for these cards: account locked or suspended, sent as Discover.\nThe person receiving the text: a college student with a part-time job.\nTone of the text: short and urgent.\nDraft 8 cards, each a different realistic text. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Discover Alert: Your account is locked due to unusual activity. Verify now at discover-verifycheck.com or call 214-555-0182. Failure to verify within 24 hrs may suspend access.\",\"DISCOVER: We blocked a $486.23 charge at Campus Bookstore. Confirm if this was you: dscvr-secure.net/confirm or reply YES/NO.\",\"Discover fraud alert: A $219.99 purchase was attempted on your card. Call 312-555-0147 immediately to unlock your account.\",\"Your Discover card has been suspended. To reactivate, reply with the 6-digit code we just sent to your phone. Do not share with anyone.\",\"Discover Security: Verify your identity to restore account access: discoveraccount-check.info/verify. This link expires in 2 hours.\",\"Discover: We noticed a sign-in from a new device. If this wasn't you, call 646-555-0191 now. Your account will be locked for your protection.\",\"Discover Alert: Unusual activity on your student account. Reply VERIFY to confirm your identity and keep your card active.\",\"Discover: Your card was declined for a $75.40 purchase at University Cafe. To confirm the charge, call 415-555-0138 or visit dscvr-alert.co/unlock.\"]}"
+}

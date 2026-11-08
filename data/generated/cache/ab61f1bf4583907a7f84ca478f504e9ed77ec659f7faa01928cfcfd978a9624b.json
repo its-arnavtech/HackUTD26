@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake account security alert (scam).\nWhat this category covers: Pretends to protect a non-bank account (carrier, Apple, Amazon, email, social media): login alert, password reset, SIM change, or asks the person to send back a one-time code.\nAngle for this batch: password reset they didn't request.\nClaimed sender or brand: T-Mobile.\nWho writes it: a scammer whose first language isn't English, with slightly odd grammar.\nStyle: all caps for key words.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"T-MOBILE ALERT: Password reset was requested for your account. If this was NOT you, SECURE your account now: tmobile-secure-help.com/verify\",\"We detect a PASSWORD RESET request on your T-Mobile account from unknown device. You did NOT do this? Please reply STOP to cancel or call 1-800-555-0199 immediately.\",\"T-Mobile: Someone try to RESET your password 3 times today. For your PROTECTION we lock account. To unlock and verify identity, please send the 6-digit code we just sent to your phone by reply. Do NOT share with anyone else. Thank you.\",\"Your T-Mobile password was RESET successfully. If you NOT request this, your account may be COMPROMISED. Visit tmobile-account-alert.net/reset now to cancel and restore access. Failure to act within 24 hours will suspend service.\",\"ALERT: T-Mobile password reset attempted. Did you authorize? Reply YES or NO. If NO, our security team will call you. Provide your account PIN when they call for verification.\",\"We noticed unusual PASSWORD RESET from IP 192.168.1.1 on your T-Mobile account. This is NOT you? Call 214-555-0143 right away. Have your account number ready. Do not ignore this message.\",\"T-Mobile Security: A password reset link was sent to your email but you did NOT request? That mean someone try to access your account. Forward this message to verify@tmobile-verify.com and we check for you.\",\"URGENT: Your T-Mobile account password reset is PENDING. To CANCEL the reset, reply with the ONE-TIME CODE sent to your device. If no reply in 10 min, reset will complete. T-Mobile never ask for code, but this is special verification.\"]}"
+}

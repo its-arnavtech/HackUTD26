@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Bank impersonation (scam).\nWhat this category covers: Pretends to be a bank or card issuer: fraud alert, locked or suspended account, card declined, verify your identity, confirm a charge by link or callback.\nAngle for this batch: account locked or suspended.\nClaimed sender or brand: PNC.\nWho writes it: a scammer creating panic with deadlines and threats.\nStyle: includes a reference or case number.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"PNC ALERT: Your account ending 4417 is LOCKED due to unusual activity. Case #PNC-88214. Verify now: http://pnc-verify-alert.com/lock or call 888-555-0164.\",\"PNC fraud dept: we suspended your online access (ref 552-KLM-09). Did you authorize a $487.33 transfer? Reply Y or N within 15 min or card stays locked.\",\"PNC SECURITY NOTICE: Case 2024-55813. We detected 3 failed login attempts and placed a temporary suspension on your account. To restore access, confirm your identity at https://pnc-access-restore.net/id within 30 minutes. If this wasn't you call 877-555-0129. Do not reply to this text.\",\"PNC: acct suspended. Case #773412. To unlock, reply with the 6-digit code we just sent to your phone. Do not share w/ anyone.\",\"PNC card services: your debit card is suspended pending review. Ref PNC-4471902. Call 800-555-0182 now to speak with fraud support. Hours 8a-9p ET.\",\"Pnc alert! Account locked ref#A-99283. Unusual login from unknown device. Verify: pnc-locked-help.co/verify (case sensitive) or your debit card remains blocked.\",\"PNC Fraud Review: case 61-8842. Your account is on hold for a $1,250.00 pending charge. To release funds, send a $25 verification deposit via Zelle to 214-555-0177, then reply DONE.\",\"PNC Bank: We suspended your account (Ref: 3900-7712-PNC) after a failed identity check. You must confirm recent activity by replying YES, or call 888-555-0138 and give case number. Failure to respond in 24 hrs may result in permanent closure.\"]}"
+}

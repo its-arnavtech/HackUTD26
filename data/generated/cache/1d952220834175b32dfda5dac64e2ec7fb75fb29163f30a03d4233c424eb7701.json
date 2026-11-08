@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake prize, reward or refund (scam).\nWhat this category covers: Promises money or a gift: prize or giveaway winner, expiring reward points, gift card, unclaimed refund, survey reward.\nAngle for this batch: free gift card for a survey.\nClaimed sender or brand: Best Buy.\nWho writes it: a scammer creating panic with deadlines and threats.\nStyle: terse, like an automated system.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"BEST BUY: You’ve won a $100 gift card for a 2-min survey. Claim in 24 hrs at bbysurvey.top/claim or forfeit. Reply STOP to opt out.\",\"BBY Rewards: Your $50 Best Buy e-gift card is reserved. Complete the 3-question survey at bby-gift.info/survey before midnight. Unclaimed cards are voided. Call 888-555-0164 for help.\",\"BestBuy: Survey reward $75 expires in 1 hr. Verify at bestbuy-giftcard.shop now.\",\"You’re a Best Buy survey winner! $200 gift card. Call 877-555-0132 by 6pm to claim. Must act now.\",\"Best Buy: Your $100 gift card code is ready. Reply YES with the 4-digit PIN you receive to release it. Expires in 2 hrs. Msg&data rates may apply.\",\"BBY: Final notice — $50 gift card held. Pay $2.99 shipping at bby-reward.online/pay within 60 min or it’s canceled.\",\"Best Buy survey: Text YES to 214-555-0189 to claim your $25 gift card. Offer ends at 9pm tonight.\",\"Best Buy: Your survey reward is locked. Reply with the 6-digit verification code sent to your phone within 30 min. No reply = forfeited.\"]}"
+}

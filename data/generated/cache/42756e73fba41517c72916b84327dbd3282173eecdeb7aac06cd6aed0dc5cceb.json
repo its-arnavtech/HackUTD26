@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Wrong-number or family impersonation (scam).\nWhat this category covers: Starts a personal conversation to build trust: a fake wrong-number text, a relative or friend writing from a 'new number' who needs money, or a romance opener.\nAngle for this batch: romance or dating opener.\nClaimed sender or brand: no brand.\nWho writes it: an organized fraud ring copying the brand's official alert template closely.\nStyle: terse, like an automated system.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Sorry, wrong number—but your profile pic is cute. I'm Tessa. See my pics here: tessa-pics.net. Text 818-555-0118 if you're single.\",\"Hi—this is Mia. We matched on the dating app last night. My phone died, using a work line. Text me at 415-555-0129 so I don't lose you.\",\"New number, same me :) It's Camille from the coffee shop. Reply YES so I know this is you, then I'll send my pic.\",\"Hey, is this Daniel? Saw your profile and thought your dog was cute. I'm not great at apps. Text me back at 206-555-0173 if you want to chat. —Ava\",\"It's Bree from the dating app. I'm stuck at the airport and my card won't work. Can you send $40? Call me at 214-555-0143 and I'll explain.\",\"Hi it's Lila. We matched last week. I'm locked out of my dating profile and they sent a code to your phone by mistake. Can you send me the 6-digit code? Call 213-555-0155 if confused.\",\"You passed my profile too fast lol. I'm Elle. If you're single, reply back or call 305-555-0148. I don't check the app much.\",\"This is Sofia—we swapped numbers at the bar Friday? My phone got stolen. I'm using a temp line. Can you send me a quick text at 702-555-0161 so I have yours again?\"]}"
+}

@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake delivery notice (scam).\nWhat this category covers: Fake package or postal notice: missed delivery, address problem, customs or redelivery fee, package held.\nAngle for this batch: track your parcel link.\nClaimed sender or brand: USPS.\nWho writes it: a hurried scammer sending thousands of texts with minimal effort.\nStyle: includes a reference or case number.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"USPS: Your parcel is being held at our facility due to an incomplete address. Case #US-4471902. Please update delivery info here: usps-redelivery-center.com/track\",\"USPS delivery failed 2/14. Package 9400 1112 0003 8842 held for redelivery fee of $1.99. Pay within 24hrs or it ships back: usps-fee-pay.info/r/8842\",\"usps: we missed you today. 1 package waiting. reschedule or it goes back to sender -> https://parcelhold-usps.co/rd?ref=55283\",\"Your USPS package 6621-8890-4471 could not be delivered - address issue. Verify here before Feb 19: https://uspsaddresscheck.net/v/7741\",\"Hey its USPS. Final notice on your item. Ref 2093841. Redelivery needs $2.50 processing. Do it now https://usps-redeliver.support/fee\",\"USPS: Package held at customs. Reference: CS-55821. A fee of $3.20 is required before release. Continue at https://uspscustoms-release.net/cs55821\",\"USPS Notice: unable to deliver your parcel (tracking 9407 5501 2000 3345 8871) - the shipping label is unreadable. Redelivery case #RD-22840. Confirm your address: https://usps-label-fix.com/rd22840\",\"Package is waiting for you at the post office. Reference 773-555-0198. You must call 773-555-0198 by 5pm to arrange pickup or it will be returned to sender.\",\"USPS: your parcel 9400 1102 9984 1233 4455 is on hold - please reply YES to confirm delivery window and we will redeliver. Case US-99412\"]}"
+}

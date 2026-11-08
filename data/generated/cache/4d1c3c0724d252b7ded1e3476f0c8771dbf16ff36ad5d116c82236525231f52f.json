@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake account security alert (scam).\nWhat this category covers: Pretends to protect a non-bank account (carrier, Apple, Amazon, email, social media): login alert, password reset, SIM change, or asks the person to send back a one-time code.\nAngle for this batch: password reset they didn't request.\nClaimed sender or brand: Facebook.\nWho writes it: a careful scammer who avoids obvious red-flag words.\nStyle: all caps for key words.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Facebook: A PASSWORD RESET was REQUESTED for your account. If this wasn’t you, secure it now: fb-support.example.com/reset — reply STOP to opt out.\",\"Hi, we noticed a PASSWORD RESET REQUEST on your Facebook account from a device we don’t recognize. No changes were made. If this wasn’t you, confirm at fb-accountcheck.example.net/verify or call 415-555-0182.\",\"Facebook security: PASSWORD RESET REQUESTED. Didn’t ask? Reply N to review or Y if it was you.\",\"This is a notice from Facebook. Someone entered your email to start a PASSWORD RESET. We paused it for 30 min. To keep your account as-is, open fbsecurity-check.example.com/help and enter the 6-digit CODE shown there. If you did request it, no action needed.\",\"FB Account: Your PASSWORD RESET was not completed. To confirm you still have access, reply with the 5-digit CODE we just sent to your phone. Msg&data rates may apply.\",\"Facebook here. We blocked a PASSWORD RESET attempt on your account because it came from an unusual location. If that was you, ignore this. If not, review at fbsafe-login.example.com/review. Case FB-4471.\",\"FACEBOOK: PASSWORD RESET REQUESTED. If this wasn’t you, call our account team at 646-555-0119. Ref FB-8820.\",\"Hi, this is Facebook Security. A PASSWORD RESET was started on your account today at 2:14 PM ET. We held it for your review. To cancel it, go to fb-account-help.example.com/cancel and sign in. If you’d rather we call you, reply CALL and include a good time. Don’t share your current password.\"]}"
+}

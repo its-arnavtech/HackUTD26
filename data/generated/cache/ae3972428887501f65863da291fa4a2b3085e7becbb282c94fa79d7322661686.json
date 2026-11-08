@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake prize, reward or refund (scam).\nWhat this category covers: Promises money or a gift: prize or giveaway winner, expiring reward points, gift card, unclaimed refund, survey reward.\nAngle for this batch: reward points expiring today.\nClaimed sender or brand: Target.\nWho writes it: a scammer whose first language isn't English, with slightly odd grammar.\nStyle: plain sentences, no emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Target: Your reward points is expire today. You have 487 points value $48.70. Please claim now at target-reward-claim.info before it is gone.\",\"You are selected for Target customer reward. 2500 points will be cancel today. Call 214-555-0168 to keep your gift card. Need confirm your name and code.\",\"Target reward notice. Your 1200 points expire today at 11:59pm. Reply YES and we send your $25 e-gift card. Do not miss this reward.\",\"Hello, this is Target reward team. We see unclaimed refund $39.99 from your points. To release it, please send the 6 digit code we send to your phone. This is urgent today.\",\"Your Target points is almost gone. Only few hours left today. Go to tgt-points-expiring.shop and put your card number for small fee $1.95 to get $50 gift card.\",\"Target: 900 reward points is waiting for you but will be expire today. No fee. Verify at mytargetgift.info/claim and receive reward. If link not work call 310-555-0122.\",\"We tried to contact you about Target reward points. Today is last day. Please call 866-555-0194 and give the code from text message to verify your account. Thank you.\",\"Target customer, your points balance 3,450 will expire tonight. You can convert to $34.50 gift card. Reply with your email and we send link. Do it today so you not lose.\"]}"
+}

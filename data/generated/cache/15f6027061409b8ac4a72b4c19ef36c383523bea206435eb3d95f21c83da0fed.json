@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Wrong-number or family impersonation (scam).\nWhat this category covers: Starts a personal conversation to build trust: a fake wrong-number text, a relative or friend writing from a 'new number' who needs money, or a romance opener.\nAngle for this batch: friendly wrong-number opener.\nClaimed sender or brand: no brand.\nWho writes it: a scammer whose first language isn't English, with slightly odd grammar.\nStyle: brand prefix like 'BRAND:' at the start.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"SMS: Hi sorry wrong number but you seem nice. What is your name? Reply please.\",\"MSG: Hello, I think I typed wrong number. My name is Anna. You are very kind person? Can you call me at 305-555-0192 to talk? I lonely.\",\"TXT: Oops wrong number! But maybe fate. See my photo here: www.anna-photo.info. Tell me what you think. Reply yes.\",\"CELL: Sorry wrong number! I am trying to verify my account but code sent to your phone by mistake. Can you send me the 6 digit code? I pay you $20.\",\"MOBILE: Hi is this Mike? Wrong number? You sound friendly. Text back.\",\"WIRELESS: I think I have wrong number. But you have nice name? My name is Dmitri. I am new in town. Want to chat? Send message to 214-555-0177.\",\"CARRIER: Wrong number sorry! You seem cute. Check my profile: dating-link.xyz/anna. Reply if interested.\",\"PHONE: Hi, sorry to bother. I meant to text my friend but got you. You seem nice. Can you do small favor? I need to receive a package but not home. Can you get code from delivery? I pay. Reply yes.\"]}"
+}

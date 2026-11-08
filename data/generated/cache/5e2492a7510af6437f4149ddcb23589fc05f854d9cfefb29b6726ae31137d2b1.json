@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake toll or government notice (scam).\nWhat this category covers: Pretends to be a toll agency, the IRS, DMV, court, or another government office: unpaid toll, tax refund or debt, license suspension, fines.\nAngle for this batch: license or registration suspension.\nClaimed sender or brand: SunPass.\nWho writes it: a careful scammer who avoids obvious red-flag words.\nStyle: includes a reference or case number.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"SunPass Notice: Your vehicle registration is flagged for suspension due to unresolved toll balance. Ref #SP-4482719. Review details at sunpass-tolls-fl.com/resolve within 48 hrs.\", \"Hi, this is the SunPass account review team. Case 771203-K. Our records show a lapse on your transponder linked to your registration status. Please call 407-555-0136 to clear it before it goes to the county.\", \"SUNPASS ALERT: registration hold placed on FL plate ending 482. Case# 99182734. Settle the outstanding balance here: sunpasspay-online.net/hold\", \"Your SunPass account has an unresolved citation that may affect your vehicle registration renewal. Reference 22-558301. Reply YES and we'll send the payment options.\", \"Final reminder (case SP-3301945): the toll violation tied to your tag was not resolved and a registration suspension notice has been prepared. Visit flsunpass-services.com/case to view it before it's filed.\", \"sunpass: we tried to reach you about the unpaid tolls on your account. case 4471208. if this isn't handled the dmv will suspend your registration. call 813-555-0192\", \"Notice from SunPass Customer Resolution — Ref: 6619034. A registration block may be applied to your vehicle unless the $18.40 balance is resolved. Verify at sunpass-billing.org/verify\", \"Hello, this message is regarding case 1187742 with SunPass. We need you to confirm the last 4 of the card on file to keep your registration from being suspended. Reply with the 4 digits and we'll process it today.\"]}"
+}

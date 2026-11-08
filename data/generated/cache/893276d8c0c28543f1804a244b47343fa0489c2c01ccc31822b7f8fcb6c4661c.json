@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: delivery update from a carrier or retailer.\nClaimed sender or brand: Amazon.\nWho writes it: a friend or family member texting casually.\nStyle: brand prefix like 'BRAND:' at the start.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Amazon: your package got delivered to my apartment by mistake, I'll bring it by after work.\", \"Amazon: Your $67.43 order was left at my front door, I'll drop it off before 6pm tonight.\", \"Amazon: delivery guy left your package with me, code 4821 on the label, come grab it whenever.\", \"Amazon: tracking says your package is at my front desk, check amazon.com for the photo, I'll hold it for you.\", \"Amazon: Your $120.50 order couldn't be delivered, they left a note with a 24-hour deadline, I picked it up for you though.\", \"Amazon: got your package, code 7731 to unlock the locker, I'll bring it by later.\", \"Amazon: hey, the delivery driver dropped your package at my door by mistake, it says $89.99 on the label and there's a code 5592 for the building, I'll swing by tomorrow morning.\", \"Amazon: Your $34.99 order is at my place, I can drop it off or you can track it at amazon.com, let me know.\"]}"
+}

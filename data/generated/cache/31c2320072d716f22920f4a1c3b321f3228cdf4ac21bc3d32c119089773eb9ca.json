@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Legitimate message. The correct answer for these cards is: legitimate, not a scam.\nBackground: Real messages people get, including hard look-alikes of every scam category above.\nScenario for these cards: real-style bank fraud check that asks only for a YES or NO reply, sent as TD Bank.\nThe person receiving the text: a parent who shops online often.\nTone of the text: slightly sloppy with a typo.\nDraft 8 cards, each a different realistic text. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"TD Bank Fraud Alert: We recieved a $148.72 purchase at SHOPSTYLE.COM on your TD card. Did you authorize it? Reply YES or NO. If NO, we'll call you.\",\"TD Bank: A $79.99 charge at AMAZON MKTP was just approved on your card. Did you make this transation? Reply YES or NO. If NO, we'll secure your card.\",\"TD Fraud Alert: A $1,250.00 transfer from your checking acct was requested today. Did you authorize it? Reply YES or NO. If NO, call us at 1-800-555-0199. Please dont reply with any codes.\",\"TD Bank alert: Your card was used for $32.18 at PETSUPPLIES.COM. Reply YES if you made this purchase or NO if not. We'll follow up if needed. Sorry for any inconvience.\",\"TD Bank: We sent a one-time code for a $600 Zelle transfer to a new payee. Did you request this? Reply YES or NO. If NO, we'll block it. Never share the code with anyone.\",\"TD Bank Fraud Dept: We stoped a $412.55 purchase at BESTBUY.COM on your card. Was this you? Reply YES or NO. If NO, we'll contact you at the number on file. Ref 5550143.\",\"TD Bank: A new debit card was ordred for your acct. Did you request this? Reply YES or NO. If NO, we'll cancel it. This is an automated fraud check.\",\"TD Bank: Suspicous login to your online banking from a new device on 04/12 at 8:42 PM. Was this you? Reply YES or NO. If NO, we'll lock online access. Visit tdbank.com for info.\"]}"
+}

@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Legitimate message. The correct answer for these cards is: legitimate, not a scam.\nBackground: Real messages people get, including hard look-alikes of every scam category above.\nScenario for these cards: retail promotion or loyalty points update, sent as Starbucks.\nThe person receiving the text: a parent who shops online often.\nTone of the text: neutral, matter-of-fact.\nDraft 8 cards, each a different realistic text. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Starbucks Rewards: 175 Stars are expiring on Aug 12. Redeem before then at starbucks.com.\",\"Starbucks: A $5 reward was added to your account after your recent order. It expires in 14 days. See details at starbucks.com.\",\"Starbucks Rewards: 40 Stars were added for your purchase today. New balance: 210 Stars. starbucks.com\",\"Starbucks: 25% off any handcrafted drink this weekend. Use code SIP25 at checkout. No sign-in needed. starbucks.com\",\"Starbucks Rewards: Your birthday reward is ready. Enjoy one free handcrafted drink this month. Show this text in store or visit starbucks.com.\",\"Starbucks: We added 100 bonus Stars for the summer promotion. They expire Sep 1. Check your balance at starbucks.com.\",\"Starbucks Rewards: 300 Stars expire in 5 days. Redeem for a free drink at starbucks.com. Questions? Call 800-555-0147.\",\"Starbucks Rewards: You earned 2 Stars per $1 on your last order. Total: 86 Stars. starbucks.com\"]}"
+}

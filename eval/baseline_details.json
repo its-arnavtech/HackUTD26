@@ -1,0 +1,190 @@
+{
+  "model": "keyword rules (15 binary features) + TF-IDF word 1-2 grams (min_df=2, sublinear tf) -> LogisticRegression (defaults, max_iter=2000)",
+  "split": {
+    "seed": 42,
+    "train": 1818,
+    "val": 390,
+    "test": 388,
+    "saved_to": "data/generated/splits.json"
+  },
+  "val": {
+    "n": 390,
+    "macro_f1": 0.8984,
+    "accuracy": 0.9051,
+    "false_positive_rate": 0.0537,
+    "scam_recall": 0.9295,
+    "scam_precision": 0.9655,
+    "per_category_f1": {
+      "bank_impersonation": 0.7667,
+      "billing_scam": 0.8889,
+      "delivery_scam": 0.9355,
+      "account_security": 0.8814,
+      "toll_government": 0.9831,
+      "prize_refund": 0.9375,
+      "job_offer": 0.8929,
+      "conversation_lure": 0.8814,
+      "legit": 0.9186
+    }
+  },
+  "test": {
+    "n": 388,
+    "macro_f1": 0.8068,
+    "accuracy": 0.8222,
+    "false_positive_rate": 0.1267,
+    "scam_recall": 0.8824,
+    "scam_precision": 0.917,
+    "per_category_f1": {
+      "bank_impersonation": 0.6429,
+      "billing_scam": 0.7719,
+      "delivery_scam": 0.9524,
+      "account_security": 0.7458,
+      "toll_government": 0.9,
+      "prize_refund": 0.875,
+      "job_offer": 0.8235,
+      "conversation_lure": 0.7018,
+      "legit": 0.8479
+    }
+  },
+  "test_generated_only": {
+    "n": 338,
+    "macro_f1": 0.8041,
+    "accuracy": 0.8195,
+    "false_positive_rate": 0.1308,
+    "scam_recall": 0.8846,
+    "scam_precision": 0.9154,
+    "per_category_f1": {
+      "bank_impersonation": 0.64,
+      "billing_scam": 0.7347,
+      "delivery_scam": 0.963,
+      "account_security": 0.7451,
+      "toll_government": 0.8846,
+      "prize_refund": 0.8772,
+      "job_offer": 0.8261,
+      "conversation_lure": 0.72,
+      "legit": 0.8464
+    }
+  },
+  "test_handwritten_only": {
+    "n": 50,
+    "macro_f1": 0.8213,
+    "accuracy": 0.84,
+    "false_positive_rate": 0.1,
+    "scam_recall": 0.8667,
+    "scam_precision": 0.9286,
+    "per_category_f1": {
+      "bank_impersonation": 0.6667,
+      "billing_scam": 1.0,
+      "delivery_scam": 0.8889,
+      "account_security": 0.75,
+      "toll_government": 1.0,
+      "prize_refund": 0.8571,
+      "job_offer": 0.8,
+      "conversation_lure": 0.5714,
+      "legit": 0.8571
+    }
+  },
+  "test_confusion": {
+    "account_security": {
+      "account_security": 22,
+      "bank_impersonation": 1,
+      "billing_scam": 2,
+      "legit": 5
+    },
+    "bank_impersonation": {
+      "account_security": 6,
+      "bank_impersonation": 18,
+      "legit": 6
+    },
+    "billing_scam": {
+      "bank_impersonation": 3,
+      "billing_scam": 22,
+      "legit": 2,
+      "prize_refund": 3
+    },
+    "conversation_lure": {
+      "conversation_lure": 20,
+      "job_offer": 1,
+      "legit": 7,
+      "prize_refund": 1
+    },
+    "delivery_scam": {
+      "delivery_scam": 30
+    },
+    "job_offer": {
+      "bank_impersonation": 1,
+      "conversation_lure": 1,
+      "delivery_scam": 2,
+      "job_offer": 21,
+      "legit": 4
+    },
+    "legit": {
+      "account_security": 1,
+      "bank_impersonation": 2,
+      "billing_scam": 3,
+      "conversation_lure": 7,
+      "delivery_scam": 1,
+      "legit": 131,
+      "prize_refund": 2,
+      "toll_government": 3
+    },
+    "prize_refund": {
+      "legit": 2,
+      "prize_refund": 28
+    },
+    "toll_government": {
+      "bank_impersonation": 1,
+      "legit": 2,
+      "toll_government": 27
+    }
+  },
+  "test_handwritten_errors": [
+    {
+      "message_id": "hw_001",
+      "gold": "bank_impersonation",
+      "pred": "legit",
+      "text": "CapitalOne: Your debit card has been temporarily restricted due to irregular activity. Restore access: c1-cardservices.com/restore"
+    },
+    {
+      "message_id": "hw_004",
+      "gold": "bank_impersonation",
+      "pred": "account_security",
+      "text": "Wells Fargo: A new payee 'J. Rivera' was added to your account. If you didnt add this call 1-888-555-0119 immediately to cancel."
+    },
+    {
+      "message_id": "hw_015",
+      "gold": "account_security",
+      "pred": "legit",
+      "text": "Your Amazon account has been placed on hold due to an order of $789.99 (iPhone 17). If you didnt place this order call us 206-555-0131"
+    },
+    {
+      "message_id": "hw_023",
+      "gold": "prize_refund",
+      "pred": "legit",
+      "text": "Your Capital One Venture miles (38,210) expire tonight. Redeem for cash before midnight: c1-milesredeem.com"
+    },
+    {
+      "message_id": "hw_027",
+      "gold": "job_offer",
+      "pred": "delivery_scam",
+      "text": "We are looking for package inspectors to receive and reship parcels from home. $2,600/month + bonus. Reply YES to apply."
+    },
+    {
+      "message_id": "hw_030",
+      "gold": "conversation_lure",
+      "pred": "legit",
+      "text": "Hello Dr. Patel, are we still on for golf Saturday at 9? My assistant booked the tee time."
+    },
+    {
+      "message_id": "hw_045",
+      "gold": "legit",
+      "pred": "conversation_lure",
+      "text": "hey it's Sam from work, got a new number. save this one! see you at the potluck thurs"
+    },
+    {
+      "message_id": "hw_047",
+      "gold": "legit",
+      "pred": "conversation_lure",
+      "text": "did you get my voicemail? Grandma's flight lands at 6:40, can you pick her up at DFW terminal E"
+    }
+  ]
+}

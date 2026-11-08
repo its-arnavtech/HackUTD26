@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Fake delivery notice. The correct answer for these cards is: scam.\nBackground: Fake package or postal notice: missed delivery, address problem, customs or redelivery fee, package held.\nScenario for these cards: small redelivery or customs fee, sent as OnTrac.\nThe person receiving the text: a parent who shops online often.\nTone of the text: neutral, matter-of-fact.\nDraft 8 cards, each a different realistic text. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"OnTrac: We attempted delivery of your package today but no one was available. A $2.99 redelivery fee is required to reschedule. Pay securely at ontrac-redelivery.com/pay\",\"OnTrac notice: Your package is held at our facility due to an address issue. Please call 206-555-0142 to confirm your address and arrange delivery.\",\"OnTrac: A customs fee of $4.50 is due on your international shipment. Reply YES to authorize the charge and release your package.\",\"OnTrac: Your delivery could not be completed. Please reply with your gate code or a safe drop location so we can reattempt tomorrow.\",\"OnTrac: Package #ONT8823741 requires a small redelivery fee of $1.99. Visit ontrac-fee.com/redeliver to pay and schedule.\",\"OnTrac: We missed you today. To avoid return to sender, please call 312-555-0187 and provide your tracking number and payment card for the $3.25 fee.\",\"OnTrac: Your parcel is being held pending a $2.50 handling fee. Text FEE to 855-555-0199 to receive a secure payment link.\",\"OnTrac: Delivery attempt failed. Confirm your address and pay the $1.75 redelivery fee at ontrac-support.net/confirm within 24 hours.\"]}"
+}

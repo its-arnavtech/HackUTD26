@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Bank impersonation (scam).\nWhat this category covers: Pretends to be a bank or card issuer: fraud alert, locked or suspended account, card declined, verify your identity, confirm a charge by link or callback.\nAngle for this batch: account locked or suspended.\nClaimed sender or brand: PNC.\nWho writes it: a scammer whose first language isn't English, with slightly odd grammar.\nStyle: chatty with one emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"PNC: Account locked for suspicious activity. Verify now at pnc-secure-verify.com 😊\", \"Hello, we notice unusual login on your PNC account. For your safety account is suspended. Please call 214-555-0143 to unlock. Thank you 😊\", \"Hi dear customer, this is PNC bank. Your card is locked because of too many failed attempts. Don't worry, just reply YES and we fix it for you 😊\", \"PNC ALERT: Your online banking access has been suspended. We detected a charge of $450.00 at Walmart. If this is not you, please confirm your identity at http://pnc-verify-now.co and we unlock your account immediately. 😊\", \"PNC: Account locked. Call 214-555-0143 now 😊\", \"We are PNC fraud department. Your account is temporary locked. To verify you are owner, please send us the 6-digit code we just sent to your phone. 😊\", \"Good day, your PNC account has been suspended for security reason. Please visit https://pnc-unlock.com to restore access. Have a nice day 😊\", \"PNC: For unlock your account, a small verification fee of $9.99 is required. Please send to Zelle 214-555-0143 and we reactivate your account. 😊\"]}"
+}

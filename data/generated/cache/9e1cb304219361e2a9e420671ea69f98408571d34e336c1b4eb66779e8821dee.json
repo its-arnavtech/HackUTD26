@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: personal message from a friend or family member.\nClaimed sender or brand: a coworker.\nWho writes it: the company's automated notification system.\nStyle: plain sentences, no emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Hey, it's the scheduling line for Priya's team. Your Thursday shift moved to 6am instead of 7, same station and same badge. Reply STOP to opt out of shift alerts.\", \"Dana flagged your Friday timecard, it got kicked back by payroll. Fix it before 5 today or the hours roll to the next cycle.\", \"Shift swap approved. You're on 6 to 2 now, not 7 to 3. Nothing else changed.\", \"Automated heads up from the floor: the 2pm standup moved to the small conference room because of the fire drill. Same time, nothing else changes.\", \"This is the Northside branch notification line. Luis marked the closing checklist complete last night but the alarm log shows the back door opened at 9:42. If that was you, no action needed. If not, call the store line at 312-555-0147.\", \"Your travel reimbursement of $86.40 for the Austin trip was approved and went to direct deposit this morning. Questions go to Marisol in accounting, ext. 4412.\", \"Your visitor badge for tomorrow's audit is at the front desk under your name. Pickup code 4471, it expires at 9am. Ask for Ken at reception.\", \"The new rotation is up. Check it at northstarfreight.com before Monday so you know which lead you're paired with. Nadia already posted the holiday weeks too.\"]}"
+}

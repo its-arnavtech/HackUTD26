@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake prize, reward or refund (scam).\nWhat this category covers: Promises money or a gift: prize or giveaway winner, expiring reward points, gift card, unclaimed refund, survey reward.\nAngle for this batch: unclaimed refund or rebate.\nClaimed sender or brand: Amazon.\nWho writes it: a hurried scammer sending thousands of texts with minimal effort.\nStyle: chatty with one emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Amazon: u have a $42.19 refund waiting 😊 claim it here: amz-refund.co/9k2f\", \"Hey! This is Amazon Rewards. Our records show your $18.50 rebate from order #112-7743 is still unclaimed. Dont leave it! Verify at amzrebate.net/claim 😮\", \"Amazon refund dept: your $65.00 refund is pending. Call 888-555-0147 now to confirm ur info 💸 dont wait\", \"Hi it's Amazon. You have an unclaimed refund of $23.99. Reply YES to get it sent to ur card 😊\", \"Amazon: to release ur $51.20 refund we need the 6-digit code we just sent. Reply with it 🎁\", \"Amazon notice: your $37.45 refund from last month is about to expire. No fees. Just go to amazon-refund.help/get and enter ur email. Takes 30 sec 😊\", \"hey u left a refund on the table! Amazon owes u $29.99 from that survey u did. Claim b4 midnight here -> amz-gift.co/r9 💰\", \"Hey Amazon here 😊 u have a $12.50 unclaimed refund. Reply 1\"]}"
+}

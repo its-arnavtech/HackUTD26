@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Legitimate message. The correct answer for these cards is: legitimate, not a scam.\nBackground: Real messages people get, including hard look-alikes of every scam category above.\nScenario for these cards: recruiter or interview scheduling message, sent as a recruiter at a hospital.\nThe person receiving the text: a nurse working night shifts.\nTone of the text: slightly sloppy with a typo.\nDraft 8 cards, each a different realistic text. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Hi, this is Jamie from Northside General HR. We'd like to schedule your interveiw for the ER nurse position. Are you available Tue 3/14 at 10am? Reply Y to confirm or call 555-0142.\", \"Your interview is confirmed for 3/14 at 10am at Northside General, 500 Health Park Dr. Please bring your nursing license. Parking code: 7788. Quesitons? Call 555-0142.\", \"Hi, it's Lisa from recruiting. We recieved your application for the night shift RN role. Your application ID is NG-4482. Please complete the background check by Fri 3/17 using code 5591 at northsidegeneral.org/careers. Call 555-0142 if issues.\", \"Your interview for the RN positon is tomorrow at 2pm. Please arrive 15 min early. If you need to reschedule call 555-0142. Sorry for the short notice. - Mike, HR\", \"Northside General: Your offer letter is ready. Sign-on bonus of $5,000. Please review and sign by 3/20. Link: northsidegeneral.org/offer. Questons? 555-0142.\", \"Hi, this is Sarah from Northside General. We need to confirm your shift availabilty for next week. Can you work Mon-Wed 7p-7a? Reply with your availability. Thanks.\", \"Your parking pass for the interview is ready. Use code 3312 at the gate. Adress: 500 Health Park Dr. Call 555-0142 if you have trouble. - Recruiting\", \"Reminder: your interview is Fri 3/17 at 9am. Please bring your CPR cert and RN licence. If you can't make it, call 555-0142. Sorry for any confusion with the earlier time.\"]}"
+}

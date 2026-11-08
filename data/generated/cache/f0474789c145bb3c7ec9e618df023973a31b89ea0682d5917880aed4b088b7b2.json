@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: real-style bank fraud check that asks only for a YES or NO reply.\nClaimed sender or brand: Capital One.\nWho writes it: a friend or family member texting casually.\nStyle: plain sentences, no emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Capital One: Did you just spend $47.82 at Target in Austin? Reply YES or NO.\", \"Capital One fraud alert: We saw a $1,250.00 charge at Best Buy on your card ending 4432. If this was you, reply YES. If not, reply NO. No need to call unless you reply NO.\", \"Capital One: A $12.99 charge at Netflix was just attempted. Reply YES if you recognize it, NO if you don't. More at capitalone.com\", \"Hey, this is Capital One. We blocked a $300 charge at Walmart. Did you make it? Reply YES or NO.\", \"Capital One: Your verification code is 482913. If you didn't request this, reply NO. If you did, reply YES.\", \"Capital One: We noticed a $89.50 charge at Chevron in Denver. Reply YES if you made it, NO if not. Thanks.\", \"Capital One alert: A $2,400.00 transfer from your checking to an external account was initiated. If you authorized this, reply YES. If not, reply NO and we'll stop it. Don't reply with any account details.\", \"Capital One: $5.75 at Starbucks. You? YES or NO.\"]}"
+}

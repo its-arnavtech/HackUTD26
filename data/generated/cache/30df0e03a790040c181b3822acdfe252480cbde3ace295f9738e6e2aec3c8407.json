@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Fake account security alert. The correct answer for these cards is: scam.\nBackground: Pretends to protect a non-bank account (carrier, Apple, Amazon, email, social media): login alert, password reset, SIM change, or asks the person to send back a one-time code.\nScenario for these cards: asks the person to reply with a verification code, sent as Yahoo Mail.\nThe person receiving the text: a new immigrant still learning English.\nTone of the text: warm and reassuring.\nDraft 8 cards, each a different realistic text. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Hello, this is Yahoo Mail. We saw a new login from a device we don't recognize. To protect your account, please reply with the 6-digit code we just sent to your phone. If this was you, no action needed. Thank you for keeping your account safe.\", \"Hi, Yahoo Mail security here. Your account had a password reset request. If you did not ask for this, reply with the verification code we sent to your phone so we can secure it. We're here to help. Thank you.\", \"Good day, this is Yahoo Mail support. A SIM change was detected on your account. Please reply with the 6-digit code you received to confirm your identity. If you didn't change your SIM, we can help. Reply now.\", \"Hello friend, Yahoo Mail here. We noticed a login alert on your account. To keep you safe, please reply with the code we sent to your phone. If you need help, call us at 214-555-0143. We are happy to assist.\", \"Hi, this is Yahoo Mail. Your account security is important to us. We sent a verification code to your phone. Please reply with that code so we can verify it's you. If you didn't request this, ignore this message. Thank you.\", \"Dear customer, Yahoo Mail security team. We blocked a suspicious login to your account. To unlock it, please reply with the 6-digit code we just sent. For help, visit yahoo-verify-help.com. We're here for you.\", \"Hello, Yahoo Mail here. We are updating our security. Please reply with the verification code sent to your phone to confirm your account. If you have questions, call 310-555-0199. Thank you for your trust.\", \"Hi, this is Yahoo Mail. We noticed someone tried to access your email. To protect you, reply with the code we sent to your phone. If you didn't try to log in, let us know. We're always happy to help.\"]}"
+}

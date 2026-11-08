@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Bank impersonation (scam).\nWhat this category covers: Pretends to be a bank or card issuer: fraud alert, locked or suspended account, card declined, verify your identity, confirm a charge by link or callback.\nAngle for this batch: Zelle or wire payment reversal.\nClaimed sender or brand: Chase.\nWho writes it: a hurried scammer sending thousands of texts with minimal effort.\nStyle: brand prefix like 'BRAND:' at the start.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Chase: A Zelle payment of $487.00 to Marcus Webb was sent. If this wasn't you, reverse it here: chase-secure-verify.com/zelle\",\"CHASE ALERT: Your wire transfer of $2,150.00 is pending. To cancel and reverse, call 888-555-0142 now. Do not reply.\",\"Chase: We blocked a Zelle payment of $75.00 from your account. Reply YES to confirm or NO to reverse.\",\"Chase Fraud: A Zelle payment of $1,200.00 to an unverified recipient was initiated from your account. If unauthorized, reverse immediately at chase-reversal-center.net/verify or call 800-555-0199. Ref #ZL-4472.\",\"Chase: Your Zelle transfer of $350.00 failed. To complete the reversal, reply with the 6-digit code we just sent to your phone.\",\"CHASE: Wire reversal needed for $4,800.00. Confirm your identity at chase-wire-support.org/login within 10 min or funds will be released to recipient.\",\"Chase: Did you authorize a Zelle payment of $29.99 to Netflix? If not, text 1 to reverse. Msg&data rates may apply.\",\"Chase Security: We detected a suspicious Zelle payment of $890.00. To stop and reverse, call 855-555-0123 and provide your account PIN. Case ID: CH-8832.\"]}"
+}

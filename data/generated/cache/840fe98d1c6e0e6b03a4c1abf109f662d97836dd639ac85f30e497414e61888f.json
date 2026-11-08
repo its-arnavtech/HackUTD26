@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake prize, reward or refund (scam).\nWhat this category covers: Promises money or a gift: prize or giveaway winner, expiring reward points, gift card, unclaimed refund, survey reward.\nAngle for this batch: unclaimed refund or rebate.\nClaimed sender or brand: Costco.\nWho writes it: an organized fraud ring copying the brand's official alert template closely.\nStyle: terse, like an automated system.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"COSTCO ALERT: $34.90 rebate from your 2024 membership is still unclaimed. Verify by 11:59pm tonight: costco-rebate.info/c/8841\", \"Costco Wholesale: our records show an unclaimed refund of $118.47 on order 4471-88213. Confirm your shipping address to release funds: cs-refund.co/claim\", \"Your Costco rebate check expired before deposit. Reissue requires confirmation. Call 866-555-0129.\", \"COSTCO: overcharge refund of $27.15 approved for your warehouse purchases. Reply YES to route it to your card on file. Reply STOP to opt out.\", \"Costco member services: a price adjustment refund of $9.62 was issued for your 3/14 purchase but the deposit failed. To reissue, reply with the 6-digit code we just sent to verify your card. Questions: 800-555-0177\", \"Costco: You have $50.00 in unclaimed rebate rewards expiring today. Redeem now: costco-rewards.net/redeem?id=7781\", \"COSTCO REWARDS: your 2% executive rebate of $86.40 is ready but unclaimed. Confirm within 24 hrs or funds return to the warehouse. costco-2pct.top/v/3391\", \"Costco: $63.20 refund is held pending a $1.95 processing fee. Pay here to release: costco-refund-pay.top/fee\"]}"
+}

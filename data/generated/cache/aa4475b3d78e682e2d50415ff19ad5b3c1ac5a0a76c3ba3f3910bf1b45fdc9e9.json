@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Bank impersonation (scam).\nWhat this category covers: Pretends to be a bank or card issuer: fraud alert, locked or suspended account, card declined, verify your identity, confirm a charge by link or callback.\nAngle for this batch: unusual sign-in on online banking.\nClaimed sender or brand: Capital One.\nWho writes it: a careful scammer who avoids obvious red-flag words.\nStyle: plain sentences, no emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Capital One: A sign-in to your online banking was made from a new device in Atlanta, GA at 9:42 AM ET. If this wasn't you, review the session at https://cap1-secure-review.com/device\",\"A sign-in to your Capital One online account came from a browser we don't recognize. To keep access, confirm your identity at https://capitalone-verify-online.net/login or call 800-555-0147.\",\"Capital One: new sign-in to your online banking. Was this you? Reply Y or N.\",\"We saw an unusual sign-in on your Capital One online banking this morning. Please confirm it was you by entering the 6-digit code we sent at https://capone-session-check.com/code\",\"This is Capital One fraud prevention. We stopped a sign-in to your online banking from a new location. Call 888-555-0163 so we can verify the session.\",\"Capital One: Your online banking sign-in from Chrome on a new phone was approved. If you did not approve it, reply NO to remove that device.\",\"There was a sign-in to your Capital One account from an IP we don't usually see. To review the location and device, go to https://cap1-banking-alerts.com/session\",\"Capital One online banking: a sign-in attempt from San Diego was stopped, then a transfer was scheduled. To cancel it, call 877-555-0182 and give the code we text you.\"]}"
+}

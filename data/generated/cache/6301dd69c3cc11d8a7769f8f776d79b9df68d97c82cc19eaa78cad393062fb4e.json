@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake bill or payment demand (scam).\nWhat this category covers: Fake bill, overdue balance or failed payment from a phone carrier, utility, or subscription, with a threat of shut-off and a link to pay.\nAngle for this batch: overdue phone bill with suspension threat.\nClaimed sender or brand: AT&T.\nWho writes it: a scammer creating panic with deadlines and threats.\nStyle: all caps for key words.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"AT&T: Your phone bill is OVERDUE. Service will be SUSPENDED in 24 hours. Pay now at att-billing-support.com\", \"FINAL NOTICE: AT&T payment failed. Your line is scheduled for DISCONNECTION. Call 1-800-555-0192 immediately or pay at att-payments.net\", \"AT&T ALERT: Your account is PAST DUE. Reply YES to confirm and avoid SUSPENSION. Or pay at att-overdue.com\", \"AT&T: We couldn't process your payment of $87.43. Your service is set for SHUTOFF. To keep your number, pay now: att-quickpay.com or call 1-888-555-0147\", \"AT&T: OVERDUE. Pay now or lose service: att-pay-now.co\", \"AT&T: To verify your payment, reply with the 6-digit code we sent. Your service is OVERDUE and will be SUSPENDED. Call 1-877-555-0165.\", \"URGENT: AT&T bill OVERDUE. Your service will be SHUT OFF tonight. Pay at att-secure-billing.com or call 1-800-555-0139.\", \"AT&T FINAL WARNING: Your balance of $142.76 is 15 days PAST DUE. Service will be SUSPENDED on 06/15 unless you pay at att-bill-fix.com. Need help? Call 1-888-555-0188.\"]}"
+}

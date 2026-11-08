@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: real-style bank fraud check that asks only for a YES or NO reply.\nClaimed sender or brand: Bank of America.\nWho writes it: an office scheduler or coordinator.\nStyle: all caps for key words.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"BofA: $5.99 at Subway? Reply YES or NO.\",\"Bank of America FRAUD ALERT: Did you spend $89.99 at Target? Reply YES or NO. Msg&Data rates may apply.\",\"BofA ALERT: A $427.36 charge at Walmart.com was flagged on your card. Reply YES if you made it, NO if you didn't.\",\"FRAUD CHECK: $12.47 at Starbucks on your card ending 5567? Reply YES to confirm, NO to report fraud. - Bank of America\",\"Bank of America: We blocked a $1,050.00 purchase at Best Buy on your account. If this was you, reply YES. If not, reply NO and we'll lock the card. No other info needed.\",\"BofA Fraud Alert: A $3,200.00 wire transfer request was made from your account. Reply YES if you initiated it, NO if not. This is a YES/NO only reply.\",\"Bank of America: Did you just use your card for $56.23 at Chevron? Reply YES or NO. If NO, we'll block the card and send a new one. Reply STOP to opt out.\",\"Bank of America: We blocked a $1,899.00 charge at Home Depot on your card ending 3317. Reply YES if it was you, NO if it wasn't. Verify at bankofamerica.com\"]}"
+}

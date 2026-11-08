@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Wrong-number or family impersonation (scam).\nWhat this category covers: Starts a personal conversation to build trust: a fake wrong-number text, a relative or friend writing from a 'new number' who needs money, or a romance opener.\nAngle for this batch: friend stuck abroad needs help.\nClaimed sender or brand: no brand.\nWho writes it: a careful scammer who avoids obvious red-flag words.\nStyle: includes a reference or case number.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Jess here, new number. Stuck in London. Case ref 4471. Call 555-0143.\", \"Hi, it's Mark. I'm in Barcelona and my bag got stolen. The consulate gave me a reference: ES-88213. I need to get a ticket home. Can you send $200? Reply here and I'll give you the details.\", \"It's Alex. I'm in Berlin and my passport is gone. The consulate gave me a case number: BER-88213. Can you reply with the 6-digit code they just texted you? They need to verify my identity for a replacement.\", \"Hey it's Sam, new phone. I'm stuck in Paris, no wallet. I set up a quick page for the hotel: paris-help-555.com/ref4471. Can you take a look? Case # 4471.\", \"Hi it's Dana. I'm stuck in Rome, wallet stolen. Local police gave me a ref: RM-4471. Can you call them at 555-0177 and say you're my family? I need help sorting this out.\", \"hey its chris, new number. im in amsterdam and my bank card isnt working. hotel gave me a case number AMS-88213. can you send me $150? reply and ill tell u how. ill pay u back.\", \"Hey, it's Pat. Stuck in Dublin. Lost phone. Case ref 4471. Need a quick favor. Check dublin-help-555.com/ref4471 and reply. Don't tell mom yet.\", \"It's Ryan. I'm in Mexico City and got into a bit of trouble. Police gave me a reference: CDMX-4471. I don't have my phone, using a friend's. Can you call 555-0199 and ask for Ryan? Need help with a fine.\"]}"
+}

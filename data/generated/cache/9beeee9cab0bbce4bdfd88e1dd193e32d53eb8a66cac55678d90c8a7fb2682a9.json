@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: real-style bank transaction or balance alert.\nClaimed sender or brand: Navy Federal.\nWho writes it: a company's customer-care team writing a short service text.\nStyle: brand prefix like 'BRAND:' at the start.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Navy Federal: Your checking balance is $612.09 as of 9:02 AM ET. Reply BAL for details.\",\"Navy Federal: A $84.19 debit on your card ending 5527 posted 06/12. If this wasn't you, call 1-888-555-0142. Reply STOP to opt out.\",\"Navy Federal: Did you authorize a $429.00 purchase at MEGA MART on card ending 9012? Reply YES or NO. If NO, we'll call you at the number on file. 1-888-555-0177.\",\"Navy Federal: Your direct deposit of $2,015.44 from ACME PAYROLL posted to checking ending 3388. Funds are available now.\",\"Navy Federal: Your May statement is ready. View it at navyfederal.org/statements. We won't ask for your password or card number by text.\",\"Navy Federal: Heads up—your checking balance is $42.16, below your $100 alert. Transfer funds at navyfederal.org or call 1-888-555-0199.\",\"Navy Federal: Your auto loan payment of $312.77 posted 06/15. New balance: $8,442.10. Next due 07/15. Questions? Call 1-888-555-0160.\",\"Navy Federal: We blocked a $1,299.99 charge at ELECTRONICS CITY on card ending 7745 for your protection. No action needed if you recognize it. Reply HELP for options or call 1-888-555-0134.\"]}"
+}

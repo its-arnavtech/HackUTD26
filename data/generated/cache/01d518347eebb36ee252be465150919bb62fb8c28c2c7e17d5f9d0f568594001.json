@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake job or easy money offer (scam).\nWhat this category covers: Unsolicited job or income offer: remote task jobs with daily pay, recruiter who wants to move to a chat app, reshipping, crypto or investment opportunities.\nAngle for this batch: remote part-time task job with daily pay.\nClaimed sender or brand: an Amazon hiring partner.\nWho writes it: an organized fraud ring copying the brand's official alert template closely.\nStyle: terse, like an automated system.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Amazon Hiring Partner: Part-time remote tasks, $35/hr paid daily. Start today. Verify at amz-jobs.co/v2 or call 206-555-0187.\",\"AMZ Recruiting: You're pre-approved for remote task work. Daily pay via direct deposit. Reply YES to confirm and get your shift link.\",\"Amazon Partner Alert: Remote part-time positions open in your area. Earn $200-$400 daily completing simple tasks from your phone. Must be 18+. Claim your spot: amzhiring.net/apply. Code AMZ24 required. Reply STOP to opt out.\",\"Hiring partner for Amazon: Immediate start, no experience needed. Daily payout. Text your ZIP to 855-555-0123 to see if you qualify.\",\"FINAL NOTICE: Your Amazon remote task application is incomplete. Complete verification at amzpartners.co/verify within 24 hrs to receive daily pay. 888-555-0199.\",\"Amazon Flex Partner: Need 5 remote task workers. $150/day. Work 2 hrs. First come first served. Apply: amz-remote.biz/join. Use code TASK150.\",\"You've been selected for Amazon's part-time task program. Daily pay $75-$150. No interview. Confirm at amz-hiringpartner.com/start or call 877-555-0164 and ask for recruiting.\",\"Amazon Hiring Partner: Your remote task job is ready. $45 daily pay. One-time $5 background check fee required to activate. Pay at amz-jobs.co/pay or call 214-555-0143. Refundable after first shift.\"]}"
+}

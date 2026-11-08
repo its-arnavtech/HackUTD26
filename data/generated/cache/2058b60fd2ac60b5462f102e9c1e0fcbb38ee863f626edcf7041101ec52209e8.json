@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Fake toll or government notice. The correct answer for these cards is: scam.\nBackground: Pretends to be a toll agency, the IRS, DMV, court, or another government office: unpaid toll, tax refund or debt, license suspension, fines.\nScenario for these cards: tax refund ready to claim, sent as FasTrak.\nThe person receiving the text: a retiree in Florida who banks online.\nTone of the text: formal and polite.\nDraft 8 cards, each a different realistic text. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Dear FasTrak Customer, our records show a tax refund of $284.60 is ready to claim. Please verify your details at fastrak-refund-claim.info within 48 hours. Thank you.\",\"FasTrak Notice: A refund associated with your account is pending. To claim, call 888-555-0172 and reference case FT-4821. Our office is open 8am-6pm.\",\"Dear Valued Customer, FasTrak has a tax refund ready for you. Reply YES to confirm your mailing address so we can release it. Thank you for your prompt response.\",\"FasTrak Tax Refund Unit: Your refund is on hold. Please confirm the one-time code sent to your phone by replying with it. This is required for release.\",\"Important FasTrak message: Tax refund $512.35 is ready. A small processing fee of $19.95 is required. Pay securely at fastrak-tax-release.org. Thank you.\",\"Dear Customer, FasTrak attempted to deliver your tax refund notice but the address is incomplete. Please update it at ft-refund-portal.com/verify. Thank you.\",\"FasTrak: Your tax refund claim requires confirmation. Call 214-555-0198 and provide your reference number FT-7734. Please do not reply to this text.\",\"Hello, this is FasTrak regarding your tax refund. To claim, reply with your full name and ZIP code for verification. Thank you for your cooperation.\"]}"
+}

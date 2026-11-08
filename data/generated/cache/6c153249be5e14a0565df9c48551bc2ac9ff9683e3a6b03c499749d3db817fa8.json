@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake bill or payment demand (scam).\nWhat this category covers: Fake bill, overdue balance or failed payment from a phone carrier, utility, or subscription, with a threat of shut-off and a link to pay.\nAngle for this batch: overdue phone bill with suspension threat.\nClaimed sender or brand: AT&T.\nWho writes it: a careful scammer who avoids obvious red-flag words.\nStyle: terse, like an automated system.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"AT&T: Your payment of $84.21 was declined. Service interruption scheduled 6/14. Update payment: att-paynow.net/bill\",\"This is a notice from AT&T billing. We have not received the payment due on your wireless account. To keep your service active, please call 888-555-0142 or visit att-billingcenter.info. Reference code 7K2.\",\"AT&T: Reply YES to confirm you received your overdue balance notice for line ending 3310. A payment arrangement can be made.\",\"AT&T account update: Your recent payment did not process. A past-due amount of $127.90 is showing on your account. To avoid a temporary hold on your service, please make a payment at att-payments.co/pay or call 800-555-0199. This is an automated message.\",\"AT&T bill overdue. Pay at att-mobilepay.net to avoid interruption.\",\"Your AT&T wireless payment failed on 05/28. Please update your payment method at att-accountverify.com to keep your line active. Questions? Call 877-555-0164.\",\"AT&T: To process your overdue payment of $62.40, reply with the verification code we just sent. Or pay at att-billpay.info.\",\"AT&T notice: Your autopay did not go through. Balance $45.10. Update at att-autopay.net or call 866-555-0110 by 6/20 to avoid service changes.\"]}"
+}

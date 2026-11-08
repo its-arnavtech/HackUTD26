@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Wrong-number or family impersonation. The correct answer for these cards is: scam.\nBackground: Starts a personal conversation to build trust: a fake wrong-number text, a relative or friend writing from a 'new number' who needs money, or a romance opener.\nScenario for these cards: old acquaintance reconnecting, sent as no brand.\nThe person receiving the text: a college student with a part-time job.\nTone of the text: warm and reassuring.\nDraft 8 cards, each a different realistic text. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Hey! It's Mia from the library study room last semester. I realized I never saved your number after I got a new phone — so sorry! I hope classes aren't stressing you out too much. Text me back when you have a minute, I'd love to catch up.\",\"Hi, this is Sam from intramural soccer. I'm going to be on campus next week for a conference and thought of you. My new number is 312-555-0187 — give me a call or text if you want to grab coffee. Hope your part-time job is going well!\",\"Hey, it's Alex from chem lab! I know it's been a while but I was just remembering our late-night study sessions and smiling. How are you doing? Reply when you get a chance — I'd love to hear what you're up to.\",\"Hi, I think I might have the wrong number, but my friend gave me this contact for Jamie who works at the campus bookstore. If that's you, could you text me at 415-555-0129? I'm trying to reconnect about a book order. Hope you're having a good day either way!\",\"Hey it's your cousin Rachel! I got a new phone and lost all my contacts. Can you do me a quick favor? I'm trying to send a gift card to my sister but my banking app is acting up. Could you grab a $50 iTunes card and send me the code? I'll pay you back Friday, promise. You're the best!\",\"Hi! This is Chris from the party at Tyler's last month. I really enjoyed talking to you — you were so easy to talk to. I'm hosting a small get-together this weekend and would love for you to come. Text me back and I'll send the address. Hope you're well!\",\"Hey, it's your old friend from freshman orientation, Priya! I know this is out of the blue but I'm working on a project and could use your help. Can you click this link and fill out a quick survey? It'll take two minutes: campus-survey.info/priya. Thanks so much — you're a lifesaver!\",\"Hey it's Sam again! I know I already texted but I really need a favor. My wallet got stolen and I'm stuck at the airport. Can you send me $100 via Venmo? I'll pay you back as soon as I get home. My new number is 646-555-0138. Please hurry, I'm panicking.\"]}"
+}

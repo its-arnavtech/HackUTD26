@@ -1,11 +1,70 @@
 {
-  "_todo": "Placeholder. A21 sets the final categories: T-Mobile's taxonomy if they share one, otherwise ours, based on common smishing types. The classifier and Nemotron may output only these ids.",
-  "version": 0,
-  "source": "placeholder",
+  "version": 1,
+  "source": "ours",
+  "note": "T-Mobile shared no taxonomy, so these are ours, based on common US smishing types (A21). The classifier and Nemotron may output only these ids. `subtypes` steer the A21 generator; they are not output labels. Every scam category has matching hard legitimate look-alikes under `legit`.",
   "categories": [
-    {"id": "bank_impersonation", "label": "Bank impersonation", "is_scam": true},
-    {"id": "billing_scam", "label": "Fake bill or payment demand", "is_scam": true},
-    {"id": "delivery_scam", "label": "Fake delivery notice", "is_scam": true},
-    {"id": "legit", "label": "Legitimate message", "is_scam": false}
+    {
+      "id": "bank_impersonation",
+      "label": "Bank impersonation",
+      "is_scam": true,
+      "description": "Pretends to be a bank or card issuer: fraud alert, locked or suspended account, card declined, verify your identity, confirm a charge by link or callback.",
+      "subtypes": ["fraud alert asking to verify a charge", "account locked or suspended", "card declined or frozen", "unusual sign-in on online banking", "callback number for the fraud team", "Zelle or wire payment reversal"]
+    },
+    {
+      "id": "billing_scam",
+      "label": "Fake bill or payment demand",
+      "is_scam": true,
+      "description": "Fake bill, overdue balance or failed payment from a phone carrier, utility, or subscription, with a threat of shut-off and a link to pay.",
+      "subtypes": ["overdue phone bill with suspension threat", "failed autopay, update payment method", "utility shut-off notice", "streaming or software subscription renewal failed", "overpayment refund on your bill"]
+    },
+    {
+      "id": "delivery_scam",
+      "label": "Fake delivery notice",
+      "is_scam": true,
+      "description": "Fake package or postal notice: missed delivery, address problem, customs or redelivery fee, package held.",
+      "subtypes": ["incomplete address, update to deliver", "small redelivery or customs fee", "package held at warehouse", "delivery attempt failed, reschedule", "track your parcel link"]
+    },
+    {
+      "id": "account_security",
+      "label": "Fake account security alert",
+      "is_scam": true,
+      "description": "Pretends to protect a non-bank account (carrier, Apple, Amazon, email, social media): login alert, password reset, SIM change, or asks the person to send back a one-time code.",
+      "subtypes": ["asks the person to reply with a verification code", "password reset they didn't request", "SIM or eSIM transfer warning", "account will be deleted or disabled", "suspicious order placed on your account"]
+    },
+    {
+      "id": "toll_government",
+      "label": "Fake toll or government notice",
+      "is_scam": true,
+      "description": "Pretends to be a toll agency, the IRS, DMV, court, or another government office: unpaid toll, tax refund or debt, license suspension, fines.",
+      "subtypes": ["unpaid toll with late fee", "tax refund ready to claim", "tax debt or warrant threat", "license or registration suspension", "benefits or stimulus payment"]
+    },
+    {
+      "id": "prize_refund",
+      "label": "Fake prize, reward or refund",
+      "is_scam": true,
+      "description": "Promises money or a gift: prize or giveaway winner, expiring reward points, gift card, unclaimed refund, survey reward.",
+      "subtypes": ["you won a giveaway", "reward points expiring today", "free gift card for a survey", "unclaimed refund or rebate", "loyalty bonus from a store"]
+    },
+    {
+      "id": "job_offer",
+      "label": "Fake job or easy money offer",
+      "is_scam": true,
+      "description": "Unsolicited job or income offer: remote task jobs with daily pay, recruiter who wants to move to a chat app, reshipping, crypto or investment opportunities.",
+      "subtypes": ["remote part-time task job with daily pay", "recruiter asks to continue on a chat app", "product review or app rating job", "crypto or investment opportunity", "mystery shopper or reshipping job"]
+    },
+    {
+      "id": "conversation_lure",
+      "label": "Wrong-number or family impersonation",
+      "is_scam": true,
+      "description": "Starts a personal conversation to build trust: a fake wrong-number text, a relative or friend writing from a 'new number' who needs money, or a romance opener.",
+      "subtypes": ["friendly wrong-number opener", "relative on a new number needs money urgently", "friend stuck abroad needs help", "romance or dating opener", "old acquaintance reconnecting"]
+    },
+    {
+      "id": "legit",
+      "label": "Legitimate message",
+      "is_scam": false,
+      "description": "Real messages people get, including hard look-alikes of every scam category above.",
+      "subtypes": ["real-style bank transaction or balance alert", "real-style bank fraud check that asks only for a YES or NO reply", "carrier bill ready or autopay confirmation", "carrier data usage or plan notice", "one-time passcode with a do-not-share warning", "delivery update from a carrier or retailer", "toll account statement or auto-replenish notice", "retail promotion or loyalty points update", "recruiter or interview scheduling message", "appointment or pharmacy reminder", "school, work or community notice", "personal message from a friend or family member"]
+    }
   ]
 }

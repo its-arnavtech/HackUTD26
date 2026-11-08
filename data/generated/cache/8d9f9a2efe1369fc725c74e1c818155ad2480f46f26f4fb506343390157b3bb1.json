@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: one-time passcode with a do-not-share warning.\nClaimed sender or brand: Venmo.\nWho writes it: a company's customer-care team writing a short service text.\nStyle: all caps for key words.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"VENMO: Your login code is 738291. DO NOT SHARE this code. We never ask for it. If this wasn't you, tap venmo.com/help.\",\"Your VENMO verification code: 502844. This code expires in 10 minutes. DO NOT SHARE it with anyone—even if they say they're from Venmo. We will NEVER ask for your code. Didn't request? Go to venmo.com/security.\",\"VENMO ALERT: A $1,200.00 payment is pending. To confirm, use code 614907. DO NOT SHARE this code. Venmo will NEVER call or text asking for it. If you didn't initiate this, visit venmo.com/help now.\",\"CODE: 883215. DO NOT SHARE. VENMO will never ask you for this code. Expires in 5 min. If you didn't request it, ignore this text or go to venmo.com/help.\",\"VENMO SECURITY: Use code 450198 to finish signing in. DO NOT SHARE it. Our team will NEVER ask for your code, password, or card number. Need help? Call 214-555-0143 or visit venmo.com/help. Not you? Change your password now.\",\"VENMO code 927364. DO NOT SHARE. Expires 10 min.\",\"Your VENMO one-time code is 305771. DO NOT SHARE this code with ANYONE. If someone asks for it, they're trying to scam you. Venmo will never request it. Questions? venmo.com/help.\",\"VENMO: 662048 is your code. DO NOT SHARE. Msg&data rates may apply. Reply STOP to opt out. If you didn't request this, go to venmo.com/security.\"]}"
+}

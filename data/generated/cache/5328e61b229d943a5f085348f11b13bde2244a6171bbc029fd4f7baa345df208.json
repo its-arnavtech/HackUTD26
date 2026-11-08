@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake toll or government notice (scam).\nWhat this category covers: Pretends to be a toll agency, the IRS, DMV, court, or another government office: unpaid toll, tax refund or debt, license suspension, fines.\nAngle for this batch: tax debt or warrant threat.\nClaimed sender or brand: E-ZPass.\nWho writes it: a scammer whose first language isn't English, with slightly odd grammar.\nStyle: plain sentences, no emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"E-ZPass: unpaid toll $6.75 become tax debt. Warrant may issue. Call 555-0142 now.\",\"This is E-ZPass alert. Your toll violation is sent to IRS as tax debt. To avoid warrant please reply YES and we give you case number.\",\"E-ZPass notice: final warning before court warrant for unpaid toll tax. Pay $47.20 at http://ezpass-tollpay.fake/pay or call 555-0177.\",\"Dear customer, our system show you have 3 unpaid toll from E-ZPass. Because you ignore, this debt now with tax office and warrant is prepared. You must settle today by calling 555-0198. Do not delay.\",\"E-ZPass: your license will suspend for unpaid toll tax debt. Warrant issued by court. Reply with your case code to stop. Or call 555-0134.\",\"Final warning from E-ZPass. Unpaid toll $12.50 has become tax warrant. To cancel warrant, send payment of $12.50 to http://pay-ezpass-tax.fake/now. Ignore means arrest.\",\"E-ZPass: tax warrant for toll debt. Call 555-0166 immediately.\",\"Hello, this E-ZPass. We see you not pay toll since long time. Now your case is with government tax department and warrant is approved. You must reply with last 4 of social to verify and stop warrant. Thank you.\"]}"
+}

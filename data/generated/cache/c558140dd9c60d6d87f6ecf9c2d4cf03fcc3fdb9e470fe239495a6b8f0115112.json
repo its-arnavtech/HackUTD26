@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: carrier bill ready or autopay confirmation.\nClaimed sender or brand: T-Mobile.\nWho writes it: a friend or family member texting casually.\nStyle: chatty with one emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Hey, T-Mobile autopay hit this morning for $92.40, so you don’t need to Venmo me til next week 😊\",\"Mom your T-Mobile bill is ready, $145.00 due Nov 3. I already set autopay so ignore the text lol 📱\",\"just got the T-Mobile bill ready alert for the family plan — $210.75 due the 18th. autopay is on, right? I can check t-mobile.com if not 😅\",\"Babe T-Mobile sent the autopay confirmation for your line, $65 even, charged to the usual card. Weirdly it also says bill ready for the next cycle on 12/02. I’m not clicking anything, just wanted you to know 👍\",\"yo T-Mobile bill is ready, $78.20, due 9/15. autopay set for the 13th so no late fee. you owe me half btw 😂\",\"Dad — got the T-Mobile autopay confirmation just now. $132.50 for the three lines, paid. Nothing due till next month. Also your phone is still on silent lol 📞\",\"T-Mobile text said bill ready and $0 due bc autopay already took it. Confirmation #TM-8842103. I checked t-mobile.com myself, all good. Don’t need to do anything 🤷\",\"hey just saw T-Mobile autopay confirmation — $55.00 pulled today for my line, bill ready for next month on the 7th. can you stop by later? need help with the wifi 😬\"]}"
+}

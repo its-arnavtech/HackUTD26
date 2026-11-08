@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake account security alert (scam).\nWhat this category covers: Pretends to protect a non-bank account (carrier, Apple, Amazon, email, social media): login alert, password reset, SIM change, or asks the person to send back a one-time code.\nAngle for this batch: asks the person to reply with a verification code.\nClaimed sender or brand: PayPal.\nWho writes it: a scammer using a friendly, casual tone to lower suspicion.\nStyle: terse, like an automated system.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"PayPal: suspicious login. Reply with the 6-digit code we sent to secure your account.\", \"Hey, this is PayPal security. We noticed a login from an unknown device. To verify it's you, just reply with the code we just texted. Thanks!\", \"PayPal alert: new sign-in from Chrome. If not you, confirm by replying with the 6-digit code sent to your phone. Details: paypal-secure-check.com\", \"PayPal: unusual activity. Reply with the verification code to confirm. Or call 888-555-0123.\", \"We're writing to let you know that someone tried to access your PayPal account from an unrecognized location. To help us verify your identity, please reply to this message with the 6-digit code that was just sent to your phone. If you didn't attempt this, ignore this message.\", \"PayPal: Your account has been temporarily locked due to suspicious activity. Reply with the code we sent to unlock it now.\", \"Hi there! PayPal here. We just need to confirm it's really you. Can you reply with the 6-digit code we sent? Thanks so much!\", \"PayPal: We detected a password reset attempt. If this wasn't you, reply with the code sent to your phone. More info: paypal-verify.net\"]}"
+}

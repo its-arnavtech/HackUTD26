@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake toll or government notice (scam).\nWhat this category covers: Pretends to be a toll agency, the IRS, DMV, court, or another government office: unpaid toll, tax refund or debt, license suspension, fines.\nAngle for this batch: tax refund ready to claim.\nClaimed sender or brand: E-ZPass.\nWho writes it: a scammer whose first language isn't English, with slightly odd grammar.\nStyle: brand prefix like 'BRAND:' at the start.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"E-ZPass: Your tax refund 428.73 is ready from toll overpay. Claim here ezpass-refund.top/claim\",\"E-ZPass: Dear customer, IRS approved your refund of $512.40 but it is hold because E-ZPass account. Please verify at https://ezpass-taxrefund.info/verify within 24h or lost.\",\"E-ZPass: We try deliver your tax refund check but address fail. Call 212-555-0198 to confirm mailing detail. Refund ID 7741 will expire.\",\"E-ZPass: Refund ready to claim $389.22. Reply YES and our agent will send secure form. Need confirm your ZIP and last 4 of bank.\",\"E-ZPass: To release tax refund $604.10, there is small processing fee $19.99. Send code from gift card to agent or pay at ezpass-refund-pay.cc/fee. Thank you.\",\"E-ZPass: Final notice. Your 2024 tax refund $1,203.55 is pending because toll balance not cleared. No worry, you can claim both refund and toll credit. Visit https://ezpass-refund-portal.com/claim and enter case 55-8891. If not claim in 48 hour, fund return to government.\",\"E-ZPass: Tax refund unclaimed $276. Call 646-555-0134 now.\",\"E-ZPass: Your refund $931.08 was returned. We need your account number and routing for deposit. Reply with info or call 305-555-0177. This is last reminder.\"]}"
+}

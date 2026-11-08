@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake toll or government notice (scam).\nWhat this category covers: Pretends to be a toll agency, the IRS, DMV, court, or another government office: unpaid toll, tax refund or debt, license suspension, fines.\nAngle for this batch: unpaid toll with late fee.\nClaimed sender or brand: E-ZPass.\nWho writes it: a careful scammer who avoids obvious red-flag words.\nStyle: chatty with one emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Hey, this is E-ZPass customer care. Our records show a small unpaid toll from your recent trip and a $4.75 late fee was added today. You can review and settle it here: ezpass-tollreview.example 😊\", \"Hi there, just a quick heads up from E-ZPass: your toll balance is past due and a $7 late fee may apply after Friday. Reply YES and I’ll send your statement. 😊\", \"E-ZPass notice: toll charge $3.20 + $2.00 late fee. Call 804-555-0176 to take care of it before it goes to the next step. 😊\", \"Morning! We tried reaching you about an unpaid E-ZPass toll from last week. There’s a $5 late fee on it now. Could you reply with the best time to call? 😊\", \"E-ZPass here. A $6.50 toll for your recent trip didn’t go through, so a $3 late fee got added. Please pay at ezpasspay-online.example to keep your account in good standing 😊\", \"Quick one from E-ZPass: we show a $2.25 unpaid toll plus a $1.50 late fee. If this isn’t yours, reply STOP; otherwise reply PAY and we’ll text a secure payment link 😊\", \"Hi, E-ZPass billing here. Your account has an outstanding toll of $8.40 and a late fee of $4.00. You can call 716-555-0129 and we’ll get it sorted today. 😊\", \"Just a friendly reminder from E-ZPass: the $5.75 toll from your Tuesday trip is still open and a $2.50 late fee was added. Pay here when you have a sec: ezpass-tollsettle.example 😊\"]}"
+}

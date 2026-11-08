@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake bill or payment demand (scam).\nWhat this category covers: Fake bill, overdue balance or failed payment from a phone carrier, utility, or subscription, with a threat of shut-off and a link to pay.\nAngle for this batch: overpayment refund on your bill.\nClaimed sender or brand: T-Mobile.\nWho writes it: a scammer whose first language isn't English, with slightly odd grammar.\nStyle: all caps for key words.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"T-MOBILE BILLING: You are OVERPAID $47.20 on account. REFUND is APPROVED and waiting. Confirm your debit card here: tmob-refund.info/claim . Thank you.\", \"Dear customer, we see you PAY TOO MUCH for 3 month on your T-Mobile bill. CREDIT $86.50 must be claim in 48 hour or it go back to billing system. Verify here: tmobile-refundportal.net\", \"T-Mobile: REFUND $23.11 is APPROVED for you. Reply YES and our team will send it to your card.\", \"We try to send your CREDIT BALANCE $112.08 but the card is FAIL. To complete refund please call our REFUND DEPT at 888-555-0147. T-Mobile billing support.\", \"Hello, this is T-Mobile account notice. Because of system mistake you have OVERPAYMENT $61.75 since March. We cannot keep this money. To receive REFUND you must activate it today at tmobilerefund-verify.com/activate with your card detail. If not activate, money will be send to state. Thank you for understand.\", \"You have CREDIT $54.99 from overpayment on your bill. To release it we need CONFIRMATION code from your bank. Reply CODE here and agent will help you. Offer expire SOON.\", \"T-Mobile REFUND $19.40 wait. Claim at tmob-ref.info NOW.\", \"FINAL NOTICE: Your T-Mobile account show CREDIT BALANCE $203.16 that is UNCLAIM. If you not verify in 24 hour, refund is cancel and account flag for review. Verify now: tmobile-credit-refund.co/verify\"]}"
+}

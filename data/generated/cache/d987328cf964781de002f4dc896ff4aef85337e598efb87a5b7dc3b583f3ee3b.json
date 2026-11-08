@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake account security alert (scam).\nWhat this category covers: Pretends to protect a non-bank account (carrier, Apple, Amazon, email, social media): login alert, password reset, SIM change, or asks the person to send back a one-time code.\nAngle for this batch: password reset they didn't request.\nClaimed sender or brand: T-Mobile.\nWho writes it: a scammer using a friendly, casual tone to lower suspicion.\nStyle: includes a reference or case number.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"T-Mobile: We got a password reset request for your account. Didn't ask? Call 855-555-0123. Case #TM-48291.\", \"Hey, it's T-Mobile. Someone tried to reset your password. If this wasn't you, secure your account here: tmosecure-support.com/reset. Ref: 55210\", \"Hi! T-Mobile here. We noticed a password reset request on your line but no changes made yet. If you didn't do it, reply with the 6-digit code we just sent to confirm it's you. Case TM-9931.\", \"T-Mobile alert: Password reset requested for your account on 3/15. If this wasn't you, call us at 888-555-0199 and mention case #TM-77213. We'll lock it down.\", \"We received a request to change your T-Mobile password. No action needed if it was you. If not, verify here: tmobile-alerts.net/verify?ref=8842. Case 55821.\", \"T-Mobile: Did you request a password reset? Reply Y or N. Case #TM-11029.\", \"Hey there, T-Mobile support. Someone from a new device asked to reset your password. To cancel, reply with the verification code we texted. Case #TM-8847.\", \"T-Mobile security: We blocked a password reset attempt on your account because it looked suspicious. To confirm it was you and restore access, click tmob-account-secure.co/r/5521 or call 855-555-0177. Ref: TM-66204.\"]}"
+}

@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake prize, reward or refund (scam).\nWhat this category covers: Promises money or a gift: prize or giveaway winner, expiring reward points, gift card, unclaimed refund, survey reward.\nAngle for this batch: free gift card for a survey.\nClaimed sender or brand: Target.\nWho writes it: a hurried scammer sending thousands of texts with minimal effort.\nStyle: plain sentences, no emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Target survey: you won a $50 gift card. Claim at target-rewards555.com before it expires.\",\"Hi this is Target customer team. Complete a 2 min survey and get a free $100 gift card. Reply YES and we send link.\",\"You've been selected for our Target shopper survey. Just answer 5 questions and receive a $75 gift card. Go to tgt-survey-offer.net/claim now. Limited spots.\",\"Target: Your $25 gift card from last survey is unclaimed. Call 214-555-0177 to verify. Must claim in 24 hrs.\",\"We need your feedback. Finish survey and pick a free gift card up to $200. Text SURVEY to 214-555-0188 and we send the link.\",\"Target reward: complete survey at targetgiftcard-survey.com and get $50 gift card. Just pay $2 shipping. Reply STOP to opt out.\",\"Congrats! You are today's Target survey winner. Free $100 gift card. Send code 5566 to 214-555-0199 to confirm.\",\"Target survey panel: earn a $10 gift card for 3 questions. Visit tgt-panel.co/quick. No purchase needed.\"]}"
+}

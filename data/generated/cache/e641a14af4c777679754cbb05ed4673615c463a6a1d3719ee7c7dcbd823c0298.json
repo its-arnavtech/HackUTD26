@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake toll or government notice (scam).\nWhat this category covers: Pretends to be a toll agency, the IRS, DMV, court, or another government office: unpaid toll, tax refund or debt, license suspension, fines.\nAngle for this batch: tax refund ready to claim.\nClaimed sender or brand: SunPass.\nWho writes it: a scammer whose first language isn't English, with slightly odd grammar.\nStyle: all caps for key words.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"SunPass: YOUR TAX REFUND of $284.50 is READY to claim. Verify now at sunpass-refund.com/claim before it expire. Reply YES for help.\",\"ATTENTION: SunPass customer have UNCLAIMED TAX REFUND $512. Must claim in 24 hour. Call 888-555-0147 now. Have your SSN ready for verify.\",\"SunPass: TAX REFUND $97.20 waiting. Claim at sunpass-tax.info/refund\",\"You have REFUND from SunPass toll overpay. But to release your TAX REFUND $430, we need confirm identity. Reply with last 4 of SSN and DOB. This is URGENT.\",\"FINAL NOTICE: Your SunPass TAX REFUND $1,208.33 is on HOLD. Claim before 03/15 or it go back to IRS. Visit https://sunpassrefund.net/irs-claim\",\"SunPass: We try to send your TAX REFUND but address is wrong. Please call 214-555-0182 to update and claim $306. Do not ignore this.\",\"SunPass: TAX REFUND $159.99 READY. To claim, text REFUND to 888-555-0166. We reply with code. Then send code back here. DO NOT share.\",\"Your SunPass account show TAX REFUND $675.12 not claimed. Go to sunpass-claim.org/tax and enter your debit card for deposit fee $1.99. REFUND will release in 2 hour.\"]}"
+}

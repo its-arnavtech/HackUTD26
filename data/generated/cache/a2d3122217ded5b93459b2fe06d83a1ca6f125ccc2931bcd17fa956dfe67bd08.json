@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: personal message from a friend or family member.\nClaimed sender or brand: a family member.\nWho writes it: the company's automated notification system.\nStyle: terse, like an automated system.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Mom shared her location with you in Find My. Open the app to see it. This alert won't repeat.\",\"Dad sent you $60.00 with Zelle. It's in your account now. If this looks wrong, call 800-555-0164.\",\"Grandma set you as her Apple Legacy Contact. No action needed now. You can review at apple.com.\",\"Your sister shared a photo album 'Beach 2024' with you. View in Google Photos. If unexpected, ignore this text.\",\"Reminder from Mom's calendar: her dentist appt is Tue 9/17 at 2:30. She added you as backup contact. Reply STOP to opt out.\",\"Dad's trip: AA 1287 lands ORD 6:42 PM today. He shared this with you on TripIt. See tripit.com.\",\"Brother arrived at Home Circle at 5:18 PM. Life360 alert. Open life360.com if you want details. No reply needed.\",\"Mom's pharmacy refill is ready for pickup at Walgreens on Main. She asked us to text you. Pickup by 9/20. Store 214-555-0182.\"]}"
+}

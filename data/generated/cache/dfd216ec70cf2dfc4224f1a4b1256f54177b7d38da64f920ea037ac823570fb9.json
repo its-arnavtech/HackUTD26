@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: delivery update from a carrier or retailer.\nClaimed sender or brand: Amazon.\nWho writes it: an office scheduler or coordinator.\nStyle: includes a reference or case number.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Amazon scheduling: order ending 1182 is set for Thu 4/18, 2–5pm. Ref AMZ-4471. Track or change at amazon.com/orders. No reply needed.\",\"Amazon case 88213-D: Delivery attempted today at 1:12pm; no signature available. We'll retry tomorrow 10am–1pm at no cost. Details: amazon.com/orders.\",\"Amazon Logistics ref DL-93847: Driver ETA 3:15–3:45pm. Package needs a signature. If you won't be home, update delivery at amazon.com/orders before 2pm.\",\"Amazon: Your package is held at the carrier facility for pickup until Sat 6pm. Bring photo ID. Case 310-77Q. Pickup info at amazon.com/help.\",\"Amazon delivery update: $0.00 due. Order ending 9043 was rescheduled to Mon 5/6 due to weather. Ref CS-2219. No action needed; see amazon.com/orders.\",\"Amazon: delivery moved to Fri 4/19, 9am–12pm. Case 48-9012. amazon.com/orders\",\"Amazon scheduling office: Your order ending 3376 is out for delivery and should arrive by 8pm. Ref 554-2091. If it doesn't, check amazon.com/help within 48 hrs.\",\"Amazon case AMZ-77104: We delivered order ending 6620 to the mailroom at 11:42am. If you can't find it, go to amazon.com/help. No code or payment needed.\"]}"
+}

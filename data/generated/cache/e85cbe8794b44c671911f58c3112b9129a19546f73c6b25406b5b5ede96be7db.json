@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Legitimate message. The correct answer for these cards is: legitimate, not a scam.\nBackground: Real messages people get, including hard look-alikes of every scam category above.\nScenario for these cards: carrier bill ready or autopay confirmation, sent as Verizon.\nThe person receiving the text: a retiree in Florida who banks online.\nTone of the text: slightly sloppy with a typo.\nDraft 8 cards, each a different realistic text. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Verizon: Your bill is redy. Amount due $84.32, due 05/18. Autopay is on, so no action needed. View at verizon.com/myaccount\",\"Verizon: Autopay confirmaton — we recieved $91.47 for your May bill. Thanks. Details: verizon.com\",\"Verizon: A payment of $76.10 was sucessfully processed. Autopay next on 06/12. Manage at verizon.com\",\"Verizon: Just a heads up — your autopay draft of $88.25 is scheduled for tomorow. Make sure funds are available. Manage at verizon.com\",\"Verizon: Your bill amout this month is $69.99, due 06/03. If you already paid, ignore this. See bill at verizon.com/bill\",\"Verizon: We couldn't process your autopay paymnet of $102.16. Please update your payment method in My Verizon at verizon.com. No need to reply.\",\"Verizon: Your May bill is now availible. Total due $57.40 by 05/29. Autopay scheduled. View or pay at verizon.com\",\"Verizon: Thanks for your paymnet of $45.00. Your next bill will be ready around 06/05. Questions? Call 813-555-0198.\"]}"
+}

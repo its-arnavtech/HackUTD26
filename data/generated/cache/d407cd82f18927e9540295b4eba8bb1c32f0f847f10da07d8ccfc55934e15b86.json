@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake prize, reward or refund (scam).\nWhat this category covers: Promises money or a gift: prize or giveaway winner, expiring reward points, gift card, unclaimed refund, survey reward.\nAngle for this batch: loyalty bonus from a store.\nClaimed sender or brand: Costco.\nWho writes it: a scammer using a friendly, casual tone to lower suspicion.\nStyle: chatty with one emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Costco here! You've got a $50 loyalty bonus waiting 🎉 Reply YES to claim.\", \"Hey Costco member! We noticed you haven't claimed your loyalty reward yet. It's a $100 gift card just for you 🎁. Tap here to grab it before it expires: costco-loyalty.biz/claim\", \"Costco loyalty perk: you've earned 5,000 bonus points! Redeem for cash or gift cards. Call 888-555-0142 to verify your account 😊\", \"Your Costco loyalty bonus is about to expire! Reply REWARD to get your $25 e-gift card 🤑\", \"Thanks for being a loyal Costco shopper! You've won a $200 shopping spree. Just pay $2.99 shipping fee here: costco-prize.co/ship 🚚\", \"Hi! It's Costco customer care. We're sending loyalty bonuses to our top members. You qualify for a $75 refund from your last purchase. Text your member ID to 214-555-0177 to process it 💸\", \"Costco: You have a $30 loyalty credit! Claim at costco-reward.info/claim 🎈\", \"Your Costco rewards points are expiring soon! Don't lose your $50 bonus. Verify your info here: costco-points.net/verify?u=you 😃\"]}"
+}

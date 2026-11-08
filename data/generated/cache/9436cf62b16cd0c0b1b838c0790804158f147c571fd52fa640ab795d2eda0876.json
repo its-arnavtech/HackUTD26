@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: personal message from a friend or family member.\nClaimed sender or brand: a family member.\nWho writes it: a small local business owner.\nStyle: brand prefix like 'BRAND:' at the start.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"HARPER & SONS PLUMBING: Hey sweetie, it's Dad. I'm running late from the Miller job. Your mom left meatloaf in the fridge—heat it at 350 for 20. I'll be home by 7:30. Don't wait up.\",\"MAPLE STREET FLORALS: Hi honey—Mom here. I know you're swamped, but can you let the dog out around 3? I've got the Henderson wedding setup until 6. There's $20 on the counter for pizza. Love you.\",\"CEDAR OAK CATERING: Aunt Lisa checking in! I'm at the venue all day for the Garcia retirement party. Can you pick up Grandpa's prescription before 5? It's already paid. Text me when you're heading over.\",\"RIVERBEND AUTO DETAIL: Dad here. Your car is done—I finished the interior after the Patel job. No charge, but if you can swing by before 6 I'll hand off the keys. I'm in the bay out back.\",\"SUNNYSIDE DAYCARE: Mom—sorry, I know this looks weird from the work phone. I left my personal at the shop. Can you grab milk and eggs on your way home? I'll Venmo you the $12 when I get a sec. Hugs.\",\"BLUEBIRD BOOKKEEPING: Hey kiddo, it's Mom. I've got back-to-back client calls until 4:15, so I can't answer. Your tuition payment went through this morning—$450, confirmation is in the family email. We'll celebrate Sunday. Proud of you.\",\"GREENWAY HANDYMAN: Dad again. Forgot to say—the plumber's coming Thursday between 9 and 11 to look at the water heater. Can you be at the house? I'll be on the Rogers job. I already paid the $75 service call.\",\"HOMESTEAD JAM CO: Your sister here. I'm bottling until 8, but can you call Mom tonight? She mentioned her knee is acting up. Also, don't forget Sunday lunch at our place—1pm. Bring nothing, we've got plenty.\"]}"
+}

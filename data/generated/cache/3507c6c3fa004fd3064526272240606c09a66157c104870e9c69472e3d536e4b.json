@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake job or easy money offer (scam).\nWhat this category covers: Unsolicited job or income offer: remote task jobs with daily pay, recruiter who wants to move to a chat app, reshipping, crypto or investment opportunities.\nAngle for this batch: mystery shopper or reshipping job.\nClaimed sender or brand: a staffing agency.\nWho writes it: a scammer using a friendly, casual tone to lower suspicion.\nStyle: plain sentences, no emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Hey, this is Carla from Beacon Staffing. We got your resume for a mystery shopper role. Pays $35 per store visit, no experience needed. Text back START and I'll send the details.\", \"Hi! It's Marcus at Summit Talent Group. We have a remote package inspector job, $22/hr, you just receive and forward boxes. Need to get you onboarded today. Call 305-555-0192.\", \"You've been selected for a paid mystery shopper assignment. First task is simple: buy a $50 gift card and send us the code to verify your account. We'll reimburse you plus $25. Reply YES to claim.\", \"Hey it's Jen from HireLogic Staffing. We're hiring reshipping agents ASAP. Work from home, get paid daily. Just need your address and a $40 starter kit fee. Apply at hirelogic-jobs.xyz/start\", \"Hi, this is Dave from ProStaff Recruiters. Saw you're looking for work. We have a mystery shopper gig, $300/week. Text your name and ZIP to 214-555-0177 to get started.\", \"Congrats! You're pre-approved for our mystery shopper program. No interview needed. Click here to activate your account and claim your first $75 payment: mysteryshopper-offer.net/activate\", \"Hey there, it's Tina with Apex Staffing. We need someone to receive packages at home and reship them. Easy money, $40 per box. Just reply with your address to get the first shipment.\", \"URGENT: Remote reshipping job, $500 sign-on bonus. Call 646-555-0138 now. Must be 18+ and have a valid address. No experience required. Ask for Mike.\"]}"
+}

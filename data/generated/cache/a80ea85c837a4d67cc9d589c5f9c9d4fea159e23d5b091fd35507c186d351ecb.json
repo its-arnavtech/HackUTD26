@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: carrier bill ready or autopay confirmation.\nClaimed sender or brand: AT&T.\nWho writes it: a company's customer-care team writing a short service text.\nStyle: all caps for key words.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"AT&T: Your bill is READY. $72.15 DUE 10/03. View and pay at att.com. Reply STOP to opt out.\",\"AT&T Free Msg: AUTOPAY CONFIRMED. We'll draft $118.40 from your saved payment on 09/22. No action needed. Details at att.com.\",\"AT&T: Payment REMINDER - your $56.89 balance is DUE 09/30. Pay now at att.com or set up AUTOPAY to avoid late fees.\",\"AT&T Free Msg: Your September bill is READY. Total due: $143.27 by 10/05. AUTOPAY is ON, so we'll process it on the due date. Review at att.com/myatt. Reply STOP to cancel.\",\"AT&T: AUTOPAY SUCCESS - $89.99 paid on 09/18 for your wireless bill. Thanks! Receipt at att.com. Questions? Call 800-555-0147.\",\"AT&T: Your payment of $64.50 is CONFIRMED. Confirmation #AT92741. Autopay next drafts 10/15. See att.com for details.\",\"AT&T Free Msg: Bill READY. $45.00 due 09/29. Pay at att.com. Reply HELP for help, STOP to opt out.\",\"AT&T: Good news - your AUTOPAY is set for 10/08. Amount: $102.73. We'll text you after it processes. Manage at att.com. Reply STOP to opt out.\"]}"
+}

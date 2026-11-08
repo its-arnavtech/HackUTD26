@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: school, work or community notice.\nClaimed sender or brand: a church group.\nWho writes it: a small local business owner.\nStyle: chatty with one emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Hey all! Choir practice moved to 6:30 tonight in the fellowship hall 🙏\", \"Alert: church office closed Friday. If you're dropping off donations, side door code is 4412 before noon 🙌\", \"Hi folks, Pastor Jim here. Youth car wash Sat 9-1 at the Shell on Main. $10 suggested donation, proceeds to camp 🙏\", \"Quick reminder: our small group meets at my shop, The Coffee Nook, Tuesday at 7pm. We're starting the book of James. Bring a snack if you can, and if you need the address just text me back. No pressure if you can't make it—we'll save you a seat 🍪\", \"Heads up: the women's retreat balance of $45 is due by the 15th. You can drop it in the offering box, give it to the treasurer on Sunday, or swing by my shop and I'll take it. If money's tight, please talk to me—we have a fund for that. No one gets left behind 🙏\", \"Alert: fellowship hall is booked for the potluck Sunday after service. Sign up in the lobby or text me what you're bringing. Need main dishes! 🍲\", \"Reminder: no Wednesday night service this week. Youth group still meets at 6 in the basement. Enjoy the break! 🙌\", \"Hey church family! New directory is ready. Check your info at www.gracecrossing555.org/directory and tell me if anything's wrong. Thanks! 🙏\"]}"
+}

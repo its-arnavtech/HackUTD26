@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake delivery notice (scam).\nWhat this category covers: Fake package or postal notice: missed delivery, address problem, customs or redelivery fee, package held.\nAngle for this batch: small redelivery or customs fee.\nClaimed sender or brand: UPS.\nWho writes it: a scammer using a friendly, casual tone to lower suspicion.\nStyle: chatty with one emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Hey it's UPS 📦 we tried delivering your parcel but nobody was home. Small $2.99 redelivery fee here: ups-redeliver.co/pay?id=8842\",\"Hi! UPS here 😊 Your package is stuck at our facility because of a tiny customs fee ($3.75). Can you cover it real quick at ups-customs-clear.com/fee? It'll go out today. Thanks!\",\"UPS notice: your package is on hold due to a $1.99 redelivery charge. Call 214-555-0178 and we'll get it moving again 📦\",\"hey, this is UPS. ur package needs a quick $2.50 customs fee before we can release it. reply YES and I'll send the payment link 👍\",\"Good morning! This is UPS delivery support 😊 We attempted your package on Tuesday but the address needs a quick confirmation. There's a small $3.20 redelivery fee to reschedule. You can pay and confirm here: ups-reschedule-help.net/confirm/5591. Thanks so much!\",\"Hey! UPS here 📦 to release your parcel we just need the 6-digit code we texted and a $2.15 redelivery fee. Reply with the code and we'll handle the rest.\",\"UPS 📦 missed u. $2.99 redelivery fee: ups-pay-now.site/r/4471\",\"Hey there, UPS here! Your international package is being held for a $4.10 customs handling fee 😊 Nothing major, just need it cleared so we can drop it off. Pay securely at ups-clearance-portal.com/pay/2038 and we'll get it out tomorrow.\"]}"
+}

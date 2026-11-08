@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake job or easy money offer (scam).\nWhat this category covers: Unsolicited job or income offer: remote task jobs with daily pay, recruiter who wants to move to a chat app, reshipping, crypto or investment opportunities.\nAngle for this batch: remote part-time task job with daily pay.\nClaimed sender or brand: a staffing agency.\nWho writes it: a careful scammer who avoids obvious red-flag words.\nStyle: chatty with one emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Hi! It's Dana from Brightline Staffing — we're filling a few remote part-time task slots, paid out daily. Still interested? Reply YES 🙂\", \"Morning! Following up on your application w/ Northgate Staffing. Part-time remote tasks, flexible hrs, daily payouts. Details here: northgatestaff.co/start 😊\", \"Hey it's Marcus w/ Ridgeline Recruiting. We've got a remote task gig, about 2 hrs a day, paid every evening. Give me a call back at 312-555-0187 🙂\", \"Good afternoon! This is Priya from Halston Staffing Group. You came up in our pool for a remote part-time task role — mostly simple data checks from your phone, 1-2 hrs a day, and payouts go out same day. No experience needed. Want me to send the onboarding link? 🙂\", \"Hi! Quick thing — the worker portal texts a 4-digit code to your phone to verify your profile. Can you send me the code once it comes through? Then we can get you onto the daily payout task list 🙂\", \"Congrats, you're in! Just need the $25 onboarding kit (refunded with your first payout) and tasks start tomorrow morning. Pay at summitstaffing-hub.com/kit 🙂\", \"Hi, it's Alex from Crestline Staffing. Rather than email, most of our task workers coordinate on WhatsApp — easier for the daily pay confirmations. Add me at 702-555-0134 and I'll send over the task list 🙂\", \"Remote task work, 90 min a day, paid daily. Text back TASKS 🙂\"]}"
+}

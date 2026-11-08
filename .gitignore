@@ -16,6 +16,9 @@ dist/
 *.sqlite
 *.sqlite3
 
+# A21 generator: failed raw responses kept for debugging only
+data/generated/cache/_failed/
+
 # Downloaded public datasets (not committed)
 data/raw/*
 !data/raw/.gitkeep

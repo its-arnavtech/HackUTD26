@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: recruiter or interview scheduling message.\nClaimed sender or brand: a hiring manager.\nWho writes it: a friend or family member texting casually.\nStyle: plain sentences, no emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"My manager wants to interview you. You free Thursday at 2?\",\"Hey, my hiring manager asked for your number. She's going to call you from 312-555-0142 tomorrow between 10 and 11. Don't ignore it, it's legit.\",\"Interview set for Monday 9:30 at the downtown office. Bring a photo ID. Visitor lot code is 8842. Text me when you're there and I'll meet you in the lobby.\",\"The recruiter at my job wants to do a phone screen. Can you do Wednesday after 4? She asked if your number is still 214-555-0178. Let me know.\",\"My boss said your interview went well. They're checking references now. She might call from an unknown number, so please pick up. Thanks again for coming in.\",\"Don't forget the interview tomorrow at 11. It's in the main building, 3rd floor. Parking is validated. Let me know if you need to reschedule.\",\"Hey, the hiring manager just asked if you're still interested. She wants a video call Friday at 3. I'll send the link to your email. Confirm with me so I can tell her.\",\"Quick one: my manager asked if you can start the interview process this week. She said the code for the application portal is HIRING24 but she'll email it too. Are you in?\"]}"
+}
