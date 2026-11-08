@@ -63,14 +63,18 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 ### A7 Phone shell and inbox on the mock API (#8)
 - Agent: Cursor (Claude Opus 5.5, cloud agent), covering for Codex design until about 23:00 · Person: Arnav · Folder: Cursor cloud VM (`/workspace`) · Branch: `cursor/a7-phone-inbox-55c7`
-- Started: 2026-11-07 21:30 · Last checkpoint: 2026-11-07 21:30
+- Started: 2026-11-07 21:30 · Last checkpoint: 2026-11-07 21:47
 - Done so far:
   - Claimed (CHANGELOG only)
-  - Frontend tests: Vitest + Testing Library + jsdom (`npm test`, config in `vite.config.ts`, setup in `src/test/setup.ts`); first tests cover `pollResult`. CI's frontend job now runs `npm test` after the build
-- Next step (exact): wait for Claude Code's `design-lab-snapshot` branch, read its `DESIGN.md` and `HANDOFF.md`, then port its tokens, components, phone frame and inbox into `frontend/` per `prompts/design-01-frontend.md` (no redesign), against the existing mocks and `src/api.ts`. Add `/gallery` with every screen in every state, and frontend tests.
-- Files touched: `CHANGELOG.md`, `frontend/package.json`, `frontend/package-lock.json`, `frontend/vite.config.ts`, `frontend/tsconfig.json`, `frontend/src/test/setup.ts`, `frontend/src/api.test.ts`, `.github/workflows/ci.yml`
-- How to run or test: `npm run build` and `npm test` in `frontend/`; `scripts/dev.ps1` for the app on the mocks
-- Notes and gotchas: data access stays in `src/api.ts`; screens never fetch. No contract changes without a separate `[contracts]` PR. UI copy follows POC_MVP 4.4 exactly.
+  - Frontend tests: Vitest + Testing Library + jsdom (`npm test`, config in `vite.config.ts`, setup in `src/test/setup.ts`). CI's frontend job runs `npm test` after the build
+  - Ported from `design-lab-snapshot` (813a3c1), no redesign: `theme.css` verbatim (replaces `index.css`), bundled fonts + OFL licenses, favicon, every lab component in `src/components/index.tsx` (props switched to the contract types: `MessageBubble` takes redacted text, `WasThisYouCard` takes a `WasThisYouItem`, `CampaignCard`/`MetricTable` take contract `Campaign`/`CategoryMetrics`), the stage shell and routes in `App.tsx` (react-router), the inbox, and `/gallery` with all 20 lab states plus "Messages unavailable"
+  - Inbox: `InboxView` is presentational; the default export uses `useInbox()` (`src/hooks.ts`), which loads `getInbox()` and polls every unfinished row with `pollResult` until done ("Checking…" then a verdict chip). "Check a new demo text" posts synthetic scenario 1 after a tap. Sender shows the real sender, formatted, not a brand name
+  - Gallery renders from `src/fixtures.ts`, which imports `backend/app/mocks/*.json` directly (no fetch). Screens not yet ported (A14, A15, A16) show restyled placeholders in their gallery slots
+  - 18 frontend tests pass; `npm run build` passes
+- Next step (exact): take 1280px gallery screenshots against the mock API, finish the CHANGELOG entry, open the A7 PR. Then A14 on `cursor/a14-result-trail-privacy-55c7`: port `Result.tsx`, `Trail.tsx`, `Privacy.tsx` as views over `ResultPoll`/`PrivacyView` and fill their gallery slots
+- Files touched: `CHANGELOG.md`, `.github/workflows/ci.yml`, `frontend/package.json`, `frontend/package-lock.json`, `frontend/index.html`, `frontend/vite.config.ts`, `frontend/tsconfig.json`, `frontend/public/*`, `frontend/src/{main.tsx,App.tsx,theme.css,hooks.ts,fixtures.ts,fixtures.test.ts,api.test.ts}`, `frontend/src/components/*`, `frontend/src/screens/{Inbox,Gallery}.tsx` and their tests, `frontend/src/test/setup.ts`
+- How to run or test: `npm run build` and `npm test` in `frontend/`; `scripts/dev.ps1` for the app on the mocks, then `/inbox` and `/gallery`
+- Notes and gotchas: data access stays in `src/api.ts`; screens never fetch. No contract changes without a separate `[contracts]` PR. UI copy follows POC_MVP 4.4 exactly. Lab display fields that aren't in the contracts (`brand`, `activity_summary`, `next_step`, grouped privacy recipients) are derived in the UI, never added to `types.ts`. `vite.config.ts` allows the dev server to read `backend/app/mocks` only (not the repo root, which holds `.env`)
 - Resumed by: Cursor from Codex design (not started by Codex)
 
 
