@@ -40,7 +40,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A13 | Evaluation harness | Arnav | Claude Code | MVP | A1 | done | #21 · PR #49 (arnav-shared) |
 | L7 | Improved classifier | Arnav | Codex | MVP | A1, A9, A13 | done | #22 · #58 (arnav-shared); public gate failed, pivot documented |
 | L8 | Agent loop with plan, re-plan and guardrails | Lavanya | Claude Code | MVP | A4, L5 | done | #23 · PR #56 |
-| L9 | API endpoints and pipeline orchestration | Lavanya | Claude Code | MVP | L3, L8 | todo | #24 |
+| L9 | API endpoints and pipeline orchestration | Lavanya | Claude Code | MVP | L3, L8 | in progress | #24 · l9-pipeline |
 | G1 | Gate: scenario 1 end to end in the CLI | Both | any | MVP | A3, A9, A10, A11, L8 | in progress | #25 · PR #46 merged (prep: stand-in agent until L8) |
 | L10 | `public_scam_reports` tool | Lavanya | Claude Code | MVP | L4, L5 | todo | #26 |
 | L11 | Recovery mode re-plan | Lavanya | Claude Code | MVP | L8, A11 | todo | #27 |
@@ -60,6 +60,16 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 ## In progress
 
 <!-- One block per active issue. Copy the template, keep it current at every checkpoint. -->
+
+### L9 API endpoints and pipeline orchestration (#24)
+- Agent: Claude Code (Opus 5.5) · Person: Lavanya · Folder: C:\Users\gocomets\Downloads\HackUTD26 · Branch: l9-pipeline
+- Started: 2026-11-07 23:28 · Last checkpoint: 2026-11-07 23:28
+- Done so far:
+  - Claimed. Decisions with Lavanya: real routes are everything except `/confirm` (L11) and `/privacy` (L6); preloaded inbox messages start checking on first open; classifier is L7 `predict` with the baseline as fallback; privacy goes through L6's `privacy_log` hooks (PR #57)
+- Next step (exact): `pipeline.py` (`Pipeline`: build_input, run, job), then `main.py` routes and inbox seeding, then the `config.py` salt check, then tests
+- Files touched: CHANGELOG.md
+- How to run or test: `backend\.venv\Scripts\python.exe -m pytest -q` from `backend/`
+- Notes and gotchas: the repo `.env` holds a real NVIDIA key, so tests must inject a fake agent. The baseline takes ~36 s to train, so it's warmed at startup. `privacy_log` is imported only if present, until #57 merges
 
 ### G1 Gate: scenario 1 end to end in the CLI (#25), prep
 - Agent: Cursor (Claude Opus 5.5, cloud agent) · Person: Arnav · Folder: Cursor cloud VM (`/workspace`) · Branch: `cursor/g1-run-scenario-55c7`
