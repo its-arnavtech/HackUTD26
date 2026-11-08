@@ -41,17 +41,17 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | L7 | Improved classifier | Arnav | Codex | MVP | A1, A9, A13 | done | #22 · #58 (arnav-shared); public gate failed, pivot documented |
 | L7b | Public SMS generalization follow-up | Arnav | Codex | MVP | L7 | done | #59 · #62 (arnav-shared) |
 | L8 | Agent loop with plan, re-plan and guardrails | Lavanya | Claude Code | MVP | A4, L5 | done | #23 · PR #56 |
-| L9 | API endpoints and pipeline orchestration | Lavanya | Claude Code | MVP | L3, L8 | in progress | #24 · l9-pipeline |
+| L9 | API endpoints and pipeline orchestration | Lavanya | Claude Code | MVP | L3, L8 | done | #24 · PR #65 |
 | G1 | Gate: scenario 1 end to end in the CLI | Both | any | MVP | A3, A9, A10, A11, L8 | done | #25 · PR #46 (prep), PR #61 |
 | L10 | `public_scam_reports` tool | Arnav | Claude Code | MVP | L4, L5 | todo | #26 |
 | L11 | Recovery mode re-plan | Arnav | Codex | MVP | L8, A11 | done | #27 · PR #63 |
 | A14 | Result card, "How we checked" and privacy panel | Arnav | Cursor (covering for Codex design) | MVP | A7 | done | #28 · PR #53 |
 | A15 | Recovery UI | Arnav | Claude Code (covering for Codex design) | MVP | A14 | done | #29 · PR #55 (#54 closed as superseded) |
 | A16 | Consent screen, campaign view and accuracy page | Arnav | Claude Code (covering for Codex design) | MVP | A7 | done | #30 · PR #55 |
-| A17 | Frontend on the live API | Arnav | Cursor | MVP | A14, A15, A16, L9 | todo | #31 |
+| A17 | Frontend on the live API | Arnav | Cursor | MVP | A14, A15, A16, L9 | in progress | #31 · a17-live-api (no PR yet; left with Claude Code) |
 | A18 | End-to-end scenario tests | Arnav | Codex | MVP | G1 | done | #32 · PR #64 |
-| G2 | Gate: all three scenarios end to end in the app | Both | any | MVP | A17, A18, L10, L11 | todo | #33 |
-| A19 | Replay fixtures and backup video | Arnav | Codex | Demo | G2 | in progress | #34 · codex/a18-replay (preparation; G2 pending) |
+| G2 | Gate: all three scenarios end to end in the app | Both | any | MVP | A17, A18, L10, L11 | in progress | #33 · cursor/demo-readiness-f47e |
+| A19 | Replay fixtures and backup video | Arnav | Codex | Demo | G2 | in progress | #34 · codex/a18-replay; resumed cursor/demo-readiness-f47e |
 | A20 | Capital One and Best Design pitch | Arnav | any | Demo | G2 | todo | #35 |
 | L12 | NVIDIA and T-Mobile pitch, Devpost | Lavanya | Claude Code | Demo | G2 | todo | #36 |
 | G3 | Rehearse the 3-minute demo three times | Both | any | Demo | A19, A20, L12 | todo | #37 |
@@ -65,11 +65,27 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 ### A19 Replay and backup preparation (#34)
 - Agent: Codex (GPT-6), Arnav; C:/HackUTD26/.worktrees/wrap-up; branch codex/a18-replay.
 - Started / checkpoint: 2026-11-07 23:59
-- Done so far: Claimed; preparing exact cache recordings and no-network verification around A18.
-- Next step: Record all three CLI scenarios under a repeatable synthetic-data profile; then live/replay app proof after L9/A17. Backup video and G2 remain unverified.
+- Done so far: Claimed; preparing exact cache recordings and no-network verification around A18. CLI profile `authored-cli-baseline-v1` is committed (31 recordings, public search unavailable on purpose).
+- Next step: Arnav records the app walk in `DEMO_MODE=record` (CLI fixtures do not match app cache keys), then replays with the network off, and records the backup video. Commands are in `docs/DEMO_RUNBOOK.md`.
 - Files touched: planned replay script, fixtures, tests, docs; browser smoke in separate workflow.
 - How to test: python -m pytest tests/test_scenarios_e2e.py; npm run test:e2e.
 - Gotchas: replay cache keys include message IDs, classifier outputs, phone hash, model and prompts. Never claim arbitrary new messages replay.
+- Resumed by: Cursor (Grok 4.7, cloud) from Codex, for the runbook and offline CLI check only. Video and live app replay are not done. No live keys in this environment.
+
+### G2 Gate: all three scenarios in the app (#33)
+- Agent: Cursor (Grok 4.7, cloud) · Person: Arnav · Folder: `/agent/repos/HackUTD26-cleanup` · Branch: `cursor/demo-readiness-f47e`
+- Started: 2026-11-08 00:42 · Last checkpoint: 2026-11-08 00:50
+- Done so far:
+  - Merged L9 #65 with a merge commit (`21fbea5`). Head was still `d039b223`, the reviewed SHA.
+  - Reset now bumps a demo generation so an in-flight job cannot write a result, trail, or privacy row onto a reseeded message that reused the same id and run number. Superseded runs in the same generation still keep their privacy records.
+  - Recovery test "notes a recognized transfer" delivers the mocked poll to whichever subscriber is installed, including one that attaches after the checking screen is shown.
+  - A17 (`a17-live-api`) has no pull request. Its loading/error/retry work was not copied. PR #66 (Gemini public reports) was left with its owner. On main, `public_scam_reports` still raises `NotImplementedError`.
+  - Browser, `USE_MOCKS=false`, `DEMO_MODE=replay`, no API keys: inbox loads the three messages. Scenario 1 and scenario 3 end "We're not sure" because Nemotron has no app-shaped fixture (`FixtureMissingError`). Recovery still runs the recorded Nessie check: $900 purchase at Unknown Payee, 17 minutes after the text, ref `txn_28`. Answering "No" posts confirm only after the tap and shows the checklist. Campaign cards say 0 similar texts today (no last-24-hour count is above 0; the historical 28 is `count_total`, not shown as today). Accuracy reads `eval/metrics.json`. Unknown message id is 404. Block sender returns simulated and "Nothing was sent."
+- Next step (exact): Arnav records the three app walks with `DEMO_MODE=record` (see `docs/DEMO_RUNBOOK.md`), then replays them with the network off. Do not mark G2 done before that and before A17's PR is in. Do not mark the backup video done until Arnav records it.
+- Files touched: `backend/app/state.py`, `backend/tests/test_state.py`, `frontend/src/screens/Recovery.test.tsx`, `CHANGELOG.md`, `docs/DEMO_RUNBOOK.md`
+- How to run or test: `cd backend; python -m pytest`; `cd frontend; npm test; npm run build; npm run test:e2e`
+- Notes and gotchas: campaign counts are historical. Scenario 3's cluster is 28 on record and 0 in the last 24 hours. Do not narrate that as recent activity. The planted $900 is a purchase at Unknown Payee, not a transfer.
+- Resumed by: none
 
 
 
@@ -106,6 +122,8 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 ---
 
 ## Done log
+
+- 2026-11-08 00:42 · L9 · Claude Code (Opus 5.5, Lavanya); merged by Cursor (Grok 4.7) · #65 · Real pipeline behind every 7.1 route: redact, features, classify (L7 or baseline), Nemotron on L3's runner; trail fills in on poll; demo inbox loads at startup and reset. Merge commit `21fbea5`, not a squash. · follow-ups: changelog status finished here; the demo-generation fix and the recovery-test flake are separate
 
 - 2026-11-08 00:06 · A18 · Codex (GPT-6), resumed Claude Code · #64 · All three real-agent authored scenarios now required in socket-blocked replay; 31 service recordings; Playwright inbox/result/trail/privacy smoke and browser CI; 617 backend passed with no skips, 49 frontend tests/build, Chromium pass · follow-ups: G2 app recordings and A19 backup video still pending L9/A17; CLI profile deliberately uses real A1 baseline, public search unavailable.
 
@@ -156,6 +174,8 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 ---
 
 ## Decisions
+
+- 2026-11-08 00:42 · Demo reset bumps a generation on the in-memory store. A job may write its result and trail only while its run is still current in that generation. Privacy records from a superseded run in the same generation stay (the data was sent). After reset, a reseeded message can reuse the id and run number; the old job's generation no longer matches, so its result, trail, redaction and privacy writes are dropped. Public reports stay unavailable until PR #66 merges: `public_scam_reports` on main is still `NotImplementedError`, and the A18 replay profile reports that search as unavailable on purpose.
 
 - 2026-11-07 23:55 · L11 recovery: after the customer taps /clicked, code requires a read-only Nessie check since received_at before further model-directed checks. Only refs from successful, schema-valid Nessie flags can become Was this you items, including when Nemotron later fails. Full payee details resolve locally in JobRunner after the loop; confirmation records only a customer tap for a completed current recovery run. Suggestions never call banking writes. L9 and A17 stay with their active owners per Arnav.
 

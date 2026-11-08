@@ -8,7 +8,10 @@ touches disk. `POST /api/demo/reset` clears it.
 **Runs.** Every pipeline run of a message (the first check, then a recovery
 re-plan after `/clicked`) gets a new run number. The poll route shows the
 latest run only. Writes from an older run that is still finishing are dropped,
-so a slow check can't overwrite the recovery result.
+so a slow check can't overwrite the recovery result. `POST /api/demo/reset`
+also bumps a demo generation. A reseeded message can reuse the same id and run
+number; a job still in flight keeps the generation it started in, and its
+result, trail and privacy writes are dropped once that generation is over.
 
 **Runner.** `JobRunner.submit()` marks the message `queued`, then a worker
 thread marks it `running`, calls the job, and stores the result (`done`). The
@@ -35,8 +38,9 @@ import json
 import logging
 import sqlite3
 import threading
-from collections.abc import Callable
+from collections.abc import Callable, Iterator
 from concurrent.futures import Future, ThreadPoolExecutor
+from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Any, Optional
@@ -59,6 +63,7 @@ CREATE TABLE messages (
     status       TEXT    NOT NULL,
     mode         TEXT    NOT NULL,
     run          INTEGER NOT NULL DEFAULT 0,
+    generation   INTEGER NOT NULL DEFAULT 0,
     result       TEXT,
     was_this_you TEXT    NOT NULL DEFAULT '[]',
     error        TEXT,
@@ -104,6 +109,34 @@ def _now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="milliseconds")
 
 
+# Set by JobRunner for the worker that owns a run. Direct store calls (tests, routes
+# that are not a pipeline job) leave it unset and are checked by run number only.
+_write_generation: contextvars.ContextVar[int | None] = contextvars.ContextVar(
+    "sentinel_write_generation", default=None
+)
+
+
+class StartedRun(int):
+    """Run number plus the demo generation captured when the run began."""
+
+    generation: int
+
+    def __new__(cls, run: int, generation: int) -> "StartedRun":
+        obj = super().__new__(cls, run)
+        obj.generation = generation
+        return obj
+
+
+@contextmanager
+def bound_generation(generation: int) -> Iterator[None]:
+    """Bind the generation a worker may write. Other generations are rejected."""
+    token = _write_generation.set(generation)
+    try:
+        yield
+    finally:
+        _write_generation.reset(token)
+
+
 def failed_result(plan: list[c.ToolName] | None = None) -> c.AgentResult:
     return c.AgentResult(
         plan=plan or [],
@@ -135,6 +168,7 @@ class StateStore:
 
     def __init__(self) -> None:
         self._lock = threading.RLock()
+        self._epoch = 0  # bumped by reset(); in-flight jobs keep the value they started with
         self._db = sqlite3.connect(":memory:", check_same_thread=False, isolation_level=None)
         self._db.row_factory = sqlite3.Row
         self._db.execute("PRAGMA foreign_keys = ON")
@@ -185,8 +219,8 @@ class StateStore:
             elif self._db.execute("SELECT 1 FROM messages WHERE message_id = ?", (message_id,)).fetchone():
                 raise ConflictError(f"message_id {message_id} already exists")
             self._db.execute(
-                "INSERT INTO messages (message_id, sender, text, received_at, source, status, mode, created_at, updated_at)"
-                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO messages (message_id, sender, text, received_at, source, status, mode, generation,"
+                " created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 (
                     message_id,
                     message.sender,
@@ -195,6 +229,7 @@ class StateStore:
                     c.MessageSource(source).value,
                     c.JobStatus.queued.value,
                     c.AgentMode.check.value,
+                    self._epoch,
                     now,
                     now,
                 ),
@@ -243,20 +278,35 @@ class StateStore:
 
     # -- runs -----------------------------------------------------------------
 
-    def start_run(self, message_id: str, mode: c.AgentMode = c.AgentMode.check) -> int:
-        """Begin a new run: status `queued`, empty trail and result. Returns the run number."""
+    def start_run(self, message_id: str, mode: c.AgentMode = c.AgentMode.check) -> StartedRun:
+        """Begin a new run: status `queued`, empty trail and result. Returns the run number.
+
+        The returned int also carries `.generation`, the demo epoch this run may write.
+        """
         with self._tx():
             row = self._one(message_id)
-            run = row["run"] + 1
+            started = StartedRun(int(row["run"]) + 1, self._epoch)
             self._db.execute(
-                "UPDATE messages SET run = ?, mode = ?, status = ?, result = NULL, was_this_you = '[]', error = NULL,"
-                " updated_at = ? WHERE message_id = ?",
-                (run, c.AgentMode(mode).value, c.JobStatus.queued.value, _now(), message_id),
+                "UPDATE messages SET run = ?, generation = ?, mode = ?, status = ?, result = NULL,"
+                " was_this_you = '[]', error = NULL, updated_at = ? WHERE message_id = ?",
+                (int(started), started.generation, c.AgentMode(mode).value, c.JobStatus.queued.value, _now(), message_id),
             )
-        return run
+        return started
 
     def _current(self, message_id: str, run: int) -> bool:
-        return self._one(message_id)["run"] == run
+        """True when `run` is still the message's run in the worker's demo generation."""
+        row = self._one(message_id)
+        if int(row["run"]) != int(run):
+            return False
+        return self._generation_matches(row)
+
+    def _generation_matches(self, row: sqlite3.Row) -> bool:
+        """Privacy keeps superseded runs. It only rejects a demo reset's new generation.
+
+        Callers outside a job leave the generation unset, so existing direct writes stay valid.
+        """
+        generation = _write_generation.get()
+        return generation is None or int(row["generation"]) == generation
 
     def set_running(self, message_id: str, run: int) -> bool:
         return self._update(message_id, run, status=c.JobStatus.running.value)
@@ -341,7 +391,8 @@ class StateStore:
 
     def add_privacy(self, message_id: str, run: int, recipient: c.PrivacyRecipient) -> int:
         with self._tx():
-            self._one(message_id)
+            if not self._generation_matches(self._one(message_id)):
+                return 0
             cur = self._db.execute(
                 "INSERT INTO privacy (message_id, run, recipient, entry) VALUES (?, ?, ?, ?)",
                 (message_id, run, recipient.recipient, recipient.model_dump_json()),
@@ -350,6 +401,10 @@ class StateStore:
 
     def update_privacy(self, entry_id: int, recipient: c.PrivacyRecipient) -> None:
         with self._tx():
+            row = self._db.execute("SELECT message_id, run FROM privacy WHERE id = ?", (entry_id,)).fetchone()
+            # id can be reused after reset clears sqlite_sequence, so a new generation must not be overwritten
+            if row is None or not self._generation_matches(self._one(row["message_id"])):
+                return
             self._db.execute("UPDATE privacy SET entry = ? WHERE id = ?", (recipient.model_dump_json(), entry_id))
 
     def last_privacy(self, message_id: str, run: int, recipient: str) -> tuple[int, Optional[c.PrivacyRecipient]]:
@@ -371,7 +426,8 @@ class StateStore:
     def set_redaction(self, message_id: str, run: int, redacted: c.RedactedMessage) -> None:
         """The redaction step's output for `run`. Kept in memory only; the API shows just its report."""
         with self._tx():
-            self._one(message_id)
+            if not self._generation_matches(self._one(message_id)):
+                return
             self._db.execute(
                 "INSERT OR REPLACE INTO redaction (message_id, run, redacted) VALUES (?, ?, ?)",
                 (message_id, run, redacted.model_dump_json()),
@@ -392,6 +448,7 @@ class StateStore:
 
     def reset(self) -> None:
         with self._tx():
+            self._epoch += 1
             self._db.execute("DELETE FROM trail")
             self._db.execute("DELETE FROM privacy")
             self._db.execute("DELETE FROM redaction")
@@ -452,19 +509,21 @@ class JobRunner:
 
     def submit(self, message_id: str, job: Job, mode: c.AgentMode = c.AgentMode.check) -> Future[None]:
         """Start a new run of `message_id` in the background and return at once."""
-        run = self.store.start_run(message_id, mode)
+        started = self.store.start_run(message_id, mode)
+        run, generation = int(started), started.generation
         with bind_message_id(message_id):
-            log.info("job queued", extra={"fields": {"run": run, "mode": c.AgentMode(mode).value}})
+            log.info("job queued", extra={"fields": {"run": run, "generation": generation, "mode": c.AgentMode(mode).value}})
         ctx = contextvars.copy_context()  # keep request context (and anything bound) in the worker
-        return self._pool.submit(ctx.run, self._run, message_id, run, job)
+        return self._pool.submit(ctx.run, self._run, message_id, run, generation, job)
 
-    def _run(self, message_id: str, run: int, job: Job) -> None:
+    def _run(self, message_id: str, run: int, generation: int, job: Job) -> None:
         with bind_message_id(message_id):
             try:
-                self._run_inner(message_id, run, job)
+                with bound_generation(generation):
+                    self._run_inner(message_id, run, job)
             except NotFoundError:
                 # The demo was reset while this job ran: its message is gone, nothing to record.
-                log.info("job dropped: message no longer exists", extra={"fields": {"run": run}})
+                log.info("job dropped: message no longer exists", extra={"fields": {"run": run, "generation": generation}})
 
     def _run_inner(self, message_id: str, run: int, job: Job) -> None:
         if not self.store.set_running(message_id, run):
@@ -485,7 +544,9 @@ class JobRunner:
 
                 items = [resolve_ref(ref) for ref in result.was_this_you]
                 self.store.set_was_this_you(message_id, run, items)
-            self.store.finish(message_id, run, result)
+            if not self.store.finish(message_id, run, result):
+                log.info("job dropped: run is no longer current", extra={"fields": {"run": run}})
+                return
             log.info("job done", extra={"fields": {"run": run, "verdict": result.verdict.value}})
         except NotFoundError:
             raise

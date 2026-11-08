@@ -81,17 +81,29 @@ describe("RecoveryView with a flagged purchase (the live Nessie seed plants the 
 });
 
 describe("Recovery on the mock API", () => {
-  let update: (poll: ResultPoll) => void;
+  let pushPoll: (poll: ResultPoll) => void;
 
   beforeEach(() => {
     sessionStorage.clear();
     api.getInbox.mockResolvedValue(mockInbox());
     api.postClicked.mockResolvedValue({ message_id: "msg_0001", status: "queued", mode: "recovery" });
     api.confirmTransaction.mockResolvedValue({ ref: "txn_3", was_me: false, recorded: true });
+    // The screen shows "Checking…" before useEffect subscribes, and React may subscribe twice.
+    // Keep the latest poll and hand it to whichever subscriber is installed, including a later one.
+    let subscriber: ((poll: ResultPoll) => void) | undefined;
+    let latest: ResultPoll | undefined;
     api.pollResult.mockImplementation((_id, onUpdate) => {
-      update = onUpdate;
-      return () => undefined;
+      subscriber = onUpdate;
+      if (latest) onUpdate(latest);
+      return () => {
+        if (subscriber === onUpdate) subscriber = undefined;
+      };
     });
+    pushPoll = (poll) => {
+      latest = poll;
+      const deliver = subscriber;
+      if (deliver) act(() => deliver(poll));
+    };
   });
   afterEach(() => vi.clearAllMocks());
 
@@ -106,10 +118,10 @@ describe("Recovery on the mock API", () => {
     expect(api.postClicked).toHaveBeenCalledWith("msg_0001");
 
     // A stale check-mode result is not the recovery answer.
-    act(() => update(mockResult("scenario1")));
+    pushPoll(mockResult("scenario1"));
     expect(screen.getByText("Checking activity since the text…")).toBeInTheDocument();
 
-    act(() => update(mockResult("scenario2")));
+    pushPoll(mockResult("scenario2"));
     expect(await screen.findByText("$900")).toBeInTheDocument();
     expect(await screen.findByText("17 minutes after the text")).toBeInTheDocument();
     expect(api.confirmTransaction).not.toHaveBeenCalled();
@@ -132,7 +144,7 @@ describe("Recovery on the mock API", () => {
     renderRecovery();
     fireEvent.click(await screen.findByRole("button", { name: /I clicked and entered my info/ }));
     await screen.findByText("Checking activity since the text…");
-    act(() => update(mockResult("scenario2")));
+    pushPoll(mockResult("scenario2"));
     fireEvent.click(await screen.findByRole("button", { name: /Yes, I made this transfer/ }));
     expect(await screen.findByText("Activity marked as recognized in this demo.")).toBeInTheDocument();
     expect(api.confirmTransaction).toHaveBeenCalledWith("txn_3", true);
