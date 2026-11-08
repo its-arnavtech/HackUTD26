@@ -37,7 +37,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A10 | `check_link` and `check_sender` tools | Arnav | Cursor | MVP | L1 | todo | #18 |
 | A11 | Nessie tools | Arnav | Cursor | MVP | A2 | todo | #19 |
 | A12 | Campaign store, seeding and `match_campaign` | Arnav | Codex | MVP | A1, A3 | todo | #20 |
-| A13 | Evaluation harness | Arnav | Claude Code | MVP | A1 | todo | #21 |
+| A13 | Evaluation harness | Arnav | Claude Code | MVP | A1 | in progress | #21 · `arnav-shared` |
 | L7 | Improved classifier | Lavanya | Claude Code | MVP | A1, A9, A13 | todo | #22 |
 | L8 | Agent loop with plan, re-plan and guardrails | Lavanya | Claude Code | MVP | A4, L5 | todo | #23 |
 | L9 | API endpoints and pipeline orchestration | Lavanya | Claude Code | MVP | L3, L8 | todo | #24 |
@@ -75,6 +75,16 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - Notes and gotchas: ...
 - Resumed by: <tool> from <tool>, if any
 ```
+
+### A13 Evaluation harness (#21)
+- Agent: Claude Code (Opus 5.5) · Person: Arnav · Folder: `C:\HackUTD26-cc` · Branch: `arnav-shared`
+- Started: 2026-11-07 20:15 · Last checkpoint: 2026-11-07 20:15
+- Done so far:
+  - Claimed. Copied A5's public SMS parquet from `C:\HackUTD26-codex\data\raw\public_sms\` (sha256 matches A5's manifest; gitignored). Installed `pyarrow==26.0.1` to read it.
+- Next step (exact): write `backend/scripts/evaluate.py`: model factory interface `make(train, val) -> predict(messages)`, scores on A1's `load_split()` test and the public set, baseline row, redaction-cost row via `app.privacy.redact`, optional agent sample; write `eval/metrics.json`.
+- Files touched: `CHANGELOG.md`
+- How to run or test: `cd backend; ..\.venv\Scripts\python -m scripts.evaluate`
+- Notes and gotchas: L7 isn't built, so until it lands the "ours" row is a stand-in (see Decisions when written). The public set is external evaluation only.
 
 
 ---
