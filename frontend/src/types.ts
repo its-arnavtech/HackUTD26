@@ -448,3 +448,49 @@ export interface BaselineMetrics {
   macro_f1: number;
   false_positive_rate: number;
 }
+
+// ---------------------------------------------------------------------------
+// Authentication and audit (DATA_SPEC section 8, L13). Only used when auth is on.
+// Tokens never appear here: they travel in HttpOnly cookies the page can't read.
+// ---------------------------------------------------------------------------
+
+export type Role = "customer" | "admin";
+
+export interface PasswordLoginRequest {
+  username: string;
+  password: string;
+}
+
+export interface TotpRequest {
+  code: string;
+}
+
+export interface LoginStep {
+  signed_in: boolean;
+  mfa_required?: boolean;
+}
+
+export interface Me {
+  user_id: string;
+  username: string;
+  display_name: string;
+  role: Role;
+  passkeys: number;
+}
+
+export interface AuditEventView {
+  id: number;
+  ts: DateTime;
+  event: string;
+  actor: string;
+  target: string;
+  outcome: "success" | "failure" | "denied";
+  ip_hash: string;
+  details?: Record<string, string | number | boolean>;
+}
+
+export interface AuditView {
+  chain_intact: boolean;
+  first_broken_id?: number | null;
+  events: AuditEventView[];
+}

@@ -616,3 +616,68 @@ class BaselineMetrics(Contract):
     categories: list[BaselineCategoryMetrics]
     macro_f1: float = Field(ge=0, le=1)
     false_positive_rate: float = Field(ge=0, le=1)
+
+
+# ---------------------------------------------------------------------------
+# Authentication and audit (DATA_SPEC section 8, L13). Only used when AUTH_ENABLED=true.
+# Tokens never appear in any of these bodies: they travel in HttpOnly cookies.
+# ---------------------------------------------------------------------------
+
+
+class Role(str, Enum):
+    customer = "customer"
+    admin = "admin"
+
+
+class PasswordLoginRequest(Contract):
+    username: str = Field(min_length=1, max_length=64)
+    password: str = Field(min_length=1, max_length=256)
+
+
+class TotpRequest(Contract):
+    code: str = Field(min_length=6, max_length=8)
+
+
+class PasskeyCredential(Contract):
+    """The browser's `PublicKeyCredential` as JSON (from `@simplewebauthn/browser`)."""
+
+    model_config = ConfigDict(extra="allow")
+
+    id: str = Field(max_length=1024)
+    rawId: str = Field(max_length=1024)
+    type: Literal["public-key"]
+    response: dict[str, Any]
+
+
+class LoginStep(Contract):
+    """Answer to a sign-in step. `mfa_required` means: send the TOTP code next."""
+
+    signed_in: bool
+    mfa_required: bool = False
+
+
+class Me(Contract):
+    user_id: str
+    username: str
+    display_name: str
+    role: Role
+    passkeys: int = Field(ge=0)
+
+
+class AuditEventView(Contract):
+    """One content-free audit row: no message text, no raw IP, no tokens."""
+
+    id: int
+    ts: datetime
+    event: str
+    actor: str
+    target: str
+    outcome: Literal["success", "failure", "denied"]
+    ip_hash: str
+    details: dict[str, Any] = Field(default_factory=dict)
+
+
+class AuditView(Contract):
+    chain_intact: bool
+    first_broken_id: Optional[int] = None
+    events: list[AuditEventView]

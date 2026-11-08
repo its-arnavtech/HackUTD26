@@ -232,3 +232,51 @@ Confirm field names against the Nessie docs on first call; adjust `integrations/
 | Cost of redaction | Our model on unredacted vs. redacted text | One row |
 | Agent verdict accuracy | Test labels, on a sample run through the full agent | Share correct, share `unsure` |
 | Different plans per message | The three scenarios | Tool sequences side by side |
+
+## 8. Authentication and audit (L13, only when `AUTH_ENABLED=true`)
+
+With `AUTH_ENABLED=false` (the default) nothing in this section applies and every route behaves as before, as one fixed demo customer.
+
+### 8.1 What the auth store keeps (`data/auth.sqlite`, never committed)
+
+| Table | Fields | Notes |
+| --- | --- | --- |
+| `users` | random UUID, username, display name, role (`customer` or `admin`), Argon2id password hash, TOTP secret (AES-256-GCM), last TOTP step used, failed count, lock time | No email, phone number or real name is required. Accounts are invite-only (`python -m scripts.create_user`). |
+| `passkeys` | credential id, public key, sign count | Public keys aren't secret. The private key never leaves the device. |
+| `refresh_tokens` | SHA-256 of the token, user, family, expiry, used, revoked | The raw token is never stored. |
+| `audit_events` | time, event, actor (user UUID), target, outcome, HMAC of IP, short details, previous hash, hash | Content-free and hash-chained. Never message text, passwords, codes, tokens or a raw IP. |
+
+Message text still never reaches disk: the message store stays in memory (section 5). Each message carries the UUID of the user who owns it.
+
+### 8.2 Cookies
+
+| Cookie | Holds | Flags |
+| --- | --- | --- |
+| `sa_at` | ES256 access JWT, 10 minutes | `HttpOnly`, `Secure`, `SameSite=Strict`, path `/api` |
+| `sa_rt` | opaque refresh token, 8 hours, single use | `HttpOnly`, `Secure`, `SameSite=Strict`, path `/api/auth` |
+| `sa_csrf` | CSRF token, copied into the `X-CSRF-Token` header on every POST | readable by the page, `Secure`, `SameSite=Strict` |
+| `sa_mfa`, `sa_wa` | 5-minute MFA ticket, passkey ceremony id | `HttpOnly`, `Secure`, `SameSite=Strict`, path `/api/auth` |
+
+Access JWT claims: `iss`, `aud`, `sub` (user UUID), `role`, `fam` (sign-in id), `iat`, `exp`, `jti`. Header: `alg: ES256`, `kid`.
+
+### 8.3 Routes
+
+| Route | Body → response | Who |
+| --- | --- | --- |
+| `GET /api/auth/csrf` | → `{"ok": true}`, sets `sa_csrf` | anyone |
+| `POST /api/auth/login` | `PasswordLoginRequest` → `LoginStep` (`mfa_required: true`) | anyone |
+| `POST /api/auth/login/totp` | `TotpRequest` → `LoginStep` (`signed_in: true`) | after the password step |
+| `POST /api/auth/passkey/login/options` | → WebAuthn request options | anyone |
+| `POST /api/auth/passkey/login/verify` | `PasskeyCredential` → `LoginStep` | anyone |
+| `POST /api/auth/passkey/register/options` | → WebAuthn creation options | signed in |
+| `POST /api/auth/passkey/register/verify` | `PasskeyCredential` → `Me` | signed in |
+| `POST /api/auth/refresh` | → `LoginStep` | holder of `sa_rt` |
+| `POST /api/auth/logout` | → `LoginStep` (`signed_in: false`) | anyone |
+| `GET /api/auth/me` | → `Me` | signed in |
+| `GET /api/audit` | → `AuditView` | admin |
+
+### 8.4 Who can call what (deny by default)
+
+A route with no rule is refused for everyone. `customer` can use inbox, messages, result, clicked, confirm, actions, privacy, campaigns and metrics, only for messages they own. Another user's `message_id` or transaction ref answers 404, the same as an unknown one. `admin` also gets `POST /api/demo/reset` and `GET /api/audit`. An admin can't read customers' messages either.
+
+Errors use the usual shape (L2) with codes `unauthorized` (401), `forbidden` or `csrf_failed` (403) and `rate_limited` (429). A failed sign-in always answers the same generic 401, whether the username exists, the password is wrong or the account is locked.
