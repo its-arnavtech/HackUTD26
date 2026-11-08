@@ -18,7 +18,6 @@ from typing import Any
 from huggingface_hub import HfApi, try_to_load_from_cache
 
 from app.config import DATA_DIR, get_settings
-from app.contracts import DemoMode
 from app.integrations import cache
 
 DATASET_ID = "ucirvine/sms_spam"
@@ -87,13 +86,7 @@ def setup() -> dict[str, Any]:
                       "files": model_paths},
         }
 
-    try:
-        result = cache.cached_call("huggingface", request, invoke)
-    except NotImplementedError:
-        # TODO(L1): live bootstrap only while the shared cache is a scaffold.
-        if settings.DEMO_MODE != DemoMode.live:
-            raise RuntimeError("L1 cache unavailable; HF record/replay cannot access network") from None
-        result = invoke()
+    result = cache.cached_call("huggingface", request, invoke, mode=settings.DEMO_MODE)
     # Replay of a metadata fixture is insufficient if the artifact is absent.
     for artifact in (result["dataset"], result["model"]):
         for info in artifact["files"]:

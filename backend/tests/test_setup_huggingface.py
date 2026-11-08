@@ -9,6 +9,8 @@ from app.config import Settings
 from app.contracts import DemoMode
 from scripts import setup_huggingface as hf
 
+REAL_CACHED_CALL = hf.cache.cached_call
+
 
 def test_cli_uses_revision_and_environment_for_token(monkeypatch, tmp_path):
     calls = []
@@ -40,9 +42,9 @@ def bootstrap(monkeypatch, tmp_path):
     monkeypatch.setattr(hf, "DESTINATION", tmp_path / "public_sms")
     downloads = []
     cache_keys = []
-    def stub(service, request, fn):
+    def stub(service, request, fn, **kwargs):
         cache_keys.append((service, request))
-        raise NotImplementedError("L1 scaffold")
+        return fn()
     monkeypatch.setattr(hf.cache, "cached_call", stub)
     class API:
         def __init__(self, token):
@@ -79,11 +81,24 @@ def test_downloads_have_provenance_and_no_secret_or_raw_rows(bootstrap):
     assert (hf.DESTINATION / "manifest.json").exists()
 
 
-@pytest.mark.parametrize("mode", [DemoMode.record, DemoMode.replay])
-def test_unimplemented_cache_blocks_network_in_non_live_modes(bootstrap, mode):
+def test_real_cache_records_then_replays_without_hub_downloads(bootstrap, monkeypatch):
     settings, downloads, _ = bootstrap
-    settings.DEMO_MODE = mode
-    with pytest.raises(RuntimeError, match="cannot access network"):
+    monkeypatch.setattr(hf.cache, "cached_call", REAL_CACHED_CALL)
+    monkeypatch.setattr(hf.cache, "FIXTURES_DIR", hf.DESTINATION.parent / "fixtures")
+    settings.DEMO_MODE = DemoMode.record
+    recorded = hf.setup()
+    assert len(downloads) == 2
+    settings.DEMO_MODE = DemoMode.replay
+    assert hf.setup() == recorded
+    assert len(downloads) == 2
+
+
+def test_real_replay_miss_never_downloads(bootstrap, monkeypatch):
+    settings, downloads, _ = bootstrap
+    monkeypatch.setattr(hf.cache, "cached_call", REAL_CACHED_CALL)
+    monkeypatch.setattr(hf.cache, "FIXTURES_DIR", hf.DESTINATION.parent / "fixtures")
+    settings.DEMO_MODE = DemoMode.replay
+    with pytest.raises(hf.cache.FixtureMissingError):
         hf.setup()
     assert not downloads
 
@@ -92,7 +107,7 @@ def test_cached_manifest_requires_intact_files(bootstrap, monkeypatch):
     manifest = hf.setup()
     original = Path(manifest["dataset"]["files"][0]["path"])
     original.write_bytes(b"x" * original.stat().st_size)
-    monkeypatch.setattr(hf.cache, "cached_call", lambda *args: manifest)
+    monkeypatch.setattr(hf.cache, "cached_call", lambda *args, **kwargs: manifest)
     with pytest.raises(RuntimeError, match="missing or has changed"):
         hf.setup()
 

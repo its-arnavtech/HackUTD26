@@ -26,7 +26,7 @@ From `C:\HackUTD26-codex\backend`:
 
 Production loop/guardrails belong to L8, not this connection smoke. The client supplies a bounded 30-second timeout and exactly one retry on 429 or 5xx. It logs latency without message bodies or secrets. `NEMOTRON_PROTOCOL` chooses the wire protocol; native is the default. `NEMOTRON_TIMEOUT_SECONDS` and `NEMOTRON_MAX_TOKENS` are optional transport settings documented in `.env.example`.
 
-L1 is still the cache scaffold at verification time. Calls already use its `cached_call` interface; the explicit `TODO(L1)` permits live bootstrap calls only. Record/replay fail closed until L1 is available. Never treat this as recorded offline demo readiness.
+L1 has since merged. The transport and HF bootstrap now call its real `cached_call` interface with the configured mode; the scaffold bypasses were removed. Offline tests verify record/replay without network calls and strict replay misses. The three production demo scenarios still need their own recorded fixtures before claiming offline demo readiness.
 
 ## Local artifact and exact setup
 

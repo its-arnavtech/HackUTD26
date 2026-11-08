@@ -49,14 +49,7 @@ def _external(operation: str, request: dict[str, Any], fn: Callable[[], T],
               settings: NemotronSettings) -> T:
     started = time.perf_counter()
     try:
-        # TODO(L1): wrap with cache once L1 lands. The scaffold raises before fn.
-        # Already calls the agreed API so L1 becomes active without transport edits.
-        try:
-            return cache.cached_call("nemotron", request, fn)
-        except NotImplementedError:
-            if settings.DEMO_MODE != DemoMode.live:
-                raise RuntimeError("L1 cache is not available; record/replay cannot call the network") from None
-            return fn()
+        return cache.cached_call("nemotron", request, fn, mode=settings.DEMO_MODE)
     finally:
         logger.info("nemotron operation=%s latency_ms=%d", operation,
                     round((time.perf_counter() - started) * 1000))

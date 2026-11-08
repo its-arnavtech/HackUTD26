@@ -97,7 +97,7 @@ def test_models_and_embeddings(wire):
 def test_cache_hit_makes_no_http_request(wire, monkeypatch):
     _, requests, _ = wire
     seen = []
-    def hit(service, request, fn):
+    def hit(service, request, fn, **kwargs):
         seen.append((service, request))
         return completion({"content": "recorded"})
     monkeypatch.setattr(nemotron.cache, "cached_call", hit)
@@ -106,11 +106,26 @@ def test_cache_hit_makes_no_http_request(wire, monkeypatch):
     assert "api_key" not in json.dumps(seen)
 
 
-@pytest.mark.parametrize("mode", [DemoMode.record, DemoMode.replay])
-def test_unimplemented_cache_never_falls_back_in_record_or_replay(wire, mode):
+def test_record_then_replay_uses_real_cache_without_credentials(wire, monkeypatch, tmp_path):
+    settings, requests, responses = wire
+    monkeypatch.setattr(nemotron.cache, "FIXTURES_DIR", tmp_path)
+    settings.DEMO_MODE = DemoMode.record
+    responses.append((200, completion({"content": "synthetic recorded result"})))
+    recorded = nemotron.chat([{"role": "user", "content": "synthetic-redacted"}])
+    assert len(requests) == 1
+    fixtures = list(tmp_path.glob("nemotron/*.json"))
+    assert len(fixtures) == 1 and "synthetic-test-key" not in fixtures[0].read_text()
+    settings.DEMO_MODE = DemoMode.replay
+    settings.NVIDIA_API_KEY = None
+    replayed = nemotron.chat([{"role": "user", "content": "synthetic-redacted"}])
+    assert replayed == recorded and len(requests) == 1
+
+
+def test_replay_cache_miss_never_calls_http(wire, monkeypatch, tmp_path):
     settings, requests, _ = wire
-    settings.DEMO_MODE = mode
-    with pytest.raises(RuntimeError, match="cache is not available"):
+    monkeypatch.setattr(nemotron.cache, "FIXTURES_DIR", tmp_path)
+    settings.DEMO_MODE = DemoMode.replay
+    with pytest.raises(nemotron.cache.FixtureMissingError):
         nemotron.chat([])
     assert not requests
 
