@@ -28,3 +28,6 @@ data/raw/*
 .idea/
 .DS_Store
 Thumbs.db
+
+# Locally trained classifier artifacts (reproduce with scripts.train_classifier)
+data/models/
