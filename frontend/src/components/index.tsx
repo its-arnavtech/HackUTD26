@@ -48,12 +48,8 @@ const shortDate = (value: string) =>
 export function Brand() {
   return (
     <span className="brand">
-      <span className="brand-mark" aria-hidden="true">
-        <i />
-        <i />
-        <i />
-      </span>
-      <span>
+      <span className="brand-mark" aria-hidden="true" />
+      <span className="brand-word">
         Sentinel<span className="brand-ai">AI</span>
       </span>
     </span>

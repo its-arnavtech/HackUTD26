@@ -1,28 +1,28 @@
-/* L14 console, scoped under .cx so the Zero Day desk keeps its own type and layout.
-   Tokens match the desk: night canvas, magenta and cyan, amber only for a scam warning. */
+/* L14 console, scoped under .cx. Tokens match the desk: warm paper, deep ink, one ink-blue accent,
+   amber only for a scam warning. */
 
 .cx {
-  --cx-bg: #05030a;
-  --cx-surface: #0e011f;
-  --cx-surface-2: #140826;
-  --cx-text: #f4f2ff;
-  --cx-muted: #948eb4;
-  --cx-line: #241f38;
-  --cx-accent: #22e0ff;
-  --cx-accent-ink: #05030a;
-  --cx-accent-soft: #06262c;
-  --cx-scam: #ffc24b;
-  --cx-scam-soft: #2a1c08;
-  --cx-unsure: #ffc24b;
-  --cx-unsure-soft: #2a1c08;
-  --cx-safe: #9af4ff;
-  --cx-safe-soft: #06262c;
-  --cx-tag: #1a1033;
-  --cx-tag-ink: #dbc4ff;
-  --cx-shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 12px 32px rgba(0, 0, 0, 0.35);
+  --cx-bg: #f2eee5;
+  --cx-surface: #fbf9f4;
+  --cx-surface-2: #e8e2d4;
+  --cx-text: #191713;
+  --cx-muted: #6b6558;
+  --cx-line: #d8d0c0;
+  --cx-accent: #23407a;
+  --cx-accent-ink: #fbf9f4;
+  --cx-accent-soft: #dfe3ec;
+  --cx-scam: #8a4700;
+  --cx-scam-soft: #f3e2c0;
+  --cx-unsure: #4c4941;
+  --cx-unsure-soft: #e5e0d5;
+  --cx-safe: #2b5a3b;
+  --cx-safe-soft: #dde7d8;
+  --cx-tag: #e8e2d4;
+  --cx-tag-ink: #3f3b33;
+  --cx-shadow: 0 1px 0 #d8d0c0, 0 30px 60px -44px rgba(70, 50, 20, 0.4);
   --cx-radius: 2px;
-  --cx-font: "Outfit Variable", "Outfit", ui-sans-serif, system-ui, sans-serif;
-  --cx-mono: "IBM Plex Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+  --cx-font: "Schibsted Grotesk Variable", "Helvetica Neue", Arial, sans-serif;
+  --cx-mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
 
   min-height: 100vh;
   background: var(--cx-bg);
@@ -948,9 +948,9 @@
   padding: 10px 12px;
   max-height: 260px;
   overflow: auto;
-  border-radius: 8px;
-  background: #0f172a;
-  color: #dbe4f0;
+  border-radius: 2px;
+  background: #191713;
+  color: #efe9dc;
   font-family: var(--cx-mono);
   font-size: 12px;
   line-height: 1.5;

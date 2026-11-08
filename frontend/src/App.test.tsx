@@ -21,7 +21,7 @@ beforeEach(() => {
   vi.spyOn(window, "scrollTo").mockImplementation(() => undefined);
 });
 
-describe("cyberwave navigation", () => {
+describe("desk navigation", () => {
   it("keeps the selected message across the check, the evidence, privacy, and recovery", () => {
     render(
       <MemoryRouter initialEntries={["/result/msg_0003"]}>
@@ -60,15 +60,18 @@ describe("cyberwave navigation", () => {
     expect(screen.getByRole("main")).toHaveFocus();
   });
 
-  it("reaches every desk and lets the inspection diagram change stage", () => {
+  it("reaches every desk, explains the three stages on the home page, and shows no demo badge", () => {
     render(
       <MemoryRouter initialEntries={["/inbox"]}>
         <App />
       </MemoryRouter>,
     );
     expect(screen.getByText(/Names, account digits, and phone numbers/)).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: /You decide/ }));
     expect(screen.getByText(/Nothing is blocked, reported, or moved/)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "a bill reminder that turns out to be paid" })).toHaveAttribute(
+      "href",
+      "/result/msg_0003",
+    );
     const nav = within(screen.getByRole("navigation", { name: "Main navigation" }));
     for (const [label, heading] of [
       ["Patterns", "Campaign screen"],
@@ -80,7 +83,20 @@ describe("cyberwave navigation", () => {
       fireEvent.click(nav.getByRole("link", { name: label }));
       expect(screen.getByRole("heading", { name: heading })).toBeInTheDocument();
     }
-    expect(screen.getByText("Synthetic demo")).toBeInTheDocument();
+    expect(screen.queryByText("Synthetic demo")).not.toBeInTheDocument();
     expect(screen.getByText("Synthetic data. No live account.")).toBeInTheDocument();
+  });
+
+  it("links the four views of the open message, marking the current one", () => {
+    render(
+      <MemoryRouter initialEntries={["/trail/msg_0003"]}>
+        <App />
+      </MemoryRouter>,
+    );
+    const folio = within(screen.getByRole("navigation", { name: "This message" }));
+    expect(folio.getByRole("link", { name: "How we checked" })).toHaveAttribute("aria-current", "page");
+    expect(folio.getByRole("link", { name: "If you clicked" })).toHaveAttribute("href", "/recovery/msg_0003");
+    fireEvent.click(folio.getByRole("link", { name: "What we never saw" }));
+    expect(screen.getByRole("heading", { name: "Privacy screen" })).toBeInTheDocument();
   });
 });
