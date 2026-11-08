@@ -26,7 +26,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A6 | Dev infrastructure: CI, dev scripts, worktrees | Arnav | Cursor | POC | scaffold | todo | #7 |
 | A7 | Phone shell and inbox on the mock API | Arnav | Codex design (GPT 6 Astra) | POC | scaffold | todo | #8 |
 | L1 | Record and replay cache | Lavanya | Claude Code | POC | scaffold | todo | #9 |
-| L2 | Core runtime: app factory, settings, logging, errors | Lavanya | Claude Code | POC | scaffold | todo | #10 |
+| L2 | Core runtime: app factory, settings, logging, errors | Lavanya | Claude Code | POC | scaffold | in progress | #10 · `l2-core-runtime` |
 | L3 | State store and background job runner | Lavanya | Claude Code | POC | L2 | todo | #11 |
 | L4 | Gemini grounded search smoke test (Sunday morning, when the Gemini key is set) | Lavanya | Claude Code | POC | scaffold | todo | #12 |
 | A22 | Initial Devpost draft by 11:00 PM Saturday | Arnav | any | POC | none | todo | #13 |
@@ -74,7 +74,16 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - Resumed by: <tool> from <tool>, if any
 ```
 
-_None yet._
+### L2 Core runtime: app factory, settings, logging, errors (#10)
+- Agent: Claude Code (Opus 5.5) · Person: Lavanya · Folder: Lavanya's clone (`HackUTD26`) · Branch: `l2-core-runtime`
+- Started: 2026-11-07 18:33 · Last checkpoint: 2026-11-07 18:33
+- Done so far:
+  - Claimed; read the scaffold's `main.py`, `config.py`, mocks and tests
+- Next step (exact): add `app/errors.py` and `app/logs.py`, then settings validation in `config.py`, then the app factory and `/api/health` in `main.py`
+- Files touched: CHANGELOG.md
+- How to run or test: `cd backend; .\.venv\Scripts\python.exe -m pytest`
+- Notes and gotchas: keep `app = create_app()` at module level so `uvicorn app.main:app` and the tests keep working; no change to `contracts.py`
+- Resumed by:
 
 ---
 
