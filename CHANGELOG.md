@@ -43,7 +43,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | L8 | Agent loop with plan, re-plan and guardrails | Lavanya | Claude Code | MVP | A4, L5 | done | #23 · PR #56 |
 | L9 | API endpoints and pipeline orchestration | Lavanya | Claude Code | MVP | L3, L8 | todo | #24 |
 | G1 | Gate: scenario 1 end to end in the CLI | Both | any | MVP | A3, A9, A10, A11, L8 | done | #25 · PR #46 (prep), PR #61 |
-| L10 | `public_scam_reports` tool | Arnav | Codex | MVP | L4, L5 | in progress | #26 · codex/l4-l10-gemini |
+| L10 | `public_scam_reports` tool | Arnav | Codex | MVP | L4, L5 | done | #26 · PR #66 (P3 live gate blocked) |
 | L11 | Recovery mode re-plan | Arnav | Codex | MVP | L8, A11 | done | #27 · PR #63 |
 | A14 | Result card, "How we checked" and privacy panel | Arnav | Cursor (covering for Codex design) | MVP | A7 | done | #28 · PR #53 |
 | A15 | Recovery UI | Arnav | Claude Code (covering for Codex design) | MVP | A14 | done | #29 · PR #55 (#54 closed as superseded) |
@@ -62,7 +62,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 <!-- One block per active issue. Copy the template, keep it current at every checkpoint. -->
 
-### L4/L10 Gemini grounded lookup (#12, #26)
+### L4 Gemini live citation gate (#12), blocked; L10 implementation finished in #66
 - Agent: Codex (GPT-6), Arnav; C:/HackUTD26/.worktrees/wrap-up; codex/l4-l10-gemini.
 - Started / checkpoint: 2026-11-08 00:13.
 - Done so far: Key present without printing it; provider model listing succeeds. Implemented cache-backed Search grounding, support-segment/chunk citations, fixed four-field input, source ranking, dates/stale handling, contact stripping, official guidance and recovery references. 14 synthetic tests pass.
@@ -116,6 +116,8 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 ---
 
 ## Done log
+
+- 2026-11-08 00:34 · L10 (L4 client ready, live P3 blocked) · Codex (GPT-6) · #66 · Fixed four-field Gemini lookup, cached Google grounding, support/chunk-only facts, ranking/stale/contact rules, model-argument isolation, safe smoke script; 14 new tests, combined backend 650 passed/no skips · follow-up: #12 needs usable generation quota (3.5/3.5 Lite 429, listed 2.5 404); no Gemini-backed demo claim until a cited live pass.
 
 - 2026-11-08 00:06 · A18 · Codex (GPT-6), resumed Claude Code · #64 · All three real-agent authored scenarios now required in socket-blocked replay; 31 service recordings; Playwright inbox/result/trail/privacy smoke and browser CI; 617 backend passed with no skips, 49 frontend tests/build, Chromium pass · follow-ups: G2 app recordings and A19 backup video still pending L9/A17; CLI profile deliberately uses real A1 baseline, public search unavailable.
 
