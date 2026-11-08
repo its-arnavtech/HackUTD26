@@ -48,7 +48,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A15 | Recovery UI | Arnav | Claude Code (covering for Codex design) | MVP | A14 | done | #29 · PR #55 (#54 closed as superseded) |
 | A16 | Consent screen, campaign view and accuracy page | Arnav | Claude Code (covering for Codex design) | MVP | A7 | done | #30 · PR #55 |
 | A17 | Frontend on the live API | Arnav | Cursor | MVP | A14, A15, A16, L9 | todo | #31 |
-| A18 | End-to-end scenario tests | Arnav | Codex | MVP | G1 | in progress | #32 · codex/a18-replay |
+| A18 | End-to-end scenario tests | Arnav | Codex | MVP | G1 | done | #32 · PR #64 |
 | G2 | Gate: all three scenarios end to end in the app | Both | any | MVP | A17, A18, L10, L11 | todo | #33 |
 | A19 | Replay fixtures and backup video | Arnav | Codex | Demo | G2 | in progress | #34 · codex/a18-replay (preparation; G2 pending) |
 | A20 | Capital One and Best Design pitch | Arnav | any | Demo | G2 | todo | #35 |
@@ -101,21 +101,12 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - How to run or test: `python -m pytest` in `backend/`; the seed needs `NESSIE_API_KEY` in `.env`: `python -m scripts.seed_nessie`
 - Notes and gotchas: never write to Nessie with a made-up key. Nessie dates have no time, so the planted transfer's 09:31 time lives in the manifest. A11 should limit check mode to activity before `received_at`, so scenario 1 (check) doesn't see the transfer that scenario 2 (recovery) finds.
 - Resumed by: none
-### A18 End-to-end scenario tests (#32)
-- Agent: Codex (GPT-6), Arnav; C:/HackUTD26/.worktrees/wrap-up; codex/a18-replay.
-- Started: original Claude claim 2026-11-07 20:41; resumed 2026-11-08 00:05; checkpoint 2026-11-08 00:05.
-- Done: Recorded 12 real Nemotron, 17 synthetic Nessie and 2 RDAP responses. All three scenarios run in strict replay with sockets blocked; no skipped scenario tests. Recovery gets txn_28 ($900 Unknown Payee), scenario 3 paid bill Nov 1, differing plans. Added repeatable replay_demo CLI. Added Playwright scenario 1 (inbox -> result -> trail -> privacy; no auto actions or browser exceptions) and separate CI workflow. Package @playwright/test pinned at stable 1.65.0 from npm registry. Docs/TESTING.md and fixture README explain boundaries.
-- Validation: 617 backend passed, zero skips; 49 frontend tests; frontend build; Chromium smoke passed (7.6 s test, 11.1 s total); strict replay command passed. Configured keys scanned absent from fixtures.
-- Next: PR + CI, merge commit. L9/A17 remain active with their owners; G2 and full app backup video remain open.
-- Files: backend/scripts/replay_demo.py, backend/tests/test_scenarios_e2e.py, data/fixtures/, frontend/playwright.config.ts, frontend/e2e/, package files, .github/workflows/browser-smoke.yml, .gitignore, docs/TESTING.md, CHANGELOG.md.
-- Commands: python -m pytest; python -m scripts.replay_demo replay; npm run test:e2e.
-- Gotchas: This CLI profile deliberately uses the real A1 baseline, not developer-local L7 artifacts, and explicitly disables optional public search. App request IDs/classifier outputs need separate G2 recordings. Original standalone fake-Nessie world is replaced by the recorded real-agent world, so there are no automatic A18 skips.
-- Resumed by: Codex from Claude Code; authorized wrap-up.
-
 
 ---
 
 ## Done log
+
+- 2026-11-08 00:06 · A18 · Codex (GPT-6), resumed Claude Code · #64 · All three real-agent authored scenarios now required in socket-blocked replay; 31 service recordings; Playwright inbox/result/trail/privacy smoke and browser CI; 617 backend passed with no skips, 49 frontend tests/build, Chromium pass · follow-ups: G2 app recordings and A19 backup video still pending L9/A17; CLI profile deliberately uses real A1 baseline, public search unavailable.
 
 - 2026-11-07 23:55 · L11 · Codex (GPT-6) · #63 · Mandatory read-only activity check after /clicked, verified Nessie refs even if Nemotron omits them or later fails, local detail hydration, current-run customer confirmations, recovery checklist actions; full backend 601 passed/30 expected fixture skips plus final API test (10 recovery tests pass) · follow-ups: L9 live pipeline integration and G2/A19 replay proof remain separate.
 
