@@ -7,10 +7,10 @@ Issue A8 (#14). Gates and pivots are defined in [POC_MVP.md](POC_MVP.md) section
 | P1 | Usable dataset and a baseline score? | **Pass** | Dataset QC passes; baseline test macro F1 **0.807**, FPR **0.127** | None (macro F1 < 0.97) |
 | P2 | Does Nemotron call our tools reliably? | **Pass** | **5/5** native tool calls with schema-valid answers; median step 2,635 ms, worst 4,161 ms | None (native protocol) |
 | P3 | Does Gemini grounded search return cited sources? | **Pending** | Not run: the Gemini key arrives Sunday morning (L4, Lavanya) | If it fails: Gemini becomes cut item 2 |
-| P4 | Can we seed and read Nessie? | **Pending** | A2 is in review ([PR #44](https://github.com/its-arnavtech/HackUTD26/pull/44)). The live seed and its idempotency rerun haven't run, because Cursor's cloud agent has no Nessie key | If it fails: local fixture mirroring Nessie's schema, served through the replay cache |
+| P4 | Can we seed and read Nessie? | **Fail** | Live run at 20:25 with the key: customers, accounts, merchants and the bill read back, but the seed stops at transfers, and purchases aren't idempotent (24 planned, 48 in Nessie). Two small bugs in A2 ([PR #44](https://github.com/its-arnavtech/HackUTD26/pull/44)) | Not taken yet: fix A2 and rerun. If it can't be fixed: local fixture mirroring Nessie's schema, served through the replay cache |
 | P5 | Does redaction work? | **Pass** | **20/20** hand-written gate strings; 50/50 redaction tests | None |
 
-**POC exit:** three of five gates pass (P1, P2, P5). P3 and P4 are pending on keys, not on code, and each has its pivot ready. Nothing failed, so no pivot has been taken.
+**POC exit:** three of five gates pass (P1, P2, P5). P3 is pending on the Gemini key. P4 failed its first live run on two small, fixable bugs in A2. Its pivot (a local fixture) is ready but not taken, because fixing A2 is quicker. No pivot has been taken.
 
 ## P1: dataset and baseline (A21, A1)
 
@@ -57,9 +57,20 @@ cd backend
 
 The Gemini key arrives Sunday morning, and L4 (Lavanya) runs the demo query then. **Pass test:** at least one source URL in the grounding metadata, in our JSON shape (DATA_SPEC section 4.3). **If it fails:** Gemini becomes the second item in the cut order (POC_MVP section 11). The `public_scam_reports` step then drops out of scenario 3's plan, and the result card says public reports weren't checked.
 
-## P4: Nessie seed and read (A2): pending
+## P4: Nessie seed and read (A2): fail, fix pending
 
-Cursor built the client and the idempotent seed in [PR #44](https://github.com/its-arnavtech/HackUTD26/pull/44), in review. The live part of the gate hasn't run, because Cursor's cloud agent has no `NESSIE_API_KEY`. It needs to create Linda, her accounts and purchases, the paid T-Mobile bill, and the unknown payee with the $900 transfer. It then reads them back and reruns to confirm nothing new is created. **To run it** with the key in `.env`, on PR #44's branch:
+Cursor built the client and the idempotent seed in [PR #44](https://github.com/its-arnavtech/HackUTD26/pull/44), in review. Claude Code ran it live on 2026-11-07 at about 20:25, using Arnav's key, from a temporary checkout of PR #44's branch (`9b69d5b`). It ran the dry run plus read-only inventory scripts only, so it created nothing and deleted nothing.
+
+**What Nessie already holds**, from at least one earlier run:
+- both customers (Linda and Unknown Payee), all 3 accounts, all 5 merchants, and the completed T-Mobile bill all read back correctly;
+- **no transfers**, so the planted $900 transfer is missing;
+- **48 purchases where 24 are planned**: every planned purchase exists exactly twice.
+
+**The two bugs, both in A2's code:**
+1. **Empty lists come back as 404.** Nessie answers `GET /accounts/{id}/transfers` with HTTP 404 `"No transfers found for this account"` when there are none. `NessieClient._get_list` raises on it, so the seed (and the dry run) stops at the first transfer lookup. Fix: treat a 404 whose body says "No … found" on a list GET as `[]`.
+2. **Nessie stores purchase amounts as whole dollars.** For example, $49.30 is stored as `49`. The seed matches existing purchases on `(description, date, amount)` with cents, so it never finds them and creates them again on every run. Fix: use whole-dollar amounts in `purchase_plan()` (the transfers already are), or match on `int(amount)`. Then delete the 24 duplicate purchases (`DELETE /purchases/{id}`).
+
+**To rerun after the fix**, with the key in `.env`, on PR #44's branch:
 
 ```powershell
 cd backend
