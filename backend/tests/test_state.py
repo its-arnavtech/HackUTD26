@@ -242,6 +242,11 @@ def test_runner_logs_carry_message_id(store, runner, caplog):
 
     runner.submit(mid, job)
     wait_done(store, mid)
+    # finish() marks the run done before the worker logs "job done", so the
+    # record can land a moment after wait_done returns.
+    deadline = time.time() + 1.0
+    while time.time() < deadline and not any(record.getMessage() == "job done" for record in caplog.records):
+        time.sleep(0.01)
     assert ids == [mid]
     done = [r for r in caplog.records if r.getMessage() == "job done"]
     assert done and done[0].message_id == mid

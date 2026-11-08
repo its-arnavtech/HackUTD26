@@ -1,0 +1,89 @@
+name: telecom_billing
+source_system: telecom_billing
+description: >
+  Carrier billing and SIM events. event_code selects the canonical event.
+  charge is major units. The device id prefers a SIM ICCID change, then IMEI.
+  merchant_category is the constant "carrier" when the source has none.
+origin: null
+fields:
+  event_type:
+    source: [event_code, event_type]
+    transform: enum_map
+    missing: null
+    notes: event code
+    enum_map:
+      SIM_CHANGE: sim_change
+      ESIM_TRANSFER: esim_transfer
+      PORT_OUT: port_out_request
+      PLAN_CHANGE: plan_change
+      DEVICE_ADD: device_add
+      BILL_AMOUNT: bill_amount_change
+      AUTOPAY: autopay_change
+      MRC: bill_issued
+      PAYMENT: bill_payment
+      sim_change: sim_change
+      esim_transfer: esim_transfer
+      port_out_request: port_out_request
+      plan_change: plan_change
+      device_add: device_add
+      bill_amount_change: bill_amount_change
+      autopay_change: autopay_change
+      bill_payment: bill_payment
+      bill_issued: bill_issued
+  timestamp:
+    source: [event_time]
+    transform: to_utc
+    missing: null
+  account_id:
+    source: [msisdn, account_no]
+    transform: identity
+    missing: null
+    notes: msisdn or account_no
+  counterparty_id:
+    source: [biller, dealer]
+    transform: identity
+    missing: null
+    notes: biller or dealer
+  counterparty_name:
+    source: [biller, dealer]
+    transform: identity
+    missing: null
+  amount_minor:
+    source: [charge]
+    transform: multiply
+    factor: 100
+    missing: null
+    notes: charge times 100
+  currency:
+    source: [currency]
+    transform: null_to_default
+    default: USD
+    missing: null
+    notes: bill currency
+  merchant_category:
+    source: [merchant_category]
+    transform: null_to_default
+    default: carrier
+    missing: null
+    notes: constant "carrier" when the feed has no category
+  bill.status:
+    source: [bill_status]
+    transform: enum_map
+    missing: null
+    enum_map:
+      pending: pending
+      paid: paid
+      overdue: overdue
+      cancelled: cancelled
+      open: pending
+      closed: paid
+  device.device_id:
+    source: [sim_iccid, imei]
+    transform: identity
+    missing: null
+    notes: imei or sim_iccid change
+  labels.is_fraud:
+    source: [is_fraud]
+    transform: truthy
+    missing: null
+    notes: seeded

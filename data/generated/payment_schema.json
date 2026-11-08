@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sentinelai.example/schemas/payment_event.json",
+  "title": "Canonical payment and billing event",
+  "description": "System-agnostic event used by the synthetic linked scenarios. Three carrier codes (esim_transfer, plan_change, bill_amount_change) are included because the telecom deliverable names them and the original enum table did not. Labels are synthetic supervision only and are never shown to a model.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "event_id",
+    "event_type",
+    "timestamp",
+    "customer_id",
+    "account_id",
+    "account_type",
+    "counterparty_id",
+    "counterparty_name",
+    "counterparty_type",
+    "counterparty_first_seen",
+    "amount_minor",
+    "currency",
+    "direction",
+    "channel",
+    "merchant_category",
+    "recurring",
+    "recurrence_id",
+    "bill",
+    "device",
+    "auth",
+    "status",
+    "balance_after_minor",
+    "source_system",
+    "source_ref",
+    "labels"
+  ],
+  "properties": {
+    "event_id": {"type": "string", "minLength": 1},
+    "event_type": {
+      "enum": [
+        "purchase",
+        "transfer_out",
+        "transfer_in",
+        "bill_payment",
+        "bill_issued",
+        "deposit",
+        "withdrawal",
+        "refund",
+        "chargeback",
+        "payee_added",
+        "login",
+        "password_reset",
+        "mfa_change",
+        "device_add",
+        "sim_change",
+        "esim_transfer",
+        "port_out_request",
+        "plan_change",
+        "bill_amount_change",
+        "autopay_change",
+        "contact_change"
+      ]
+    },
+    "timestamp": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"},
+    "customer_id": {"type": "string", "minLength": 1},
+    "account_id": {"type": "string", "minLength": 1},
+    "account_type": {
+      "enum": ["checking", "savings", "credit_card", "mobile_money", "carrier_account", "wallet"]
+    },
+    "counterparty_id": {"type": ["string", "null"]},
+    "counterparty_name": {"type": ["string", "null"]},
+    "counterparty_type": {"enum": ["merchant", "person", "biller", "bank", "unknown", null]},
+    "counterparty_first_seen": {"type": ["boolean", "null"]},
+    "amount_minor": {"type": "integer"},
+    "currency": {"type": "string", "pattern": "^[A-Z]{3}$"},
+    "direction": {"enum": ["debit", "credit", "none"]},
+    "channel": {
+      "enum": [
+        "card_present",
+        "card_not_present",
+        "ach",
+        "wire",
+        "p2p",
+        "bill_pay",
+        "atm",
+        "carrier_billing",
+        "gift_card",
+        "crypto"
+      ]
+    },
+    "merchant_category": {"type": ["string", "null"]},
+    "recurring": {"type": "boolean"},
+    "recurrence_id": {"type": ["string", "null"]},
+    "bill": {
+      "anyOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["biller_id", "bill_id", "due_date", "status", "autopay", "amount_due_minor"],
+          "properties": {
+            "biller_id": {"type": "string"},
+            "bill_id": {"type": "string"},
+            "due_date": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
+            "status": {"enum": ["pending", "paid", "overdue", "cancelled"]},
+            "autopay": {"type": "boolean"},
+            "amount_due_minor": {"type": "integer"}
+          }
+        }
+      ]
+    },
+    "device": {
+      "anyOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["device_id", "new_device", "os", "ip_geo", "session_id"],
+          "properties": {
+            "device_id": {"type": ["string", "null"]},
+            "new_device": {"type": "boolean"},
+            "os": {"type": ["string", "null"]},
+            "ip_geo": {
+              "anyOf": [
+                {"type": "null"},
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["country", "region"],
+                  "properties": {
+                    "country": {"type": "string"},
+                    "region": {"type": "string"}
+                  }
+                }
+              ]
+            },
+            "session_id": {"type": ["string", "null"]}
+          }
+        }
+      ]
+    },
+    "auth": {
+      "anyOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["method", "otp_sent", "success"],
+          "properties": {
+            "method": {"enum": ["password", "otp", "biometric", "none"]},
+            "otp_sent": {"type": "boolean"},
+            "success": {"type": "boolean"}
+          }
+        }
+      ]
+    },
+    "status": {"enum": ["pending", "completed", "failed", "reversed"]},
+    "balance_after_minor": {"type": ["integer", "null"]},
+    "source_system": {"type": "string"},
+    "source_ref": {"type": ["string", "null"]},
+    "labels": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["is_fraud", "fraud_type", "linked_message_id"],
+      "properties": {
+        "is_fraud": {"type": "boolean"},
+        "fraud_type": {"type": ["string", "null"]},
+        "linked_message_id": {"type": ["string", "null"]}
+      }
+    }
+  }
+}

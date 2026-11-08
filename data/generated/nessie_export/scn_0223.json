@@ -1,0 +1,619 @@
+{
+  "_note": "Synthetic Nessie-shaped export for one linked scenario. Not live customer data. Do not post it to the demo seed.",
+  "accounts": [
+    {
+      "_id": "acct_0223_chk",
+      "balance": 4073,
+      "customer_id": "cust_0223",
+      "nickname": "Everyday Checking",
+      "type": "Checking"
+    },
+    {
+      "_id": "acct_0223_cc",
+      "balance": 1511,
+      "customer_id": "cust_0223",
+      "nickname": "Rewards Card",
+      "type": "Credit Card"
+    },
+    {
+      "_id": "acct_0223_car",
+      "balance": 0,
+      "customer_id": "cust_0223",
+      "nickname": "Mobile Account",
+      "type": "Checking"
+    }
+  ],
+  "bills": [
+    {
+      "_id": "bil_evt_0223_003",
+      "nickname": "Northline Mobile",
+      "payee": "Northline Mobile",
+      "payment_amount": 86,
+      "payment_date": "2026-10-02",
+      "recurring_date": 11,
+      "status": "pending"
+    },
+    {
+      "_id": "bil_evt_0223_019",
+      "nickname": "Northline Mobile",
+      "payee": "Northline Mobile",
+      "payment_amount": 86,
+      "payment_date": "2026-10-15",
+      "recurring_date": 15,
+      "status": "completed"
+    }
+  ],
+  "customers": [
+    {
+      "_id": "cust_0223",
+      "first_name": "Casey",
+      "last_name": "North"
+    }
+  ],
+  "manifest": {
+    "links": [
+      {
+        "account_id": "acct_0223_cc",
+        "amount_minor_truncated": 6400,
+        "at": "2026-09-29T18:00:00Z",
+        "event_id": "evt_0223_000",
+        "event_type": "purchase",
+        "object": "purchase",
+        "object_id": "pur_evt_0223_000"
+      },
+      {
+        "account_id": "acct_0223_cc",
+        "amount_minor_truncated": 600,
+        "at": "2026-09-30T14:00:00Z",
+        "event_id": "evt_0223_001",
+        "event_type": "purchase",
+        "object": "purchase",
+        "object_id": "pur_evt_0223_001"
+      },
+      {
+        "account_id": "acct_0223_cc",
+        "amount_minor_truncated": 4500,
+        "at": "2026-10-02T00:00:00Z",
+        "event_id": "evt_0223_002",
+        "event_type": "purchase",
+        "object": "purchase",
+        "object_id": "pur_evt_0223_002"
+      },
+      {
+        "account_id": "acct_0223_chk",
+        "amount_minor_truncated": 8600,
+        "at": "2026-10-02T15:00:00Z",
+        "bill_status": "pending",
+        "event_id": "evt_0223_003",
+        "event_type": "bill_issued",
+        "object": "bill",
+        "object_id": "bil_evt_0223_003"
+      },
+      {
+        "account_id": "acct_0223_cc",
+        "amount_minor_truncated": 6400,
+        "at": "2026-10-03T18:00:00Z",
+        "event_id": "evt_0223_004",
+        "event_type": "purchase",
+        "object": "purchase",
+        "object_id": "pur_evt_0223_004"
+      },
+      {
+        "account_id": "acct_0223_cc",
+        "amount_minor_truncated": 600,
+        "at": "2026-10-03T14:00:00Z",
+        "event_id": "evt_0223_005",
+        "event_type": "purchase",
+        "object": "purchase",
+        "object_id": "pur_evt_0223_005"
+      },
+      {
+        "account_id": "acct_0223_cc",
+        "amount_minor_truncated": 600,
+        "at": "2026-10-06T14:00:00Z",
+        "event_id": "evt_0223_007",
+        "event_type": "purchase",
+        "object": "purchase",
+        "object_id": "pur_evt_0223_007"
+      },
+      {
+        "account_id": "acct_0223_cc",
+        "amount_minor_truncated": 6400,
+        "at": "2026-10-07T18:00:00Z",
+        "event_id": "evt_0223_008",
+        "event_type": "purchase",
+        "object": "purchase",
+        "object_id": "pur_evt_0223_008"
+      },
+      {
+        "account_id": "acct_0223_cc",
+        "amount_minor_truncated": 4200,
+        "at": "2026-10-09T00:00:00Z",
+        "event_id": "evt_0223_009",
+        "event_type": "purchase",
+        "object": "purchase",
+        "object_id": "pur_evt_0223_009"
+      },
+      {
+        "account_id": "acct_0223_cc",
+        "amount_minor_truncated": 600,
+        "at": "2026-10-09T14:00:00Z",
+        "event_id": "evt_0223_011",
+        "event_type": "purchase",
+        "object": "purchase",
+        "object_id": "pur_evt_0223_011"
+      },
+      {
+        "account_id": "acct_0223_cc",
+        "amount_minor_truncated": 6400,
+        "at": "2026-10-11T18:00:00Z",
+        "event_id": "evt_0223_013",
+        "event_type": "purchase",
+        "object": "purchase",
+        "object_id": "pur_evt_0223_013"
+      },
+      {
+        "account_id": "acct_0223_cc",
+        "amount_minor_truncated": 600,
+        "at": "2026-10-12T14:00:00Z",
+        "event_id": "evt_0223_014",
+        "event_type": "purchase",
+        "object": "purchase",
+        "object_id": "pur_evt_0223_014"
+      },
+      {
+        "account_id": "acct_0223_chk",
+        "amount_minor_truncated": 4000,
+        "at": "2026-10-13T22:00:00Z",
+        "event_id": "evt_0223_015",
+        "event_type": "withdrawal",
+        "object": "transfer",
+        "object_id": "xfr_evt_0223_015"
+      },
+      {
+        "account_id": "acct_0223_cc",
+        "amount_minor_truncated": 6400,
+        "at": "2026-10-15T18:00:00Z",
+        "event_id": "evt_0223_016",
+        "event_type": "purchase",
+        "object": "purchase",
+        "object_id": "pur_evt_0223_016"
+      },
+      {
+        "account_id": "acct_0223_cc",
+        "amount_minor_truncated": 600,
+        "at": "2026-10-15T14:00:00Z",
+        "event_id": "evt_0223_017",
+        "event_type": "purchase",
+        "object": "purchase",
+        "object_id": "pur_evt_0223_017"
+      },
+      {
+        "account_id": "acct_0223_cc",
+        "amount_minor_truncated": 3900,
+        "at": "2026-10-16T00:00:00Z",
+        "event_id": "evt_0223_018",
+        "event_type": "purchase",
+        "object": "purchase",
+        "object_id": "pur_evt_0223_018"
+      },
+      {
+        "account_id": "acct_0223_chk",
+        "amount_minor_truncated": 8600,
+        "at": "2026-10-15T16:00:00Z",
+        "bill_status": "paid",
+        "event_id": "evt_0223_019",
+        "event_type": "bill_payment",
+        "object": "bill",
+        "object_id": "bil_evt_0223_019"
+      },
+      {
+        "account_id": "acct_0223_cc",
+        "amount_minor_truncated": 600,
+        "at": "2026-10-18T14:00:00Z",
+        "event_id": "evt_0223_020",
+        "event_type": "purchase",
+        "object": "purchase",
+        "object_id": "pur_evt_0223_020"
+      },
+      {
+        "account_id": "acct_0223_cc",
+        "amount_minor_truncated": 6400,
+        "at": "2026-10-19T18:00:00Z",
+        "event_id": "evt_0223_021",
+        "event_type": "purchase",
+        "object": "purchase",
+        "object_id": "pur_evt_0223_021"
+      },
+      {
+        "account_id": "acct_0223_cc",
+        "amount_minor_truncated": 600,
+        "at": "2026-10-21T14:00:00Z",
+        "event_id": "evt_0223_023",
+        "event_type": "purchase",
+        "object": "purchase",
+        "object_id": "pur_evt_0223_023"
+      },
+      {
+        "account_id": "acct_0223_cc",
+        "amount_minor_truncated": 4500,
+        "at": "2026-10-23T00:00:00Z",
+        "event_id": "evt_0223_024",
+        "event_type": "purchase",
+        "object": "purchase",
+        "object_id": "pur_evt_0223_024"
+      },
+      {
+        "account_id": "acct_0223_cc",
+        "amount_minor_truncated": 6400,
+        "at": "2026-10-23T18:00:00Z",
+        "event_id": "evt_0223_025",
+        "event_type": "purchase",
+        "object": "purchase",
+        "object_id": "pur_evt_0223_025"
+      },
+      {
+        "account_id": "acct_0223_cc",
+        "amount_minor_truncated": 600,
+        "at": "2026-10-24T14:00:00Z",
+        "event_id": "evt_0223_026",
+        "event_type": "purchase",
+        "object": "purchase",
+        "object_id": "pur_evt_0223_026"
+      },
+      {
+        "account_id": "acct_0223_cc",
+        "amount_minor_truncated": 6400,
+        "at": "2026-10-27T18:00:00Z",
+        "event_id": "evt_0223_027",
+        "event_type": "purchase",
+        "object": "purchase",
+        "object_id": "pur_evt_0223_027"
+      },
+      {
+        "account_id": "acct_0223_cc",
+        "amount_minor_truncated": 600,
+        "at": "2026-10-27T14:00:00Z",
+        "event_id": "evt_0223_028",
+        "event_type": "purchase",
+        "object": "purchase",
+        "object_id": "pur_evt_0223_028"
+      },
+      {
+        "account_id": "acct_0223_cc",
+        "amount_minor_truncated": 4200,
+        "at": "2026-10-30T00:00:00Z",
+        "event_id": "evt_0223_029",
+        "event_type": "purchase",
+        "object": "purchase",
+        "object_id": "pur_evt_0223_029"
+      },
+      {
+        "account_id": "acct_0223_cc",
+        "amount_minor_truncated": 600,
+        "at": "2026-10-30T14:00:00Z",
+        "event_id": "evt_0223_030",
+        "event_type": "purchase",
+        "object": "purchase",
+        "object_id": "pur_evt_0223_030"
+      },
+      {
+        "account_id": "acct_0223_cc",
+        "amount_minor_truncated": 6400,
+        "at": "2026-10-31T18:00:00Z",
+        "event_id": "evt_0223_031",
+        "event_type": "purchase",
+        "object": "purchase",
+        "object_id": "pur_evt_0223_031"
+      },
+      {
+        "account_id": "acct_0223_cc",
+        "amount_minor_truncated": 600,
+        "at": "2026-11-02T14:00:00Z",
+        "event_id": "evt_0223_032",
+        "event_type": "purchase",
+        "object": "purchase",
+        "object_id": "pur_evt_0223_032"
+      },
+      {
+        "account_id": "acct_0223_cc",
+        "amount_minor_truncated": 600,
+        "at": "2026-11-06T21:14:00Z",
+        "event_id": "evt_0223_033",
+        "event_type": "purchase",
+        "object": "purchase",
+        "object_id": "pur_evt_0223_033"
+      }
+    ],
+    "nessie_account_type_note": "carrier_account is exported as Nessie type Checking because Nessie has no carrier account type.",
+    "purchase_times": {
+      "pur_evt_0223_000": "2026-09-29T18:00:00Z",
+      "pur_evt_0223_001": "2026-09-30T14:00:00Z",
+      "pur_evt_0223_002": "2026-10-02T00:00:00Z",
+      "pur_evt_0223_004": "2026-10-03T18:00:00Z",
+      "pur_evt_0223_005": "2026-10-03T14:00:00Z",
+      "pur_evt_0223_007": "2026-10-06T14:00:00Z",
+      "pur_evt_0223_008": "2026-10-07T18:00:00Z",
+      "pur_evt_0223_009": "2026-10-09T00:00:00Z",
+      "pur_evt_0223_011": "2026-10-09T14:00:00Z",
+      "pur_evt_0223_013": "2026-10-11T18:00:00Z",
+      "pur_evt_0223_014": "2026-10-12T14:00:00Z",
+      "pur_evt_0223_016": "2026-10-15T18:00:00Z",
+      "pur_evt_0223_017": "2026-10-15T14:00:00Z",
+      "pur_evt_0223_018": "2026-10-16T00:00:00Z",
+      "pur_evt_0223_020": "2026-10-18T14:00:00Z",
+      "pur_evt_0223_021": "2026-10-19T18:00:00Z",
+      "pur_evt_0223_023": "2026-10-21T14:00:00Z",
+      "pur_evt_0223_024": "2026-10-23T00:00:00Z",
+      "pur_evt_0223_025": "2026-10-23T18:00:00Z",
+      "pur_evt_0223_026": "2026-10-24T14:00:00Z",
+      "pur_evt_0223_027": "2026-10-27T18:00:00Z",
+      "pur_evt_0223_028": "2026-10-27T14:00:00Z",
+      "pur_evt_0223_029": "2026-10-30T00:00:00Z",
+      "pur_evt_0223_030": "2026-10-30T14:00:00Z",
+      "pur_evt_0223_031": "2026-10-31T18:00:00Z",
+      "pur_evt_0223_032": "2026-11-02T14:00:00Z",
+      "pur_evt_0223_033": "2026-11-06T21:14:00Z"
+    },
+    "transfer_times": {
+      "xfr_evt_0223_015": "2026-10-13T22:00:00Z"
+    }
+  },
+  "merchants": [
+    {
+      "_id": "mer_grocery",
+      "category": "5411",
+      "name": "Demo Grocery"
+    },
+    {
+      "_id": "mer_coffee",
+      "category": "5814",
+      "name": "Demo Coffee"
+    },
+    {
+      "_id": "mer_fuel",
+      "category": "5541",
+      "name": "Demo Fuel"
+    },
+    {
+      "_id": "biller_northline",
+      "category": "4814",
+      "name": "Northline Mobile"
+    },
+    {
+      "_id": "bank_demo_atm",
+      "category": "6011",
+      "name": "Demo ATM"
+    }
+  ],
+  "purchases": [
+    {
+      "_id": "pur_evt_0223_000",
+      "amount": 64,
+      "description": "Demo Grocery",
+      "merchant_id": "mer_grocery",
+      "purchase_date": "2026-09-29",
+      "status": "completed"
+    },
+    {
+      "_id": "pur_evt_0223_001",
+      "amount": 6,
+      "description": "Demo Coffee",
+      "merchant_id": "mer_coffee",
+      "purchase_date": "2026-09-30",
+      "status": "completed"
+    },
+    {
+      "_id": "pur_evt_0223_002",
+      "amount": 45,
+      "description": "Demo Fuel",
+      "merchant_id": "mer_fuel",
+      "purchase_date": "2026-10-02",
+      "status": "completed"
+    },
+    {
+      "_id": "pur_evt_0223_004",
+      "amount": 64,
+      "description": "Demo Grocery",
+      "merchant_id": "mer_grocery",
+      "purchase_date": "2026-10-03",
+      "status": "completed"
+    },
+    {
+      "_id": "pur_evt_0223_005",
+      "amount": 6,
+      "description": "Demo Coffee",
+      "merchant_id": "mer_coffee",
+      "purchase_date": "2026-10-03",
+      "status": "completed"
+    },
+    {
+      "_id": "pur_evt_0223_007",
+      "amount": 6,
+      "description": "Demo Coffee",
+      "merchant_id": "mer_coffee",
+      "purchase_date": "2026-10-06",
+      "status": "completed"
+    },
+    {
+      "_id": "pur_evt_0223_008",
+      "amount": 64,
+      "description": "Demo Grocery",
+      "merchant_id": "mer_grocery",
+      "purchase_date": "2026-10-07",
+      "status": "completed"
+    },
+    {
+      "_id": "pur_evt_0223_009",
+      "amount": 42,
+      "description": "Demo Fuel",
+      "merchant_id": "mer_fuel",
+      "purchase_date": "2026-10-09",
+      "status": "completed"
+    },
+    {
+      "_id": "pur_evt_0223_011",
+      "amount": 6,
+      "description": "Demo Coffee",
+      "merchant_id": "mer_coffee",
+      "purchase_date": "2026-10-09",
+      "status": "completed"
+    },
+    {
+      "_id": "pur_evt_0223_013",
+      "amount": 64,
+      "description": "Demo Grocery",
+      "merchant_id": "mer_grocery",
+      "purchase_date": "2026-10-11",
+      "status": "completed"
+    },
+    {
+      "_id": "pur_evt_0223_014",
+      "amount": 6,
+      "description": "Demo Coffee",
+      "merchant_id": "mer_coffee",
+      "purchase_date": "2026-10-12",
+      "status": "completed"
+    },
+    {
+      "_id": "pur_evt_0223_016",
+      "amount": 64,
+      "description": "Demo Grocery",
+      "merchant_id": "mer_grocery",
+      "purchase_date": "2026-10-15",
+      "status": "completed"
+    },
+    {
+      "_id": "pur_evt_0223_017",
+      "amount": 6,
+      "description": "Demo Coffee",
+      "merchant_id": "mer_coffee",
+      "purchase_date": "2026-10-15",
+      "status": "completed"
+    },
+    {
+      "_id": "pur_evt_0223_018",
+      "amount": 39,
+      "description": "Demo Fuel",
+      "merchant_id": "mer_fuel",
+      "purchase_date": "2026-10-16",
+      "status": "completed"
+    },
+    {
+      "_id": "pur_evt_0223_020",
+      "amount": 6,
+      "description": "Demo Coffee",
+      "merchant_id": "mer_coffee",
+      "purchase_date": "2026-10-18",
+      "status": "completed"
+    },
+    {
+      "_id": "pur_evt_0223_021",
+      "amount": 64,
+      "description": "Demo Grocery",
+      "merchant_id": "mer_grocery",
+      "purchase_date": "2026-10-19",
+      "status": "completed"
+    },
+    {
+      "_id": "pur_evt_0223_023",
+      "amount": 6,
+      "description": "Demo Coffee",
+      "merchant_id": "mer_coffee",
+      "purchase_date": "2026-10-21",
+      "status": "completed"
+    },
+    {
+      "_id": "pur_evt_0223_024",
+      "amount": 45,
+      "description": "Demo Fuel",
+      "merchant_id": "mer_fuel",
+      "purchase_date": "2026-10-23",
+      "status": "completed"
+    },
+    {
+      "_id": "pur_evt_0223_025",
+      "amount": 64,
+      "description": "Demo Grocery",
+      "merchant_id": "mer_grocery",
+      "purchase_date": "2026-10-23",
+      "status": "completed"
+    },
+    {
+      "_id": "pur_evt_0223_026",
+      "amount": 6,
+      "description": "Demo Coffee",
+      "merchant_id": "mer_coffee",
+      "purchase_date": "2026-10-24",
+      "status": "completed"
+    },
+    {
+      "_id": "pur_evt_0223_027",
+      "amount": 64,
+      "description": "Demo Grocery",
+      "merchant_id": "mer_grocery",
+      "purchase_date": "2026-10-27",
+      "status": "completed"
+    },
+    {
+      "_id": "pur_evt_0223_028",
+      "amount": 6,
+      "description": "Demo Coffee",
+      "merchant_id": "mer_coffee",
+      "purchase_date": "2026-10-27",
+      "status": "completed"
+    },
+    {
+      "_id": "pur_evt_0223_029",
+      "amount": 42,
+      "description": "Demo Fuel",
+      "merchant_id": "mer_fuel",
+      "purchase_date": "2026-10-30",
+      "status": "completed"
+    },
+    {
+      "_id": "pur_evt_0223_030",
+      "amount": 6,
+      "description": "Demo Coffee",
+      "merchant_id": "mer_coffee",
+      "purchase_date": "2026-10-30",
+      "status": "completed"
+    },
+    {
+      "_id": "pur_evt_0223_031",
+      "amount": 64,
+      "description": "Demo Grocery",
+      "merchant_id": "mer_grocery",
+      "purchase_date": "2026-10-31",
+      "status": "completed"
+    },
+    {
+      "_id": "pur_evt_0223_032",
+      "amount": 6,
+      "description": "Demo Coffee",
+      "merchant_id": "mer_coffee",
+      "purchase_date": "2026-11-02",
+      "status": "completed"
+    },
+    {
+      "_id": "pur_evt_0223_033",
+      "amount": 6,
+      "description": "Demo Coffee",
+      "merchant_id": "mer_coffee",
+      "purchase_date": "2026-11-06",
+      "status": "completed"
+    }
+  ],
+  "scenario_id": "scn_0223",
+  "transfers": [
+    {
+      "_id": "xfr_evt_0223_015",
+      "amount": 40,
+      "description": "Demo ATM",
+      "payee_id": "bank_demo_atm",
+      "payer_id": "acct_0223_chk",
+      "status": "completed",
+      "transaction_date": "2026-10-13"
+    }
+  ]
+}
