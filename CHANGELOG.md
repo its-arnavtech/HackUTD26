@@ -76,6 +76,17 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - Resumed by: <tool> from <tool>, if any
 ```
 
+### L5 Tool registry and runtime (#15)
+- Agent: Claude Code (Opus 5.5) · Person: Lavanya · Folder: Lavanya's clone (`HackUTD26`) · Branch: `l5-tool-registry`
+- Started: 2026-11-07 20:15 · Last checkpoint: 2026-11-07 20:15
+- Done so far:
+  - Claimed; read the issue, DATA_SPEC 3.2, tool stubs, `PrivacyRecipient`
+- Next step (exact): implement `backend/app/agent/registry.py` (register, schemas, call with timeout, errors as data, privacy records), register the six built-in tools there
+- Files touched: CHANGELOG.md
+- How to run or test: `cd backend` then `.venv/Scripts/python.exe -m pytest`
+- Notes and gotchas: tools stay in Arnav's modules; registration lives in the registry so no edits to his files
+- Resumed by:
+
 
 ---
 
