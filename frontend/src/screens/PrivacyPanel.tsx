@@ -3,7 +3,15 @@ import { Eye, EyeOff, Fingerprint, LockKeyhole } from "lucide-react";
 import { getPrivacy } from "../api";
 import { useData } from "../hooks";
 import { PageTitle, PrivacyChip } from "../components";
-import { claimedBrand, receivedLines, recipientLabel, redactedText, redactionCounts } from "../present";
+import {
+  claimedBrand,
+  isRedactionTag,
+  receivedLines,
+  recipientLabel,
+  redactedText,
+  redactionCounts,
+  splitRedacted,
+} from "../present";
 import type { PrivacyView as PrivacyData } from "../types";
 
 /** What was hidden, what each check received, and what never left the phone. */
@@ -31,8 +39,8 @@ export function PrivacyView({ view }: { view?: PrivacyData }) {
           {text ? (
             <div className="redacted-message">
               {brand && <p className="eyebrow">Text claiming to be {brand}</p>}
-              {text.split(/(<[A-Z][A-Z0-9_]*>)/g).map((part, i) =>
-                /^<[A-Z][A-Z0-9_]*>$/.test(part) ? <PrivacyChip key={i} token={part} /> : part,
+              {splitRedacted(text).map((part, i) =>
+                isRedactionTag(part) ? <PrivacyChip key={i} token={part} /> : part,
               )}
             </div>
           ) : (
