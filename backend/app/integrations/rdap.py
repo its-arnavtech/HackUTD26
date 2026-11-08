@@ -7,15 +7,13 @@ Lookups go through `integrations/cache.py` so replay mode never touches the netw
 from __future__ import annotations
 
 import logging
-from collections.abc import Callable
 from datetime import datetime, timezone
 from typing import Any, Optional
 
 import httpx
 
-from app.config import get_settings
 from app.contracts import DemoMode
-from app.integrations.cache import cached_call
+from app.integrations.cache import FixtureMissingError, cached_call
 
 log = logging.getLogger(__name__)
 
@@ -46,20 +44,18 @@ def _fetch(domain: str, client: httpx.Client | None = None) -> dict[str, Any]:
     return {"found": True, "registered_at": registered}
 
 
-def _through_cache(request: dict[str, Any], fn: Callable[[], dict[str, Any]]) -> Optional[dict[str, Any]]:
-    try:
-        return cached_call("rdap", request, fn)
-    except NotImplementedError:
-        # TODO(L1): delete this fallback once cache.py merges; cached_call handles DEMO_MODE itself.
-        if get_settings().DEMO_MODE == DemoMode.replay:
-            return None
-        return fn()
+def lookup_registration(
+    domain: str, client: httpx.Client | None = None, *, mode: DemoMode | str | None = None
+) -> Optional[dict[str, Any]]:
+    """`{"found", "registered_at"}` for a registered domain, or None if the lookup failed or isn't available.
 
-
-def lookup_registration(domain: str, client: httpx.Client | None = None) -> Optional[dict[str, Any]]:
-    """`{"found", "registered_at"}` for a registered domain, or None if the lookup failed or isn't available."""
+    In replay mode an unrecorded domain counts as "not available", so `check_link` still answers.
+    """
     try:
-        return _through_cache({"domain": domain}, lambda: _fetch(domain, client))
+        return cached_call("rdap", {"domain": domain}, lambda: _fetch(domain, client), mode=mode)
+    except FixtureMissingError:
+        log.info("RDAP lookup for %s not recorded; skipping in replay", domain)
+        return None
     except (httpx.HTTPError, ValueError) as exc:
         log.warning("RDAP lookup failed for %s: %s", domain, type(exc).__name__)
         return None
