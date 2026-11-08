@@ -59,12 +59,24 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | L13 | Full authentication and security pillars | Lavanya | Claude Code | Demo | G2 | in review | #71 · `l14-live-demo` (auth off by default) |
 | L14 | Live demo: System view, check any message, plug into any system, agent tool-call fix | Lavanya | Claude Code | Demo | G2, SYN | in review | `l14-live-demo` · docs/L14_LIVE_DEMO_REVIEW.md |
 | L15 | Agent accuracy, any payment system as agent source, trusted contact, scam waves | Lavanya | Claude Code | Demo | L14, SYN | in review | `l15-agent-eval-and-alerts` · docs/L15_FEATURES_POC.md |
+| L16 | Trusted-contact phone call and email | Arnav | Cursor | Demo | L15 | in progress | `l16-alert-backend` |
 | SYN | Synthetic linked scenarios, payment schema, multiclass SMS | Arnav | Cursor | Demo | A21 | done | #72 · cursor/synthetic-linked-scenarios-6119 |
 
 ---
 
 ## In progress
 
+### L16 Trusted-contact phone call and email
+- Agent: Cursor (Grok 4.7) · Person: Arnav · Folder: `/agent/repos/HackUTD26` · Branch: `l16-alert-backend`
+- Started: 2026-11-08 09:29 · Last checkpoint: 2026-11-08 09:29
+- Done so far:
+  - Claimed. Backend only. No pull request (Claude Code merges the frontend half).
+  - Acceptance: `POST /api/actions` with `alert_trusted_contact` keeps its current body and adds `alert` (`AlertStatus` from `app/alerts.py`). `GET /api/trusted-contact/alerts/{message_id}` returns the latest status or 404. A tap places a Twilio call with inline TwiML; voicemail, no-answer, busy, cancel, or failure also sends a plain-text Gmail alert. Flag off or `DEMO_MODE=replay` simulates `no_answer` plus `email_sent` and never calls out.
+- Next step (exact): add `create_call` / `get_call`, `email_alert.send_alert_email`, `alerts.start_alert`, the route, config, and tests.
+- Files touched: CHANGELOG.md
+- How to run or test: `cd backend; python -m pytest`
+- Notes and gotchas: do not edit `contracts.py` or the frontend. The spoken text is `trusted_contact.alert_text`, not the masked phone in `alert_note`. Phone and email come from env (`TRUSTED_CONTACT_PHONE`, `TRUSTED_CONTACT_EMAIL`), not the in-memory L15 contact.
+- Resumed by: none
 
 ### L13 Full authentication and security pillars (#71)
 - Agent: Claude Code (Opus 5.5) · Person: Lavanya · Folder: `C:\Users\gocomets\Downloads\HackUTD26` · Branch: `sec-auth`
