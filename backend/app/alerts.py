@@ -273,7 +273,7 @@ def _place_and_poll(
         sid = client.create_call(phone, caller, twiml, timeout=25, machine_detection="DetectMessageEnd")
     except TwilioError as exc:
         _privacy(store, message_id, "twilio", sent)
-        log.info("alert call failed", extra={"fields": {"error": type(exc).__name__}})
+        log.info("alert call failed", extra={"fields": {"error": type(exc).__name__, "reason": str(exc)}})
         return "failed"
     if not sid:
         return "failed"

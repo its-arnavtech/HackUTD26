@@ -61,23 +61,11 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | L15 | Agent accuracy, any payment system as agent source, trusted contact, scam waves | Lavanya | Claude Code | Demo | L14, SYN | in review | `l15-agent-eval-and-alerts` · docs/L15_FEATURES_POC.md |
 | L16 | Trusted-contact phone call and email | Arnav | Cursor | Demo | L15 | done | `l16-alert-backend` (no PR; Claude Code merges the UI) |
 | SYN | Synthetic linked scenarios, payment schema, multiclass SMS | Arnav | Cursor | Demo | A21 | done | #72 · cursor/synthetic-linked-scenarios-6119 |
-| L16 (frontend) | Trusted-contact call: alert status polling in the recovery checklist (phone + console) | Arnav | Claude Code | Demo | L15 | in progress | `l16-alert-frontend` |
+| L16 (frontend) | Trusted-contact call: alert status polling in the recovery checklist (phone + console) | Arnav | Claude Code | Demo | L15 | in review | `l16-voice-alert` (PR) |
 
 ---
 
 ## In progress
-
-### L16 frontend: trusted-contact call status (no issue number)
-- Agent: Claude Code (Opus 5.5) · Person: Arnav · Folder: `C:\HackUTD26` · Branch: `l16-alert-frontend`, integrating on `l16-voice-alert`
-- Started: 2026-11-08 09:24 · Last checkpoint: 2026-11-08 09:50
-- Checkpoint 09:50: on `l16-voice-alert`, backend pytest 864 passed (after fixing `/tmp` in `tests/test_email_alert.py` for Windows; unset any shell `GEMINI_API_KEY` before pytest), frontend build + 100 tests pass. Live (c) flag off: "(simulated)" path verified. Live (a)/(b) blocked on accounts, not code: Twilio is a trial account, Lavanya's number is not a Verified Caller ID and `TWILIO_FROM_NUMBER` isn't an incoming number on this account; Gmail drops the connection right after credentials (app password or account). The real-key failure path showed "We couldn't reach them. Here's what to tell them:" + alert text, as designed. Checklist footer no longer says "or place calls".
-- Next step (exact): after Arnav fixes Twilio (verify Lavanya's number, use the account's Twilio number) and the Gmail app password, start `api-l16` + `web-l16` from `.claude/launch.json` (8020/5190) and redo live (a) answer and (b) decline; then PR `l16-voice-alert` → main.
-- Integration: `l16-voice-alert` = main + `l16-alert-backend` (Grok 4.7, 71e36a5e) + `l16-alert-frontend`, both `--no-ff`. Only conflict was this CHANGELOG block (kept both sides). Backend `AlertStatus` matches the fixed interface field for field.
-- Done so far: claimed. Backend half is Grok 4.7 on `l16-alert-backend`; both merge into `l16-voice-alert` for one PR. Frontend half done: `AlertStatus`, `postAlertAction`, `getAlertStatus` in `api.ts`; `trustedAlert.tsx` (wording, 2 s polling hook with 120 s stop, phone + console components); "Alert my trusted contact" under the phone checklist (`Recovery.tsx`) and console checklist (`CustomerPanel.tsx`); console `TrustedContactCard` uses the same hook. 18 new tests; `npm run build` and `npm test` (100 passed) green. Runbook section and DATA_SPEC section 10 written.
-- Next step (exact): Part 2 integration. `git switch -c l16-voice-alert --no-track origin/main`, merge `origin/l16-alert-backend` then `origin/l16-alert-frontend` with `--no-ff`; check backend matches the fixed interface; reconcile `.env.example` key names in the runbook "Trusted contact call" section; pytest, build, test; live test on ports 8020/5190.
-- Files touched: CHANGELOG.md, frontend/src/api.ts, frontend/src/trustedAlert.tsx (+ test), frontend/src/screens/Recovery.tsx (+ test), frontend/src/console/CustomerPanel.tsx, frontend/src/console/features.tsx, frontend/src/theme.css, frontend/src/console/console.css, docs/DEMO_RUNBOOK.md, docs/DATA_SPEC.md
-- How to run or test: `cd frontend; npm run build; npm test`
-- Notes and gotchas: fixed interface in the user's L16 brief: POST /api/actions returns `alert`; GET /api/trusted-contact/alerts/{message_id}; poll 2 s while `calling`, stop at `done` or 120 s.
 
 ### L13 Full authentication and security pillars (#71)
 - Agent: Claude Code (Opus 5.5) · Person: Lavanya · Folder: `C:\Users\gocomets\Downloads\HackUTD26` · Branch: `sec-auth`
@@ -176,6 +164,8 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 ---
 
 ## Done log
+
+- 2026-11-08 10:52 · L16 integration + frontend · Claude Code (Opus 5.5) · PR from `l16-voice-alert` · Merged Grok's `l16-alert-backend` and `l16-alert-frontend`; "Alert my trusted contact" on the phone and console recovery checklists polls every 2 s, stops at done or 120 s. Backend 864 passed, frontend 100 passed. Live: flag-off simulated path and the unanswered fallback verified; real call refused by Twilio before dialing (verified-caller-ID From), Gmail login drops. · follow-ups: read the Twilio refusal code now logged as `reason`; fix Gmail app password.
 
 - 2026-11-08 09:38 · L16 · Cursor (Grok 4.7) · no PR (Claude Code merges the frontend) · A tap on alert trusted contact places a Twilio call and, unless a person answers, a plain-text Gmail message. `POST /api/actions` keeps its body and adds `alert`. `GET /api/trusted-contact/alerts/{message_id}` returns it or 404. Flag off and replay simulate. 864 backend tests passed. · follow-ups: Claude Code UI; `AlertStatus` stays in `app/alerts.py`
 
