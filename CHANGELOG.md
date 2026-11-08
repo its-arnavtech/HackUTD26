@@ -22,7 +22,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A2 | Nessie client and idempotent seed script | Arnav | Claude Code | POC | scaffold | todo | #3 |
 | A3 | Redaction module | Arnav | Claude Code | POC | scaffold | todo | #4 |
 | A4 | Nemotron connection and tool-calling smoke test | Arnav | Codex | POC | scaffold | done | #41 (arnav-shared) |
-| A5 | Hugging Face connection | Arnav | Codex | POC | scaffold | todo | #6 |
+| A5 | Hugging Face connection | Arnav | Codex | POC | scaffold | in progress | codex-shared / #6 |
 | A6 | Dev infrastructure: CI, dev scripts, worktrees | Arnav | Cursor | POC | scaffold | todo | #7 |
 | A7 | Phone shell and inbox on the mock API | Arnav | Codex design (GPT 6 Astra) | POC | scaffold | todo | #8 |
 | L1 | Record and replay cache | Lavanya | Claude Code | POC | scaffold | todo | #9 |
@@ -73,6 +73,15 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - Notes and gotchas: ...
 - Resumed by: <tool> from <tool>, if any
 ```
+
+### A5 Hugging Face connection (#6)
+- Agent: Codex (GPT-6) · Person: Arnav · Folder: C:\HackUTD26-codex · Branch: codex-shared (origin/arnav-shared)
+- Started: 2026-11-07 18:51 · Last checkpoint: 2026-11-07 18:51
+- Done so far: HF CLI 2.4.0 installed in venv; human completed login and HF_TOKEN setup; hf auth whoami confirms ItsArca. Selected ucirvine/sms_spam and distilbert/distilbert-base-uncased. Ollama already installed; no system-wide installation needed.
+- Next step (exact): Download public SMS parquet with hf download to data/raw/public_sms, cache DistilBERT safetensors/tokenizer/config, record pinned revisions and sizes. Time-box local Bolt fallback to 45 minutes.
+- Files touched: CHANGELOG.md
+- How to run or test: From backend, .\.venv\Scripts\python.exe -m pytest -q
+- Notes and gotchas: Public set is external evaluation ONLY; never training/tuning/prompts/blocklists/campaign seeds. HF card license unknown; upstream UCI lists CC BY 4.0 (record both). Do not commit public SMS rows or model weights. #41 currently contains A4 plus A21 claim; disclose A5 while unfinished.
 
 ### A21 Synthetic message dataset generator (#1)
 - Agent: Claude Code (Opus 5.5) · Person: Arnav · Folder: `C:\HackUTD26-cc` · Branch: `arnav-shared`
