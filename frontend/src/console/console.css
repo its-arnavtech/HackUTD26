@@ -1212,3 +1212,28 @@
   color: inherit;
   font-weight: 700;
 }
+
+/* L15b protection: layout only, existing tokens */
+.sx-interrupt {
+  margin-top: 16px;
+  display: grid;
+  gap: 12px;
+  border-color: var(--cx-scam);
+}
+.sx-interrupt-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+.sx-list {
+  list-style: none;
+  margin: 0 0 8px;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+.sx-list li {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+}

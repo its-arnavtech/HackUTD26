@@ -554,6 +554,66 @@ def post_wave_warn(wave_id: str) -> dict:
         raise NotFoundError("Unknown wave") from None
 
 
+@router.get("/official-contact")
+def get_official_contact(brand: str | None = None) -> dict:
+    """L15b: verified contact routes for a brand (brands.json only; never from the message)."""
+    from app import protection
+
+    return protection.official_contact(brand)
+
+
+class MemoryConsentRequest(BaseModel):
+    on: bool
+
+
+@router.get("/memory")
+def get_memory(principal: PrincipalDep) -> dict:
+    from app import protection
+
+    return protection.view(principal.user_id)
+
+
+@router.put("/memory/consent")
+def put_memory_consent(body: MemoryConsentRequest, principal: PrincipalDep) -> dict:
+    """L15b: opt in or out of personal scam memory. Opting out deletes what was kept."""
+    from app import protection
+
+    return protection.set_consent(principal.user_id, body.on)
+
+
+@router.post("/memory/{message_id}")
+def post_memory(message_id: str, settings: SettingsDep, store: StoreDep, principal: PrincipalDep) -> dict:
+    """L15b: compare this message's minimized indicators with earlier ones, then keep them (with consent)."""
+    from app import protection
+
+    if not settings.route_is_mocked("privacy"):
+        _own(store, message_id, principal)
+        view = privacy_log.view(store, message_id)
+    else:
+        _known(message_id, principal)
+        view = mocks.load("privacy.json")
+    payload = next((r.payload for r in view.recipients if r.recipient == "nemotron"), None)
+    if payload is None:
+        return {"consent": protection.view(principal.user_id)["consent"], "matches": [], "pending": True}
+    return protection.remember(principal.user_id, message_id, protection.indicators_from_privacy(payload))
+
+
+@router.delete("/my-data")
+def delete_my_data(settings: SettingsDep, store: StoreDep, principal: PrincipalDep) -> dict:
+    """L15b Privacy Control Center: delete everything kept for this customer on this server."""
+    from app import protection, transcript, trusted_contact
+
+    protection.forget(principal.user_id)
+    trusted_contact.remove(principal.user_id)
+    transcript.clear()
+    removed = 0
+    if not settings.route_is_mocked("inbox"):
+        removed = len(store.inbox(principal.user_id))
+        store.reset()
+        seed_inbox(store)  # the demo inbox comes back; nothing of the customer's own remains
+    return {"deleted": True, "messages_removed": removed, "kept": ["anonymous scam-wave counts (no text, no identity)"]}
+
+
 @router.post("/demo/reset", response_model=c.DemoResetResponse)
 def post_demo_reset(
     request: Request, settings: SettingsDep, store: StoreDep, principal: PrincipalDep

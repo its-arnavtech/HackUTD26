@@ -200,3 +200,21 @@ This works. "Simulate a wave" replays a 15-variant Walmart campaign (rotating wo
 **Unchanged:** the agent accuracy run still uses the full held-out test split (all 9 categories, as labelled), because it is a measurement, not demo content.
 
 "Simulate a wave" now picks a random allowed campaign each time, so every judge sees a different company's wave.
+
+## L15b: added in a short follow-up
+
+- **Privacy Control Center** (`/privacy-center`):
+  - a table of exactly what is processed and what never is, matching what the code does
+  - what's kept for this customer right now
+  - a working **Delete my data** button (`DELETE /api/my-data`): it clears the customer's messages, scam memory, trusted contact and agent transcripts on this server; only anonymous wave counts remain
+- **Before you act** (scam interruption, on the System view after a scam verdict):
+  - why the message is suspicious, including its deadline pressure
+  - how to reach the real company yourself: only from `data/brands.json` (verified on the brand's own pages, `GET /api/official-contact`), never from the message
+  - what not to do, based on what the message asks for
+  - what to do if money already moved
+- **Personal scam memory** (opt-in, `PUT /api/memory/consent`, `POST /api/memory/{id}`):
+  - keeps only brand, scam type, link domain and a wording hash per checked message
+  - flags repeats ("the same link domain as a message you checked at…")
+  - turning it off deletes what was kept
+
+Tests: `tests/test_protection.py`. Backend 839 passed, frontend 82 passed.
