@@ -1,0 +1,87 @@
+{
+  "_note": "Written by scripts/seed_nessie.py. Synthetic demo data. Nessie stores no time of day and transfers can't name a payee, so purchase times, transfer payees and transfer times live here. The planted $900 is a purchase at merchant 'Unknown Payee'.",
+  "base_url": "https://api.nessieisreal.com",
+  "message_at": "2026-11-08T09:14:00-06:00",
+  "customers": {
+    "linda": "8756d0aa-0be6-4f5d-a1b2-c60c8d4ab82c"
+  },
+  "accounts": {
+    "linda_checking": "4983d467-9369-4b9b-b46c-227a9b3a9115",
+    "linda_credit": "83dce5c6-2962-4a67-9281-0b2e4c0f7fde"
+  },
+  "merchants": {
+    "grocery": "5113a183-40e6-4425-b422-80a0bbacdb80",
+    "coffee": "b451f5d7-a44d-4590-a880-8e33d367868c",
+    "fuel": "04588b80-cdd6-4143-a049-7c33cb8b1df7",
+    "pharmacy": "369ab32b-f61d-4d6e-a548-1d644bc8d2ed",
+    "streaming": "b13556f6-5f22-4bad-9d95-7fde5610feec",
+    "unknown_payee": "ed195bc1-c288-4cb1-9153-c2d69bbe37c1"
+  },
+  "bills": {
+    "tmobile": "2b63977d-49ae-405c-8c24-a0c327cc1d13"
+  },
+  "purchases": {
+    "grocery_2026-10-10": "6b267fe7-944a-4809-8240-14e2fc1aa4f7",
+    "grocery_2026-10-14": "e7f65fdb-05b1-4e45-b232-d42b6f87d081",
+    "grocery_2026-10-18": "384fdfad-fd25-4e40-b532-bdbca1fbeac5",
+    "grocery_2026-10-22": "49b6ce76-eade-40db-b2b7-9191e53ec792",
+    "grocery_2026-10-26": "4c513432-8005-4d5b-a1b8-23145bbd5889",
+    "grocery_2026-10-30": "ee685db5-3301-43ca-b1af-210f9a1bb412",
+    "grocery_2026-11-03": "ad37ad80-d3fa-4155-9ffb-325f0b3143ed",
+    "grocery_2026-11-07": "ee225fe5-3a72-422d-8d27-76303a7f8f13",
+    "coffee_2026-10-09": "81d2b9f2-a15d-4526-83bd-96d0489c4183",
+    "coffee_2026-10-12": "5b517c83-4092-483e-9c47-03a276760dea",
+    "coffee_2026-10-15": "bbfa5d1f-a8ec-4d98-998f-d017a25f9eb5",
+    "coffee_2026-10-18": "46c8d358-396e-4558-8a31-c4d5647e1a06",
+    "coffee_2026-10-21": "45703ec5-6a1a-43bf-b6c4-b875b0d5029d",
+    "coffee_2026-10-24": "e2807f67-f915-4759-b44f-d90458370481",
+    "coffee_2026-10-27": "dfbef9b3-24a9-4a63-8e3f-37cfcecb3355",
+    "coffee_2026-10-30": "cf0f3339-523d-41a1-a2e5-3a77170bb9ce",
+    "coffee_2026-11-02": "1d6dc3cf-8cd1-4ed7-a97d-d09186018789",
+    "coffee_2026-11-05": "2906f309-f631-45d0-8f55-57ff0d8514f7",
+    "fuel_2026-10-11": "77e7e4c8-45b0-4bcb-8114-15302df6e9a5",
+    "fuel_2026-10-18": "9b02ebf5-1914-43be-83ac-e11eb03fdbf9",
+    "fuel_2026-10-25": "869495db-2aee-4769-b2f3-cf0ae7d51a3c",
+    "fuel_2026-11-01": "4027beb8-cd85-4f0f-a195-5421568d06d5",
+    "pharmacy_2026-10-21": "fe356d7a-2c7f-4364-878a-23ba70781a7b",
+    "streaming_2026-10-14": "d18478d1-4e35-4217-bee7-4fc1e964d4ba",
+    "planted_purchase": "49998a0e-37fb-407c-95a2-e419b0fb860b"
+  },
+  "purchase_times": {
+    "49998a0e-37fb-407c-95a2-e419b0fb860b": "2026-11-08T09:31:00-06:00"
+  },
+  "planted": {
+    "type": "purchase",
+    "id": "49998a0e-37fb-407c-95a2-e419b0fb860b",
+    "account_id": "4983d467-9369-4b9b-b46c-227a9b3a9115",
+    "merchant_id": "ed195bc1-c288-4cb1-9153-c2d69bbe37c1",
+    "amount": 900,
+    "at": "2026-11-08T09:31:00-06:00"
+  },
+  "transfers": {
+    "card_payment_2026-10-12": {
+      "id": "08a87888-c7cf-4dbf-9336-159f04fe85cb",
+      "payer_id": "4983d467-9369-4b9b-b46c-227a9b3a9115",
+      "payee_id": "83dce5c6-2962-4a67-9281-0b2e4c0f7fde",
+      "amount": 120.0,
+      "date": "2026-10-12",
+      "at": "2026-10-12T12:00:00-06:00"
+    },
+    "card_payment_2026-10-24": {
+      "id": "bfeee205-c5d0-4547-802b-74e11e6ba022",
+      "payer_id": "4983d467-9369-4b9b-b46c-227a9b3a9115",
+      "payee_id": "83dce5c6-2962-4a67-9281-0b2e4c0f7fde",
+      "amount": 150.0,
+      "date": "2026-10-24",
+      "at": "2026-10-24T12:00:00-06:00"
+    },
+    "card_payment_2026-11-03": {
+      "id": "ed90f783-8107-44a3-b6e3-ee5d71319b31",
+      "payer_id": "4983d467-9369-4b9b-b46c-227a9b3a9115",
+      "payee_id": "83dce5c6-2962-4a67-9281-0b2e4c0f7fde",
+      "amount": 180.0,
+      "date": "2026-11-03",
+      "at": "2026-11-03T12:00:00-06:00"
+    }
+  }
+}

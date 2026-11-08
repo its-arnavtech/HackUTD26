@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import re
 
-from app.agent.registry import ToolSpec
 from app.contracts import AgentInput, CheckSenderArgs, CheckSenderResult, SenderType, ToolName
 from app.tools.brands import Brand, find_brand, load_brands
 
@@ -94,13 +93,3 @@ def check_sender(
         official_channels_known=True,
         note=_note(sender_type, brand, matched),
     )
-
-
-# TODO(L5): call app.agent.registry.register(CHECK_SENDER_SPEC) once L5's registry merges.
-CHECK_SENDER_SPEC = ToolSpec(
-    name=ToolName.check_sender,
-    description="Check whether the sender is an official channel of the brand the message claims to be from.",
-    args_model=CheckSenderArgs,
-    result_model=CheckSenderResult,
-    fn=check_sender,
-)

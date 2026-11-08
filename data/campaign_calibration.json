@@ -1,0 +1,31 @@
+{
+  "calibration": {
+    "algorithm": "a12-simhash-v4",
+    "f1": 0.7591522157996147,
+    "false_negative": 44,
+    "false_positive": 81,
+    "precision": 0.7086330935251799,
+    "recall": 0.8174273858921162,
+    "semantic_weight": 0.75,
+    "split_digest": "1c3969eeab5bb5fff6be0878cbbf77b2bd7b6d3a27b2bf89a4af3007f7f38baa",
+    "threshold": 0.75,
+    "training_fingerprints": 1127,
+    "true_positive": 197,
+    "validation_positive": 241,
+    "validation_rows": 390
+  },
+  "campaigns": 267,
+  "new_fingerprints": 0,
+  "scenario3": {
+    "campaign_id": "camp_d603b0498c719667",
+    "historical_support": 28,
+    "matched_real_campaign": true,
+    "query_source": "authored scenario 3; category is annotated, not a classifier prediction",
+    "query_time": "2026-11-08T10:02:00-06:00",
+    "similar_last_24h": 0,
+    "similarity": 0.923828125
+  },
+  "stored_fingerprints": 1127,
+  "timestamp_policy": "original received_at; no re-dating or fabricated 24-hour counts",
+  "validation_metric": "brand/category family proxy, not campaign ground truth"
+}
