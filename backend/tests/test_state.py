@@ -10,6 +10,7 @@ from datetime import datetime, timezone
 import pytest
 
 from app import contracts as c
+from app import privacy_log
 from app.errors import ConflictError, NotFoundError
 from app.logs import current_message_id
 from app.state import FAILED_REASON, JobRunner, StateStore, TrailWriter
@@ -244,6 +245,51 @@ def test_runner_logs_carry_message_id(store, runner, caplog):
     assert ids == [mid]
     done = [r for r in caplog.records if r.getMessage() == "job done"]
     assert done and done[0].message_id == mid
+
+
+def _redacted(text: str) -> c.RedactedMessage:
+    return c.RedactedMessage(text_redacted=text, report=c.RedactionReport(counts=c.RedactionCounts()))
+
+
+def test_reset_reseed_drops_the_old_generation(store, runner):
+    """An in-flight check must not write onto a reseeded message that reused its id and run number."""
+    mid = store.add_message(MSG)
+    started = threading.Event()
+    release = threading.Event()
+
+    def old_job(message_id, message, on_trail):
+        on_trail.add(c.TrailKind.plan, why="old plan")
+        privacy_log.record_model("nemotron", {"marker": "OLD"})
+        privacy_log.record_redaction(_redacted("OLD"))
+        started.set()
+        release.wait(5)
+        on_trail.add(c.TrailKind.tool, tool=c.ToolName.check_link, finding="OLD-LATE")
+        privacy_log.record_tool_result("nemotron", {"marker": "OLD-LATE"})
+        privacy_log.record_redaction(_redacted("OLD-LATE"))
+        return RESULT.model_copy(update={"reason": "OLD RESULT"})
+
+    def new_job(message_id, message, on_trail):
+        on_trail.add(c.TrailKind.plan, why="new plan")
+        privacy_log.record_model("nemotron", {"marker": "NEW"})
+        privacy_log.record_redaction(_redacted("NEW"))
+        return RESULT.model_copy(update={"reason": "NEW RESULT"})
+
+    old = runner.submit(mid, old_job)
+    assert started.wait(5)
+    store.reset()
+    assert store.add_message(MSG, message_id=mid) == mid
+    runner.submit(mid, new_job)
+    assert wait_done(store, mid).result.reason == "NEW RESULT"
+    release.set()
+    old.result(timeout=5)
+
+    poll = store.poll(mid)
+    assert poll.result is not None and poll.result.reason == "NEW RESULT"
+    assert [t.why for t in poll.trail] == ["new plan"]
+    assert [t.finding for t in poll.trail] == [None]
+    payloads = [item.payload for item in store.privacy(mid)]
+    assert payloads == [{"marker": "NEW"}]
+    assert store.redaction(mid) is not None and store.redaction(mid).text_redacted == "NEW"
 
 
 def test_reset_while_running_drops_the_job(store, runner):
