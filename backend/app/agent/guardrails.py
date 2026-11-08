@@ -238,6 +238,9 @@ def apply_guardrails(
         confidence = ConfidenceWords.likely
 
     actions: list[Action] = list(dict.fromkeys(result.actions))[:MAX_ACTIONS]
+    if verdict == Verdict.likely_scam and len(actions) > 1 and Action.ignore in actions:
+        actions.remove(Action.ignore)
+        notes.append("Left out an ignore suggestion that conflicted with the protective steps.")
 
     if not reason:
         reason = _EMPTY_REASON[verdict]

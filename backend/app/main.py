@@ -228,9 +228,10 @@ def post_clicked(message_id: str, settings: SettingsDep, store: StoreDep, runner
 
 
 @router.post("/transactions/{ref}/confirm", response_model=c.ConfirmResponse)
-def post_confirm(ref: str, body: c.ConfirmRequest, settings: SettingsDep) -> c.ConfirmResponse:
+def post_confirm(ref: str, body: c.ConfirmRequest, settings: SettingsDep, store: StoreDep) -> c.ConfirmResponse:
     """Answer to "Was this you?"."""
-    _require_mock(settings, "confirm", "L11")
+    if not settings.route_is_mocked("confirm"):
+        return store.confirm_transaction(ref, body.was_me)
     return c.ConfirmResponse(ref=ref, was_me=body.was_me, recorded=True)
 
 
