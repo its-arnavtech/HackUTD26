@@ -11,7 +11,14 @@ import AccuracyPage, { AccuracyView, oursMatchesBaseline } from "./AccuracyPage"
 import CampaignView, { CampaignListView } from "./CampaignView";
 import Consent from "./Consent";
 
-vi.mock("../api", () => ({ getCampaigns: vi.fn(), getInbox: vi.fn(), getMetrics: vi.fn() }));
+vi.mock("../api", async (importOriginal) => ({
+  // Real ApiError and failureOf; only the network calls are mocked.
+  ...(await importOriginal<typeof import("../api")>()),
+  getCampaigns: vi.fn(),
+  getInbox: vi.fn(),
+  getMetrics: vi.fn(),
+  getHealth: vi.fn(() => Promise.reject(new Error("no health in tests"))),
+}));
 const api = vi.mocked(await import("../api"));
 
 /** A13's real output (L7 classifier): nine taxonomy categories including `legit`, and no agent sample yet. */

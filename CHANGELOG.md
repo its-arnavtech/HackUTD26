@@ -48,7 +48,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A14 | Result card, "How we checked" and privacy panel | Arnav | Cursor (covering for Codex design) | MVP | A7 | done | #28 · PR #53 |
 | A15 | Recovery UI | Arnav | Claude Code (covering for Codex design) | MVP | A14 | done | #29 · PR #55 (#54 closed as superseded) |
 | A16 | Consent screen, campaign view and accuracy page | Arnav | Claude Code (covering for Codex design) | MVP | A7 | done | #30 · PR #55 |
-| A17 | Frontend on the live API | Arnav | Cursor | MVP | A14, A15, A16, L9 | todo | #31 |
+| A17 | Frontend on the live API | Arnav | Claude Code (covering for Cursor) | MVP | A14, A15, A16, L9 | in progress (`a17-live-api`) | #31 |
 | A18 | End-to-end scenario tests | Arnav | Codex | MVP | G1 | done | #32 · PR #64 |
 | G2 | Gate: all three scenarios end to end in the app | Both | any | MVP | A17, A18, L10, L11 | todo | #33 |
 | A19 | Replay fixtures and backup video | Arnav | Codex | Demo | G2 | in progress | #34 · codex/a18-replay (preparation; G2 pending) |
@@ -102,6 +102,19 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - How to run or test: `python -m pytest` in `backend/`; the seed needs `NESSIE_API_KEY` in `.env`: `python -m scripts.seed_nessie`
 - Notes and gotchas: never write to Nessie with a made-up key. Nessie dates have no time, so the planted transfer's 09:31 time lives in the manifest. A11 should limit check mode to activity before `received_at`, so scenario 1 (check) doesn't see the transfer that scenario 2 (recovery) finds.
 - Resumed by: none
+### A17 Frontend on the live API (#31)
+- Agent: Claude Code (Opus 5.5, covering for Cursor) · Person: Arnav · Folder: `C:\HackUTD26` · Branch: `a17-live-api` (stacked on `a16-consent-campaign-accuracy`, PR #55)
+- Started: 2026-11-07 23:40 · Last checkpoint: 2026-11-08 00:25
+- Done so far:
+  - Claimed. `api.ts`: `ApiError` reads the backend error shape (status, code, issue), `failureOf()` maps to offline / not_found / not_wired / error, 15 s request timeout, `getHealth()`.
+  - `hooks.ts`: `useData` has loading, failure and retry; `useHealth()` (cached); inbox pollers stop after 3 errors or a 404; `useResult` reports the failure kind and stops a check unfinished after 3 minutes ("slow").
+  - `LoadFailure` component; every API screen (inbox, result, trail, privacy, campaigns, accuracy) shows its own copy for offline, not found (with a link back to the inbox), not connected yet (501) and slow, with retry. The inbox keeps its list and shows a notice when posting a text fails. The accuracy page labels the numbers illustrative while `/api/health` says `metrics` is mocked. The stage note says Live API / Mock API responses / a mix.
+  - `src/live.test.tsx` (15 tests, `fetch` stubbed with real response shapes); test api mocks are now partial. 62 frontend tests pass, build passes.
+  - Checked in the browser with `USE_MOCKS=false DEMO_MODE=replay` (launch config `api-live`): post a text → Checking… → verdict, polling stops at done; result, trail and recovery (clicked → checklist) work on real routes; privacy, campaigns and accuracy show "not connected yet" (501) with retry; an unknown id shows "couldn’t find". The console only shows the browser's own lines for 404/501 responses; no JS errors.
+- Next step (exact): finish: Done log line, Status row `done`, tick #31's boxes, open the PR (`Closes #31`, stacked on #55). Note in the PR: a "not sure" result with no actions leaves "Use the official app" doing nothing (A14 behavior); the live store starts empty until L9 seeds it; confirm/actions/privacy/campaigns/metrics are 501 until L11/L9/L6/A12/A13.
+- Files touched: `frontend/src/{api.ts,hooks.ts,App.tsx,components/index.tsx,live.test.tsx}`, `frontend/src/screens/*`, `CHANGELOG.md`
+- How to run or test: `cd frontend; npm test; npm run build`. Live: set `USE_MOCKS=false` and `DEMO_MODE=replay`, then `scripts\dev.ps1`
+- Notes and gotchas: a `GEMINI_API_KEY` in the shell environment makes 3 backend config tests fail locally; run pytest with it unset. The local venv also needed `pip install -r requirements.txt` (pyarrow).
 
 ---
 

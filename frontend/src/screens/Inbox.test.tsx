@@ -6,10 +6,13 @@ import { newestFirst } from "../hooks";
 import type { ResultPoll } from "../types";
 import Inbox, { InboxView, senderLabel } from "./Inbox";
 
-vi.mock("../api", () => ({
+vi.mock("../api", async (importOriginal) => ({
+  // Real ApiError and failureOf; only the network calls are mocked.
+  ...(await importOriginal<typeof import("../api")>()),
   getInbox: vi.fn(),
   postMessage: vi.fn(),
   pollResult: vi.fn(),
+  getHealth: vi.fn(() => Promise.reject(new Error("no health in tests"))),
 }));
 const api = vi.mocked(await import("../api"));
 
@@ -54,7 +57,7 @@ describe("InboxView", () => {
     render(<InboxView items={[]} state="error" onRetry={onRetry} />);
     expect(screen.getByText("We couldn’t load your messages.")).toBeInTheDocument();
     expect(screen.queryByText(/scam|safe|not sure/i)).not.toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: /Try the check again/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Load messages again/ }));
     expect(onRetry).toHaveBeenCalled();
   });
 });

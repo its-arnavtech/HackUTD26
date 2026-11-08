@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { ArrowDownRight, Beaker, ChevronRight } from "lucide-react";
-import { getMetrics } from "../api";
-import { useData } from "../hooks";
+import { getMetrics, type Failure } from "../api";
+import { useData, useHealth } from "../hooks";
 import { MetricTable } from "../components";
 import type { Metrics, OursVsBaseline } from "../types";
 
@@ -116,10 +116,14 @@ export function AccuracyView({
   metrics,
   illustrative = false,
   error = false,
+  failure,
+  onRetry,
 }: {
   metrics?: Metrics;
   illustrative?: boolean;
   error?: boolean;
+  failure?: Failure;
+  onRetry?: () => void;
 }) {
   const [dataset, setDataset] = useState<Dataset>("synthetic");
   const publicSet = metrics?.public_set ?? undefined;
@@ -149,13 +153,24 @@ export function AccuracyView({
         <div>
           {error ? (
             <>
-              <strong>The evaluation results couldn’t be loaded.</strong>
-              <p>No numbers are shown rather than guessed. Run the evaluation and reload.</p>
+              <strong>
+                {failure === "not_wired"
+                  ? "The live evaluation route isn’t connected yet."
+                  : failure === "offline"
+                    ? "The API couldn’t be reached."
+                    : "The evaluation results couldn’t be loaded."}
+              </strong>
+              <p>No numbers are shown rather than guessed. Run the evaluation and try again.</p>
+              {onRetry && (
+                <button className="text-button" onClick={onRetry}>
+                  Try again
+                </button>
+              )}
             </>
           ) : illustrative ? (
             <>
               <strong>Illustrative data. Not measured model performance.</strong>
-              <p>This specimen uses the mock file. The live page reads eval/metrics.json.</p>
+              <p>These numbers come from the mock file. With the metrics route live, this page reads eval/metrics.json.</p>
             </>
           ) : metrics && oursMatchesBaseline(metrics) ? (
             <>
@@ -304,6 +319,8 @@ export function AccuracyView({
 }
 
 export default function AccuracyPage() {
-  const { data, error } = useData(() => getMetrics(), []);
-  return <AccuracyView metrics={data} error={error} />;
+  const { data, failure, retry } = useData(() => getMetrics(), []);
+  // While /api/metrics serves its mock (USE_MOCKS or MOCK_ROUTES), label the numbers illustrative.
+  const mocked = useHealth()?.mocked_routes.metrics === true;
+  return <AccuracyView metrics={data} illustrative={mocked} error={failure !== undefined} failure={failure} onRetry={retry} />;
 }

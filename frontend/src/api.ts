@@ -14,23 +14,79 @@ import type {
   ResultPoll,
 } from "./types";
 
+/**
+ * Every failed call. The backend sends one error shape (`backend/app/errors.py`):
+ * `{detail, error: {code, message, details}}`. `status` 0 means the API couldn't be reached.
+ */
 export class ApiError extends Error {
   constructor(
     public status: number,
     message: string,
+    public code = "",
+    /** The issue that wires this route, when the backend answers 501 (for example "L6"). */
+    public issue = "",
   ) {
     super(message);
   }
+
+  /** The route exists in POC_MVP 7.1 but its live version hasn't landed, and its mock is off. */
+  get notWiredYet() {
+    return this.status === 501;
+  }
+
+  get notFound() {
+    return this.status === 404;
+  }
+
+  get offline() {
+    return this.status === 0;
+  }
+}
+
+/** How a failed call reads on screen. Never shows the backend's own message. */
+export type Failure = "offline" | "not_found" | "not_wired" | "error";
+
+export function failureOf(err: unknown): Failure {
+  if (!(err instanceof ApiError)) return "error";
+  if (err.offline) return "offline";
+  if (err.notFound) return "not_found";
+  if (err.notWiredYet) return "not_wired";
+  return "error";
+}
+
+/** A call that hasn't answered by now is treated as unreachable, so the screen can offer a retry. */
+const TIMEOUT_MS = 15000;
+
+async function errorFrom(res: Response, label: string): Promise<ApiError> {
+  let code = "";
+  let issue = "";
+  try {
+    const body = (await res.json()) as { error?: { code?: string; details?: { issue?: unknown } } };
+    code = body.error?.code ?? "";
+    issue = typeof body.error?.details?.issue === "string" ? body.error.details.issue : "";
+  } catch {
+    // Not JSON (a proxy error page, say): the status is enough.
+  }
+  return new ApiError(res.status, `${label} failed with ${res.status}`, code, issue);
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(path, {
-    headers: { "Content-Type": "application/json" },
-    ...init,
-  });
-  if (!res.ok) {
-    throw new ApiError(res.status, `${init?.method ?? "GET"} ${path} failed with ${res.status}`);
+  const label = `${init?.method ?? "GET"} ${path}`;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  let res: Response;
+  try {
+    res = await fetch(path, {
+      headers: { "Content-Type": "application/json" },
+      ...init,
+      signal: controller.signal,
+    });
+  } catch {
+    throw new ApiError(0, `${label} could not reach the API`);
+  } finally {
+    clearTimeout(timer);
   }
+  if (!res.ok) throw await errorFrom(res, label);
   return (await res.json()) as T;
 }
 
@@ -62,6 +118,19 @@ export const getCampaigns = () => request<Campaign[]>("/api/campaigns");
 export const getMetrics = () => request<Metrics>("/api/metrics");
 
 export const resetDemo = () => post<DemoResetResponse>("/api/demo/reset");
+
+/**
+ * `GET /api/health`: which routes serve their mock (`USE_MOCKS`, `MOCK_ROUTES`, `LIVE_ROUTES`).
+ * Not a DATA_SPEC contract, so the type lives here rather than in `types.ts`. Never carries a key.
+ */
+export interface Health {
+  status: string;
+  demo_mode: string;
+  use_mocks: boolean;
+  mocked_routes: Record<string, boolean>;
+}
+
+export const getHealth = () => request<Health>("/api/health");
 
 /**
  * Poll the result every second until `done`, calling `onUpdate` with each response.

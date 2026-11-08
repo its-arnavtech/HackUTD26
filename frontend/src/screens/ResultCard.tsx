@@ -1,9 +1,16 @@
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ChevronRight, LoaderCircle } from "lucide-react";
-import { getPrivacy, postAction } from "../api";
+import { failureOf, getPrivacy, postAction } from "../api";
 import { useData, useInboxItem, useResult } from "../hooks";
-import { EmptyState, MessageBubble, Notice, PrivacyFootnote, ResultCard as ResultCardView } from "../components";
+import {
+  LoadFailure,
+  MessageBubble,
+  Notice,
+  PrivacyFootnote,
+  ResultCard as ResultCardView,
+  type LoadFailureKind,
+} from "../components";
 import {
   actionDone,
   actionLabels,
@@ -18,10 +25,11 @@ import {
 } from "../present";
 import type { Action, ResultPoll } from "../types";
 
-export function ResultError({ onRetry }: { onRetry?: () => void }) {
+/** The check couldn't be read: offline, unknown message, too slow, or another error. Retry polls again. */
+export function ResultError({ failure, onRetry }: { failure?: LoadFailureKind; onRetry?: () => void }) {
   return (
     <div className="screen-pad">
-      <EmptyState error onRetry={onRetry} />
+      <LoadFailure failure={failure} onRetry={onRetry} retryLabel="Try the check again" />
     </div>
   );
 }
@@ -35,6 +43,7 @@ export function ResultView({
   done,
   busy = false,
   error = false,
+  failure,
   onAction,
   onDismissNotice,
   onTrail,
@@ -47,12 +56,13 @@ export function ResultView({
   done?: Action;
   busy?: boolean;
   error?: boolean;
+  failure?: LoadFailureKind;
   onAction?: (action: Action) => void;
   onDismissNotice?: () => void;
   onTrail?: () => void;
   onRetry?: () => void;
 }) {
-  if (error) return <ResultError onRetry={onRetry} />;
+  if (error || failure) return <ResultError failure={failure} onRetry={onRetry} />;
   const result = poll?.status === "done" ? poll.result : undefined;
   if (!poll || !result) {
     return (
@@ -100,7 +110,7 @@ export function ResultView({
 export default function ResultCard() {
   const { messageId = "" } = useParams();
   const navigate = useNavigate();
-  const { poll, error, retry } = useResult(messageId);
+  const { poll, failure, retry } = useResult(messageId);
   const item = useInboxItem(messageId);
   const { data: privacy } = useData(() => getPrivacy(messageId), [messageId]);
   const redacted = privacy ? redactedText(privacy) : undefined;
@@ -115,8 +125,12 @@ export default function ResultCard() {
       await postAction(messageId, action);
       setNotice(actionReceipts[action]);
       setDone(action);
-    } catch {
-      setNotice("That didn’t go through. Nothing was changed. Please try again.");
+    } catch (err) {
+      setNotice(
+        failureOf(err) === "not_wired"
+          ? "This action isn’t connected yet in this demo. Nothing was changed."
+          : "That didn’t go through. Nothing was changed. Please try again.",
+      );
     } finally {
       setBusy(false);
     }
@@ -130,7 +144,7 @@ export default function ResultCard() {
       notice={notice}
       done={done}
       busy={busy}
-      error={error}
+      failure={failure}
       onAction={(action) => void act(action)}
       onDismissNotice={() => setNotice("")}
       onTrail={() => navigate(`/trail/${encodeURIComponent(messageId)}`)}
