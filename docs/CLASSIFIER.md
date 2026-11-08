@@ -30,6 +30,8 @@ It returns `ClassifierOutput`: category, relative model score, top three and
 the baseline's score for the selected category. Scores after the validation
 bias are not calibrated scam probabilities. The API pipeline is owned by L9;
 this issue supplies the inference interface without editing that pipeline.
+G1 uses the trained model when the local artifact exists; otherwise it explicitly
+labels its existing baseline fallback and shows the train command.
 The trained object's `predict(list[Message]) -> list[str]` supports A13. A13's
 factory interface is `app.classifier.train:make_model`.
 

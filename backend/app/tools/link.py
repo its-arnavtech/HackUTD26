@@ -15,7 +15,6 @@ from typing import Any, Optional
 
 from rapidfuzz.distance import Levenshtein
 
-from app.agent.registry import ToolSpec
 from app.contracts import AgentInput, CheckLinkArgs, CheckLinkResult, ToolName, UrlInfo
 from app.integrations.rdap import domain_age_days, lookup_registration
 from app.tools.blocklist import load_blocklist
@@ -129,13 +128,3 @@ def check_link(
         final_redirect_domain=None,
         signals=signals,
     )
-
-
-# TODO(L5): call app.agent.registry.register(CHECK_LINK_SPEC) once L5's registry merges.
-CHECK_LINK_SPEC = ToolSpec(
-    name=ToolName.check_link,
-    description="Check a link from the message: official brand domain or look-alike, domain age, shortener, TLD and our scam-domain blocklist.",
-    args_model=CheckLinkArgs,
-    result_model=CheckLinkResult,
-    fn=check_link,
-)

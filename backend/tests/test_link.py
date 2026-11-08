@@ -3,7 +3,8 @@ from __future__ import annotations
 import pytest
 
 from app.contracts import CheckLinkArgs, CheckLinkResult
-from app.tools.link import CHECK_LINK_SPEC, check_link
+from app.agent.registry import get_tool
+from app.tools.link import check_link
 from tests.agent_input_factory import make_input
 
 
@@ -101,7 +102,8 @@ def test_signals_never_carry_instructions_or_full_links():
         assert "http" not in signal and "/" not in signal
 
 
-def test_spec_matches_contracts():
-    assert CHECK_LINK_SPEC.name.value == "check_link"
-    assert CHECK_LINK_SPEC.args_model is CheckLinkArgs
-    assert CHECK_LINK_SPEC.result_model is CheckLinkResult
+def test_registered_with_l5():
+    spec = get_tool("check_link")
+    assert spec.fn is check_link
+    assert spec.args_model is CheckLinkArgs
+    assert spec.result_model is CheckLinkResult

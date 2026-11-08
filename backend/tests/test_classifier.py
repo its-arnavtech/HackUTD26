@@ -195,3 +195,23 @@ def test_final_a13_run_uses_frozen_models_and_writes_both_metrics(corpus, model,
     report=cli.final_evaluation(path,final,metrics)
     assert report["status"]=="complete" and report["synthetic_strict_target_met"]
     assert final.exists() and metrics.exists() and metrics.with_name("metrics_details.json").exists()
+
+
+
+def test_missing_local_artifact_has_explicit_g1_baseline_fallback(monkeypatch):
+    from app.classifier import predict as inference
+    from scripts import run_scenario as rs
+    # Simulate a clean checkout without moving/deleting the real local artifact.
+    inference.get_model.cache_clear()
+    monkeypatch.setattr(inference, "MODEL_PATH", __import__("pathlib").Path("absent-l7-test-artifact.pkl"))
+    def baseline(text):
+        from app.contracts import ClassifierOutput
+        return ClassifierOutput(category="legit",score=0.5,top3=[("legit",0.5)])
+    run=rs.Run(scenario={},mode="check")
+    result=rs._first_available(run,"classifier",[
+        ("real",lambda:rs.trained_classifier("redacted",Features())),
+        ("baseline",lambda:baseline("redacted")),
+    ])
+    assert result.category=="legit" and run.stages[-1].source=="baseline"
+    assert "artifact missing" in run.stages[-1].note
+    inference.get_model.cache_clear()
