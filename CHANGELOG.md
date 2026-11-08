@@ -76,7 +76,6 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - Resumed by: <tool> from <tool>, if any
 ```
 
-_None yet._
 
 ---
 
@@ -94,9 +93,8 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 
 - 2026-11-07 19:29 · L3 · Claude Code (Opus 5.5, Lavanya) · #47 · `app/state.py`: in-memory SQLite `StateStore` (messages, runs, results, trail), `JobRunner` (queued, running, done on worker threads, context copied so logs keep `message_id`), `TrailWriter` as the agent's `on_trail` (`.add()` numbers steps); a new run (recovery) supersedes the old one; a crashed job ends `done` with an honest unsure result; non-mock inbox, message, result, clicked and reset routes use the store via `pipeline.pipeline_job`; 20 tests (104 pass) · follow-ups: L9 fills `run_pipeline` and reloads scenario messages on reset; L11 calls `store.set_was_this_you`
 - 2026-11-07 18:56 · L1 · Claude Code (Opus 5.5, Lavanya) · #42 · `integrations/cache.py`: `cached_call(service, request, fn)` with live, record and replay; key = SHA-256 of the canonical request (order-independent, secret field names dropped, optional `volatile` fields); fixtures at `data/fixtures/<service>/<key>.json`, written atomically; replay never calls out and raises `FixtureMissingError` on a miss; `decode=` rebuilds pydantic types; 21 tests (57 pass) · follow-ups: A2 (Nessie), A10 (RDAP) and L4 (Gemini) wrap their calls with `cached_call`; A4 already does
-- 2026-11-07 18:38 · L2 · Claude Code (Opus 5.5, Lavanya) · #39 · `create_app()` factory; settings validated at startup with clear messages (missing Nemotron key is an error only when a real route calls out in live/record); JSON logs carrying `message_id` (`app/logs.py`); one JSON error shape (`app/errors.py`); `GET /api/health` with integration modes; per-route mocks via `MOCK_ROUTES` / `LIVE_ROUTES`; 27 new tests (63 pass) · follow-ups: L3's runner must copy the context so logs keep `message_id`
 - 2026-11-07 18:46 · A6 · Cursor (Claude Opus 5.5, cloud agent) · #40 · CI (`pytest` on Python 3.11 and 3.12, `npm run build` on Node LTS, Windows smoke test of `dev.ps1`, no secrets); `scripts/dev.ps1` starts both servers on the folder's `.env` ports; `docs/WORKTREES.md`; `numpy` pinned to 2.4.6 for Python 3.11 · follow-ups: make CI required on `main` in branch protection; tick #7's checkboxes (cloud agent can't edit issues)
-
+- 2026-11-07 18:38 · L2 · Claude Code (Opus 5.5, Lavanya) · #39 · `create_app()` factory; settings validated at startup with clear messages (missing Nemotron key is an error only when a real route calls out in live/record); JSON logs carrying `message_id` (`app/logs.py`); one JSON error shape (`app/errors.py`); `GET /api/health` with integration modes; per-route mocks via `MOCK_ROUTES` / `LIVE_ROUTES`; 27 new tests (63 pass) · follow-ups: L3's runner must copy the context so logs keep `message_id`
 - 2026-11-07 18:14 · setup (issues) · Claude Code (Opus 5.5) · direct to main · Labels, milestones (POC, MVP, Demo) and all 37 issues #1 to #37 from POC_MVP section 13 (A* and G* assigned to its-arnavtech, L* unassigned), dependencies linked by number, pinned tracker #38 · follow-ups: add Lavanya as a collaborator
 - 2026-11-07 18:11 · setup (folders) · Claude Code (Opus 5.5) · local only · Worktrees `C:\HackUTD26-cc` (8001/5174), `C:\HackUTD26-codex` (8002/5176), `C:\HackUTD26-design` (8003/5175) detached at origin/main, each with its own `.env`; main stays on 8000/5173 · follow-ups: keys were skipped, so paste them into each folder's `.env`
 - 2026-11-07 18:06 · setup (scaffold) · Claude Code (Opus 5.5) · direct to main (0772b5d, a35986e) · Backend contracts, config, mock API with simulated progress, stubs naming their issue, tests (36 pass); Vite + React + TS + Tailwind shell with `types.ts`, `api.ts` and placeholder screens (build passes); data files, `.env.example`, README setup. Includes the cff46b6 plan changes (DeepSeek vars, Bolt E4B default, taxonomy placeholder, `data/generated/`, A21 script stub) · follow-ups: none
@@ -131,7 +129,6 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 - 2026-11-07 18:55 · A2 (Nessie client and seed, #3) moves from Claude Code to Cursor: Cursor was idle and A11 needs A2, while Claude Code's queue is long. Branch commands now use `--no-track` plus `git push -u` (AGENTS.md section 4).
 - 2026-11-07 18:46 · `numpy` stays on 2.4.x while Python 3.11 is supported: 2.5.x has no 3.11 wheels. CI tests 3.11 and 3.12, so a dependency bump that drops 3.11 fails CI.
 - 2026-11-07 18:46 · Per-issue branches use `git switch --no-track -c <branch> origin/main`, then `git push -u origin <branch>`. Plain `-c <branch> origin/main` tracks `origin/main`, so `git push` fails and `git pull` pulls `main` (`docs/WORKTREES.md`).
-
 - 2026-11-07 18:20 · Arnav's Claude Code and Codex (connections) share the remote branch `arnav-shared` (AGENTS.md section 4, exception). Cursor and the Codex design session keep a branch per issue.
 - 2026-11-07 18:06 · Scaffold was run by Claude Code instead of Cursor.
 - 2026-11-07 18:05 · Frontend design moves from 6.1 Sol to a second Codex session running GPT 6 Astra (`agent:design`). It starts now in a design lab outside the repo (`prompts/codex-00-design-lab.md`) and ports the prototype into `frontend/` for A7 and A14 to A16.
