@@ -159,6 +159,32 @@ export const confirmTransaction = (ref: string, wasMe: boolean) =>
 export const postAction = (messageId: string, action: Action) =>
   post<ActionResponse>("/api/actions", { message_id: messageId, action });
 
+/**
+ * L16 trusted-contact call. Declared here, not in `types.ts`, because it isn't a POC_MVP 7.1 contract.
+ * `alert_text` is the content-free alert; render it as plain text only (never a link).
+ */
+export interface AlertStatus {
+  message_id: string;
+  state: "calling" | "done";
+  call_outcome: "answered" | "voicemail" | "no_answer" | "failed" | null;
+  email_sent: boolean;
+  simulated: boolean;
+  called_at: string | null;
+  email_sent_at: string | null;
+  alert_text: string;
+  detail: string | null;
+}
+
+export type AlertActionResponse = ActionResponse & { alert?: AlertStatus };
+
+/** "Alert my trusted contact". Only call after the customer taps. */
+export const postAlertAction = (messageId: string) =>
+  post<AlertActionResponse>("/api/actions", { message_id: messageId, action: "alert_trusted_contact" });
+
+/** Rejects with an ApiError whose `notFound` is true when no alert exists for the message. */
+export const getAlertStatus = (messageId: string) =>
+  request<AlertStatus>(`/api/trusted-contact/alerts/${encodeURIComponent(messageId)}`);
+
 export const getPrivacy = (messageId: string) =>
   request<PrivacyView>(`/api/privacy/${encodeURIComponent(messageId)}`);
 

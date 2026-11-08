@@ -1258,3 +1258,8 @@
 .signin-problem { margin-top: 16px; padding: 12px 14px; background: var(--color-scam-bg); color: var(--color-scam); border-left: 3px solid var(--color-scam-bar); font-size: 15px; }
 .account-line { margin-top: 18px; font-size: 14px; color: var(--color-muted); }
 .account-line > div { display: flex; flex-wrap: wrap; gap: 4px 14px; }
+
+/* L16 trusted-contact call status under the recovery checklist */
+.trusted-alert { display: grid; gap: 12px; margin: 4px 0 24px; }
+.alert-text { display: block; margin-top: 6px; font-style: italic; overflow-wrap: anywhere; }
+.alert-text::before, .alert-text::after { content: none; }

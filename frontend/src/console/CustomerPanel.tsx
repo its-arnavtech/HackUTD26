@@ -12,6 +12,7 @@ import {
   recoverySteps,
 } from "../present";
 import type { Action, InboxItem, ResultPoll, Verdict } from "../types";
+import { TrustedAlertConsole } from "../trustedAlert";
 
 const verdictIcon: Record<Verdict, typeof ShieldAlert> = {
   likely_scam: ShieldAlert,
@@ -173,6 +174,7 @@ export function CustomerPanel({
               );
             })}
           </ol>
+          <TrustedAlertConsole messageId={message.message_id} />
           <p className="cx-muted">We never move money for you.</p>
         </article>
       )}
