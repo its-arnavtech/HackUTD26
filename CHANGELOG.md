@@ -78,13 +78,15 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 ### A6 Dev infrastructure: CI, dev scripts, worktrees (#7)
 - Agent: Cursor (Claude Opus 5.5, cloud agent) · Person: Arnav · Folder: Cursor cloud VM (`/workspace`) · Branch: `cursor/a6-dev-infra-55c7`
-- Started: 2026-11-07 18:39 · Last checkpoint: 2026-11-07 18:39
+- Started: 2026-11-07 18:39 · Last checkpoint: 2026-11-07 18:50
 - Done so far:
   - Claimed
-- Next step (exact): write `.github/workflows/ci.yml`, then `scripts/dev.ps1`, then `docs/WORKTREES.md`
-- Files touched: `CHANGELOG.md`
+  - `.github/workflows/ci.yml`: pytest on Python 3.11 and 3.12, `npm ci && npm run build` on Node LTS, `DEMO_MODE=replay`, `USE_MOCKS=true`, no secrets
+  - `numpy` pinned to 2.4.6 (2.5.x has no Python 3.11 wheels); 36 tests pass on 3.11.18 and 3.12.3
+- Next step (exact): write `scripts/dev.ps1`, then `docs/WORKTREES.md`
+- Files touched: `CHANGELOG.md`, `.github/workflows/ci.yml`, `backend/requirements.txt`
 - How to run or test: `python -m pytest` in `backend/`, `npm run build` in `frontend/`
-- Notes and gotchas: branch name follows the cloud agent's `cursor/...-55c7` naming instead of `a6-dev-infra`
+- Notes and gotchas: branch name follows the cloud agent's `cursor/...-55c7` naming instead of `a6-dev-infra`. Issue comments can't be posted from the cloud agent (read-only `gh`), so checkpoints live here and in the PR.
 - Resumed by: none
 
 ---
