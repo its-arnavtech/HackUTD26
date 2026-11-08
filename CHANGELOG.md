@@ -47,7 +47,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A14 | Result card, "How we checked" and privacy panel | Arnav | Cursor (covering for Codex design) | MVP | A7 | done | #28 · PR #53 |
 | A15 | Recovery UI | Arnav | Claude Code (covering for Codex design) | MVP | A14 | done | #29 · PR #55 (#54 closed as superseded) |
 | A16 | Consent screen, campaign view and accuracy page | Arnav | Claude Code (covering for Codex design) | MVP | A7 | done | #30 · PR #55 |
-| A17 | Frontend on the live API | Arnav | Cursor | MVP | A14, A15, A16, L9 | todo | #31 |
+| A17 | Frontend on the live API | Arnav | Claude Code (covering for Cursor) | MVP | A14, A15, A16, L9 | in progress (`a17-live-api`) | #31 |
 | A18 | End-to-end scenario tests | Arnav | Claude Code | MVP | G1 | in progress | #32 · `arnav-shared` |
 | G2 | Gate: all three scenarios end to end in the app | Both | any | MVP | A17, A18, L10, L11 | todo | #33 |
 | A19 | Replay fixtures and backup video | Arnav | Claude Code | Demo | G2 | todo | #34 |
@@ -128,7 +128,15 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - Notes and gotchas: the synthetic world patches `nessie_tools.load_seed` and `nessie_tools.client_from_settings` (their defaults bind `SEED_PATH` at import) and `cache.FIXTURES_DIR`. RDAP stays in replay, where an unrecorded lookup means "age unknown". The stand-in's reason says "imitates capitalone.com": allowed because it's the official domain; a scam domain in the reason fails the test.
 
 
-
+### A17 Frontend on the live API (#31)
+- Agent: Claude Code (Opus 5.5, covering for Cursor) · Person: Arnav · Folder: `C:\HackUTD26` · Branch: `a17-live-api` (stacked on `a16-consent-campaign-accuracy`, PR #55)
+- Started: 2026-11-07 23:40 · Last checkpoint: 2026-11-07 23:40
+- Done so far:
+  - Claimed
+- Next step (exact): `api.ts` parses the backend's one error shape (`errors.py`) into `ApiError` (status, code, issue) and adds a request timeout and `getHealth()`; `useData` gains loading and retry; each screen gets loading, error and retry states that say "not connected yet" for a 501 and "not found" for a 404
+- Files touched: `CHANGELOG.md`
+- How to run or test: `cd frontend; npm test; npm run build`. Live: `USE_MOCKS=false` in `.env`, then `scripts\dev.ps1`
+- Notes and gotchas: the backend already falls back per route (`USE_MOCKS`, `MOCK_ROUTES`, `LIVE_ROUTES`). With mocks off, inbox, messages, result, clicked and reset run real code; confirm (L11), actions (L9), privacy (L6), campaigns (A12) and metrics (A13) return 501 until wired. The live store starts empty until L9 seeds the scenario messages.
 
 ---
 
