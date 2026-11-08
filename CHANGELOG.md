@@ -50,7 +50,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A16 | Consent screen, campaign view and accuracy page | Arnav | Claude Code (covering for Codex design) | MVP | A7 | done | #30 · PR #55 |
 | A17 | Frontend on the live API | Arnav | Cursor | MVP | A14, A15, A16, L9 | in progress | #31 · a17-live-api (no PR yet; left with Claude Code) |
 | A18 | End-to-end scenario tests | Arnav | Codex | MVP | G1 | done | #32 · PR #64 |
-| G2 | Gate: all three scenarios end to end in the app | Both | Codex | MVP | A17, A18, L10, L11 | in review | #33 · codex/g2-replay-only (all flows passed) |
+| G2 | Gate: all three scenarios end to end in the app | Both | Codex | MVP | A17, A18, L10, L11 | done | #33 · PR #69; live/record/offline UI acceptance passed |
 | A19 | Replay fixtures and backup video | Arnav | Codex | Demo | G2 | in progress | #34 · CLI + app fixtures verified; video excluded by user |
 | A20 | Capital One and Best Design pitch | Arnav | any | Demo | G2 | todo | #35 |
 | L12 | NVIDIA and T-Mobile pitch, Devpost | Lavanya | Claude Code | Demo | G2 | todo | #36 |
@@ -61,15 +61,6 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 ## In progress
 
 <!-- One block per active issue. Copy the template, keep it current at every checkpoint. -->
-
-### G2 App gate (#33), implementation/testing only
-- Agent: Codex (GPT-6), Arnav; C:/HackUTD26/.worktrees/wrap-up; codex/g2-replay-only.
-- Started / checkpoint: 2026-11-08 00:53; prior isolated A17 candidate on codex/g2-app-gate.
-- Done: All three actual app flows passed record/live using hosted Nemotron, synthetic Nessie and frozen L7 v2, then passed with outbound DNS/sockets blocked. Same gate passed on main-based frontend; no A17 implementation commits in this PR. Bank/bill plans differ, $900 txn_28 at Unknown Payee/17 min, confirm only after tap, bill paid Nov 1/$0 due; privacy, real campaigns/accuracy and browser console checks pass. Final combined validation: 688 backend tests, 50 frontend tests/build, explicit live app gate and keyless outbound-blocked replay all pass; A17 candidate separately passed 65 frontend tests/build.
-- Next: CI/merge #69, which integrates Cursor reset-generation fix #68 while retaining already-merged test fix #67. Core flows are verified; G2 issue completion awaits the A17 owner PR/merge. A17 stays with its owner. Presentation/video and Gemini access excluded by latest user steering.
-- Files: scripts/serve_app_gate.py, frontend/gates/app.pw.ts, gate config/package script, data/fixtures/app_gate, eval/app_gate_*.json, docs/APP_GATE.md, docs/TESTING.md, CHANGELOG.md.
-- Commands: GATE_MODE=record or replay; npm run test:app; E2E_PYTHON is local 3.12 venv. Ports 8022/5189.
-- Gotchas: Ignored local v2 artifact hash 824af47739cee1d63e3828b3978a01b946bdf324bf5b9c9046334e34bd747b8e required for replay. Optional public search unavailable. No held-out evaluation/training changes. Fixture secret scan passed.
 
 
 ### L4 Gemini live citation gate (#12), blocked; L10 implementation finished in #66
@@ -93,7 +84,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - Resumed by: Cursor (Grok 4.7, cloud) from Codex, for the runbook and offline CLI check only. Video and live app replay are not done. No live keys in this environment.
 
 ### G2 Gate: all three scenarios in the app (#33), prior Cursor checkpoint
-- Integration update: PR #69 now supplies the missing real app recordings and observed live/offline gate. This prior checkpoint is preserved as history. A17 remains with its owner; full gate issue completion awaits their PR/merge. PR #67 already supplies the retained recovery-test synchronization fix.
+- Integration update: PR #69 now supplies the missing real app recordings and observed live/offline gate. This prior checkpoint is preserved as history. G2 live/replay acceptance is now observed; Arnav explicitly requested finishing and merging G2 once CI is green. A17 remains separately with its owner. PR #67 already supplies the retained recovery-test synchronization fix.
 - Agent: Cursor (Grok 4.7, cloud) · Person: Arnav · Folder: `/agent/repos/HackUTD26-cleanup` · Branch: `cursor/demo-readiness-f47e`
 - Started: 2026-11-08 00:42 · Last checkpoint: 2026-11-08 00:50
 - Done so far:
@@ -144,7 +135,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 ## Done log
 
-- 2026-11-08 01:01 · G2 technical evidence / A19 fixtures / reset safety · Codex (GPT-6) with Cursor reset fix · #69 (includes #68) · All three UI flows pass live, record, and offline replay with frozen L7 v2; actual $900 purchase/confirmation, bill paid/$0 due, privacy/campaigns/accuracy, no browser errors; reset-generation regression integrated; 688 backend and 50 frontend tests/build pass · formal #33 signoff awaits A17 owner PR/merge; video/presentation excluded by user.
+- 2026-11-08 01:01 · G2 technical evidence / A19 fixtures / reset safety · Codex (GPT-6) with Cursor reset fix · #69 (includes #68) · All three UI flows pass live, record, and offline replay with frozen L7 v2; actual $900 purchase/confirmation, bill paid/$0 due, privacy/campaigns/accuracy, no browser errors; reset-generation regression integrated; 688 backend and 50 frontend tests/build pass · G2 finished per Arnav explicit request; A17 remains separately with its owner; video/presentation excluded by user.
 
 - 2026-11-08 00:34 · A18 follow-up / L9 CI unblock · Codex (GPT-6) · #67 · Recovery tests clear the prior callback and wait for the current poller before sending a fake result; fixes CI race seen in #65 while preserving A17 application code; 50 frontend tests and build pass.
 - 2026-11-08 00:34 · L10 (L4 client ready, live P3 blocked) · Codex (GPT-6) · #66 · Fixed four-field Gemini lookup, cached Google grounding, support/chunk-only facts, ranking/stale/contact rules, model-argument isolation, safe smoke script; 14 new tests, combined backend 650 passed/no skips · follow-up: #12 needs usable generation quota (3.5/3.5 Lite 429, listed 2.5 404); no Gemini-backed demo claim until a cited live pass.
@@ -200,6 +191,8 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 ---
 
 ## Decisions
+
+- 2026-11-08 01:02 · Arnav explicitly requests finishing G2 and merging #69 once CI is green. All three actual UI scenarios passed live, record and outbound-blocked replay on main-based frontend; G2 is finished on that observed acceptance. A17 owner branch remains separate and unchanged.
 
 - 2026-11-08 00:42 · Demo reset bumps a generation on the in-memory store. A job may write its result and trail only while its run is still current in that generation. Privacy records from a superseded run in the same generation stay (the data was sent). After reset, a reseeded message can reuse the id and run number; the old job's generation no longer matches, so its result, trail, redaction and privacy writes are dropped. Public reports stay unavailable until PR #66 merges: `public_scam_reports` on main is still `NotImplementedError`, and the A18 replay profile reports that search as unavailable on purpose.
 

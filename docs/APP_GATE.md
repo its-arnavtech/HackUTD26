@@ -12,8 +12,7 @@ changed. Gate tooling is submitted separately so A17 stays with its owner.
 
 The same gate also passed directly on the main-based frontend in record mode
 and offline replay, then passed in explicit `DEMO_MODE=live` with recording
-disabled. The gate PR contains no A17 implementation commits. Formal G2 issue
-completion still waits for the A17 owner's PR/merge.
+disabled. The gate PR contains no A17 implementation commits. G2 live/replay acceptance is complete. A17 remains a separate owner issue.
 
 ## Run the gate
 
