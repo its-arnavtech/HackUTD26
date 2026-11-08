@@ -78,7 +78,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 ### A2 Nessie client and idempotent seed script (#3)
 - Agent: Cursor (Claude Opus 5.5, cloud agent) · Person: Arnav · Folder: Cursor cloud VM (`/workspace`) · Branch: `cursor/a2-nessie-client-55c7`
-- Started: 2026-11-07 19:02 · Last checkpoint: 2026-11-07 20:19
+- Started: 2026-11-07 19:02 · Last checkpoint: 2026-11-07 20:39
 - Done so far:
   - Claimed (CHANGELOG only: the cloud agent can't comment on issues)
   - Checked real field names with read-only calls (no `NESSIE_API_KEY` here; GETs answer with any key). Differences from DATA_SPEC 6 are in Decisions.
@@ -87,7 +87,8 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
   - 13 tests against an in-memory fake Nessie shaped like the live API (`tests/fake_nessie.py`); suite passes on 3.11 and 3.12 and in replay
   - PR #44 open
   - 2026-11-07 20:19: rebased onto `main` (L1, L2, L3, #41) and dropped the temporary cache fallback; record-then-replay test checks the key never reaches a fixture
-- Next step (exact): Arnav puts `NESSIE_API_KEY` in `.env` (or in Cursor secrets so the cloud agent can do it), then from `backend/` runs `python -m scripts.seed_nessie --dry-run`, `python -m scripts.seed_nessie` twice (the second run must print `Created 0`), and commits `data/nessie_seed.json`. If a POST is rejected, fix the body in `scripts/seed_nessie.py`.
+  - 2026-11-07 20:39: fixed the two bugs Claude Code's live dry run found (PR #44 comment): a list GET answering 404 "No ... found" now returns `[]` (other 404s still raise); purchase amounts are whole dollars equal to what live Nessie already stores (it drops cents, so matching never found them and every run duplicated all 24). Added `--dedupe` (keeps one purchase per description, date and amount on Linda's accounts, deletes the rest with `DELETE /purchases/{id}`; with `--dry-run` it only lists them). `tests/fake_nessie.py` now truncates purchase amounts and answers 404 for an empty transfer list, like live. 24 A2 tests
+- Next step (exact): Claude Code (has the key) runs from `backend/`: `python -m scripts.seed_nessie --dry-run --dedupe` (expect: would create the 4 transfers, would delete 24 duplicate purchases), then `python -m scripts.seed_nessie --dedupe` (deletes 24, creates 4, writes `data/nessie_seed.json`), then `python -m scripts.seed_nessie` (must print `Created 0`), and commits `data/nessie_seed.json`. If a POST or DELETE is rejected, fix it in `scripts/seed_nessie.py`. Then Cursor finishes A2 and rebases #45 and #46.
 - Files touched: `backend/app/integrations/nessie.py`, `backend/scripts/seed_nessie.py`, `backend/tests/fake_nessie.py`, `backend/tests/test_nessie_client.py`, `backend/tests/test_seed_nessie.py`, `.env.example`, `CHANGELOG.md`
 - How to run or test: `python -m pytest` in `backend/`; the seed needs `NESSIE_API_KEY` in `.env`: `python -m scripts.seed_nessie`
 - Notes and gotchas: never write to Nessie with a made-up key. Nessie dates have no time, so the planted transfer's 09:31 time lives in the manifest. A11 should limit check mode to activity before `received_at`, so scenario 1 (check) doesn't see the transfer that scenario 2 (recovery) finds.
@@ -138,6 +139,8 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
   - Dates are `YYYY-MM-DD` with no time.
   - Transfer listings return `id` (not `_id`) and **no `payer_id` or `payee_id`**. The seed manifest supplies payer, payee and time.
   - GETs answer with any key, so the enterprise endpoints expose other teams' data. Never read or show it.
+  - An empty list answers 404 "No transfers found for this account" (found by Claude Code's live run); the client returns `[]`.
+  - Purchase amounts are stored as whole dollars (49.30 reads back as 49), so the seed plans whole-dollar purchases.
 - 2026-11-07 18:58 · A10: `data/brands.json` lists only channels found on the brand's own pages. T-Mobile's pages don't publish its texting numbers, so `check_sender` reports `official_channels_known: false` for T-Mobile until a T-Mobile page or mentor confirms them. `check_link` never visits a link (`final_redirect_domain` stays null). The demo scenario domains aren't registered, so live RDAP reports "no registration record found" for them rather than an age.
 - 2026-11-07 18:58 · A10: until A1 saves `data/splits/train.jsonl`, the blocklist is built from `data/provisional/train.jsonl` (18 hand-written synthetic messages, no scenario domains). The builder refuses any file that isn't a train split and switches to A1's split automatically.
 

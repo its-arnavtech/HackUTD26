@@ -100,3 +100,66 @@ def test_main_reports_missing_key(monkeypatch, tmp_path, capsys):
     assert seed_nessie.main(["--out", str(tmp_path / "seed.json")]) == 1
     assert "NESSIE_API_KEY" in capsys.readouterr().err
     assert not (tmp_path / "seed.json").exists()
+
+
+def test_purchase_amounts_are_whole_dollars():
+    assert all(float(p.amount).is_integer() for p in seed_nessie.purchase_plan())
+
+
+def test_second_run_creates_nothing_when_nessie_truncates_amounts():
+    fake = FakeNessie(truncate_purchase_amounts=True)
+    seed_nessie.seed(client(fake))
+    posts = len(fake.posts)
+    assert seed_nessie.seed(client(fake)).created == []
+    assert len(fake.posts) == posts
+
+
+def duplicate_every_purchase(fake: FakeNessie, manifest: dict) -> int:
+    """Recreate the live state: every planned purchase stored twice."""
+    c = client(fake)
+    copies = 0
+    for account in ("linda_checking", "linda_credit"):
+        account_id = manifest["accounts"][account]
+        for p in list(fake.children[account_id]["purchases"]):
+            c.create_purchase(account_id, {k: p[k] for k in ("merchant_id", "medium", "purchase_date", "amount", "status", "description")})
+            copies += 1
+    return copies
+
+
+def purchase_keys(fake: FakeNessie, manifest: dict) -> list[tuple]:
+    return sorted(
+        (p["description"], p["purchase_date"], p["amount"])
+        for account in ("linda_checking", "linda_credit")
+        for p in fake.children[manifest["accounts"][account]]["purchases"]
+    )
+
+
+def test_dedupe_keeps_one_purchase_per_key_and_deletes_the_rest():
+    fake = FakeNessie()
+    first = seed_nessie.seed(client(fake))
+    planned = len(seed_nessie.purchase_plan())
+    assert duplicate_every_purchase(fake, first.manifest) == planned
+
+    report = seed_nessie.seed(client(fake, first.manifest), dedupe=True)
+    assert report.created == []
+    assert len(report.deleted) == planned
+    keys = purchase_keys(fake, first.manifest)
+    assert len(keys) == planned == len(set(keys))
+    assert report.manifest["purchases"] == first.manifest["purchases"]
+    assert set(report.manifest["purchases"].values()) <= {p["_id"] for a in fake.children.values() for p in a["purchases"]}
+
+    again = seed_nessie.seed(client(fake, first.manifest), dedupe=True)
+    assert again.created == [] and again.deleted == []
+
+
+def test_dedupe_dry_run_and_no_flag_delete_nothing():
+    fake = FakeNessie()
+    first = seed_nessie.seed(client(fake))
+    duplicate_every_purchase(fake, first.manifest)
+    before = purchase_keys(fake, first.manifest)
+
+    dry = seed_nessie.seed(client(fake), dry_run=True, dedupe=True)
+    assert len(dry.deleted) == len(seed_nessie.purchase_plan())
+    assert seed_nessie.seed(client(fake)).deleted == []
+    assert purchase_keys(fake, first.manifest) == before
+    assert not any(r.method == "DELETE" for r in fake.requests)

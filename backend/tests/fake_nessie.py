@@ -1,7 +1,9 @@
 """In-memory Nessie behind an httpx MockTransport, shaped like the live API (checked 2026-11-07).
 
 Like the real service, POSTs answer `{"code", "message", "objectCreated"}`, IDs are
-UUIDs, and transfer listings carry `id` but no `payer_id` or `payee_id`.
+UUIDs, transfer listings carry `id` but no `payer_id` or `payee_id`, an empty
+transfer list answers 404 "No transfers found for this account", and purchase
+amounts are stored as whole dollars (49.30 reads back as 49).
 """
 
 from __future__ import annotations
@@ -18,7 +20,9 @@ API_KEY = "test-key-not-real"
 
 
 class FakeNessie:
-    def __init__(self) -> None:
+    def __init__(self, *, truncate_purchase_amounts: bool = True, empty_transfers_404: bool = True) -> None:
+        self.truncate_purchase_amounts = truncate_purchase_amounts
+        self.empty_transfers_404 = empty_transfers_404
         self.customers: dict[str, dict[str, Any]] = {}
         self.accounts: dict[str, dict[str, Any]] = {}
         self.merchants: dict[str, dict[str, Any]] = {}
@@ -64,6 +68,8 @@ class FakeNessie:
                 return httpx.Response(404, json={"code": 404, "message": "Account not found"})
             items = self.children[account_id][kind]
             if method == "GET":
+                if kind == "transfers" and not items and self.empty_transfers_404:
+                    return httpx.Response(404, json={"code": 404, "message": "No transfers found for this account"})
                 if kind == "transfers":
                     keep = ("amount", "description", "status", "transaction_date")
                     return httpx.Response(200, json=[{"id": t["_id"], **{k: t.get(k) for k in keep}} for t in items])
@@ -71,12 +77,22 @@ class FakeNessie:
             obj = {"_id": str(uuid.uuid4()), **body}
             if kind == "purchases":
                 obj |= {"type": "merchant", "payer_id": account_id}
+                if self.truncate_purchase_amounts and "amount" in obj:
+                    obj["amount"] = int(obj["amount"])
             if kind == "transfers":
                 obj |= {"type": "p2p", "payer_id": account_id}
             if kind == "bills":
                 obj |= {"account_id": account_id, "creation_date": "2026-11-07"}
             items.append(obj)
             return self._created(kind[:-1], obj)
+
+        if m := re.fullmatch(r"/purchases/([^/]+)", path):
+            for kinds in self.children.values():
+                for purchase in kinds["purchases"]:
+                    if purchase["_id"] == m.group(1) and method == "DELETE":
+                        kinds["purchases"].remove(purchase)
+                        return httpx.Response(202, json={"code": 202, "message": "Purchase deleted."})
+            return httpx.Response(404, json={"code": 404, "message": "Purchase not found"})
 
         if path == "/merchants":
             if method == "GET":

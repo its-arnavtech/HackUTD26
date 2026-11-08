@@ -5,6 +5,8 @@ the live API on 2026-11-07 (DATA_SPEC.md section 6, differences in CHANGELOG
 Decisions) and are normalized here, not in the tools:
 
 - Some objects come back with `id` instead of `_id`; both become `_id`.
+- A list GET with nothing in it answers 404 "No ... found"; that becomes `[]`.
+  Any other 404 still raises.
 - Transfers listed under an account carry no `payer_id` or `payee_id`, and dates
   have no time of day. Both are filled in from `data/nessie_seed.json`, which the
   seed script writes, so the tools see the DATA_SPEC fields plus `at`.
@@ -17,6 +19,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 from pathlib import Path
 from typing import Any, Optional
 
@@ -33,6 +36,9 @@ TIMEOUT_S = 15.0
 
 # Plain http on this host answers 502 (checked 2026-11-07); https works.
 _INSECURE_HOST = "http://api.nessieisreal.com"
+
+# An empty list comes back as 404 "No transfers found for this account" (checked 2026-11-07).
+_EMPTY_LIST = re.compile(r"\bNo \w[\w ]* found\b", re.IGNORECASE)
 
 
 class NessieError(RuntimeError):
@@ -76,24 +82,26 @@ class NessieClient:
 
     # -- transport ---------------------------------------------------------
 
-    def _send(self, method: str, path: str, body: dict[str, Any] | None) -> Any:
+    def _send(self, method: str, path: str, body: dict[str, Any] | None, *, is_list: bool = False) -> Any:
         try:
             response = self._http.request(method, self.base_url + path, params={"key": self._api_key}, json=body)
         except httpx.HTTPError as exc:
             raise NessieError(f"{method} {path}: {type(exc).__name__}") from None
+        if is_list and response.status_code == 404 and _EMPTY_LIST.search(response.text):
+            return []
         if response.status_code >= 400:
             raise NessieError(f"{method} {path}: HTTP {response.status_code} {response.text[:200]}")
         return response.json() if response.content else None
 
-    def _request(self, method: str, path: str, body: dict[str, Any] | None = None) -> Any:
+    def _request(self, method: str, path: str, body: dict[str, Any] | None = None, *, is_list: bool = False) -> Any:
         request = {"method": method, "path": path, "body": body}
         try:
-            return cached_call("nessie", request, lambda: self._send(method, path, body), mode=self.mode)
+            return cached_call("nessie", request, lambda: self._send(method, path, body, is_list=is_list), mode=self.mode)
         except FixtureMissingError:
             raise NessieReplayMiss(f"no recorded Nessie response for {method} {path}") from None
 
     def _get_list(self, path: str) -> list[dict[str, Any]]:
-        data = self._request("GET", path)
+        data = self._request("GET", path, is_list=True)
         return [_normalize(item) for item in data or []]
 
     def _create(self, path: str, body: dict[str, Any]) -> dict[str, Any]:
@@ -122,6 +130,9 @@ class NessieClient:
 
     def create_purchase(self, account_id: str, body: dict[str, Any]) -> dict[str, Any]:
         return self._create(f"/accounts/{account_id}/purchases", body)
+
+    def delete_purchase(self, purchase_id: str) -> None:
+        self._request("DELETE", f"/purchases/{purchase_id}")
 
     def get_transfers(self, account_id: str) -> list[dict[str, Any]]:
         return [self._with_transfer_details(t, account_id) for t in self._get_list(f"/accounts/{account_id}/transfers")]

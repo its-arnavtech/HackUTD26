@@ -12,6 +12,7 @@ creates nothing.
 Run from `backend/` with NESSIE_API_KEY in .env:
     python -m scripts.seed_nessie            # create what's missing, write the manifest
     python -m scripts.seed_nessie --dry-run  # list what would be created
+    python -m scripts.seed_nessie --dedupe   # also delete duplicate purchases left by earlier runs
 """
 
 from __future__ import annotations
@@ -93,14 +94,19 @@ class TransferPlan:
 
 
 def purchase_plan() -> list[PurchasePlan]:
-    """About 30 days of ordinary purchases, ending the day before the message."""
+    """About 30 days of ordinary purchases, ending the day before the message.
+
+    Amounts are whole dollars because Nessie drops the cents of a purchase (49.30
+    reads back as 49), and a planned amount must equal the stored one to be found
+    again. They are the values earlier runs already stored, so live data matches.
+    """
     schedule = [
         # merchant, account, every n days, first offset, amounts (cycled), description
-        ("grocery", "linda_checking", 4, 1, [64.12, 58.40, 71.95, 49.30], "Groceries"),
-        ("coffee", "linda_credit", 3, 0, [5.75, 6.25], "Coffee"),
-        ("fuel", "linda_credit", 7, 2, [42.10, 39.85], "Fuel"),
-        ("pharmacy", "linda_checking", 30, 12, [18.99], "Pharmacy"),
-        ("streaming", "linda_credit", 30, 5, [15.49], "Streaming subscription"),
+        ("grocery", "linda_checking", 4, 1, [64, 58, 71, 49], "Groceries"),
+        ("coffee", "linda_credit", 3, 0, [5, 6], "Coffee"),
+        ("fuel", "linda_credit", 7, 2, [42, 39], "Fuel"),
+        ("pharmacy", "linda_checking", 30, 12, [18], "Pharmacy"),
+        ("streaming", "linda_credit", 30, 5, [15], "Streaming subscription"),
     ]
     plans = []
     for merchant, account, every, offset, amounts, description in schedule:
@@ -127,6 +133,7 @@ def transfer_plan() -> list[TransferPlan]:
 class SeedReport:
     created: list[str] = field(default_factory=list)
     found: list[str] = field(default_factory=list)
+    deleted: list[str] = field(default_factory=list)
     manifest: dict[str, Any] = field(default_factory=dict)
 
 
@@ -140,7 +147,9 @@ def _money(value: Any) -> float:
     return round(float(value), 2)
 
 
-def seed(client: NessieClient, *, dry_run: bool = False) -> SeedReport:
+def seed(client: NessieClient, *, dry_run: bool = False, dedupe: bool = False) -> SeedReport:
+    """Create what's missing. With `dedupe`, also delete extra copies of a purchase
+    (same description, date and amount) on Linda's accounts, keeping the first one Nessie lists."""
     report = SeedReport()
 
     def ensure(label: str, existing: dict[str, Any] | None, create) -> str | None:
@@ -171,9 +180,15 @@ def seed(client: NessieClient, *, dry_run: bool = False) -> SeedReport:
     for plan in purchase_plan():
         account_id = accounts[plan.account]
         if account_id and plan.account not in seen_purchases:
-            seen_purchases[plan.account] = {
-                (p.get("description"), p.get("purchase_date"), _money(p.get("amount", 0))): p for p in client.get_purchases(account_id)
-            }
+            seen_purchases[plan.account] = {}
+            for p in client.get_purchases(account_id):
+                key = (p.get("description"), p.get("purchase_date"), _money(p.get("amount", 0)))
+                if key not in seen_purchases[plan.account]:
+                    seen_purchases[plan.account][key] = p
+                elif dedupe:
+                    report.deleted.append(f"purchase {p['_id']} ({key[0]}, {key[1]}, {key[2]:g})")
+                    if not dry_run:
+                        client.delete_purchase(p["_id"])
         existing = seen_purchases.get(plan.account, {}).get((plan.description, plan.day.isoformat(), _money(plan.amount)))
         body = {
             "merchant_id": merchants[plan.merchant],
@@ -239,12 +254,15 @@ def write_manifest(manifest: dict[str, Any], path: Path = SEED_PATH) -> None:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Seed Nessie for the SentinelAI demo (idempotent).")
     parser.add_argument("--dry-run", action="store_true", help="list what would be created; change nothing")
+    parser.add_argument(
+        "--dedupe", action="store_true", help="also delete duplicate purchases (same description, date and amount), keeping one"
+    )
     parser.add_argument("--out", type=Path, default=SEED_PATH)
     args = parser.parse_args(argv)
 
     try:
         client = client_from_settings(args.out)
-        report = seed(client, dry_run=args.dry_run)
+        report = seed(client, dry_run=args.dry_run, dedupe=args.dedupe)
     except NessieError as exc:
         print(f"Nessie error: {exc}", file=sys.stderr)
         return 1
@@ -253,6 +271,10 @@ def main(argv: list[str] | None = None) -> int:
     print(f"{verb} {len(report.created)}, already present {len(report.found)}.")
     for label in report.created:
         print(f"  + {label}")
+    if args.dedupe:
+        print(f"{'Would delete' if args.dry_run else 'Deleted'} {len(report.deleted)} duplicate purchase(s).")
+        for label in report.deleted:
+            print(f"  - {label}")
     if not args.dry_run:
         write_manifest(report.manifest, args.out)
         print(f"IDs saved to {args.out}")

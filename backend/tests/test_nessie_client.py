@@ -75,6 +75,26 @@ def test_transfer_listing_gets_id_payer_payee_and_time(demo_mode, fake):
     assert unknown["payee_id"] is None and unknown["at"] is None
 
 
+def test_empty_list_404_returns_an_empty_list(demo_mode):
+    def handler(request):
+        return httpx.Response(404, json={"code": 404, "message": "No transfers found for this account"})
+
+    client = NessieClient(API_KEY, "https://api.nessieisreal.com", http=httpx.Client(transport=httpx.MockTransport(handler)))
+    assert client.get_transfers("acct") == []
+
+
+def test_other_404s_still_raise(demo_mode, fake):
+    with pytest.raises(NessieError, match="404"):
+        make_client(fake).get_transfers("no-such-account")
+
+    def no_merchant(request):
+        return httpx.Response(404, json={"code": 404, "message": "No merchant found"})
+
+    client = NessieClient(API_KEY, "https://api.nessieisreal.com", http=httpx.Client(transport=httpx.MockTransport(no_merchant)))
+    with pytest.raises(NessieError, match="404"):
+        client.get_merchant("m1")
+
+
 def test_http_base_url_is_upgraded_to_https():
     assert NessieClient("k", "http://api.nessieisreal.com").base_url == "https://api.nessieisreal.com"
     assert NessieClient("k", "http://localhost:9000/").base_url == "http://localhost:9000"
