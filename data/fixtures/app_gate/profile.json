@@ -1,0 +1,12 @@
+{
+  "profile": "authored-app-l7-v2-v1",
+  "model_sha256": "824af47739cee1d63e3828b3978a01b946bdf324bf5b9c9046334e34bd747b8e",
+  "classifier": "frozen local L7 v2",
+  "public_search": "explicitly unavailable",
+  "messages": [
+    "msg_0001",
+    "msg_0003",
+    "msg_0101"
+  ],
+  "acceptance": "see eval/app_gate_record.json and app_gate_replay.json"
+}

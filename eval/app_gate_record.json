@@ -1,0 +1,40 @@
+{
+  "mode": "record",
+  "observed_at": "2026-11-08T06:41:49.431Z",
+  "use_mocks": false,
+  "classifier": "frozen local L7 v2",
+  "plans": {
+    "bank": [
+      "check_sender",
+      "check_link",
+      "nessie_recent_activity"
+    ],
+    "recovery": [
+      "nessie_recent_activity",
+      "check_sender",
+      "check_link",
+      "match_campaign"
+    ],
+    "bill": [
+      "check_sender",
+      "check_link",
+      "nessie_bill_status"
+    ]
+  },
+  "verdicts": [
+    "likely_scam",
+    "likely_scam",
+    "likely_scam"
+  ],
+  "recovery": {
+    "ref": "txn_28",
+    "amount": 900,
+    "minutes_after_message": 17,
+    "confirmation_recorded_after_tap": true
+  },
+  "bill": "Last bill completed, paid on 2026-11-01, $0.00 due now",
+  "privacy_model_bank_details_absent": true,
+  "browser_errors": [],
+  "replay_outbound_network_blocked": false,
+  "public_search": "explicitly unavailable"
+}

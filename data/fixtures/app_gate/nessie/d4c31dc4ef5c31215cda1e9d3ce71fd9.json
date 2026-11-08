@@ -1,0 +1,27 @@
+{
+  "key": "d4c31dc4ef5c31215cda1e9d3ce71fd9",
+  "recorded_at": "2026-11-08T06:41:38+00:00",
+  "request": {
+    "body": null,
+    "method": "GET",
+    "path": "/merchants/ed195bc1-c288-4cb1-9153-c2d69bbe37c1"
+  },
+  "response": {
+    "_id": "ed195bc1-c288-4cb1-9153-c2d69bbe37c1",
+    "address": {
+      "city": "Richardson",
+      "state": "TX",
+      "street_name": "Demo Way",
+      "street_number": "802",
+      "zip": "75080"
+    },
+    "category": "Money transfer",
+    "geocode": {
+      "lat": 32.9858,
+      "lng": -96.7501
+    },
+    "name": "Unknown Payee"
+  },
+  "service": "nessie",
+  "version": 1
+}
