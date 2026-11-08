@@ -360,8 +360,21 @@ def post_action(
     return c.ActionResponse(
         message_id=body.message_id,
         action=body.action,
-        note="Simulated for the demo. Nothing was sent.",
+        note=_action_note(body, store, principal, settings),
     )
+
+
+def _action_note(body: c.ActionRequest, store: StateStore, principal: Principal, settings: Settings) -> str:
+    """L15: the trusted-contact alert returns the exact (content-free) text it would send."""
+    if body.action != c.Action.alert_trusted_contact:
+        return "Simulated for the demo. Nothing was sent."
+    from app import trusted_contact
+    from app.pipeline import DEMO_PERSON_NAMES
+
+    recovery = False
+    if not settings.route_is_mocked("actions") and store.has_message(body.message_id):
+        recovery = store.get_message(body.message_id).mode == c.AgentMode.recovery
+    return trusted_contact.alert_note(principal.user_id, DEMO_PERSON_NAMES[0], recovery)
 
 
 @router.get("/privacy/{message_id}", response_model=c.PrivacyView)
@@ -427,6 +440,120 @@ def post_connect_preview(source: str, body: ConnectPreviewRequest) -> dict:
         raise NotFoundError("Unknown source system") from None
 
 
+class ActiveSourceRequest(BaseModel):
+    source: str = Field(max_length=40)
+    records: list[dict] | None = Field(default=None, max_length=500)
+
+
+@router.get("/connect/active")
+def get_connect_active() -> dict:
+    """L15: which system the agent's bank-activity check reads (Nessie unless switched)."""
+    from app import activity_source
+
+    return activity_source.status() | {"payment_sources": list(activity_source.PAYMENT_SOURCES)}
+
+
+@router.post("/connect/active")
+def post_connect_active(body: ActiveSourceRequest) -> dict:
+    """L15: use another payment system as the agent's account-activity source (in memory)."""
+    from app import activity_source
+    from app.errors import BadRequestError
+
+    try:
+        return activity_source.set_active(body.source, body.records)
+    except activity_source.UnsupportedSource as exc:
+        raise BadRequestError(str(exc)) from None
+    except FileNotFoundError:
+        raise NotFoundError("Unknown source system") from None
+
+
+@router.delete("/connect/active")
+def delete_connect_active() -> dict:
+    from app import activity_source
+
+    activity_source.clear()
+    return activity_source.status()
+
+
+@router.get("/agent-metrics")
+def get_agent_metrics() -> dict:
+    """L15: how often the Nemotron agent itself is right (`python -m scripts.evaluate_agent`)."""
+    from app import agent_eval
+
+    data = agent_eval.read()
+    if data is None:
+        raise NotFoundError("Agent metrics aren't generated yet: run `python -m scripts.evaluate_agent` from backend/")
+    return data
+
+
+class TrustedContactRequest(BaseModel):
+    name: str = Field(min_length=1, max_length=40)
+    phone: str = Field(min_length=10, max_length=24)
+
+
+@router.get("/trusted-contact")
+def get_trusted_contact(principal: PrincipalDep) -> dict:
+    """L15: the customer's trusted contact, phone masked. Empty when none is set."""
+    from app import trusted_contact
+
+    contact = trusted_contact.get(principal.user_id)
+    return {"contact": contact.view() if contact else None}
+
+
+@router.put("/trusted-contact")
+def put_trusted_contact(body: TrustedContactRequest, principal: PrincipalDep) -> dict:
+    from app import trusted_contact
+    from app.errors import BadRequestError
+
+    try:
+        contact = trusted_contact.save(principal.user_id, body.name, body.phone)
+    except trusted_contact.InvalidContact as exc:
+        raise BadRequestError(str(exc)) from None
+    return {"contact": contact.view()}
+
+
+@router.delete("/trusted-contact")
+def delete_trusted_contact(principal: PrincipalDep) -> dict:
+    from app import trusted_contact
+
+    trusted_contact.remove(principal.user_id)
+    return {"contact": None}
+
+
+class SimulateWaveRequest(BaseModel):
+    campaign_id: str | None = Field(default=None, max_length=40)
+
+
+@router.get("/waves")
+def get_waves() -> dict:
+    """L15: active scam waves (5+ of one brand and scam type in 60 minutes, or 3x the hour before)."""
+    from app import waves
+
+    return {"waves": waves.detector.waves(), "rule": "5 or more in 60 minutes, or 3x the previous hour"}
+
+
+@router.post("/waves/simulate")
+def post_waves_simulate(body: SimulateWaveRequest) -> dict:
+    """L15 demo: replay one seeded campaign through the fingerprinting (no model calls)."""
+    from app import waves
+
+    try:
+        return waves.simulate(body.campaign_id)
+    except KeyError:
+        raise NotFoundError("Unknown campaign") from None
+
+
+@router.post("/waves/{wave_id}/warn")
+def post_wave_warn(wave_id: str) -> dict:
+    """L15: the simulated customer warning for one wave (no link, no number)."""
+    from app import waves
+
+    try:
+        return waves.detector.warn(wave_id)
+    except KeyError:
+        raise NotFoundError("Unknown wave") from None
+
+
 @router.post("/demo/reset", response_model=c.DemoResetResponse)
 def post_demo_reset(
     request: Request, settings: SettingsDep, store: StoreDep, principal: PrincipalDep
@@ -434,9 +561,10 @@ def post_demo_reset(
     """Clears demo state and reloads the demo inbox. Admin only when auth is on."""
     if request.app.state.auth is not None:
         request.app.state.auth.store.audit.record("demo.reset", actor=principal.user_id)
-    from app import transcript
+    from app import transcript, waves
 
     transcript.clear()
+    waves.detector.clear()
     if not settings.route_is_mocked("demo_reset"):
         store.reset()
         seed_inbox(store)

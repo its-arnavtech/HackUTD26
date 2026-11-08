@@ -157,6 +157,13 @@ class Pipeline:
         brand = detect_claimed_brand(text)
         _privacy("record_local", "classifier", {"text_redacted": text, "features": features.model_dump(mode="json")})
         classifier = self.classify(text, features)
+        try:  # L15: scam-wave early warning keeps a fingerprint, never the text
+            from app import waves
+
+            waves.detector.observe(text, brand=brand, domain=urls[0].registered_domain if urls else None,
+                                   category=classifier.category)
+        except Exception:  # a wave counter must never break a check
+            log.warning("wave observe skipped")
 
         mode = AgentMode(mode)
         agent_input = AgentInput(

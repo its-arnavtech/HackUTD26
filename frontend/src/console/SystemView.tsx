@@ -25,6 +25,7 @@ import { isRedactionTag, redactedText, splitRedacted } from "../present";
 import type { InboxItem, PrivacyView, ResultPoll } from "../types";
 import { Shell } from "./Shell";
 import { toolTitles } from "./timeline";
+import { ActiveSourceNote, TrustedContactCard, WaveNotice, useActiveSource } from "./features";
 
 // ---------------------------------------------------------------------------
 // Agent transcript (GET /api/messages/{id}/agent, local L14 endpoint)
@@ -270,6 +271,9 @@ function ToolsPanel({ poll, privacy }: { poll?: ResultPoll; privacy?: PrivacyVie
   const sentTo = (tool: string) => privacy?.recipients.find((r) => r.recipient === tool);
   const calls = (poll?.trail ?? []).filter((t) => t.kind === "tool");
   const replans = (poll?.trail ?? []).filter((t) => t.kind === "replan");
+  const { active } = useActiveSource();
+  const serviceOf = (tool: string) =>
+    tool === "nessie_recent_activity" && active && !active.live_nessie ? active.label : SERVICE[tool] ?? "local";
   return (
     <section className="cx-card sx-panel">
       <h2 className="sx-h">
@@ -285,7 +289,7 @@ function ToolsPanel({ poll, privacy }: { poll?: ResultPoll; privacy?: PrivacyVie
             <li key={`${tool}-${i}`} className={`sx-tool ${raw && !raw.ok ? "sx-tool-failed" : ""}`}>
               <div className="sx-turn-top">
                 <strong>{tool ? toolTitles[tool as keyof typeof toolTitles] : "Check"}</strong>
-                <span className="cx-chip cx-chip-quiet">{SERVICE[tool] ?? "local"}</span>
+                <span className="cx-chip cx-chip-quiet">{serviceOf(tool)}</span>
                 {call.ms != null && <span className="cx-meta">{call.ms} ms</span>}
               </div>
               <p>{call.finding}</p>
@@ -304,6 +308,7 @@ function ToolsPanel({ poll, privacy }: { poll?: ResultPoll; privacy?: PrivacyVie
           );
         })}
       </ol>
+      <ActiveSourceNote />
       {replans.map((r) => (
         <p key={r.step} className="sx-replan">
           <ScanSearch size={14} aria-hidden="true" /> Re-plan: {r.finding}
@@ -567,6 +572,7 @@ export default function SystemView() {
         </button>
         <span className="cx-hint">Everything below is the live system: real Nemotron calls, real tool results.</span>
       </div>
+      <WaveNotice />
       <CheckAnyMessage
         busy={busy}
         onCheck={(text, sender, t) =>
@@ -628,6 +634,7 @@ function SystemBody({
       </div>
       <TruthBadge truth={truth} poll={poll} />
       <Outcome message={message} poll={poll} onClicked={onClicked} busy={busy} />
+      <TrustedContactCard key={`${message?.message_id}-${poll?.mode}`} message={message} poll={poll} />
     </>
   );
 }

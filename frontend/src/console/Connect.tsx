@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react";
 import { AlertTriangle, ArrowRight, Database, FileCode2, Play, ShieldCheck } from "lucide-react";
 import { Shell } from "./Shell";
+import { call, useActiveSource } from "./features";
 
 interface FieldMap {
   canonical: string;
@@ -62,6 +63,28 @@ export default function Connect() {
   }, []);
 
   const source = sources.find((s) => s.name === current);
+  const { active, refresh: refreshActive } = useActiveSource();
+  const usable = active?.payment_sources?.includes(current) ?? false;
+  const useForAgent = async () => {
+    setProblem(undefined);
+    let records: unknown;
+    try {
+      records = JSON.parse(text);
+    } catch {
+      setProblem("The records are not valid JSON.");
+      return;
+    }
+    try {
+      await call("/api/connect/active", "POST", { source: current, records });
+      refreshActive();
+    } catch (e) {
+      setProblem(e instanceof Error ? e.message : "Could not switch the agent's source.");
+    }
+  };
+  const backToNessie = async () => {
+    await call("/api/connect/active", "DELETE");
+    refreshActive();
+  };
 
   const run = async (name: string, records?: unknown) => {
     setProblem(undefined);
@@ -119,6 +142,24 @@ export default function Connect() {
           </button>
         ))}
       </div>
+      {active && (
+        <div className="cx-scenarios">
+          <span className="cx-hint cn-active">
+            <Database size={14} aria-hidden="true" /> The agent&apos;s bank-activity check reads: <strong>{active.label}</strong>
+          </span>
+          {usable && active.source !== current && (
+            <button className="cx-button cx-button-primary" onClick={() => void useForAgent()}>
+              Use this system for the agent
+            </button>
+          )}
+          {!active.live_nessie && (
+            <button className="cx-button cx-button-ghost" onClick={() => void backToNessie()}>
+              Back to Nessie
+            </button>
+          )}
+          {!usable && <span className="cx-muted cx-small">Carrier events are preview-only: the agent needs a carrier-events tool for them.</span>}
+        </div>
+      )}
       {problem && <p className="cx-alert">{problem}</p>}
 
       {source && (

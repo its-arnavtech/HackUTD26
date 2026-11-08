@@ -1,0 +1,90 @@
+{
+  "generated_at": "2026-11-08T14:46:53.690353+00:00",
+  "started_at": "2026-11-08T14:37:47.804593+00:00",
+  "model": "nvidia/nemotron-3.5-bolt-e4b",
+  "split": "test",
+  "dataset": "messages_multiclass.jsonl (template set B, held out)",
+  "per_category": 5,
+  "n": 45,
+  "errors": 0,
+  "accuracy": 0.3333,
+  "unsure": 0.6667,
+  "scams_caught": 0.375,
+  "false_alarms": 0.0,
+  "avg_seconds": 11.87,
+  "worst_seconds": 21.86,
+  "avg_tool_calls": 3.71,
+  "tool_use": {
+    "match_campaign": 0.933,
+    "check_link": 0.911,
+    "check_sender": 0.889,
+    "public_scam_reports": 0.8,
+    "nessie_recent_activity": 0.133,
+    "nessie_bill_status": 0.044
+  },
+  "categories": [
+    {
+      "category": "account_security",
+      "n": 5,
+      "correct": 0.6,
+      "unsure": 0.4,
+      "wrong": 0.0
+    },
+    {
+      "category": "bank_impersonation",
+      "n": 5,
+      "correct": 0.2,
+      "unsure": 0.8,
+      "wrong": 0.0
+    },
+    {
+      "category": "billing_scam",
+      "n": 5,
+      "correct": 0.0,
+      "unsure": 1.0,
+      "wrong": 0.0
+    },
+    {
+      "category": "conversation_lure",
+      "n": 5,
+      "correct": 0.0,
+      "unsure": 1.0,
+      "wrong": 0.0
+    },
+    {
+      "category": "delivery_scam",
+      "n": 5,
+      "correct": 1.0,
+      "unsure": 0.0,
+      "wrong": 0.0
+    },
+    {
+      "category": "job_offer",
+      "n": 5,
+      "correct": 0.0,
+      "unsure": 1.0,
+      "wrong": 0.0
+    },
+    {
+      "category": "legit",
+      "n": 5,
+      "correct": 0.0,
+      "unsure": 1.0,
+      "wrong": 0.0
+    },
+    {
+      "category": "prize_refund",
+      "n": 5,
+      "correct": 0.4,
+      "unsure": 0.6,
+      "wrong": 0.0
+    },
+    {
+      "category": "toll_government",
+      "n": 5,
+      "correct": 0.8,
+      "unsure": 0.2,
+      "wrong": 0.0
+    }
+  ]
+}
