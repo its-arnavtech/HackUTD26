@@ -1,0 +1,28 @@
+[
+  {
+    "campaign_id": "camp_07",
+    "claimed_brand": "T-Mobile",
+    "category": "billing_scam",
+    "domain_pattern": "tmobile-*.com",
+    "count_total": 412,
+    "count_last_24h": 140,
+    "first_seen": "2026-11-05T07:12:00-06:00",
+    "last_seen": "2026-11-08T10:02:00-06:00",
+    "template": "<BRAND>: your bill is overdue. Pay <AMOUNT> now to avoid suspension: <URL>",
+    "redacted_example": "T-Mobile: your bill is overdue. Pay $312 now to avoid suspension: <URL_1>",
+    "linked_message_ids": ["msg_0003"]
+  },
+  {
+    "campaign_id": "camp_03",
+    "claimed_brand": "Capital One",
+    "category": "bank_impersonation",
+    "domain_pattern": "capone-*.com",
+    "count_total": 57,
+    "count_last_24h": 12,
+    "first_seen": "2026-11-06T14:30:00-06:00",
+    "last_seen": "2026-11-08T09:14:00-06:00",
+    "template": "<BRAND> Alert: unusual sign-in for <PERSON>. Your account will be locked in <DEADLINE>. Verify now: <URL>",
+    "redacted_example": "Capital One Alert: unusual sign-in for <PERSON>. Your account will be locked in 2 hours. Verify now: <URL_1>",
+    "linked_message_ids": ["msg_0001"]
+  }
+]

@@ -1,0 +1,16 @@
+{
+  "generated_at": "2026-11-08T06:00:00-06:00",
+  "split": "test",
+  "n_test": 600,
+  "categories": [
+    {"category": "bank_impersonation", "support": 150, "ours": {"precision": 0.94, "recall": 0.92, "f1": 0.93}, "baseline": {"precision": 0.9, "recall": 0.85, "f1": 0.87}},
+    {"category": "billing_scam", "support": 120, "ours": {"precision": 0.91, "recall": 0.89, "f1": 0.9}, "baseline": {"precision": 0.86, "recall": 0.8, "f1": 0.83}},
+    {"category": "delivery_scam", "support": 110, "ours": {"precision": 0.93, "recall": 0.94, "f1": 0.93}, "baseline": {"precision": 0.92, "recall": 0.91, "f1": 0.91}},
+    {"category": "legitimate", "support": 220, "ours": {"precision": 0.96, "recall": 0.97, "f1": 0.96}, "baseline": {"precision": 0.93, "recall": 0.94, "f1": 0.93}}
+  ],
+  "macro_f1": {"ours": 0.93, "baseline": 0.885},
+  "false_positive_rate": {"ours": 0.03, "baseline": 0.06},
+  "public_set": {"dataset": "public SMS spam set (A5 picks it)", "n": 1000, "spam_recall": {"ours": 0.9, "baseline": 0.84}, "false_positive_rate": {"ours": 0.02, "baseline": 0.04}},
+  "redaction_cost": {"macro_f1_unredacted": 0.935, "macro_f1_redacted": 0.93},
+  "agent_sample": {"n": 50, "share_correct": 0.88, "share_unsure": 0.08}
+}

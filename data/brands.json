@@ -1,0 +1,18 @@
+{
+  "brands": [
+    {
+      "name": "Capital One",
+      "official_domains": ["capitalone.com"],
+      "official_short_codes": [],
+      "official_sender_ids": [],
+      "_todo": "A10: fill official_short_codes and official_sender_ids from Capital One's own pages and check them by hand. Don't invent them."
+    },
+    {
+      "name": "T-Mobile",
+      "official_domains": ["t-mobile.com"],
+      "official_short_codes": [],
+      "official_sender_ids": [],
+      "_todo": "A10: fill official_short_codes and official_sender_ids from T-Mobile's own pages and check them by hand. Don't invent them."
+    }
+  ]
+}

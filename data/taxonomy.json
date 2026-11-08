@@ -1,0 +1,11 @@
+{
+  "_todo": "Placeholder. A21 sets the final categories: T-Mobile's taxonomy if they share one, otherwise ours, based on common smishing types. The classifier and Nemotron may output only these ids.",
+  "version": 0,
+  "source": "placeholder",
+  "categories": [
+    {"id": "bank_impersonation", "label": "Bank impersonation", "is_scam": true},
+    {"id": "billing_scam", "label": "Fake bill or payment demand", "is_scam": true},
+    {"id": "delivery_scam", "label": "Fake delivery notice", "is_scam": true},
+    {"id": "legit", "label": "Legitimate message", "is_scam": false}
+  ]
+}

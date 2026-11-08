@@ -1,0 +1,26 @@
+{
+  "message_id": "msg_0001",
+  "status": "done",
+  "mode": "recovery",
+  "trail": [
+    {"step": 1, "kind": "replan", "tool": null, "why": "You said you clicked the link and entered your info", "finding": "New plan: check your Capital One activity since the message arrived", "ms": 760, "at": "2026-11-08T09:40:01-06:00"},
+    {"step": 2, "kind": "tool", "tool": "nessie_recent_activity", "why": "Look for anything that happened after the message arrived", "finding": "1 item to confirm: a $900 transfer to a new payee, 17 minutes after the message", "ms": 1040, "at": "2026-11-08T09:40:02-06:00"},
+    {"step": 3, "kind": "verdict", "tool": null, "why": "A new transfer appeared right after the scam message", "finding": "Was this you? 1 item to confirm", "ms": 430, "at": "2026-11-08T09:40:03-06:00"}
+  ],
+  "result": {
+    "plan": ["nessie_recent_activity"],
+    "verdict": "likely_scam",
+    "confidence_words": "very likely",
+    "reason": "A $900 transfer to a new payee happened 17 minutes after the scam message.",
+    "evidence": [
+      {"tool": "check_link", "finding": "Domain is 3 days old and imitates Capital One"},
+      {"tool": "nessie_recent_activity", "finding": "A $900 transfer to a new payee, 6x the 30-day median"}
+    ],
+    "actions": ["freeze_card", "change_password", "call_number_on_card"],
+    "was_this_you": ["txn_3"],
+    "replan": true
+  },
+  "was_this_you_items": [
+    {"ref": "txn_3", "type": "transfer", "amount": 900, "payee": "Unknown Payee", "at": "2026-11-08T09:31:00-06:00"}
+  ]
+}

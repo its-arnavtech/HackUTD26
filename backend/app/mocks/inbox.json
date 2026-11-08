@@ -1,0 +1,32 @@
+[
+  {
+    "message_id": "msg_0001",
+    "sender": "+15550104477",
+    "text": "Capital One Alert: unusual sign-in for Linda. Your account will be locked in 2 hours. Verify now: https://capone-verify-alert.com/verify",
+    "received_at": "2026-11-08T09:14:00-06:00",
+    "status": "queued",
+    "verdict": null,
+    "confidence_words": null,
+    "source": "scenario"
+  },
+  {
+    "message_id": "msg_0003",
+    "sender": "+15550192231",
+    "text": "T-Mobile: your bill is overdue. Pay $312 now to avoid suspension: https://tmobile-billpay-now.com/pay",
+    "received_at": "2026-11-08T10:02:00-06:00",
+    "status": "queued",
+    "verdict": null,
+    "confidence_words": null,
+    "source": "scenario"
+  },
+  {
+    "message_id": "msg_0101",
+    "sender": "+15550137788",
+    "text": "Hi Mom, landed safe. Will call you after dinner tonight.",
+    "received_at": "2026-11-08T08:40:00-06:00",
+    "status": "done",
+    "verdict": "likely_safe",
+    "confidence_words": "likely",
+    "source": "authored"
+  }
+]

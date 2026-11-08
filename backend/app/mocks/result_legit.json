@@ -1,0 +1,23 @@
+{
+  "message_id": "msg_0101",
+  "status": "done",
+  "mode": "check",
+  "trail": [
+    {"step": 1, "kind": "plan", "tool": null, "why": "The message has no link and claims no brand", "finding": "Plan: check for similar scam messages", "ms": 640, "at": "2026-11-08T08:40:01-06:00"},
+    {"step": 2, "kind": "tool", "tool": "match_campaign", "why": "See whether this wording is part of a scam campaign", "finding": "No similar scam messages found", "ms": 190, "at": "2026-11-08T08:40:02-06:00"},
+    {"step": 3, "kind": "verdict", "tool": null, "why": "No scam signs were found", "finding": "Likely safe", "ms": 350, "at": "2026-11-08T08:40:03-06:00"}
+  ],
+  "result": {
+    "plan": ["match_campaign"],
+    "verdict": "likely_safe",
+    "confidence_words": "likely",
+    "reason": "We found no link, no request for money or details, and no similar scam messages.",
+    "evidence": [
+      {"tool": "match_campaign", "finding": "No similar scam messages found"}
+    ],
+    "actions": ["ignore"],
+    "was_this_you": [],
+    "replan": false
+  },
+  "was_this_you_items": []
+}

@@ -1,0 +1,11 @@
+{
+  "scenario": 3,
+  "source": "authored",
+  "title": "Fake T-Mobile bill",
+  "expected_plan": ["match_campaign", "nessie_bill_status", "public_scam_reports"],
+  "message": {
+    "text": "T-Mobile: your bill is overdue. Pay $312 now to avoid suspension: https://tmobile-billpay-now.com/pay",
+    "sender": "+15550192231",
+    "received_at": "2026-11-08T10:02:00-06:00"
+  }
+}

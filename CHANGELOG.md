@@ -76,14 +76,16 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 ### SETUP: scaffold, folders, issues (no issue)
 - Agent: Claude Code (Opus 5.5) · Person: Arnav · Folder: C:\HackUTD26 · Branch: main
-- Started: 2026-11-07 17:47 · Last checkpoint: 2026-11-07 18:03
+- Started: 2026-11-07 17:47 · Last checkpoint: 2026-11-07 18:15
 - Done so far:
   - Checked tooling: `python` on PATH is 3.10, so the backend venv uses Python 3.12 (uv's CPython 3.12.13 via `py -V:Astral/CPython3.12.13`); Node 24, gh logged in as its-arnavtech
   - Read AGENTS.md, CHANGELOG.md, POC_MVP.md, DATA_SPEC.md, prompts/README.md; rebased onto the plan update (cff46b6)
   - Backend scaffold done locally (not yet pushed): contracts, config (incl. DeepSeek and NEMOTRON_EMBED_MODEL), mocks, mock routes, stubs naming their issue, scripts (incl. A21 `generate_dataset.py`), tests; `pytest` 36 passed; uvicorn serves `/api/inbox`
   - data/ (brands, taxonomy placeholder, scenarios, .gitkeeps), .env.example, .gitignore
-- Next step (exact): scaffold `frontend/` per `prompts/cursor-01-scaffold.md` section 2, then README Setup, then commit and push
-- Files touched: CHANGELOG.md, .gitignore, .env.example, backend/**, data/**, eval/.gitkeep
+  - Frontend scaffold done: Vite 8 + React 19 + TypeScript 7 + Tailwind 4, `types.ts` mirrors contracts, `api.ts` with `pollResult`, PhoneFrame and placeholder screens; `npm run build` passes; dev server proxies `/api` to the mock API
+  - README Setup section; scaffold committed and pushed to main
+- Next step (exact): STEP 3: create `.env`, wait for Arnav's keys, then the worktrees `C:\HackUTD26-cc`, `-codex`, `-design` with ports from POC_MVP 12.1
+- Files touched: CHANGELOG.md, README.md, .gitignore, .env.example, backend/**, frontend/**, data/**, eval/.gitkeep
 - How to run or test: `cd backend; .\.venv\Scripts\python.exe -m pytest`
 - Notes and gotchas: scaffold is run by Claude Code instead of Cursor; worktrees and issues follow after the scaffold push. An unrelated stash ("README line-ending change before syncing docs") exists in C:\HackUTD26; left untouched.
 - Resumed by: 
@@ -101,6 +103,7 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 
 ## Decisions
 
+- 2026-11-07 18:15 · Scaffold was run by Claude Code instead of Cursor.
 - 2026-11-07 18:05 · Frontend design moves from 6.1 Sol to a second Codex session running GPT 6 Astra (`agent:design`). It starts now in a design lab outside the repo (`prompts/codex-00-design-lab.md`) and ports the prototype into `frontend/` for A7 and A14 to A16.
 - 2026-11-07 18:00 · Deadlines from the opening ceremony: initial Devpost draft by 11:00 PM Saturday, final Devpost by 12:00 PM Sunday, judging 1:00 to 4:00 PM Sunday.
 - 2026-11-07 18:00 · T-Mobile doesn't provide a message set. We generate one with DeepSeek (A21), with a separate prompt set and hand-written messages for test, and validate on a public real SMS spam set from Hugging Face (A5). Our baseline is keyword rules plus TF-IDF and logistic regression (A1).

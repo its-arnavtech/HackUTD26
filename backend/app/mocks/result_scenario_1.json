@@ -1,0 +1,27 @@
+{
+  "message_id": "msg_0001",
+  "status": "done",
+  "mode": "check",
+  "trail": [
+    {"step": 1, "kind": "plan", "tool": null, "why": "The sender claims to be Capital One, your linked bank, and the message has a link", "finding": "Plan: check the link, check the sender, then check your recent Capital One activity", "ms": 820, "at": "2026-11-08T09:14:01-06:00"},
+    {"step": 2, "kind": "tool", "tool": "check_link", "why": "The message asks you to verify through a link", "finding": "The link goes to capone-verify-alert.com, a 3-day-old site imitating capitalone.com", "ms": 640, "at": "2026-11-08T09:14:02-06:00"},
+    {"step": 3, "kind": "tool", "tool": "check_sender", "why": "The sender claims to be Capital One", "finding": "Not an official Capital One channel", "ms": 412, "at": "2026-11-08T09:14:03-06:00"},
+    {"step": 4, "kind": "tool", "tool": "nessie_recent_activity", "why": "The sender claims to be your linked bank, so we checked your real activity", "finding": "No new payees or unusual transfers in the last 7 days (2 accounts, 23 items checked)", "ms": 980, "at": "2026-11-08T09:14:04-06:00"},
+    {"step": 5, "kind": "verdict", "tool": null, "why": "Two different checks point to a scam", "finding": "Very likely a scam", "ms": 510, "at": "2026-11-08T09:14:05-06:00"}
+  ],
+  "result": {
+    "plan": ["check_link", "check_sender", "nessie_recent_activity"],
+    "verdict": "likely_scam",
+    "confidence_words": "very likely",
+    "reason": "The link is not a Capital One website, and we found no unusual activity on your Capital One account in the last 7 days.",
+    "evidence": [
+      {"tool": "check_link", "finding": "Domain is 3 days old and imitates Capital One"},
+      {"tool": "check_sender", "finding": "Not an official Capital One channel"},
+      {"tool": "nessie_recent_activity", "finding": "No new payees or unusual transfers in 7 days"}
+    ],
+    "actions": ["block_sender", "report_spam", "call_number_on_card"],
+    "was_this_you": [],
+    "replan": false
+  },
+  "was_this_you_items": []
+}

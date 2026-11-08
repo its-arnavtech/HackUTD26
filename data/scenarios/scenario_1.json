@@ -1,0 +1,11 @@
+{
+  "scenario": 1,
+  "source": "authored",
+  "title": "Bank lock text, checked",
+  "expected_plan": ["check_link", "check_sender", "nessie_recent_activity"],
+  "message": {
+    "text": "Capital One Alert: unusual sign-in for Linda. Your account will be locked in 2 hours. Verify now: https://capone-verify-alert.com/verify",
+    "sender": "+15550104477",
+    "received_at": "2026-11-08T09:14:00-06:00"
+  }
+}
