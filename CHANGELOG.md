@@ -19,7 +19,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | A21 | Synthetic message dataset generator | Arnav | Claude Code | POC | scaffold | todo | #1 |
 | A1 | Dataset loader, stratified split and baseline metrics | Arnav | Claude Code | POC | A21 | todo | #2 |
-| A2 | Nessie client and idempotent seed script | Arnav | Claude Code | POC | scaffold | todo | #3 |
+| A2 | Nessie client and idempotent seed script | Arnav | Cursor | POC | scaffold | todo | #3 |
 | A3 | Redaction module | Arnav | Claude Code | POC | scaffold | todo | #4 |
 | A4 | Nemotron connection and tool-calling smoke test | Arnav | Codex | POC | scaffold | todo | #5 |
 | A5 | Hugging Face connection | Arnav | Codex | POC | scaffold | todo | #6 |
@@ -93,6 +93,7 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 
 ## Decisions
 
+- 2026-11-07 18:55 · A2 (Nessie client and seed, #3) moves from Claude Code to Cursor: Cursor was idle and A11 needs A2, while Claude Code's queue is long. Branch commands now use `--no-track` plus `git push -u` (AGENTS.md section 4).
 - 2026-11-07 18:20 · Arnav's Claude Code and Codex (connections) share the remote branch `arnav-shared` (AGENTS.md section 4, exception). Cursor and the Codex design session keep a branch per issue.
 - 2026-11-07 18:06 · Scaffold was run by Claude Code instead of Cursor.
 - 2026-11-07 18:05 · Frontend design moves from 6.1 Sol to a second Codex session running GPT 6 Astra (`agent:design`). It starts now in a design lab outside the repo (`prompts/codex-00-design-lab.md`) and ports the prototype into `frontend/` for A7 and A14 to A16.

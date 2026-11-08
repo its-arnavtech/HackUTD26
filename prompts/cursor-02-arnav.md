@@ -18,10 +18,11 @@ I'm Arnav. In this repo, Cursor is my agent for **coding, backend engineering an
 
 1. **A6** Dev infrastructure: GitHub Actions CI (`pytest` and `npm run build` on every PR, Python 3.11 and Node LTS, no secrets needed because tests run in replay mode), `scripts/dev.ps1` (starts backend and frontend on `API_PORT` and `WEB_PORT` from `.env`), and `docs/WORKTREES.md` (the steps from POC_MVP.md 12.2, verified on this machine).
 2. **A10** `check_link` and `check_sender`. Plain functions first. Register them with Lavanya's tool registry (L5) once it merges. RDAP goes through her cache (L1) once it merges. Build the blocklist from the train split only (A1's saved split).
-3. **A11** Nessie tools, once A2 (Claude Code) has merged the Nessie client. Return summaries with references exactly as DATA_SPEC 3.2 says. Never return names, account numbers or raw records to the agent.
-4. **G1 support:** when L8 merges, help wire scenario 1 through `python -m scripts.run_scenario 1`. Fix integration bugs in my modules; report bugs in Lavanya's modules on her issue instead of editing them.
-5. **A17** Frontend on the live API, once the design session's screens (A14 to A16) and L9 have merged: replace mocks with real calls, add loading, error and retry states, stop polling at `done`, no console errors.
-6. **G2 support** and performance or reliability fixes in my modules.
+3. **A2** Nessie client and idempotent seed script (moved to you from Claude Code). Confirm real field names on the first call and record any difference from DATA_SPEC section 6 in Decisions. Then **A11** Nessie tools on top of it.
+4. **A11** Nessie tools, once A2 has merged. Return summaries with references exactly as DATA_SPEC 3.2 says. Never return names, account numbers or raw records to the agent.
+5. **G1 support:** when L8 merges, help wire scenario 1 through `python -m scripts.run_scenario 1`. Fix integration bugs in my modules; report bugs in Lavanya's modules on her issue instead of editing them.
+6. **A17** Frontend on the live API, once the design session's screens (A14 to A16) and L9 have merged: replace mocks with real calls, add loading, error and retry states, stop polling at `done`, no console errors.
+7. **G2 support** and performance or reliability fixes in my modules.
 
 If a dependency isn't merged yet, take the next issue that isn't blocked and say so.
 
