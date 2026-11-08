@@ -1237,3 +1237,30 @@
   gap: 6px;
   align-items: baseline;
 }
+
+/* L15c risk + next steps: layout only, existing tokens */
+.sx-risk {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+.sx-risk-high .sx-risk-value,
+.sx-risk-medium .sx-risk-value {
+  color: var(--cx-scam);
+}
+.sx-risk-low .sx-risk-value {
+  color: var(--cx-safe);
+}
+.sx-progress {
+  height: 6px;
+  background: var(--cx-surface-2);
+  border-radius: var(--cx-radius);
+  overflow: hidden;
+}
+.sx-progress span {
+  display: block;
+  height: 100%;
+  background: var(--cx-accent);
+  transition: width 200ms;
+}

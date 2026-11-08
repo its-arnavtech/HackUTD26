@@ -26,7 +26,7 @@ import type { InboxItem, PrivacyView, ResultPoll } from "../types";
 import { Shell } from "./Shell";
 import { toolTitles } from "./timeline";
 import { ActiveSourceNote, TrustedContactCard, WaveNotice, useActiveSource } from "./features";
-import { InterruptionCard, MemoryCard } from "./protection";
+import { InterruptionCard, MemoryCard, NextSteps, RiskSummary } from "./protection";
 
 // ---------------------------------------------------------------------------
 // Agent transcript (GET /api/messages/{id}/agent, local L14 endpoint)
@@ -635,7 +635,9 @@ function SystemBody({
       </div>
       <TruthBadge truth={truth} poll={poll} />
       <Outcome message={message} poll={poll} onClicked={onClicked} busy={busy} />
+      <RiskSummary poll={poll} privacy={privacy} />
       <InterruptionCard poll={poll} privacy={privacy} />
+      <NextSteps key={`steps-${message?.message_id}-${poll?.mode}`} message={message} poll={poll} />
       <TrustedContactCard key={`${message?.message_id}-${poll?.mode}`} message={message} poll={poll} />
       <MemoryCard key={`mem-${message?.message_id}`} message={message} poll={poll} />
     </>
