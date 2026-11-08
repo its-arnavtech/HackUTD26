@@ -21,6 +21,7 @@ from __future__ import annotations
 import hashlib
 import hmac
 import logging
+import secrets
 import threading
 import time
 import uuid
@@ -74,11 +75,38 @@ class _Slot:
 _lock = threading.Lock()
 _alerts: dict[str, _Slot] = {}
 
+# Trial mode: Twilio fetches the words from /api/voice/twiml/{token}. Each token is
+# random (32 bytes, urlsafe), tied to one alert's text, single use, and expires.
+TWIML_TOKEN_TTL_S = 600.0
+_NO_PUBLIC_URL = "Trial calls need PUBLIC_BASE_URL (the tunnel URL) so Twilio can fetch the message."
+_tokens: dict[str, tuple[str, float]] = {}
+
+
+def issue_twiml_token(alert_text: str, *, ttl: float = TWIML_TOKEN_TTL_S, clock: Callable[[], float] | None = None) -> str:
+    now = (clock or time.monotonic)()
+    token = secrets.token_urlsafe(32)
+    with _lock:
+        for key in [k for k, (_, expires) in _tokens.items() if expires <= now]:
+            del _tokens[key]
+        _tokens[token] = (alert_text, now + ttl)
+    return token
+
+
+def consume_twiml_token(token: str, *, clock: Callable[[], float] | None = None) -> str | None:
+    """The alert text for `token`, once. None when unknown, used or expired."""
+    now = (clock or time.monotonic)()
+    with _lock:
+        entry = _tokens.pop(token, None)
+    if entry is None or entry[1] <= now:
+        return None
+    return entry[0]
+
 
 def clear() -> None:
-    """Drop in-memory alerts. In-flight threads then leave the map alone."""
+    """Drop in-memory alerts and TwiML tokens. In-flight threads then leave the map alone."""
     with _lock:
         _alerts.clear()
+        _tokens.clear()
 
 
 def get_alert(message_id: str) -> AlertStatus | None:
@@ -173,6 +201,16 @@ def classify_call(status: str, answered_by: str | None) -> CallOutcome | None:
     return None
 
 
+def classify_trial_call(status: str) -> CallOutcome | None:
+    """Trial calls have no AnsweredBy: completed means answered, any other end means no answer."""
+    state = (status or "").strip().lower()
+    if state == "completed":
+        return "answered"
+    if state in {"busy", "no-answer", "failed", "canceled"}:
+        return "no_answer"
+    return None
+
+
 def _should_simulate(settings: Any) -> bool:
     return (not settings.VOICE_ALERTS_ENABLED) or settings.DEMO_MODE == DemoMode.replay
 
@@ -228,11 +266,12 @@ def _run(
 
     called_at = datetime.now(timezone.utc)
     _update(message_id, attempt, called_at=called_at)
-    outcome = _place_and_poll(message_id, text, settings, store, twilio, poll_interval, poll_timeout)
+    outcome, call_detail = _place_and_poll(message_id, text, settings, store, twilio, poll_interval, poll_timeout)
     email_sent = False
-    detail = None
+    detail = call_detail
     if outcome != "answered":
-        email_sent, detail = _email(message_id, text, called_at, settings, store, send_email)
+        email_sent, email_detail = _email(message_id, text, called_at, settings, store, send_email)
+        detail = call_detail or email_detail
     _update(
         message_id,
         attempt,
@@ -255,13 +294,15 @@ def _place_and_poll(
     twilio: Any,
     poll_interval: float,
     poll_timeout: float,
-) -> CallOutcome:
+) -> tuple[CallOutcome, str | None]:
     phone = (settings.TRUSTED_CONTACT_PHONE or "").strip()
     caller = (settings.TWILIO_FROM_NUMBER or "").strip()
     if not phone or not caller or not settings.TWILIO_ACCOUNT_SID or settings.TWILIO_AUTH_TOKEN is None:
         log.info("alert call skipped", extra={"fields": {"reason": "not_configured"}})
-        return "failed"
+        return "failed", None
     client = twilio if twilio is not None else _twilio_client(settings)
+    if getattr(settings, "TWILIO_TRIAL_MODE", False):
+        return _place_and_poll_trial(message_id, text, settings, store, client, phone, caller, poll_interval, poll_timeout)
     twiml = voice_twiml(text)
     sent = {
         "channel": "voice",
@@ -274,9 +315,9 @@ def _place_and_poll(
     except TwilioError as exc:
         _privacy(store, message_id, "twilio", sent)
         log.info("alert call failed", extra={"fields": {"error": type(exc).__name__, "reason": str(exc)}})
-        return "failed"
+        return "failed", None
     if not sid:
-        return "failed"
+        return "failed", None
     _privacy(store, message_id, "twilio", sent)
     deadline = time.monotonic() + poll_timeout
     last_status, last_who = "", None
@@ -285,19 +326,65 @@ def _place_and_poll(
             info = client.get_call(sid)
         except TwilioError as exc:
             log.info("alert call status failed", extra={"fields": {"error": type(exc).__name__}})
-            return "failed"
+            return "failed", None
         last_status = str(info.get("status") or "")
         last_who = info.get("answered_by")
         outcome = classify_call(last_status, last_who)
         if outcome is not None:
-            return outcome
+            return outcome, None
         if time.monotonic() >= deadline:
             who = (last_who or "").strip().lower()
             if who == "human":
-                return "answered"
+                return "answered", None
             if who.startswith(_MACHINE):
-                return "voicemail"
-            return "no_answer"
+                return "voicemail", None
+            return "no_answer", None
+        time.sleep(poll_interval)
+
+
+def _place_and_poll_trial(
+    message_id: str,
+    text: str,
+    settings: Any,
+    store: Any,
+    client: Any,
+    phone: str,
+    caller: str,
+    poll_interval: float,
+    poll_timeout: float,
+) -> tuple[CallOutcome, str | None]:
+    """Trial account: To, From and Url only. The token and numbers are never logged."""
+    base = (getattr(settings, "PUBLIC_BASE_URL", "") or "").strip().rstrip("/")
+    if not base:
+        log.info("alert call skipped", extra={"fields": {"reason": "trial_without_public_base_url"}})
+        return "failed", _NO_PUBLIC_URL
+    token = issue_twiml_token(text)
+    url = f"{base}/api/voice/twiml/{token}"
+    sent = {"channel": "voice", "alert_text": text, "to_hmac": _destination_hmac(phone, settings), "trial": True}
+    try:
+        sid = client.create_call_url(phone, caller, url)
+    except TwilioError as exc:
+        _privacy(store, message_id, "twilio", sent)
+        log.info("alert call failed", extra={"fields": {"error": type(exc).__name__, "reason": str(exc)}})
+        return "failed", None
+    if not sid:
+        return "failed", None
+    _privacy(store, message_id, "twilio", sent)
+    deadline = time.monotonic() + poll_timeout
+    last_status = ""
+    while True:
+        try:
+            info = client.get_call(sid)
+        except TwilioError as exc:
+            log.info("alert call status failed", extra={"fields": {"error": type(exc).__name__}})
+            return "failed", None
+        last_status = str(info.get("status") or "").strip().lower()
+        outcome = classify_trial_call(last_status)
+        if outcome is not None:
+            return outcome, None
+        if time.monotonic() >= deadline:
+            # Still connected when we stop watching: someone picked up.
+            return ("answered" if last_status == "in-progress" else "no_answer"), None
         time.sleep(poll_interval)
 
 

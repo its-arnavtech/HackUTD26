@@ -703,6 +703,9 @@ def create_app(
     install_error_handlers(app)
     app.add_middleware(RequestContextMiddleware)
     app.include_router(router)
+    from app.voice import router as voice_router  # L16 trial calls: Twilio fetches the signed TwiML here
+
+    app.include_router(voice_router)
     if settings.AUTH_ENABLED:  # L13: sign-in routes and real sessions; off means one fixed demo customer
         from app.auth.context import AuthContext
         from app.auth.routes import router as auth_router

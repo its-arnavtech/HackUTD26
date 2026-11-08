@@ -90,6 +90,8 @@ ROUTE_PERMISSIONS: dict[tuple[str, str], str] = {
     ("POST", "/api/sms/inbound"): WEBHOOK,
     ("GET", "/api/whatsapp/webhook"): WEBHOOK,
     ("POST", "/api/whatsapp/webhook"): WEBHOOK,
+    ("GET", "/api/voice/twiml/{token}"): WEBHOOK,  # L16 trial calls; the route checks X-Twilio-Signature
+    ("POST", "/api/voice/twiml/{token}"): WEBHOOK,
     ("GET", "/api/auth/me"): SESSION,
     ("POST", "/api/auth/passkey/register/options"): SESSION,
     ("POST", "/api/auth/passkey/register/verify"): SESSION,

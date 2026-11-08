@@ -141,6 +141,38 @@ class TwilioClient:
         log.info("call placed", extra={"fields": {"chars": len(twiml)}})
         return str(sid)
 
+    def create_call_url(self, to: str, from_: str, url: str) -> str | None:
+        """Trial-account call: only To, From and Url (Twilio fetches the TwiML from `url`).
+
+        Returns the call SID, or None in replay mode. Nothing is logged but the outcome.
+        """
+        if self.demo_mode == DemoMode.replay:
+            log.info("call not placed (replay mode)")
+            return None
+        endpoint = f"{API_BASE}/Accounts/{self.account_sid}/Calls.json"
+        try:
+            with httpx.Client(timeout=TIMEOUT_S, transport=self._transport) as client:
+                response = client.post(
+                    endpoint, data={"To": to, "From": from_, "Url": url}, auth=(self.account_sid, self.auth_token)
+                )
+        except httpx.HTTPError as exc:
+            raise TwilioError(f"Twilio unreachable ({type(exc).__name__})") from None
+        if response.status_code >= 300:
+            code = ""
+            try:
+                code = str(response.json().get("code", ""))
+            except ValueError:
+                pass
+            raise TwilioError(f"Twilio refused the call (HTTP {response.status_code}, code {code or 'n/a'})")
+        try:
+            sid = response.json().get("sid")
+        except ValueError:
+            raise TwilioError("Twilio returned a call id that was not JSON") from None
+        if not sid:
+            raise TwilioError("Twilio returned no call id")
+        log.info("call placed (trial, url)")
+        return str(sid)
+
     def get_call(self, sid: str) -> dict[str, str | None]:
         """`{"status", "answered_by"}` for a call. `answered_by` is None when Twilio omits it."""
         if self.demo_mode == DemoMode.replay:

@@ -118,6 +118,9 @@ class Settings(BaseSettings):
     # Trusted-contact voice call and email (L16). Off unless VOICE_ALERTS_ENABLED is true.
     # Replay mode never dials or emails, even when the flag is on.
     VOICE_ALERTS_ENABLED: bool = False
+    # Twilio trial accounts reject inline Twiml, MachineDetection and Timeout: the call then sends only
+    # To, From and Url, and Twilio fetches the words from PUBLIC_BASE_URL/api/voice/twiml/{token}.
+    TWILIO_TRIAL_MODE: bool = False
     TRUSTED_CONTACT_PHONE: str = ""  # E.164 number that is called
     ALERT_EMAIL_FROM: str = ""  # Gmail address the alert is sent from
     ALERT_EMAIL_APP_PASSWORD: SecretStr | None = None  # Google app password, not the mailbox password
