@@ -213,7 +213,7 @@ export function RecoveryView({
       <ActionButton onClick={onDone} icon={<ArrowRight size={20} />}>
         Return to messages
       </ActionButton>
-      <p className="quiet-note">SentinelAI doesn’t freeze cards, change passwords, or place calls.</p>
+      <p className="quiet-note">SentinelAI doesn’t freeze cards or change passwords. It calls your trusted contact only when you tap.</p>
     </div>
   );
 }
