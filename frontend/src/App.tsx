@@ -2,7 +2,12 @@ import { useEffect, useState } from "react";
 import { Link, Navigate, NavLink, Route, Routes, useLocation } from "react-router-dom";
 import { ArrowLeft, Menu, X } from "lucide-react";
 import type { Health } from "./api";
+import { AccountLine, AuthGate } from "./auth";
 import { Brand } from "./components";
+import Connect from "./console/Connect";
+import Console, { ResultPage } from "./console/Console";
+import { PatternsPage, SecurityPage } from "./console/Pages";
+import SystemView from "./console/SystemView";
 import { useHealth } from "./hooks";
 import AccuracyPage from "./screens/AccuracyPage";
 import CampaignView from "./screens/CampaignView";
@@ -137,7 +142,7 @@ function Lede() {
   );
 }
 
-export default function App() {
+function Desk() {
   const { pathname } = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const nav = navigationFor(pathname);
@@ -260,8 +265,25 @@ export default function App() {
         <footer className="night-footer">
           <span>Synthetic data. No live account.</span>
           <span>{apiModeLine(health) ?? "Demo desk"}</span>
+          <Link to="/system">System view</Link>
+          <AccountLine />
         </footer>
       </main>
     </div>
+  );
+}
+
+/** The Zero Day desk stays the front door. The live console (system, check-any-message, connect) sits beside it. */
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/system" element={<AuthGate><SystemView /></AuthGate>} />
+      <Route path="/customer" element={<AuthGate><Console /></AuthGate>} />
+      <Route path="/r/:messageId" element={<AuthGate><ResultPage /></AuthGate>} />
+      <Route path="/patterns" element={<AuthGate><PatternsPage /></AuthGate>} />
+      <Route path="/connect" element={<AuthGate><Connect /></AuthGate>} />
+      <Route path="/security" element={<SecurityPage />} />
+      <Route path="*" element={<AuthGate><Desk /></AuthGate>} />
+    </Routes>
   );
 }

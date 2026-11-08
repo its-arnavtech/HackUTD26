@@ -3,7 +3,10 @@ import { MemoryRouter } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import App from "./App";
 
-vi.mock("./hooks", () => ({ useHealth: () => undefined }));
+vi.mock("./hooks", () => ({
+  useHealth: () => undefined,
+  useHealthState: () => ({ health: undefined, settled: true }),
+}));
 vi.mock("./screens/Inbox", () => ({ default: () => <h1>Inbox screen</h1> }));
 vi.mock("./screens/ResultCard", () => ({ default: () => <h1>Result screen</h1> }));
 vi.mock("./screens/HowWeChecked", () => ({ default: () => <h1>Evidence screen</h1> }));

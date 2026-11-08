@@ -198,6 +198,7 @@
 .night-footer {
   display: flex;
   justify-content: space-between;
+  align-items: baseline;
   gap: 16px;
   margin-top: 36px;
   padding-top: 16px;
@@ -207,6 +208,14 @@
   font-size: 11px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+}
+.night-footer a { color: #22e0ff; text-decoration: none; }
+.night-footer .account-line {
+  margin-top: 0;
+  font-family: var(--font-ui, "Outfit Variable", sans-serif);
+  font-size: 13px;
+  letter-spacing: 0;
+  text-transform: none;
 }
 
 /* ---------- lede and signal ---------- */
@@ -1133,4 +1142,48 @@
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
   .signal-beam i { left: 46%; }
   .trail-enter { opacity: 1; transform: none; }
+}
+
+/* Sign-in and account line (L13, only shown when the API has auth on). */
+.signin-form {
+  display: grid;
+  gap: 16px;
+  margin-top: 8px;
+}
+.signin-form label {
+  display: grid;
+  gap: 6px;
+  color: #948eb4;
+  font-size: 15px;
+}
+.signin-form input {
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  padding: 12px 14px;
+  font-size: 18px;
+}
+.signin-form input:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+.signin-problem {
+  margin-top: 16px;
+  border: 1px solid var(--color-caution-line);
+  border-radius: var(--radius-control);
+  background: var(--color-caution-bg);
+  color: var(--color-caution);
+  padding: 12px 14px;
+  font-size: 15px;
+}
+.account-line {
+  margin-top: 18px;
+  font-size: 14px;
+  color: #948eb4;
+}
+.account-line > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
 }

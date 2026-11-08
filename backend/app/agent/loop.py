@@ -515,14 +515,59 @@ _LEAKED_CALL = re.compile(r"(?:call:)?\s*([a-z_]+)\s*(\{.*?\})", re.DOTALL)
 def _leaked_tool_calls(content: str) -> list[tuple[str, dict[str, Any]]] | None:
     """Tool calls written as text, if that's all the reply is.
 
-    Two shapes seen live from Bolt on the hosted endpoint:
-    `check_sender{claimed_brand:<|"|>Capital One<|"|>}` and
-    `check_sender(claimed_brand="Capital One")`.
+    Three shapes seen live from Bolt on the hosted endpoint:
+    `check_sender{claimed_brand:<|"|>Capital One<|"|>}`,
+    `check_sender(claimed_brand="Capital One")`, and (L14, seen when the
+    classifier score was 0.71) a JSON list
+    `[{"tool_name": "check_link", "parameters": {"url_id": "URL_1"}}, ...]`.
+    Missing that last shape made the agent skip every check and then cite
+    checks that never ran.
     """
     text = _FENCE.sub("", content or "").strip()
-    if not text or text.startswith("{"):
+    if not text:
+        return None
+    json_calls = _json_calls(text)
+    if json_calls is not None:
+        return json_calls
+    if text.startswith("{"):
         return None
     return _brace_calls(text) or _paren_calls(text)
+
+
+_JSON_NAME_KEYS = ("tool_name", "name", "tool", "function")
+_JSON_ARG_KEYS = ("parameters", "arguments", "args", "input")
+
+
+def _json_calls(text: str) -> list[tuple[str, dict[str, Any]]] | None:
+    """A JSON list (or one object) of `{tool_name, parameters}`. Every name must be a known tool;
+    anything else (such as the final-answer object) returns None and is handled as before."""
+    if not text.startswith(("[", "{")):
+        return None
+    try:
+        data = json.loads(text)
+    except ValueError:
+        return None
+    items = data if isinstance(data, list) else [data]
+    calls: list[tuple[str, dict[str, Any]]] = []
+    for item in items:
+        if not isinstance(item, dict) or "action" in item:  # `action` objects belong to the json_action protocol
+            return None
+        name = next((item[k] for k in _JSON_NAME_KEYS if isinstance(item.get(k), str)), None)
+        if isinstance(item.get("function"), dict):  # {"function": {"name": ..., "arguments": ...}}
+            name = item["function"].get("name")
+            item = {**item, "arguments": item["function"].get("arguments", {})}
+        if not name or _tool_name(name) is None:
+            return None
+        args = next((item[k] for k in _JSON_ARG_KEYS if k in item), {})
+        if isinstance(args, str):
+            try:
+                args = json.loads(args) if args.strip() else {}
+            except ValueError:
+                return None
+        if not isinstance(args, dict):
+            return None
+        calls.append((name, args))
+    return calls or None
 
 
 _PAREN_CALL = re.compile(r"^(?:call:)?\s*([a-z_]+)\s*\((.*)\)$", re.DOTALL)

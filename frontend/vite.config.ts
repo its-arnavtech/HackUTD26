@@ -17,6 +17,8 @@ export default defineConfig(({ mode }) => {
     server: {
       port: webPort,
       strictPort: true,
+      // L14: let the Cloudflare quick tunnel reach the dev server (Twilio webhook + SMS result links).
+      allowedHosts: [".trycloudflare.com", ".lhr.life"],
       proxy: {
         "/api": `http://localhost:${apiPort}`,
       },

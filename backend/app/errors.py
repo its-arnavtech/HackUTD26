@@ -60,6 +60,25 @@ class BadRequestError(AppError):
     code = "bad_request"
 
 
+class UnauthorizedError(AppError):
+    """No valid session (L13). The message never says which part of a sign-in failed."""
+
+    status_code = 401
+    code = "unauthorized"
+
+
+class ForbiddenError(AppError):
+    """Signed in, but this role may not do this (L13), or the CSRF check failed (code `csrf_failed`)."""
+
+    status_code = 403
+    code = "forbidden"
+
+
+class RateLimitedError(AppError):
+    status_code = 429
+    code = "rate_limited"
+
+
 class NotFoundError(AppError):
     status_code = 404
     code = "not_found"
@@ -98,6 +117,7 @@ _HTTP_CODES = {
     405: "method_not_allowed",
     409: "conflict",
     422: "validation_error",
+    429: "rate_limited",
     501: "not_implemented",
 }
 

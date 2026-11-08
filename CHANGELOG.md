@@ -56,12 +56,24 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | #73 | Zero Day cyberwave redesign | Arnav | Cursor, finishing Codex | Demo | A7 | done | #73 · PR #75 |
 | L12 | NVIDIA and T-Mobile pitch, Devpost | Lavanya | Claude Code | Demo | G2 | todo | #36 |
 | G3 | Rehearse the 3-minute demo three times | Both | any | Demo | A19, A20, L12 | todo | #37 |
+| L13 | Full authentication and security pillars | Lavanya | Claude Code | Demo | G2 | in review | #71 · `l14-live-demo` (auth off by default) |
+| L14 | Live demo: System view, check any message, plug into any system, agent tool-call fix | Lavanya | Claude Code | Demo | G2, SYN | in review | `l14-live-demo` · docs/L14_LIVE_DEMO_REVIEW.md |
 | SYN | Synthetic linked scenarios, payment schema, multiclass SMS | Arnav | Cursor | Demo | A21 | done | #72 · cursor/synthetic-linked-scenarios-6119 |
 
 ---
 
 ## In progress
 
+
+### L13 Full authentication and security pillars (#71)
+- Agent: Claude Code (Opus 5.5) · Person: Lavanya · Folder: `C:\Users\gocomets\Downloads\HackUTD26` · Branch: `sec-auth`
+- Started: 2026-11-08 08:39 · Last checkpoint: 2026-11-08 08:39
+- Done so far:
+  - Claimed. Plan: passkeys + Argon2id/TOTP, ES256 JWT cookies + rotating refresh, CSRF, deny-by-default RBAC + ownership, hash-chained audit, AES-256-GCM, all behind `AUTH_ENABLED=false` by default.
+- Next step (exact): add `cryptography`, `PyJWT[crypto]`, `argon2-cffi`, `pyotp`, `webauthn` to `backend/requirements.txt`; write `app/crypto.py` and `app/audit.py` with tests.
+- Files touched: CHANGELOG.md
+- How to run or test: `cd backend; python -m pytest`
+- Notes and gotchas: the frontend sign-in is Arnav's area (review before merge). Demo path must stay identical with the flag off.
 <!-- One block per active issue. Copy the template, keep it current at every checkpoint. -->
 
 
@@ -216,6 +228,8 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 ---
 
 ## Decisions
+
+- 2026-11-08 08:20 · PR #76 lands on the Zero Day desk. `/` and the customer routes stay the night desk from PR #75. The live console (system view, check any message, plug into any system, security) is at `/system`, `/customer`, `/r/:id`, `/patterns`, `/connect`, and `/security`. Auth stays off unless `AUTH_ENABLED` is set. #71 stays open.
 
 - 2026-11-08 07:33 · The demo desk uses HackUTD Zero Day’s night palette, taken from `zeroday.hackutd.co`: canvas `#05030a`, surface `#0e011f`, text `#f4f2ff`, magenta `#ff2ee6`, cyan `#22e0ff`, electric purple `#7828ff`. Amber `#ffc24b` is only a scam warning. “Likely safe” is cyan, never green, and still means what was checked. The phone frame stays for gallery specimens. Protective actions still wait for a tap. This replaces the clay workspace on `codex/clay-security-design` (PR #74).
 

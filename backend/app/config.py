@@ -19,7 +19,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
-from pydantic import SecretStr, ValidationError, field_validator
+from pydantic import Field, SecretStr, ValidationError, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from app.contracts import DemoMode
@@ -92,7 +92,65 @@ class Settings(BaseSettings):
     API_PORT: int = 8000
     WEB_PORT: int = 5173
 
-    @field_validator("NVIDIA_API_KEY", "DEEPSEEK_API_KEY", "GEMINI_API_KEY", "NESSIE_API_KEY", "HF_TOKEN", "PHONE_HASH_SALT", mode="before")
+    # Authentication (L13, DATA_SPEC section 8). Off by default: every route then
+    # acts as one fixed demo customer, exactly as before.
+    AUTH_ENABLED: bool = False
+    AUTH_DB_PATH: str = ""  # default data/auth.sqlite
+    JWT_PRIVATE_KEY: SecretStr | None = None  # base64 of an EC P-256 PEM (python -m scripts.auth_keys)
+    JWT_KEY_ID: str = "k1"
+    JWT_ISSUER: str = "sentinelai"
+    JWT_AUDIENCE: str = "sentinelai-web"
+    ACCESS_TOKEN_MINUTES: int = Field(default=10, ge=1, le=60)
+    REFRESH_TOKEN_HOURS: int = Field(default=8, ge=1, le=72)
+    DATA_ENCRYPTION_KEYS: SecretStr | None = None  # "k1:<base64 32 bytes>", newest first
+    WEBAUTHN_RP_ID: str = "localhost"
+    WEBAUTHN_ORIGINS: str = ""  # comma-separated; default http://localhost:<WEB_PORT>
+    COOKIE_SECURE: bool = True  # browsers accept Secure cookies on http://localhost
+    AUTH_RATE_LIMIT_PER_MINUTE: int = Field(default=30, ge=1)
+
+    # SMS by Twilio (L14, DATA_SPEC section 9). Off unless all four are set.
+    TWILIO_ACCOUNT_SID: str = ""
+    TWILIO_AUTH_TOKEN: SecretStr | None = None
+    TWILIO_FROM_NUMBER: str = ""  # E.164, e.g. +15125550123
+    PUBLIC_BASE_URL: str = ""  # the tunnel URL, e.g. https://xyz.trycloudflare.com
+    SMS_ALLOWED_NUMBERS: str = ""  # comma-separated E.164 numbers that may use it
+
+    # WhatsApp Cloud API (L14). Off unless the four Meta values and PUBLIC_BASE_URL are set.
+    WHATSAPP_ACCESS_TOKEN: SecretStr | None = None
+    WHATSAPP_PHONE_NUMBER_ID: str = ""
+    WHATSAPP_APP_SECRET: SecretStr | None = None
+    WHATSAPP_VERIFY_TOKEN: SecretStr | None = None  # any long random string; the same one goes into Meta's webhook form
+    WHATSAPP_GRAPH_VERSION: str = "v23.0"
+    WHATSAPP_ALLOWED_NUMBERS: str = ""  # comma-separated, E.164
+
+    @property
+    def whatsapp_enabled(self) -> bool:
+        return bool(
+            self.WHATSAPP_ACCESS_TOKEN and self.WHATSAPP_PHONE_NUMBER_ID and self.WHATSAPP_APP_SECRET
+            and self.WHATSAPP_VERIFY_TOKEN and self.PUBLIC_BASE_URL
+        )
+
+    @property
+    def sms_enabled(self) -> bool:
+        return bool(self.TWILIO_ACCOUNT_SID and self.TWILIO_AUTH_TOKEN and self.TWILIO_FROM_NUMBER and self.PUBLIC_BASE_URL)
+
+    @property
+    def sms_allowed_numbers(self) -> frozenset[str]:
+        return frozenset(_split_keep_case(self.SMS_ALLOWED_NUMBERS))
+
+    @property
+    def auth_db_path(self) -> Path:
+        return Path(self.AUTH_DB_PATH) if self.AUTH_DB_PATH else DATA_DIR / "auth.sqlite"
+
+    @property
+    def webauthn_origins(self) -> list[str]:
+        return _split_keep_case(self.WEBAUTHN_ORIGINS) or [f"http://localhost:{self.WEB_PORT}"]
+
+    @field_validator(
+        "NVIDIA_API_KEY", "DEEPSEEK_API_KEY", "GEMINI_API_KEY", "NESSIE_API_KEY", "HF_TOKEN", "PHONE_HASH_SALT",
+        "JWT_PRIVATE_KEY", "DATA_ENCRYPTION_KEYS", "TWILIO_AUTH_TOKEN",
+        "WHATSAPP_ACCESS_TOKEN", "WHATSAPP_APP_SECRET", "WHATSAPP_VERIFY_TOKEN", mode="before",
+    )
     @classmethod
     def _blank_secret_is_none(cls, value: object) -> object:
         # `NVIDIA_API_KEY=` in .env means "not set", not an empty key.
@@ -140,6 +198,10 @@ class Settings(BaseSettings):
 
 def _split(value: str) -> list[str]:
     return [part.strip().lower() for part in value.split(",") if part.strip()]
+
+
+def _split_keep_case(value: str) -> list[str]:
+    return [part.strip() for part in value.split(",") if part.strip()]
 
 
 # ---------------------------------------------------------------------------
@@ -224,6 +286,28 @@ def check_settings(s: Settings) -> list[SettingsIssue]:
         issues.append(SettingsIssue("error", "NEMOTRON_MODEL", "empty; set the model ID (confirm it with GET /v1/models)."))
     if s.GEMINI_API_KEY is not None and not s.GEMINI_MODEL.strip():
         issues.append(SettingsIssue("warning", "GEMINI_MODEL", "empty while GEMINI_API_KEY is set; grounded search needs a model ID."))
+    if s.AUTH_ENABLED:
+        if s.JWT_PRIVATE_KEY is None:
+            issues.append(SettingsIssue("error", "JWT_PRIVATE_KEY", "not set while AUTH_ENABLED=true; run `python -m scripts.auth_keys`."))
+        if s.DATA_ENCRYPTION_KEYS is None:
+            issues.append(SettingsIssue("error", "DATA_ENCRYPTION_KEYS", "not set while AUTH_ENABLED=true; run `python -m scripts.auth_keys`."))
+        if not s.COOKIE_SECURE:
+            issues.append(SettingsIssue("warning", "COOKIE_SECURE", "false: session cookies would also be sent over plain HTTP."))
+    sms_parts = [s.TWILIO_ACCOUNT_SID, s.TWILIO_AUTH_TOKEN, s.TWILIO_FROM_NUMBER, s.PUBLIC_BASE_URL]
+    if any(sms_parts) and not all(sms_parts):
+        issues.append(SettingsIssue("warning", "TWILIO_ACCOUNT_SID", "SMS is off: set TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM_NUMBER and PUBLIC_BASE_URL together."))
+    if s.sms_enabled:
+        if s.PHONE_HASH_SALT is None:
+            issues.append(SettingsIssue("error", "PHONE_HASH_SALT", "not set; SMS needs it to hash phone numbers."))
+        if not s.PUBLIC_BASE_URL.startswith("https://"):
+            issues.append(SettingsIssue("error", "PUBLIC_BASE_URL", "must start with https:// (Twilio signs the public HTTPS URL)."))
+        if not s.sms_allowed_numbers:
+            issues.append(SettingsIssue("warning", "SMS_ALLOWED_NUMBERS", "empty: nobody will get a reply."))
+    wa_parts = [s.WHATSAPP_ACCESS_TOKEN, s.WHATSAPP_PHONE_NUMBER_ID, s.WHATSAPP_APP_SECRET, s.WHATSAPP_VERIFY_TOKEN]
+    if any(wa_parts) and not (all(wa_parts) and s.PUBLIC_BASE_URL):
+        issues.append(SettingsIssue("warning", "WHATSAPP_ACCESS_TOKEN", "WhatsApp is off: set WHATSAPP_ACCESS_TOKEN, WHATSAPP_PHONE_NUMBER_ID, WHATSAPP_APP_SECRET, WHATSAPP_VERIFY_TOKEN and PUBLIC_BASE_URL."))
+    if s.whatsapp_enabled and s.PHONE_HASH_SALT is None:
+        issues.append(SettingsIssue("error", "PHONE_HASH_SALT", "not set; WhatsApp needs it to hash phone numbers."))
     if s.API_PORT == s.WEB_PORT:
         issues.append(SettingsIssue("error", "API_PORT", f"same as WEB_PORT ({s.WEB_PORT}); give each its own port."))
     return issues

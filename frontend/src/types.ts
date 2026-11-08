@@ -29,7 +29,7 @@ export type ToolName =
   | "nessie_recent_activity"
   | "nessie_bill_status"
   | "public_scam_reports";
-export type MessageSource = "generated" | "handwritten" | "public" | "scenario" | "authored";
+export type MessageSource = "generated" | "handwritten" | "public" | "scenario" | "authored" | "sms";
 export type ActivityType = "transfer" | "purchase" | "bill" | "deposit" | "withdrawal";
 
 /** ISO 8601 date-time string. */
@@ -447,4 +447,50 @@ export interface BaselineMetrics {
   categories: BaselineCategoryMetrics[];
   macro_f1: number;
   false_positive_rate: number;
+}
+
+// ---------------------------------------------------------------------------
+// Authentication and audit (DATA_SPEC section 8, L13). Only used when auth is on.
+// Tokens never appear here: they travel in HttpOnly cookies the page can't read.
+// ---------------------------------------------------------------------------
+
+export type Role = "customer" | "admin";
+
+export interface PasswordLoginRequest {
+  username: string;
+  password: string;
+}
+
+export interface TotpRequest {
+  code: string;
+}
+
+export interface LoginStep {
+  signed_in: boolean;
+  mfa_required?: boolean;
+}
+
+export interface Me {
+  user_id: string;
+  username: string;
+  display_name: string;
+  role: Role;
+  passkeys: number;
+}
+
+export interface AuditEventView {
+  id: number;
+  ts: DateTime;
+  event: string;
+  actor: string;
+  target: string;
+  outcome: "success" | "failure" | "denied";
+  ip_hash: string;
+  details?: Record<string, string | number | boolean>;
+}
+
+export interface AuditView {
+  chain_intact: boolean;
+  first_broken_id?: number | null;
+  events: AuditEventView[];
 }

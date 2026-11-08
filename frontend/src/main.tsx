@@ -7,6 +7,7 @@ import "@fontsource-variable/outfit/wght.css";
 import "@fontsource/ibm-plex-mono/latin-400.css";
 import "@fontsource/ibm-plex-mono/latin-500.css";
 import "./theme.css";
+import "./console/console.css";
 import App from "./App";
 
 createRoot(document.getElementById("root")!).render(

@@ -28,19 +28,25 @@ import threading
 from collections.abc import AsyncIterator, Callable
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import Annotated
+from typing import TYPE_CHECKING, Annotated
 
 from fastapi import APIRouter, Depends, FastAPI, Request
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from app import contracts as c
 from app import mocks, privacy_log
 from app.config import DATA_DIR, REPO_ROOT, ROUTES, Settings, get_settings, integration_modes, validate_settings
+from app.auth.deps import DEMO_CUSTOMER_ID, Principal, PrincipalDep, authorize
 from app.errors import ErrorResponse, NotFoundError, install_error_handlers
 from app.logs import RequestContextMiddleware, bind_message_id, configure_logging
 from app import pipeline as _pipeline_module
 from app.pipeline import Pipeline, pipeline_job
 from app.state import JobRunner, StateStore
+
+if TYPE_CHECKING:
+    from app.auth.context import AuthContext
+    from app.sms import SmsService
+    from app.whatsapp import WhatsAppService
 
 INBOX_SEED = DATA_DIR / "scenarios" / "inbox.json"
 METRICS_PATH = REPO_ROOT / "eval" / "metrics.json"
@@ -123,6 +129,7 @@ _lock = threading.Lock()
 _polls: dict[str, int] = {}  # message_id -> result polls served so far
 _result_key: dict[str, str] = {}  # message_id -> mock file for its result
 _posted: list[c.InboxItem] = []  # messages added with POST /api/messages
+_mock_owner: dict[str, str] = {}  # message_id -> user id (L13); seeded mocks belong to the demo customer
 
 _DEFAULT_RESULT_KEYS = {
     "msg_0001": "result_scenario_1.json",
@@ -137,6 +144,7 @@ def _reset_state() -> None:
         _posted.clear()
         _result_key.clear()
         _result_key.update(_DEFAULT_RESULT_KEYS)
+        _mock_owner.clear()
 
 
 _reset_state()
@@ -146,8 +154,15 @@ def _inbox_items() -> list[c.InboxItem]:
     return [*mocks.load("inbox.json"), *_posted]
 
 
-def _known(message_id: str) -> None:
-    if message_id not in _result_key:
+def _known(message_id: str, principal: Principal) -> None:
+    """404 for an unknown message and for another user's (L13): the two look the same."""
+    if message_id not in _result_key or _mock_owner.get(message_id, DEMO_CUSTOMER_ID) != principal.user_id:
+        raise NotFoundError("Unknown message_id")
+
+
+def _own(store: StateStore, message_id: str, principal: Principal) -> None:
+    """Ownership check (L13): another user's message answers 404, exactly like an unknown one."""
+    if store.owner_of(message_id) != principal.user_id:
         raise NotFoundError("Unknown message_id")
 
 
@@ -182,6 +197,7 @@ class HealthResponse(BaseModel):
     version: str
     demo_mode: c.DemoMode
     use_mocks: bool
+    auth_enabled: bool = False
     integrations: dict[str, IntegrationStatus]
     mocked_routes: dict[str, bool]
     warnings: list[str]
@@ -191,7 +207,17 @@ class HealthResponse(BaseModel):
 # Routes
 # ---------------------------------------------------------------------------
 
-router = APIRouter(prefix="/api", responses={404: {"model": ErrorResponse}, 501: {"model": ErrorResponse}})
+# Every route passes `authorize` (L13): deny by default, then CSRF, session and role checks when auth is on.
+router = APIRouter(
+    prefix="/api",
+    dependencies=[Depends(authorize)],
+    responses={
+        401: {"model": ErrorResponse},
+        403: {"model": ErrorResponse},
+        404: {"model": ErrorResponse},
+        501: {"model": ErrorResponse},
+    },
+)
 
 
 @router.get("/health", response_model=HealthResponse)
@@ -202,6 +228,7 @@ def get_health(request: Request, settings: SettingsDep) -> HealthResponse:
         version=VERSION,
         demo_mode=settings.DEMO_MODE,
         use_mocks=settings.USE_MOCKS,
+        auth_enabled=settings.AUTH_ENABLED,
         integrations={k: IntegrationStatus(**v) for k, v in integration_modes(settings).items()},  # type: ignore[arg-type]
         mocked_routes={r: settings.route_is_mocked(r) for r in ROUTES},
         warnings=[str(w) for w in request.app.state.settings_warnings],
@@ -209,12 +236,14 @@ def get_health(request: Request, settings: SettingsDep) -> HealthResponse:
 
 
 @router.get("/inbox", response_model=list[c.InboxItem])
-def get_inbox(settings: SettingsDep, store: StoreDep) -> list[c.InboxItem]:
-    """Messages in the demo inbox with their status."""
+def get_inbox(settings: SettingsDep, store: StoreDep, principal: PrincipalDep) -> list[c.InboxItem]:
+    """The caller's messages with their status."""
     if not settings.route_is_mocked("inbox"):
-        return store.inbox()
+        return store.inbox(principal.user_id)
     items = []
     for item in _inbox_items():
+        if _mock_owner.get(item.message_id, DEMO_CUSTOMER_ID) != principal.user_id:
+            continue
         if item.message_id in _polls:
             poll = _progress(item.message_id, advance=False)
             item = item.model_copy(
@@ -230,11 +259,11 @@ def get_inbox(settings: SettingsDep, store: StoreDep) -> list[c.InboxItem]:
 
 @router.post("/messages", response_model=c.PostMessageResponse)
 def post_message(
-    body: c.MessageIn, settings: SettingsDep, store: StoreDep, runner: RunnerDep, job: JobDep
+    body: c.MessageIn, settings: SettingsDep, store: StoreDep, runner: RunnerDep, job: JobDep, principal: PrincipalDep
 ) -> c.PostMessageResponse:
     """Simulate a message arriving and start the pipeline in the background."""
     if not settings.route_is_mocked("post_message"):
-        message_id = store.add_message(body, source=c.MessageSource.authored)
+        message_id = store.add_message(body, source=c.MessageSource.authored, owner_id=principal.user_id)
         runner.submit(message_id, job)
         return c.PostMessageResponse(message_id=message_id)
     with _lock:
@@ -247,6 +276,7 @@ def post_message(
         else:
             key = "result_legit.json"
         _result_key[message_id] = key
+        _mock_owner[message_id] = principal.user_id
         _posted.append(
             c.InboxItem(
                 message_id=message_id,
@@ -262,29 +292,46 @@ def post_message(
 
 
 @router.get("/messages/{message_id}/result", response_model=c.ResultPoll)
-def get_result(message_id: str, request: Request, settings: SettingsDep, store: StoreDep) -> c.ResultPoll:
+def get_result(
+    message_id: str, request: Request, settings: SettingsDep, store: StoreDep, principal: PrincipalDep
+) -> c.ResultPoll:
     """Poll every second. The trail grows as the agent works, until `done`.
 
     A preloaded message that was never checked starts its check on this first poll.
     """
     if not settings.route_is_mocked("result"):
+        _own(store, message_id, principal)
         start_if_new(request, message_id)
         return store.poll(message_id)
-    _known(message_id)
+    _known(message_id, principal)
     return _progress(message_id, advance=True)
+
+
+@router.get("/messages/{message_id}/agent")
+def get_agent_transcript(message_id: str, settings: SettingsDep, store: StoreDep, principal: PrincipalDep) -> dict:
+    """L14 System view: each real Nemotron call for this message (model, latency, tools it chose, reasoning).
+    Redacted data only. Empty when routes are mocked (no model runs)."""
+    from app import transcript
+
+    if not settings.route_is_mocked("result"):
+        _own(store, message_id, principal)
+    t = transcript.get(message_id)
+    return (t.model_dump(mode="json") if t else {"message_id": message_id, "runs": []}) | {
+        "model": settings.NEMOTRON_MODEL,
+        "live": not settings.route_is_mocked("result"),
+    }
 
 
 @router.post("/messages/{message_id}/clicked", response_model=c.ClickedResponse)
 def post_clicked(
-    message_id: str, settings: SettingsDep, store: StoreDep, runner: RunnerDep, job: JobDep
+    message_id: str, settings: SettingsDep, store: StoreDep, runner: RunnerDep, job: JobDep, principal: PrincipalDep
 ) -> c.ClickedResponse:
     """Customer says they clicked. Starts the recovery re-plan (the pipeline handles recovery mode, L11)."""
     if not settings.route_is_mocked("clicked"):
-        if not store.has_message(message_id):
-            raise NotFoundError("Unknown message_id")
+        _own(store, message_id, principal)
         runner.submit(message_id, job, mode=c.AgentMode.recovery)
         return c.ClickedResponse(message_id=message_id, status=c.JobStatus.queued)
-    _known(message_id)
+    _known(message_id, principal)
     with _lock:
         _result_key[message_id] = "result_scenario_2.json"
         _polls[message_id] = 0
@@ -292,19 +339,22 @@ def post_clicked(
 
 
 @router.post("/transactions/{ref}/confirm", response_model=c.ConfirmResponse)
-def post_confirm(ref: str, body: c.ConfirmRequest, settings: SettingsDep, store: StoreDep) -> c.ConfirmResponse:
+def post_confirm(
+    ref: str, body: c.ConfirmRequest, settings: SettingsDep, store: StoreDep, principal: PrincipalDep
+) -> c.ConfirmResponse:
     """Answer to "Was this you?"."""
     if not settings.route_is_mocked("confirm"):
-        return store.confirm_transaction(ref, body.was_me)
+        return store.confirm_transaction(ref, body.was_me, owner_id=principal.user_id)
     return c.ConfirmResponse(ref=ref, was_me=body.was_me, recorded=True)
 
 
 @router.post("/actions", response_model=c.ActionResponse)
-def post_action(body: c.ActionRequest, settings: SettingsDep, store: StoreDep) -> c.ActionResponse:
+def post_action(
+    body: c.ActionRequest, settings: SettingsDep, store: StoreDep, principal: PrincipalDep
+) -> c.ActionResponse:
     """Simulated block, report or alert. Only called after a customer tap; nothing is ever sent."""
     if not settings.route_is_mocked("actions"):
-        if not store.has_message(body.message_id):
-            raise NotFoundError("Unknown message_id")
+        _own(store, body.message_id, principal)
         with bind_message_id(body.message_id):
             log.info("action tapped (simulated)", extra={"fields": {"action": body.action.value}})
     return c.ActionResponse(
@@ -315,11 +365,12 @@ def post_action(body: c.ActionRequest, settings: SettingsDep, store: StoreDep) -
 
 
 @router.get("/privacy/{message_id}", response_model=c.PrivacyView)
-def get_privacy(message_id: str, settings: SettingsDep, store: StoreDep) -> c.PrivacyView:
+def get_privacy(message_id: str, settings: SettingsDep, store: StoreDep, principal: PrincipalDep) -> c.PrivacyView:
     """What was redacted and exactly what each tool and model received (L6)."""
     if not settings.route_is_mocked("privacy"):
+        _own(store, message_id, principal)
         return privacy_log.view(store, message_id)
-    _known(message_id)
+    _known(message_id, principal)
     return mocks.load("privacy.json").model_copy(update={"message_id": message_id})
 
 
@@ -342,9 +393,50 @@ def get_metrics(request: Request, settings: SettingsDep) -> c.Metrics:
     return mocks.load("metrics.json")
 
 
+class ConnectPreviewRequest(BaseModel):
+    """Records in the source system's own format (up to 200); omit to use the built-in synthetic sample."""
+
+    records: list[dict] | None = Field(default=None, max_length=200)
+    message_at: str | None = Field(default=None, max_length=40)
+
+
+@router.get("/demo/samples")
+def get_demo_samples(category: str | None = None, n: int = 1) -> dict:
+    """L14 live demo: random messages from the synthetic linked scenarios (template set A, never the test split)."""
+    from app import connect
+
+    return {"categories": connect.categories(), "samples": connect.sample_messages(category, max(1, min(n, 10)))}
+
+
+@router.get("/connect/sources")
+def get_connect_sources() -> list[dict]:
+    """L14: the systems SentinelAI can read account activity from, each defined by one mapping file."""
+    from app import connect
+
+    return connect.sources()
+
+
+@router.post("/connect/{source}/preview")
+def post_connect_preview(source: str, body: ConnectPreviewRequest) -> dict:
+    """L14: map records from one system into canonical events and compute the fraud signals the agent sees."""
+    from app import connect
+
+    try:
+        return connect.preview(source, body.records, body.message_at or connect.MESSAGE_AT)
+    except KeyError:
+        raise NotFoundError("Unknown source system") from None
+
+
 @router.post("/demo/reset", response_model=c.DemoResetResponse)
-def post_demo_reset(settings: SettingsDep, store: StoreDep) -> c.DemoResetResponse:
-    """Clears demo state and reloads the demo inbox."""
+def post_demo_reset(
+    request: Request, settings: SettingsDep, store: StoreDep, principal: PrincipalDep
+) -> c.DemoResetResponse:
+    """Clears demo state and reloads the demo inbox. Admin only when auth is on."""
+    if request.app.state.auth is not None:
+        request.app.state.auth.store.audit.record("demo.reset", actor=principal.user_id)
+    from app import transcript
+
+    transcript.clear()
     if not settings.route_is_mocked("demo_reset"):
         store.reset()
         seed_inbox(store)
@@ -364,16 +456,60 @@ def _list_campaigns() -> list[c.Campaign]:
     return list_campaigns()
 
 
+def _sms_service(settings: Settings) -> SmsService:
+    from app.integrations.twilio import TwilioClient
+    from app.sms import SmsService
+
+    assert settings.TWILIO_AUTH_TOKEN is not None and settings.PHONE_HASH_SALT is not None
+    client = TwilioClient(
+        settings.TWILIO_ACCOUNT_SID,
+        settings.TWILIO_AUTH_TOKEN.get_secret_value(),
+        settings.TWILIO_FROM_NUMBER,
+        settings.DEMO_MODE,
+    )
+    return SmsService(
+        client=client,
+        public_base_url=settings.PUBLIC_BASE_URL,
+        phone_salt=settings.PHONE_HASH_SALT.get_secret_value(),
+        allowed=settings.sms_allowed_numbers,
+    )
+
+
+def _whatsapp_service(settings: Settings) -> WhatsAppService:
+    from app.integrations.whatsapp import WhatsAppClient
+    from app.whatsapp import WhatsAppService
+
+    assert settings.WHATSAPP_ACCESS_TOKEN and settings.WHATSAPP_APP_SECRET and settings.WHATSAPP_VERIFY_TOKEN
+    assert settings.PHONE_HASH_SALT is not None
+    client = WhatsAppClient(
+        settings.WHATSAPP_ACCESS_TOKEN.get_secret_value(),
+        settings.WHATSAPP_PHONE_NUMBER_ID,
+        settings.WHATSAPP_GRAPH_VERSION,
+        settings.DEMO_MODE,
+    )
+    return WhatsAppService(
+        client=client,
+        app_secret=settings.WHATSAPP_APP_SECRET.get_secret_value(),
+        verify_token=settings.WHATSAPP_VERIFY_TOKEN.get_secret_value(),
+        public_base_url=settings.PUBLIC_BASE_URL,
+        phone_salt=settings.PHONE_HASH_SALT.get_secret_value(),
+        allowed=frozenset(p.strip() for p in settings.WHATSAPP_ALLOWED_NUMBERS.split(",") if p.strip()),
+    )
+
+
 def create_app(
     settings: Settings | None = None,
     *,
     pipeline: Pipeline | None = None,
     list_campaigns: Callable[[], list[c.Campaign]] | None = None,
     metrics_path: Path | None = None,
+    auth_context: AuthContext | None = None,
+    sms_service: SmsService | None = None,
+    whatsapp_service: WhatsAppService | None = None,
 ) -> FastAPI:
     """Build the app. Raises `SettingsError` with a clear message if settings are invalid.
 
-    `pipeline`, `list_campaigns` and `metrics_path` default to the real ones; tests pass fakes.
+    `pipeline`, `list_campaigns`, `metrics_path` and `auth_context` default to the real ones; tests pass fakes.
     """
     settings = settings or get_settings()
     configure_logging(settings.LOG_LEVEL, settings.LOG_FORMAT)
@@ -391,6 +527,8 @@ def create_app(
         yield
         runner.shutdown(wait=False)
         store.close()
+        if app.state.auth is not None:
+            app.state.auth.close()
 
     app = FastAPI(title="SentinelAI", version=VERSION, lifespan=lifespan)
     app.state.settings = settings
@@ -405,9 +543,28 @@ def create_app(
     app.state.metrics_path = metrics_path or METRICS_PATH
     if not settings.route_is_mocked("inbox"):
         seed_inbox(store)
+    app.state.auth = None
     install_error_handlers(app)
     app.add_middleware(RequestContextMiddleware)
     app.include_router(router)
+    if settings.AUTH_ENABLED:  # L13: sign-in routes and real sessions; off means one fixed demo customer
+        from app.auth.context import AuthContext
+        from app.auth.routes import router as auth_router
+
+        app.state.auth = auth_context or AuthContext(settings)
+        app.include_router(auth_router)
+    app.state.sms = None
+    if settings.sms_enabled:  # L14: text it, get a reply
+        app.state.sms = sms_service or _sms_service(settings)
+        from app.sms import router as sms_router
+
+        app.include_router(sms_router)
+    app.state.whatsapp = None
+    if settings.whatsapp_enabled:  # L14: the free way to message SentinelAI from a phone
+        app.state.whatsapp = whatsapp_service or _whatsapp_service(settings)
+        from app.whatsapp import router as whatsapp_router
+
+        app.include_router(whatsapp_router)
 
     modes = {k: v["mode"] for k, v in integration_modes(settings).items()}
     mocked = sorted(r for r in ROUTES if settings.route_is_mocked(r))

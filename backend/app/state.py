@@ -47,6 +47,7 @@ from typing import Any, Optional
 
 from app import contracts as c
 from app import privacy_log
+from app.auth.deps import DEMO_CUSTOMER_ID
 from app.errors import ConflictError, NotFoundError
 from app.logs import bind_message_id
 
@@ -59,6 +60,7 @@ CREATE TABLE messages (
     sender       TEXT    NOT NULL,
     text         TEXT    NOT NULL,
     received_at  TEXT    NOT NULL,
+    owner_id     TEXT    NOT NULL,
     source       TEXT    NOT NULL,
     status       TEXT    NOT NULL,
     mode         TEXT    NOT NULL,
@@ -206,8 +208,13 @@ class StateStore:
         message: c.MessageIn,
         source: c.MessageSource = c.MessageSource.authored,
         message_id: str | None = None,
+        owner_id: str = DEMO_CUSTOMER_ID,
     ) -> str:
-        """Store a new message (status `queued`, no run yet) and return its id (`msg_0001`, ...)."""
+        """Store a new message (status `queued`, no run yet) and return its id (`msg_0001`, ...).
+
+        `owner_id` is the user it belongs to (L13). With auth off every message
+        belongs to the demo customer.
+        """
         now = _now()
         with self._tx():
             if message_id is None:
@@ -219,13 +226,14 @@ class StateStore:
             elif self._db.execute("SELECT 1 FROM messages WHERE message_id = ?", (message_id,)).fetchone():
                 raise ConflictError(f"message_id {message_id} already exists")
             self._db.execute(
-                "INSERT INTO messages (message_id, sender, text, received_at, source, status, mode, generation,"
-                " created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO messages (message_id, sender, text, received_at, owner_id, source, status, mode, generation,"
+                " created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 (
                     message_id,
                     message.sender,
                     message.text,
                     message.received_at.isoformat(),
+                    owner_id,
                     c.MessageSource(source).value,
                     c.JobStatus.queued.value,
                     c.AgentMode.check.value,
@@ -254,10 +262,18 @@ class StateStore:
         with self._lock:
             return self._db.execute("SELECT 1 FROM messages WHERE message_id = ?", (message_id,)).fetchone() is not None
 
-    def inbox(self) -> list[c.InboxItem]:
-        """Every message, newest received first, with its latest verdict once done."""
+    def owner_of(self, message_id: str) -> str:
+        """The user a message belongs to (404 if unknown)."""
         with self._lock:
-            rows = self._db.execute("SELECT * FROM messages ORDER BY seq DESC").fetchall()
+            return self._one(message_id)["owner_id"]
+
+    def inbox(self, owner_id: str | None = None) -> list[c.InboxItem]:
+        """Every message (or only `owner_id`'s), newest received first, with its latest verdict once done."""
+        with self._lock:
+            if owner_id is None:
+                rows = self._db.execute("SELECT * FROM messages ORDER BY seq DESC").fetchall()
+            else:
+                rows = self._db.execute("SELECT * FROM messages WHERE owner_id = ? ORDER BY seq DESC", (owner_id,)).fetchall()
         rows = sorted(rows, key=lambda r: datetime.fromisoformat(r["received_at"]), reverse=True)  # stable: ties keep newest-added first
         items = []
         for row in rows:
@@ -367,13 +383,15 @@ class StateStore:
         )
 
     # -- customer confirmations (L11) -----------------------------------------
-    def confirm_transaction(self, ref: str, was_me: bool) -> c.ConfirmResponse:
-        """Record a tap only for an item shown in a completed, current recovery run."""
+    def confirm_transaction(self, ref: str, was_me: bool, owner_id: str | None = None) -> c.ConfirmResponse:
+        """Record a tap only for an item shown in a completed, current recovery run (of `owner_id`'s messages, if given)."""
         with self._tx():
             rows = self._db.execute(
-                "SELECT message_id, run, was_this_you FROM messages WHERE mode = ? AND status = ? ORDER BY seq DESC",
+                "SELECT message_id, run, was_this_you, owner_id FROM messages WHERE mode = ? AND status = ? ORDER BY seq DESC",
                 (c.AgentMode.recovery.value, c.JobStatus.done.value),
             ).fetchall()
+            if owner_id is not None:
+                rows = [r for r in rows if r["owner_id"] == owner_id]
             for row in rows:
                 if any(item["ref"] == ref for item in json.loads(row["was_this_you"])):
                     self._db.execute(
