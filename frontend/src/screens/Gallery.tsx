@@ -216,20 +216,20 @@ export default function Gallery() {
   const [search, setSearch] = useSearchParams();
   const group = search.get("group") || "all";
   return (
-    <main className="gallery-page">
+    <div className="gallery-page">
       <header className="gallery-heading">
         <div>
-          <p className="eyebrow">Steady · The complete screen collection</p>
+          <p className="eyebrow">Twenty-one states · Synthetic fixtures</p>
           <h1>
-            Every moment,
+            Every screen
             <br />
-            considered.
+            the check can take.
           </h1>
         </div>
         <p>
-          A calm interface, even when the evidence isn’t.
+          Phone specimens for review, plus the judge-facing accuracy page.
           <br />
-          {galleryItems.length} phone states + judge-facing accuracy · Synthetic fixtures
+          {galleryItems.length} states · No live account
         </p>
       </header>
       <nav className="gallery-filters" aria-label="Gallery screens">
@@ -260,9 +260,9 @@ export default function Gallery() {
         </section>
       )}
       <footer className="gallery-footer">
-        Deep ink for actions. Amber for caution. Green only for likely safe.
-        <span>Source Sans 3 + Newsreader · Bundled locally</span>
+        Violet marks an action. Amber marks a scam warning. Cyan marks a finished check.
+        <span>Instrument Serif · Outfit · IBM Plex Mono</span>
       </footer>
-    </main>
+    </div>
   );
 }

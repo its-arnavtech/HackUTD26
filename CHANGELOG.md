@@ -53,6 +53,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | G2 | Gate: all three scenarios end to end in the app | Both | Codex | MVP | A17, A18, L10, L11 | done | #33 · PR #69; live/record/offline UI acceptance passed |
 | A19 | Replay fixtures and backup video | Arnav | Codex | Demo | G2 | in progress | #34 · CLI + app fixtures verified; video excluded by user |
 | A20 | Capital One and Best Design pitch | Arnav | any | Demo | G2 | todo | #35 |
+| #73 | Zero Day cyberwave redesign | Arnav | Cursor, finishing Codex | Demo | A7 | in review | #73 · PR #75 |
 | L12 | NVIDIA and T-Mobile pitch, Devpost | Lavanya | Claude Code | Demo | G2 | todo | #36 |
 | G3 | Rehearse the 3-minute demo three times | Both | any | Demo | A19, A20, L12 | todo | #37 |
 | SYN | Synthetic linked scenarios, payment schema, multiclass SMS | Arnav | Cursor | Demo | A21 | done | #72 · cursor/synthetic-linked-scenarios-6119 |
@@ -150,6 +151,8 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 ## Done log
 
+- 2026-11-08 07:33 · #73 cyberwave redesign · Cursor (Grok 4.7), resumed from Codex (GPT-6 Astra) · #75 · Replaced the phone-stage shell with a Zero Day desk: black and deep violet, electric purple actions, magenta emphasis, cyan for navigation and finished checks, amber only for scam warnings. Editorial headline, selectable redact / investigate / you-decide diagram, nine-section navigation, ledger inbox, and restyled result, evidence, privacy, recovery, patterns, accuracy, and gallery. 68 frontend tests and production build pass. Browser review on the mock API at 1440, 1100, 390, and 320. · follow-up: PR #74’s clay direction is superseded by this pass; wording rules in POC_MVP 4.4 are unchanged.
+
 - 2026-11-08 04:30 · SYN · Cursor (Grok 4.7) · #72 · Seeded generator (no LLM) writes multiclass SMS (200 per taxonomy id, sets A/B, 70/15/15), 32 campaigns, URL/RDAP rows, 320 linked scenarios (40% benign), telecom events, canonical payment schema, six source mappings, and per-scenario Nessie exports. A21 `messages.jsonl`, splits, and eval files were not changed. Datasheet: `data/generated/SYNTHETIC_LINKED_README.md`. Public-set notes: `docs/PUBLIC_DATASETS.md`. 699 backend tests passed.
 
 - 2026-11-08 01:01 · G2 technical evidence / A19 fixtures / reset safety · Codex (GPT-6) with Cursor reset fix · #69 (includes #68) · All three UI flows pass live, record, and offline replay with frozen L7 v2; actual $900 purchase/confirmation, bill paid/$0 due, privacy/campaigns/accuracy, no browser errors; reset-generation regression integrated; 688 backend and 50 frontend tests/build pass · G2 finished per Arnav explicit request; A17 remains separately with its owner; video/presentation excluded by user.
@@ -213,6 +216,8 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 ---
 
 ## Decisions
+
+- 2026-11-08 07:33 · The demo desk uses HackUTD Zero Day’s night palette, taken from `zeroday.hackutd.co`: canvas `#05030a`, surface `#0e011f`, text `#f4f2ff`, magenta `#ff2ee6`, cyan `#22e0ff`, electric purple `#7828ff`. Amber `#ffc24b` is only a scam warning. “Likely safe” is cyan, never green, and still means what was checked. The phone frame stays for gallery specimens. Protective actions still wait for a tap. This replaces the clay workspace on `codex/clay-security-design` (PR #74).
 
 - 2026-11-08 04:30 · Synthetic linked data is a new set beside A21, not a replacement. Train and validation are template set A; test is template set B, and those sets share no template, URL, or sender. Canonical events use UTC. `event_type` adds `esim_transfer`, `plan_change`, and `bill_amount_change` because the telecom file needs them. Nessie exports truncate cents and keep the clock time in a manifest, matching live Nessie. The mapping loader (`app/adapters/mapping_loader.py`) picks a source by YAML file name. Classifier scores in `messages_multiclass.jsonl` are placeholders, not a model. `labels` on an event are supervision and must not be shown to Nemotron.
 

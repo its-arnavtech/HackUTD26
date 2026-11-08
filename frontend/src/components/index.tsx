@@ -78,7 +78,7 @@ export function PhoneFrame({
       aria-label={label}
     >
       <div className="status-bar" aria-hidden="true">
-        <span>9:41</span>
+        <span>21:14</span>
         <span className="phone-island" />
         <span className="status-icons">
           <Signal size={16} />
