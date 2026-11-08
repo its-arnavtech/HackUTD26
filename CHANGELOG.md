@@ -30,14 +30,14 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | L3 | State store and background job runner | Lavanya | Claude Code | POC | L2 | done | #11 · PR #47 |
 | L4 | Gemini grounded search smoke test (Sunday morning, when the Gemini key is set) | Lavanya | Claude Code | POC | scaffold | todo | #12 |
 | A22 | Initial Devpost draft by 11:00 PM Saturday | Arnav | any | POC | none | todo | #13 |
-| A8 | POC gate report | Arnav | Claude Code | POC | A1, A2, A3, A4, L4 | todo | #14 |
+| A8 | POC gate report | Arnav | Claude Code | POC | A1, A2, A3, A4, L4 | done | #14 · #49 (arnav-shared) |
 | L5 | Tool registry and runtime | Lavanya | Claude Code | MVP | L2 | done | #15 · PR #48 |
 | L6 | Privacy audit log and `/api/privacy` | Lavanya | Claude Code | MVP | L3, L5 | todo | #16 |
-| A9 | Feature extraction | Arnav | Codex | MVP | A3 | todo | #17 |
+| A9 | Feature extraction | Arnav | Codex | MVP | A3 | done | #17 · #49 (arnav-shared) |
 | A10 | `check_link` and `check_sender` tools | Arnav | Cursor | MVP | L1 | done | #18 · PR #43 |
 | A11 | Nessie tools | Arnav | Cursor | MVP | A2 | done | #19 · PR #45 (stacked on #44) |
-| A12 | Campaign store, seeding and `match_campaign` | Arnav | Codex | MVP | A1, A3 | todo | #20 |
-| A13 | Evaluation harness | Arnav | Claude Code | MVP | A1 | todo | #21 |
+| A12 | Campaign store, seeding and `match_campaign` | Arnav | Codex | MVP | A1, A3 | done | #20 · #49 (arnav-shared) |
+| A13 | Evaluation harness | Arnav | Claude Code | MVP | A1 | done | #21 · #49 (arnav-shared) |
 | L7 | Improved classifier | Lavanya | Claude Code | MVP | A1, A9, A13 | todo | #22 |
 | L8 | Agent loop with plan, re-plan and guardrails | Lavanya | Claude Code | MVP | A4, L5 | todo | #23 |
 | L9 | API endpoints and pipeline orchestration | Lavanya | Claude Code | MVP | L3, L8 | todo | #24 |
@@ -48,7 +48,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A15 | Recovery UI | Arnav | Codex design (GPT 6 Astra) | MVP | A14 | todo | #29 |
 | A16 | Consent screen, campaign view and accuracy page | Arnav | Codex design (GPT 6 Astra) | MVP | A7 | todo | #30 |
 | A17 | Frontend on the live API | Arnav | Cursor | MVP | A14, A15, A16, L9 | todo | #31 |
-| A18 | End-to-end scenario tests | Arnav | Claude Code | MVP | G1 | todo | #32 |
+| A18 | End-to-end scenario tests | Arnav | Claude Code | MVP | G1 | in progress | #32 · `arnav-shared` |
 | G2 | Gate: all three scenarios end to end in the app | Both | any | MVP | A17, A18, L10, L11 | todo | #33 |
 | A19 | Replay fixtures and backup video | Arnav | Claude Code | Demo | G2 | todo | #34 |
 | A20 | Capital One and Best Design pitch | Arnav | any | Demo | G2 | todo | #35 |
@@ -60,6 +60,11 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 ## In progress
 
 <!-- One block per active issue. Copy the template, keep it current at every checkpoint. -->
+
+
+
+
+
 
 
 
@@ -93,6 +98,19 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - How to run or test: `python -m pytest` in `backend/`; the seed needs `NESSIE_API_KEY` in `.env`: `python -m scripts.seed_nessie`
 - Notes and gotchas: never write to Nessie with a made-up key. Nessie dates have no time, so the planted transfer's 09:31 time lives in the manifest. A11 should limit check mode to activity before `received_at`, so scenario 1 (check) doesn't see the transfer that scenario 2 (recovery) finds.
 - Resumed by: none
+### A18 End-to-end scenario tests (#32)
+- Agent: Claude Code (Opus 5.5) · Person: Arnav · Folder: `C:\HackUTD26-cc` · Branch: `arnav-shared`
+- Started: 2026-11-07 20:41 · Last checkpoint: 2026-11-07 20:41
+- Done so far:
+  - `backend/tests/test_scenarios_e2e.py`: all three scenarios through `scripts.run_scenario.run_scenario` in **replay mode with every socket blocked**, so whatever `run_scenario.AGENT` points at is tested and the L8 swap stays one line in `run_scenario.py`. Checks: trail shape and planned tools = tools used, redaction before the agent, guardrails (enums, ≤3 actions, very-likely needs 2 tools, no phone numbers or links, bare domains only if official), plans differ (1 vs 3, 1 vs 2), scenario 1 plan = script, verdicts, Nessie findings (scenario 2 finds the planted $900 transfer and asks "Was this you?", scenario 3 finds the bill paid on 2026-11-01).
+  - Two worlds: `synthetic` (Cursor's FakeNessie seeded with `seed_nessie`, scenario calls recorded to a temp fixtures folder, then replayed; skipped once AGENT is the real agent, which needs recorded Nemotron) and `recorded` (committed `data/nessie_seed.json` + `data/fixtures/`, auto-enabled after P4 and A19).
+  - Verified on a scratch checkout of G1's branch (`cursor/g1-run-scenario-55c7`, PR #46): 16 passed, 15 skipped (recorded world); full suite there 338 passed. On `arnav-shared` the module skips because `run_scenario` is still the G1 stub.
+- Next step (exact): when PR #46 (G1) merges into `arnav-shared`, run `pytest tests/test_scenarios_e2e.py`; then the Playwright smoke test for scenario 1 (`frontend/`) and the CI job (`.github/workflows/ci.yml`, owned by A6/Cursor: coordinate). After P4 and A19, confirm the `recorded` world runs.
+- Files touched: `backend/tests/test_scenarios_e2e.py`, `CHANGELOG.md`
+- How to run or test: `cd backend; ..\.venv\Scripts\python -m pytest -q tests/test_scenarios_e2e.py -rs`
+- Notes and gotchas: the synthetic world patches `nessie_tools.load_seed` and `nessie_tools.client_from_settings` (their defaults bind `SEED_PATH` at import) and `cache.FIXTURES_DIR`. RDAP stays in replay, where an unrecorded lookup means "age unknown". The stand-in's reason says "imitates capitalone.com": allowed because it's the official domain; a scam domain in the reason fails the test.
+
+
 
 
 ---
@@ -101,6 +119,11 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID · tool · PR · summary · follow-ups`.
 
+- 2026-11-07 21:31 · A12 · Codex (GPT-6); resumed by Claude Code (Opus 5.5) from Codex to finish · #49 · Fingerprint-only SQLite campaign store (hashes, semantic bits, brand/category/domain patterns, timestamps; no wording, IDs or URLs), `match_campaign` and list/record hooks, seed CLI from the train split (1,127 train scams → 267 clusters, rerun inserts 0), threshold from validation (semantic weight 0.75, threshold 0.75; family-proxy F1 0.759), scenario 3 matches 28 historical observations at 0.924; 25 campaign tests. Claude Code merged `origin/main` into `arnav-shared` (CHANGELOG both sides; requirements keep `pyarrow==26.0.1` + `numpy==2.4.6`): 411 passed, 1 skipped · follow-ups: L5/L9 register and wire `match_campaign`, `list_campaigns` and `record_message` (routes owned by Lavanya); use `campaigns-v4.sqlite3`, fresh DB after fingerprint/calibration changes
+- 2026-11-07 20:27 · A9 · Codex (GPT-6) · #49 · Local typed URL/message features and first claimed brand; 10/10 hand-written messages, 58 feature checks, full backend 312 passed · follow-ups: L7 consumes features; A12 next after handoff
+
+- 2026-11-07 20:25 · A8 · Claude Code (Opus 5.5) · #49 · `docs/POC_RESULTS.md`: reran the gates. P1 pass (0.807 / 0.127, no pivot), P2 pass (5/5 native, median 2,635 ms), P5 pass (20/20); P3 pending (Gemini key Sunday morning, L4), P4 fail on first live run at 20:25 (two A2 bugs, see Blockers); 254 tests pass · follow-ups: update the P3 row Sunday; rerun P4 after A2's fix
+- 2026-11-07 20:20 · A13 · Claude Code (Opus 5.5) · #49 · `scripts/evaluate.py`: any model via a `(train, val)` factory, scored against the baseline on A1's saved test split and the public SMS set, on redacted text, plus a redaction-cost row and an agent sample mode; writes `eval/metrics.json` + `metrics_details.json`; ours = baseline stand-in until L7; 251 tests pass · follow-ups: L7 exposes a factory and reruns; agent sample once L8/L9 land; A3 brand over-redaction (Decisions)
 - 2026-11-07 20:19 · L5 · Claude Code (Opus 5.5, Lavanya) · #48 · `agent/registry.py`: `ToolRegistry` with the six built-in tools registered (tool modules untouched); OpenAI `tools=[...]` schemas with refs inlined and injected fields hidden; `call_tool` validates args, runs with a per-tool timeout (Gemini 20 s, others 10 s), returns `ToolCall` with errors as data (`unknown_tool`, `invalid_args`, `timeout`, `unavailable`, `tool_error`) and generic messages; `on_call` gets a `PrivacyRecipient` with exactly what the tool received; 33 tests (266 pass) · follow-ups: L8 uses `openai_tool_schemas()` and `call_tool`; L6 stores the `on_call` records
 - 2026-11-07 19:32 · A3 · Codex (GPT-6) · #41 · Local redactor, HMAC phone/sender handling, private URL ordering and report; P5 20/20, 50 redaction tests; full merged backend 219 passed in credential-free child process; real L1 adapters synced · follow-ups: A9, A13 redaction-cost evaluation; regex name/address limits documented
 
@@ -127,6 +150,19 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 
 ## Decisions
 
+- 2026-11-07 21:43 · **Planted $900 is a purchase, not a transfer (P4, A2/A11).** Live Nessie transfers accept only `transaction_date`, `status`, `amount` and `description` (probed on a throwaway customer; 18 receiver field names rejected; no `/transfers` routes), so a transfer can't name who got the money. The seed plants the $900 as a purchase at new merchant **"Unknown Payee"** on Linda's checking, 17 minutes after scenario 2's message, with its exact time in the manifest's `purchase_times`. A11 flags it as "first purchase at this merchant" plus 10x the 30-day purchase median (live: 23.1x). "Was this you?" items for it have `type: "purchase"`. There is no DELETE for purchases, so the demo customer is a fresh "Linda Sentinel" at 802 Demo Way; the one at 800 keeps old duplicates. Details in DATA_SPEC section 6. Code: PR #44 `02aae13` (seed, client, fake, `data/nessie_seed.json`), PR #45 `649f690` (tool).
+- 2026-11-07 21:43 · On `arnav-shared`, after a merge commit from `main`, pull with `git pull --rebase=merges` (or a plain `git pull`). A plain `git pull --rebase` flattens the merge and replays `main`'s commits one by one, which conflicts.
+
+- 2026-11-07 21:30 · Codex (both sessions) is out of usage until about 23:00. Claude Code resumes A12's finish and fixes PR #49's conflicts, snapshots the design lab to branch `design-lab-snapshot`, and finishes A2's live Nessie work on Cursor's branches (it has the key). Cursor stays off #44 and #45 and ports the design lab into `frontend/` for A7 and A14. Codex design picks up A15, A16 and polish when it's back. Live Nessie has no DELETE for purchases and rejects `medium` and `payee_id` on transfers (see PR #44 comments).
+- 2026-11-07 20:27 · A9 URL features: parse A3's private raw_urls locally and require exact URL_n occurrence mapping. Output only UrlInfo; never paths/query/userinfo. PSL uses bundled snapshot with HTTP/disk cache disabled, private suffix boundaries and reserved synthetic suffixes. Official-domain flag is relative to the first body-claimed brand, or any registry brand if none; exact hostname/subdomain boundary only. No redirects, DNS, registration or reputation checks. Shortener/brand terms are local lexical heuristics. Brand metadata is process-cached from data/brands.json; restart to refresh.
+- 2026-11-07 20:27 · A9 message vocabulary: threats account_lock/service_suspension/account_deletion/payment_penalty/legal_action; actions open_official_app/reply_with_code/download_app/reply/click_link_and_pay/make_payment/click_link_and_verify/verify_account/share_credentials/click_link/call_number; asks_for login/password/one_time_code/card_details/account_details/personal_information/payment. Values are deterministic hints, not verdicts; nearby negations are suppressed. Account verification at a link may infer login. Deadline output is bounded/canonical; money_amount_claimed is the first explicit currency magnitude, with no conversion. No held-out messages used to develop rules. Full test run clears service credentials only in its child process, leaving .env/global settings unchanged.
+
+- 2026-11-07 20:25 · **POC gates (A8, `docs/POC_RESULTS.md`):** P1 pass (baseline test macro F1 0.807, FPR 0.127; no pivot), P2 pass (5/5 native tool calls, median step 2,635 ms, worst 4,161 ms; keep `NEMOTRON_PROTOCOL=native`), P5 pass (20/20 gate strings). P3 pending until the Gemini key arrives Sunday morning (L4). P4 failed its first live run (20:25) on two fixable A2 bugs (Blockers); fix and rerun before taking the fixture pivot. No pivot taken. Whoever runs P3 or P4 updates its row in `docs/POC_RESULTS.md`.
+
+- 2026-11-07 20:20 · **A13 harness interface (for L7):** `cd backend; python -m scripts.evaluate --model <module>:<factory>`. The factory is called as `factory(train, val)` with A1's saved split (train 1,818, val 390) and returns an object whose `predict(messages: list[Message]) -> list[str]` gives one taxonomy id per message. It never receives test or the public set. Main rows score both models on **redacted** text (`app.privacy.redact`, phone hash tags collapsed to `<PHONE_HASH>` so scores don't depend on the salt); the redaction-cost row is ours on raw vs. redacted. Until L7 ships a factory, `eval/metrics.json` uses the baseline as a stand-in for "ours", so ours = baseline on every row.
+- 2026-11-07 20:20 · **A13 numbers (baseline, redacted text):** test macro F1 **0.791**, FPR **0.160** (raw: 0.807 / 0.127, same as A1). Redaction cost 0.807 → 0.791. Public `ucirvine/sms_spam` (5,574): spam recall **0.177**, FPR **0.034** (raw text: 0.253 / 0.041). The public spam is mostly 2012-era UK premium-rate prize and ringtone spam, largely outside our US smishing taxonomy, so low recall is expected from a model trained on our synthetic data. L7 must not train on it (external evaluation only); the pitch should present it honestly as a real-world stress test.
+- 2026-11-07 20:20 · **A13 finding for A3 (Codex):** redaction tags many brand and place names as `<PERSON>` (for example "Wells Fargo", "Best Buy", "ATL") and flight numbers as `<ACCOUNT_DIGITS>`; `data/brands.json` lists only Capital One and T-Mobile. This is most of the 0.016 macro F1 / +3.3-point FPR redaction cost. Not changed by Claude Code (Codex owns `privacy/redact.py`).
+- 2026-11-07 20:20 · `pyarrow==26.0.1` added to `backend/requirements.txt` (A13 reads A5's parquet). Running pytest locally: Arnav's Windows user environment sets `GEMINI_API_KEY`, which fails 4 config/runtime tests that expect no inherited keys; run `Remove-Item Env:GEMINI_API_KEY` in that shell first (251 pass).
 - 2026-11-07 20:19 · L5 tool contract: a tool is a plain function `fn(args: ArgsModel, agent_input: AgentInput) -> ResultModel` in its own module; the registry imports and registers it in `builtin_tools()`, so tool authors don't touch the registry. Raise `NotImplementedError` until built (the agent sees "unavailable"). `match_campaign`'s `message_id` is filled in by code from the agent input, not by the model.
 - 2026-11-07 19:32 · A4/A5 integration after L1 merge: removed scaffold bypasses from Nemotron and HF bootstrap; cached_call now receives the selected DEMO_MODE explicitly. Offline tests verify recording, credential-free replay and strict misses with no network. Local-fallback doc updated; production scenarios still need A19 fixtures. Full merged backend suite: 219 passed; test process clears inherited service credentials because L2 make_settings ignores .env but still reads environment variables (no global or .env changes).
 
@@ -181,6 +217,7 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 ## Blockers and open questions
 
 - `NESSIE_API_KEY` isn't available to the Cursor cloud agent. A2's live seed (gate P4) waits for Arnav to run `python -m scripts.seed_nessie` with his key, or to add the key in Cursor secrets.
-- Gemini key arrives Sunday morning; L4 and L10 wait for it.
+- Gemini key arrives Sunday morning; L4 and L10 wait for it. Gate P3 is pending until then (update `docs/POC_RESULTS.md`).
+- **Resolved 2026-11-07 21:40: gate P4 passes** (third live run; see Decisions 21:43 and `docs/POC_RESULTS.md`). Seed `Created 33`, then `Created 0`. Scenario 2's $900 is now a purchase at "Unknown Payee". PRs #44 and #45 carry the code and `data/nessie_seed.json`. History of the first two runs follows. Gate P4 failed its first live run (2026-11-07 20:25), on two A2 bugs in PR #44 (details in `docs/POC_RESULTS.md`): (1) Nessie returns HTTP 404 "No transfers found" for an empty list and `NessieClient._get_list` raises instead of returning `[]`, so the seed stops before any transfer, and the planted $900 transfer doesn't exist yet; (2) Nessie stores purchase amounts as whole dollars ($49.30 → 49), so the seed's `(description, date, amount)` match misses and every run re-creates purchases (Nessie now holds 48, 24 planned). Fix in A2 (Cursor), delete the 24 duplicate purchases, then rerun the seed twice and update P4. **Handed to Cursor** on 2026-11-07 at about 20:30 at Arnav's request: fixes, cleanup, tests and rerun steps are in the PR #44 comment. The rerun needs `NESSIE_API_KEY`, which Cursor's cloud agent doesn't have, so Arnav runs it or adds the key to Cursor secrets. **20:36:** a P4 rerun was requested, but PR #44's branch was still at `94bc769` (20:29, before the handoff), with no `--dedupe` and no 404 fix (`cursor/g1-…` and `cursor/a11-…` don't have them either), so it wasn't run; nothing was created or deleted. **20:43:** reran on PR #44 `f07cf08` (Cursor's fixes). The preview works (35 present, 24 duplicates, 4 transfers to create), but Nessie rejects both writes: `DELETE /purchases/{id}` → 403 "Missing Authentication Token" (no such route), and `POST /accounts/{id}/transfers` → 400, `medium` and `payee_id` "extra fields not permitted". Nothing changed in Nessie and no `data/nessie_seed.json` exists yet. Handed back to Cursor on PR #44. If transfers can't name a payee, pivot for transfers only (local fixture via replay); reads and bills work.
 - T-Mobile's official texting short codes: not published on T-Mobile's pages (checked 2026-11-07). Ask a T-Mobile mentor, then fill `data/brands.json` (A10 follow-up).
 - Taxonomy: ours (v1) is in `data/taxonomy.json` (A21). If a mentor shares T-Mobile's, map it and regenerate.
