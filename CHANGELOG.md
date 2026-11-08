@@ -55,11 +55,22 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A20 | Capital One and Best Design pitch | Arnav | any | Demo | G2 | todo | #35 |
 | L12 | NVIDIA and T-Mobile pitch, Devpost | Lavanya | Claude Code | Demo | G2 | todo | #36 |
 | G3 | Rehearse the 3-minute demo three times | Both | any | Demo | A19, A20, L12 | todo | #37 |
+| L13 | Full authentication and security pillars | Lavanya | Claude Code | Demo | G2 | in progress | #71 · `sec-auth` |
 
 ---
 
 ## In progress
 
+
+### L13 Full authentication and security pillars (#71)
+- Agent: Claude Code (Opus 5.5) · Person: Lavanya · Folder: `C:\Users\gocomets\Downloads\HackUTD26` · Branch: `sec-auth`
+- Started: 2026-11-08 08:39 · Last checkpoint: 2026-11-08 08:39
+- Done so far:
+  - Claimed. Plan: passkeys + Argon2id/TOTP, ES256 JWT cookies + rotating refresh, CSRF, deny-by-default RBAC + ownership, hash-chained audit, AES-256-GCM, all behind `AUTH_ENABLED=false` by default.
+- Next step (exact): add `cryptography`, `PyJWT[crypto]`, `argon2-cffi`, `pyotp`, `webauthn` to `backend/requirements.txt`; write `app/crypto.py` and `app/audit.py` with tests.
+- Files touched: CHANGELOG.md
+- How to run or test: `cd backend; python -m pytest`
+- Notes and gotchas: the frontend sign-in is Arnav's area (review before merge). Demo path must stay identical with the flag off.
 <!-- One block per active issue. Copy the template, keep it current at every checkpoint. -->
 
 
