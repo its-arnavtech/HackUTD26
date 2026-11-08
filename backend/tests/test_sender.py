@@ -6,7 +6,8 @@ import pytest
 
 from app.contracts import CheckSenderArgs, CheckSenderResult, SenderType
 from app.tools.brands import find_brand, load_brands
-from app.tools.sender import CHECK_SENDER_SPEC, check_sender
+from app.agent.registry import get_tool
+from app.tools.sender import check_sender
 from tests.agent_input_factory import make_input
 
 PHONE = re.compile(r"\d{3}")
@@ -83,7 +84,8 @@ def test_brands_file_lists_only_sourced_channels():
     assert find_brand("tmobile").name == "T-Mobile"
 
 
-def test_spec_matches_contracts():
-    assert CHECK_SENDER_SPEC.name.value == "check_sender"
-    assert CHECK_SENDER_SPEC.args_model is CheckSenderArgs
-    assert CHECK_SENDER_SPEC.result_model is CheckSenderResult
+def test_registered_with_l5():
+    spec = get_tool("check_sender")
+    assert spec.fn is check_sender
+    assert spec.args_model is CheckSenderArgs
+    assert spec.result_model is CheckSenderResult
