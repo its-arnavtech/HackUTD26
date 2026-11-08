@@ -202,7 +202,11 @@ def test_job_returning_wrong_type_is_a_failure(store, runner):
     assert wait_done(store, mid).result.verdict == c.Verdict.unsure
 
 
-def test_recovery_supersedes_a_running_check(store, runner):
+def test_recovery_supersedes_a_running_check(store, runner, monkeypatch):
+    from app.tools import nessie_tools
+    monkeypatch.setattr(nessie_tools, "resolve_ref", lambda ref: c.WasThisYouItem(
+        ref=ref, type="purchase", amount=900, payee="Synthetic Merchant", at=MSG.received_at,
+    ))
     mid = store.add_message(MSG)
     release = threading.Event()
 
