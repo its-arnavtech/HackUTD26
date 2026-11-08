@@ -138,15 +138,14 @@ def test_known_customer_names_are_local_and_brand_aware():
     assert result.report.counts.PERSON == 1
 
 
-def test_redaction_tags_are_not_processed_again():
-    first = privacy.redact("Hi Mira Vale, call 2025550124; account 1234.")
-    second = privacy.redact(first.text_redacted)
-    assert second.text_redacted == first.text_redacted
-    assert not any(second.report.counts.model_dump().values())
+@pytest.mark.parametrize("text", ["<PHONE_HASH_2025550124>", "<PHONE_HASH_4111111111111111>", "<URL_2025550124>"])
+def test_forged_privacy_tags_are_not_trusted(text):
+    with pytest.raises(ValueError, match="not valid raw message"):
+        privacy.redact(text)
 
 
 def test_mixed_existing_and_raw_urls_fail_closed():
-    with pytest.raises(ValueError, match="pre-redacted URL"):
+    with pytest.raises(ValueError, match="Pre-redacted URL"):
         privacy.redact("<URL_1> and https://example.test")
 
 

@@ -136,9 +136,12 @@ def redact(text: str, *, person_names: Sequence[str] = ()) -> RedactedMessage:
 
     person_names optionally supplies customer names already known locally. It
     is never inferred from held-out data and is not sent outside this function.
-    Existing redaction tags are kept intact. URL numbering follows occurrence
-    order; raw_urls contains the exact original strings, without trailing prose.
+    Phone/URL placeholders in untrusted input are rejected, rather than trusted
+    as proof of prior redaction. Run once on raw message text. URL numbering
+    follows occurrence order; raw_urls excludes trailing prose punctuation.
     """
+    if re.search(r"<(?:PHONE_HASH_[^>]*|URL_\d+)>", text):
+        raise ValueError("Pre-redacted URL/phone tags are not valid raw message input")
     brands, public_codes, _ = _brand_data()
     tags = [match.span() for match in _TAG.finditer(text)]
     brand_spans = _literal_spans(text, brands)
@@ -198,8 +201,6 @@ def redact(text: str, *, person_names: Sequence[str] = ()) -> RedactedMessage:
         if span:
             add(*span, "PERSON", 50)
 
-    if any(span.kind == "URL" for span in candidates) and re.search(r"<URL_\d+>", text):
-        raise ValueError("Do not mix pre-redacted URL tags with raw URLs")
     chosen: list[_Span] = []
     for span in sorted(candidates, key=lambda item: (-item.priority, -(item.end-item.start), item.start)):
         if not _overlap(span.start, span.end, [(other.start, other.end) for other in chosen]):
@@ -218,8 +219,9 @@ def redact(text: str, *, person_names: Sequence[str] = ()) -> RedactedMessage:
         output.append(replacement)
         cursor = span.end
     output.append(text[cursor:])
-    kept = [label for label, spans in (("brand", brand_spans), ("domain", [(0, 0)] if raw_urls else []),
-                                      ("amount", amount_spans), ("deadline", deadline_spans), ("short_code", code_spans)) if spans]
+    kept = [label for label, present in (("brand", bool(brand_spans)), ("domain", bool(raw_urls)),
+                                        ("amount", bool(amount_spans)), ("deadline", bool(deadline_spans)),
+                                        ("short_code", bool(code_spans))) if present]
     return RedactedMessage(text_redacted="".join(output), report=RedactionReport(counts=counts, kept=kept), raw_urls=raw_urls)
 
 
@@ -237,7 +239,8 @@ def redact_sender(raw_sender: str) -> tuple[SenderType, str]:
     else:
         return SenderType.long_code, hash_phone(value, _salt())
     brands, _, identifiers = _brand_data()
-    normalize = lambda item: re.sub(r"[\W_]", "", item).casefold()
+    def normalize(item: str) -> str:
+        return re.sub(r"[\W_]", "", item).casefold()
     known = {normalize(item) for item in (*brands, *identifiers)}
     if normalize(value) and normalize(value) in known:
         return SenderType.alphanumeric, value

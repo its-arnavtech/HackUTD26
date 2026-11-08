@@ -63,9 +63,9 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 ### A3 Redaction module (#4)
 - Agent: Codex (GPT-6) · Person: Arnav · Folder: C:\HackUTD26-codex · Branch: codex-shared (origin/arnav-shared)
-- Started: 2026-11-07 19:16 · Last checkpoint: 2026-11-07 19:25
-- Done so far: Implemented privacy/redact.py with local regex spans, HMAC-SHA256 phone tags, sender handling, URL ordering/private raw_urls, report counts and preserved signals. P5 20/20 handwritten cases; 48 total redaction tests. Full backend pytest 156 passed.
-- Next step (exact): Review diff and PR state; tick #4 checkboxes; finish CHANGELOG row/Done log and add Closes #4 to the shared PR. Do not start A9 before A3 handoff.
+- Started: 2026-11-07 19:16 · Last checkpoint: 2026-11-07 19:28
+- Done so far: Implemented privacy/redact.py with local regex spans, HMAC-SHA256 phone tags, sender handling, URL ordering/private raw_urls, report counts and preserved signals. P5 20/20 handwritten cases; 50 total redaction tests including forged-tag rejection. Full backend pytest 171 passed.
+- Next step (exact): Review diff and PR state; tick #4 checkboxes; finish CHANGELOG row/Done log and add Closes #4 to the shared PR. Resolve PR against newly merged L1 and rerun; then A3 handoff.
 - Files touched: backend/app/privacy/redact.py, backend/tests/test_redact.py, CHANGELOG.md
 - How to run or test: From backend, .\.venv\Scripts\python.exe -m pytest tests/test_redact.py -q; .\.venv\Scripts\python.exe -m pytest -q
 - Notes and gotchas: PHONE_HASH_SALT already configured in ignored .env; missing salts fail closed. Regex names/addresses are heuristic; optional person_names supplies known customer names locally. Unknown sender IDs are suppressed; registry brands/known IDs and 5-6 digit senders remain. No contracts changed, no external requests, no test-set data used. A1 remains another agent's active block; preserve it.
@@ -109,7 +109,7 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 
 ## Decisions
 
-- 2026-11-07 19:25 · A3 P5: local regex redaction with span priorities (whole URLs before embedded emails/phones/digits), occurrence counts, HMAC-SHA256 phone tags truncated to 16 hex chars, and no fixed salt fallback. US phone formatting and extensions normalize to one tag. Known brands/IDs come from data/brands.json; amounts/deadlines and contextual short codes remain. Regex names/addresses are heuristic; redact(text, person_names=...) accepts known customer names locally. Unknown alphanumeric sender values are suppressed to <UNKNOWN_SENDER>. Mixed pre-redacted URL tags plus raw URLs fail closed to avoid incorrect A9 URL mapping. raw_urls stays private/in memory; no contract changes.
+- 2026-11-07 19:25 · A3 P5: local regex redaction with span priorities (whole URLs before embedded emails/phones/digits), occurrence counts, HMAC-SHA256 phone tags truncated to 16 hex chars, and no fixed salt fallback. US phone formatting and extensions normalize to one tag. Known brands/IDs come from data/brands.json; amounts/deadlines and contextual short codes remain. Regex names/addresses are heuristic; redact(text, person_names=...) accepts known customer names locally. Unknown alphanumeric sender values are suppressed to <UNKNOWN_SENDER>. All incoming phone/URL redaction placeholders fail closed: raw text is untrusted, and forged tags must not bypass masking or corrupt A9 URL mapping. raw_urls stays private/in memory; no contract changes.
 
 - 2026-11-07 19:16 · **Gate P1 baseline (A1):** keyword rules + TF-IDF + logistic regression, fit on train only (1,818), no tuning. Test (388 = `test_v1` 338 + hand-written 50): **macro F1 0.807, FPR 0.127** (legit messages flagged as scam), scam recall 0.882. Validation: macro F1 0.898, FPR 0.054. Macro F1 is well under 0.97, so no P1 pivot: the accuracy story is "beat the baseline per category and cut false alarms". Weakest categories on test: `bank_impersonation` 0.64, `conversation_lure` 0.70, `account_security` 0.75. Raw text (A3 redaction not built yet). Split saved in `data/generated/splits.json`; L7 and A13 must use it.
 
