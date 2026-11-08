@@ -1,0 +1,40 @@
+{
+  "profile": "authored-cli-baseline-v1",
+  "recorded_at": "2026-11-08T06:01:22.970918+00:00",
+  "classifier": "A1 baseline (real training split only); not the L7 evaluation model",
+  "public_search": "unavailable by explicit profile choice",
+  "scenarios": {
+    "1": {
+      "plan": [
+        "check_link",
+        "check_sender",
+        "nessie_recent_activity",
+        "match_campaign"
+      ],
+      "verdict": "likely_scam",
+      "was_this_you": []
+    },
+    "2": {
+      "plan": [
+        "nessie_recent_activity",
+        "check_sender",
+        "check_link"
+      ],
+      "verdict": "likely_scam",
+      "was_this_you": [
+        "txn_28"
+      ]
+    },
+    "3": {
+      "plan": [
+        "check_sender",
+        "check_link",
+        "nessie_bill_status",
+        "match_campaign",
+        "public_scam_reports"
+      ],
+      "verdict": "likely_scam",
+      "was_this_you": []
+    }
+  }
+}

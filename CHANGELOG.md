@@ -49,9 +49,9 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A15 | Recovery UI | Arnav | Claude Code (covering for Codex design) | MVP | A14 | done | #29 · PR #55 (#54 closed as superseded) |
 | A16 | Consent screen, campaign view and accuracy page | Arnav | Claude Code (covering for Codex design) | MVP | A7 | done | #30 · PR #55 |
 | A17 | Frontend on the live API | Arnav | Cursor | MVP | A14, A15, A16, L9 | todo | #31 |
-| A18 | End-to-end scenario tests | Arnav | Claude Code | MVP | G1 | in progress | #32 · `arnav-shared` |
+| A18 | End-to-end scenario tests | Arnav | Codex | MVP | G1 | done | #32 · PR #64 |
 | G2 | Gate: all three scenarios end to end in the app | Both | any | MVP | A17, A18, L10, L11 | todo | #33 |
-| A19 | Replay fixtures and backup video | Arnav | Claude Code | Demo | G2 | todo | #34 |
+| A19 | Replay fixtures and backup video | Arnav | Codex | Demo | G2 | in progress | #34 · codex/a18-replay (preparation; G2 pending) |
 | A20 | Capital One and Best Design pitch | Arnav | any | Demo | G2 | todo | #35 |
 | L12 | NVIDIA and T-Mobile pitch, Devpost | Lavanya | Claude Code | Demo | G2 | todo | #36 |
 | G3 | Rehearse the 3-minute demo three times | Both | any | Demo | A19, A20, L12 | todo | #37 |
@@ -71,6 +71,15 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - Commands: python -m scripts.smoke_gemini --list-models; python -m scripts.smoke_gemini; python -m pytest tests/test_gemini.py.
 - Gotchas: No provider bodies/keys printed. Only four DATA_SPEC 4.1 fields are sent; model tool args cannot smuggle personal text. Community-only results are dropped. L9/A17 remain with their owners. No changes to model evaluation or held-out data.
 
+
+### A19 Replay and backup preparation (#34)
+- Agent: Codex (GPT-6), Arnav; C:/HackUTD26/.worktrees/wrap-up; branch codex/a18-replay.
+- Started / checkpoint: 2026-11-07 23:59
+- Done so far: Claimed; preparing exact cache recordings and no-network verification around A18.
+- Next step: Record all three CLI scenarios under a repeatable synthetic-data profile; then live/replay app proof after L9/A17. Backup video and G2 remain unverified.
+- Files touched: planned replay script, fixtures, tests, docs; browser smoke in separate workflow.
+- How to test: python -m pytest tests/test_scenarios_e2e.py; npm run test:e2e.
+- Gotchas: replay cache keys include message IDs, classifier outputs, phone hash, model and prompts. Never claim arbitrary new messages replay.
 
 
 
@@ -103,24 +112,12 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - How to run or test: `python -m pytest` in `backend/`; the seed needs `NESSIE_API_KEY` in `.env`: `python -m scripts.seed_nessie`
 - Notes and gotchas: never write to Nessie with a made-up key. Nessie dates have no time, so the planted transfer's 09:31 time lives in the manifest. A11 should limit check mode to activity before `received_at`, so scenario 1 (check) doesn't see the transfer that scenario 2 (recovery) finds.
 - Resumed by: none
-### A18 End-to-end scenario tests (#32)
-- Agent: Claude Code (Opus 5.5) · Person: Arnav · Folder: `C:\HackUTD26-cc` · Branch: `arnav-shared`
-- Started: 2026-11-07 20:41 · Last checkpoint: 2026-11-07 20:41
-- Done so far:
-  - `backend/tests/test_scenarios_e2e.py`: all three scenarios through `scripts.run_scenario.run_scenario` in **replay mode with every socket blocked**, so whatever `run_scenario.AGENT` points at is tested and the L8 swap stays one line in `run_scenario.py`. Checks: trail shape and planned tools = tools used, redaction before the agent, guardrails (enums, ≤3 actions, very-likely needs 2 tools, no phone numbers or links, bare domains only if official), plans differ (1 vs 3, 1 vs 2), scenario 1 plan = script, verdicts, Nessie findings (scenario 2 finds the planted $900 transfer and asks "Was this you?", scenario 3 finds the bill paid on 2026-11-01).
-  - Two worlds: `synthetic` (Cursor's FakeNessie seeded with `seed_nessie`, scenario calls recorded to a temp fixtures folder, then replayed; skipped once AGENT is the real agent, which needs recorded Nemotron) and `recorded` (committed `data/nessie_seed.json` + `data/fixtures/`, auto-enabled after P4 and A19).
-  - Verified on a scratch checkout of G1's branch (`cursor/g1-run-scenario-55c7`, PR #46): 16 passed, 15 skipped (recorded world); full suite there 338 passed. On `arnav-shared` the module skips because `run_scenario` is still the G1 stub.
-- Next step (exact): when PR #46 (G1) merges into `arnav-shared`, run `pytest tests/test_scenarios_e2e.py`; then the Playwright smoke test for scenario 1 (`frontend/`) and the CI job (`.github/workflows/ci.yml`, owned by A6/Cursor: coordinate). After P4 and A19, confirm the `recorded` world runs.
-- Files touched: `backend/tests/test_scenarios_e2e.py`, `CHANGELOG.md`
-- How to run or test: `cd backend; ..\.venv\Scripts\python -m pytest -q tests/test_scenarios_e2e.py -rs`
-- Notes and gotchas: the synthetic world patches `nessie_tools.load_seed` and `nessie_tools.client_from_settings` (their defaults bind `SEED_PATH` at import) and `cache.FIXTURES_DIR`. RDAP stays in replay, where an unrecorded lookup means "age unknown". The stand-in's reason says "imitates capitalone.com": allowed because it's the official domain; a scam domain in the reason fails the test.
-
-
-
 
 ---
 
 ## Done log
+
+- 2026-11-08 00:06 · A18 · Codex (GPT-6), resumed Claude Code · #64 · All three real-agent authored scenarios now required in socket-blocked replay; 31 service recordings; Playwright inbox/result/trail/privacy smoke and browser CI; 617 backend passed with no skips, 49 frontend tests/build, Chromium pass · follow-ups: G2 app recordings and A19 backup video still pending L9/A17; CLI profile deliberately uses real A1 baseline, public search unavailable.
 
 - 2026-11-07 23:55 · L11 · Codex (GPT-6) · #63 · Mandatory read-only activity check after /clicked, verified Nessie refs even if Nemotron omits them or later fails, local detail hydration, current-run customer confirmations, recovery checklist actions; full backend 601 passed/30 expected fixture skips plus final API test (10 recovery tests pass) · follow-ups: L9 live pipeline integration and G2/A19 replay proof remain separate.
 

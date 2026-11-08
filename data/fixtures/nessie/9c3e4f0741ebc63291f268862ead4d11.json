@@ -1,0 +1,34 @@
+{
+  "key": "9c3e4f0741ebc63291f268862ead4d11",
+  "recorded_at": "2026-11-08T06:01:03+00:00",
+  "request": {
+    "body": null,
+    "method": "GET",
+    "path": "/accounts/4983d467-9369-4b9b-b46c-227a9b3a9115/transfers"
+  },
+  "response": [
+    {
+      "amount": 120,
+      "description": "Credit card payment",
+      "id": "08a87888-c7cf-4dbf-9336-159f04fe85cb",
+      "status": "completed",
+      "transaction_date": "2026-10-12"
+    },
+    {
+      "amount": 150,
+      "description": "Credit card payment",
+      "id": "bfeee205-c5d0-4547-802b-74e11e6ba022",
+      "status": "completed",
+      "transaction_date": "2026-10-24"
+    },
+    {
+      "amount": 180,
+      "description": "Credit card payment",
+      "id": "ed90f783-8107-44a3-b6e3-ee5d71319b31",
+      "status": "completed",
+      "transaction_date": "2026-11-03"
+    }
+  ],
+  "service": "nessie",
+  "version": 1
+}

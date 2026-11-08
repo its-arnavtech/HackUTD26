@@ -1,0 +1,61 @@
+{
+  "key": "b8954f5dab638734882480991358a8a4",
+  "recorded_at": "2026-11-08T06:01:03+00:00",
+  "request": {
+    "body": null,
+    "method": "GET",
+    "path": "/customers"
+  },
+  "response": [
+    {
+      "_id": "0c2bcaa1-e987-4a04-b929-e902d6426061",
+      "address": {
+        "city": "Richardson",
+        "state": "TX",
+        "street_name": "Demo Way",
+        "street_number": "800",
+        "zip": "75080"
+      },
+      "first_name": "Linda",
+      "last_name": "Sentinel"
+    },
+    {
+      "_id": "7698b521-be8f-454e-8a7a-e70d60f37687",
+      "address": {
+        "city": "Richardson",
+        "state": "TX",
+        "street_name": "Probe Way",
+        "street_number": "1",
+        "zip": "75080"
+      },
+      "first_name": "Probe",
+      "last_name": "Throwaway"
+    },
+    {
+      "_id": "8756d0aa-0be6-4f5d-a1b2-c60c8d4ab82c",
+      "address": {
+        "city": "Richardson",
+        "state": "TX",
+        "street_name": "Demo Way",
+        "street_number": "802",
+        "zip": "75080"
+      },
+      "first_name": "Linda",
+      "last_name": "Sentinel"
+    },
+    {
+      "_id": "ef3b4fba-380f-45bc-a584-012070e8cd89",
+      "address": {
+        "city": "Richardson",
+        "state": "TX",
+        "street_name": "Demo Way",
+        "street_number": "1",
+        "zip": "75080"
+      },
+      "first_name": "Unknown",
+      "last_name": "Payee"
+    }
+  ],
+  "service": "nessie",
+  "version": 1
+}

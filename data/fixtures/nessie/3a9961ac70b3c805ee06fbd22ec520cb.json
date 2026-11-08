@@ -1,0 +1,22 @@
+{
+  "key": "3a9961ac70b3c805ee06fbd22ec520cb",
+  "recorded_at": "2026-11-08T06:01:03+00:00",
+  "request": {
+    "body": null,
+    "method": "GET",
+    "path": "/customers/ef3b4fba-380f-45bc-a584-012070e8cd89/accounts"
+  },
+  "response": [
+    {
+      "_id": "7c2ac8ca-dcb0-4b54-acf2-8ad39f2d78e5",
+      "account_number": "7786361746945902",
+      "balance": 0,
+      "customer_id": "ef3b4fba-380f-45bc-a584-012070e8cd89",
+      "nickname": "External Checking",
+      "rewards": 0,
+      "type": "Checking"
+    }
+  ],
+  "service": "nessie",
+  "version": 1
+}
