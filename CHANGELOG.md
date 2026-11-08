@@ -130,13 +130,17 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 ### A17 Frontend on the live API (#31)
 - Agent: Claude Code (Opus 5.5, covering for Cursor) · Person: Arnav · Folder: `C:\HackUTD26` · Branch: `a17-live-api` (stacked on `a16-consent-campaign-accuracy`, PR #55)
-- Started: 2026-11-07 23:40 · Last checkpoint: 2026-11-07 23:40
+- Started: 2026-11-07 23:40 · Last checkpoint: 2026-11-08 00:25
 - Done so far:
-  - Claimed
-- Next step (exact): `api.ts` parses the backend's one error shape (`errors.py`) into `ApiError` (status, code, issue) and adds a request timeout and `getHealth()`; `useData` gains loading and retry; each screen gets loading, error and retry states that say "not connected yet" for a 501 and "not found" for a 404
-- Files touched: `CHANGELOG.md`
-- How to run or test: `cd frontend; npm test; npm run build`. Live: `USE_MOCKS=false` in `.env`, then `scripts\dev.ps1`
-- Notes and gotchas: the backend already falls back per route (`USE_MOCKS`, `MOCK_ROUTES`, `LIVE_ROUTES`). With mocks off, inbox, messages, result, clicked and reset run real code; confirm (L11), actions (L9), privacy (L6), campaigns (A12) and metrics (A13) return 501 until wired. The live store starts empty until L9 seeds the scenario messages.
+  - Claimed. `api.ts`: `ApiError` reads the backend error shape (status, code, issue), `failureOf()` maps to offline / not_found / not_wired / error, 15 s request timeout, `getHealth()`.
+  - `hooks.ts`: `useData` has loading, failure and retry; `useHealth()` (cached); inbox pollers stop after 3 errors or a 404; `useResult` reports the failure kind and stops a check unfinished after 3 minutes ("slow").
+  - `LoadFailure` component; every API screen (inbox, result, trail, privacy, campaigns, accuracy) shows its own copy for offline, not found (with a link back to the inbox), not connected yet (501) and slow, with retry. The inbox keeps its list and shows a notice when posting a text fails. The accuracy page labels the numbers illustrative while `/api/health` says `metrics` is mocked. The stage note says Live API / Mock API responses / a mix.
+  - `src/live.test.tsx` (15 tests, `fetch` stubbed with real response shapes); test api mocks are now partial. 62 frontend tests pass, build passes.
+  - Checked in the browser with `USE_MOCKS=false DEMO_MODE=replay` (launch config `api-live`): post a text → Checking… → verdict, polling stops at done; result, trail and recovery (clicked → checklist) work on real routes; privacy, campaigns and accuracy show "not connected yet" (501) with retry; an unknown id shows "couldn’t find". The console only shows the browser's own lines for 404/501 responses; no JS errors.
+- Next step (exact): finish: Done log line, Status row `done`, tick #31's boxes, open the PR (`Closes #31`, stacked on #55). Note in the PR: a "not sure" result with no actions leaves "Use the official app" doing nothing (A14 behavior); the live store starts empty until L9 seeds it; confirm/actions/privacy/campaigns/metrics are 501 until L11/L9/L6/A12/A13.
+- Files touched: `frontend/src/{api.ts,hooks.ts,App.tsx,components/index.tsx,live.test.tsx}`, `frontend/src/screens/*`, `CHANGELOG.md`
+- How to run or test: `cd frontend; npm test; npm run build`. Live: set `USE_MOCKS=false` and `DEMO_MODE=replay`, then `scripts\dev.ps1`
+- Notes and gotchas: a `GEMINI_API_KEY` in the shell environment makes 3 backend config tests fail locally; run pytest with it unset. The local venv also needed `pip install -r requirements.txt` (pyarrow).
 
 ---
 
