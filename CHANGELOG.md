@@ -45,7 +45,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | L10 | `public_scam_reports` tool | Lavanya | Claude Code | MVP | L4, L5 | todo | #26 |
 | L11 | Recovery mode re-plan | Lavanya | Claude Code | MVP | L8, A11 | todo | #27 |
 | A14 | Result card, "How we checked" and privacy panel | Arnav | Cursor (covering for Codex design) | MVP | A7 | done | #28 · `cursor/a14-result-trail-privacy-55c7` |
-| A15 | Recovery UI | Arnav | Codex design (GPT 6 Astra) | MVP | A14 | todo | #29 |
+| A15 | Recovery UI | Arnav | Claude Code (covering for Codex design) | MVP | A14 | in progress | #29 · `a15-recovery` |
 | A16 | Consent screen, campaign view and accuracy page | Arnav | Codex design (GPT 6 Astra) | MVP | A7 | todo | #30 |
 | A17 | Frontend on the live API | Arnav | Cursor | MVP | A14, A15, A16, L9 | todo | #31 |
 | A18 | End-to-end scenario tests | Arnav | Claude Code | MVP | G1 | todo | #32 |
@@ -73,6 +73,16 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - Notes and gotchas: ...
 - Resumed by: <tool> from <tool>, if any
 ```
+
+### A15 Recovery UI (#29)
+- Agent: Claude Code (Opus 5.5) · Person: Arnav · Folder: C:\HackUTD26 · Branch: a15-recovery (from `cursor/a14-result-trail-privacy-55c7`, since #52 and #53 aren't merged)
+- Started: 2026-11-07 22:09 · Last checkpoint: 2026-11-07 22:09
+- Done so far:
+  - Claimed. Read the lab's `Recovery.tsx`; `WasThisYouCard` and `ChecklistItem` are already ported in `components/index.tsx`.
+- Next step (exact): port `design-lab/src/screens/Recovery.tsx` into `frontend/src/screens/Recovery.tsx` on `postClicked`, `useResult` and `confirmTransaction`; fill the four recovery gallery slots.
+- Files touched: CHANGELOG.md
+- How to run or test: `cd frontend; npm test; npm run build`
+- Notes and gotchas: covering for Codex design (out of usage); port, don't redesign.
 
 
 ---
