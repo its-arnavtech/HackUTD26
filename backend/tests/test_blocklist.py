@@ -2,18 +2,11 @@ from __future__ import annotations
 
 import json
 
-import pytest
-
 from app.config import DATA_DIR
 from app.contracts import Message
-from app.tools.blocklist import (
-    BLOCKLIST_PATH,
-    PROVISIONAL_TRAIN_SPLIT,
-    NotTrainSplitError,
-    build_blocklist,
-    build_domains,
-    load_blocklist,
-)
+from app.classifier import baseline
+from app.tools import blocklist as blocklist_module
+from app.tools.blocklist import BLOCKLIST_PATH, build_blocklist, build_domains, load_blocklist
 from app.tools.domains import domains_in_text
 
 
@@ -34,28 +27,38 @@ def test_scam_domains_only_minus_legit_official_and_shorteners():
             msg("Shared-domain.com shows up in both", True),
             msg("Your order: shared-domain.com/track", False),
             msg("unlabeled at unlabeled-domain.com", None),
+            msg("Write to agent@email.com or see example.com", True),
         ]
     )
     assert domains == ["capone-account-help.net"]
 
 
-@pytest.mark.parametrize("name", ["test.jsonl", "val.jsonl", "train_test.jsonl", "messages.jsonl"])
-def test_refuses_anything_but_train(tmp_path, name):
-    path = tmp_path / name
-    path.write_text("", encoding="utf-8")
-    with pytest.raises(NotTrainSplitError):
-        build_blocklist(path)
+def test_reads_a1_train_split_only(monkeypatch):
+    split = baseline.Split(
+        train=[msg("Verify at https://train-scam.com/x", True)],
+        val=[msg("Verify at https://val-scam.com/x", True)],
+        test=[msg("Verify at https://test-scam.com/x", True)],
+    )
+    monkeypatch.setattr(baseline, "load_split", lambda *a, **k: split)
+    built = build_blocklist()
+    assert built["domains"] == ["train-scam.com"]
+    assert built["messages_read"] == 1
 
 
-def test_committed_blocklist_matches_provisional_train_split():
-    rebuilt = build_blocklist(PROVISIONAL_TRAIN_SPLIT)
+def test_train_messages_are_a1s_saved_train_ids():
+    saved = json.loads(baseline.SPLITS_PATH.read_text(encoding="utf-8"))
+    assert [m.message_id for m in blocklist_module.train_messages()] == saved["train"]
+
+
+def test_committed_blocklist_matches_a1_train_split():
+    rebuilt = build_blocklist()
     committed = json.loads(BLOCKLIST_PATH.read_text(encoding="utf-8"))
     assert committed["domains"] == rebuilt["domains"]
-    assert committed["built_from"] == "data/provisional/train.jsonl"
-    assert committed["provisional"] is True
+    assert committed["built_from"] == "data/generated/splits.json (train)"
+    assert committed["messages_read"] == len(json.loads(baseline.SPLITS_PATH.read_text(encoding="utf-8"))["train"])
 
 
-def test_demo_scenario_domains_are_not_in_the_provisional_blocklist():
+def test_demo_scenario_domains_are_not_in_the_blocklist():
     blocked = load_blocklist()
     for path in sorted((DATA_DIR / "scenarios").glob("scenario_*.json")):
         text = json.loads(path.read_text(encoding="utf-8"))["message"]["text"]
