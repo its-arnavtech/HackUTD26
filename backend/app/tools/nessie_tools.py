@@ -206,6 +206,10 @@ def nessie_recent_activity(
     seed: dict[str, Any] | None = None,
 ) -> NessieRecentActivityResult:
     """Counts plus flagged items: new payee, transfer above the 30-day median, first-time merchant."""
+    from app import activity_source  # L15: another payment system can stand in for Nessie
+
+    if client is None and seed is None and activity_source.is_active():
+        return activity_source.recent_activity(args, agent_input)
     client, seed = _context(client, seed)
     tz = _seed_tz(seed)
     message_at = agent_input.received_at if agent_input.received_at.tzinfo else agent_input.received_at.replace(tzinfo=tz)

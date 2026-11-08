@@ -8,6 +8,7 @@ import Connect from "./console/Connect";
 import Console, { ResultPage } from "./console/Console";
 import { PatternsPage, SecurityPage } from "./console/Pages";
 import SystemView from "./console/SystemView";
+import { AgentAccuracyPage, WavesPage } from "./console/features";
 import { useHealth } from "./hooks";
 import {
   holdScroll,
@@ -366,6 +367,8 @@ export default function App() {
       <Route path="/r/:messageId" element={<AuthGate><ResultPage /></AuthGate>} />
       <Route path="/patterns" element={<AuthGate><PatternsPage /></AuthGate>} />
       <Route path="/connect" element={<AuthGate><Connect /></AuthGate>} />
+      <Route path="/agent-accuracy" element={<AuthGate><AgentAccuracyPage /></AuthGate>} />
+      <Route path="/waves" element={<AuthGate><WavesPage /></AuthGate>} />
       <Route path="/security" element={<SecurityPage />} />
       <Route path="*" element={<AuthGate><Desk /></AuthGate>} />
     </Routes>

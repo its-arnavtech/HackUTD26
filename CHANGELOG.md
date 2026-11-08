@@ -58,6 +58,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | G3 | Rehearse the 3-minute demo three times | Both | any | Demo | A19, A20, L12 | todo | #37 |
 | L13 | Full authentication and security pillars | Lavanya | Claude Code | Demo | G2 | in review | #71 · `l14-live-demo` (auth off by default) |
 | L14 | Live demo: System view, check any message, plug into any system, agent tool-call fix | Lavanya | Claude Code | Demo | G2, SYN | in review | `l14-live-demo` · docs/L14_LIVE_DEMO_REVIEW.md |
+| L15 | Agent accuracy, any payment system as agent source, trusted contact, scam waves | Lavanya | Claude Code | Demo | L14, SYN | in review | `l15-agent-eval-and-alerts` · docs/L15_FEATURES_POC.md |
 | SYN | Synthetic linked scenarios, payment schema, multiclass SMS | Arnav | Cursor | Demo | A21 | done | #72 · cursor/synthetic-linked-scenarios-6119 |
 
 ---

@@ -1183,3 +1183,32 @@
   background: var(--cx-safe-soft);
   color: var(--cx-safe);
 }
+
+/* L15 features: layout only, existing tokens */
+.sx-trusted {
+  margin-top: 16px;
+  display: grid;
+  gap: 10px;
+}
+.sx-trusted-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.sx-trusted-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 8px;
+}
+@media (max-width: 720px) {
+  .sx-trusted-form {
+    grid-template-columns: 1fr;
+  }
+}
+.sx-wave-notice a,
+.cn-active strong {
+  color: inherit;
+  font-weight: 700;
+}

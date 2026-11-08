@@ -22,6 +22,8 @@ const links: [string, string][] = [
   ["/system", "System"],
   ["/customer", "Customer view"],
   ["/connect", "Plug into any system"],
+  ["/agent-accuracy", "Agent accuracy"],
+  ["/waves", "Scam waves"],
   ["/patterns", "Scam patterns"],
   ["/accuracy", "Accuracy"],
   ["/security", "Security"],

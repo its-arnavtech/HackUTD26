@@ -228,25 +228,26 @@ def signals(events: list[dict[str, Any]], message_at: str = MESSAGE_AT) -> list[
     found: list[dict[str, str]] = []
 
     for e in after:
+        index = events.index(e)
         when = _when(e)
         label = e.get("counterparty_name") or e.get("counterparty_id") or e.get("event_type") or "event"
         minutes = int((when - sent).total_seconds() // 60) if when else None
         if _is_takeover(e.get("event_type")):
-            found.append({"signal": "account_takeover_step", "detail": f"{e['event_type'].replace('_', ' ')} {minutes} min after the text"})
+            found.append({"event_index": index, "signal": "account_takeover_step", "detail": f"{e['event_type'].replace('_', ' ')} {minutes} min after the text"})
             continue
         if e.get("event_type") not in MONEY_OUT:
             continue
         if e.get("counterparty_id") and e["counterparty_id"] not in known_payees:
-            found.append({"signal": "new_payee", "detail": f"first payment ever to {label}"})
+            found.append({"event_index": index, "signal": "new_payee", "detail": f"first payment ever to {label}"})
         amount = e.get("amount_minor")
         if median and isinstance(amount, int) and amount >= 5 * median:
-            found.append({"signal": "amount_far_above_usual", "detail": f"${amount / 100:,.2f} is {amount / median:.0f}x the usual ${median / 100:,.2f}"})
+            found.append({"event_index": index, "signal": "amount_far_above_usual", "detail": f"${amount / 100:,.2f} is {amount / median:.0f}x the usual ${median / 100:,.2f}"})
         if e.get("channel") and known_channels and e["channel"] not in known_channels:
-            found.append({"signal": "new_channel", "detail": f"first {e['channel']} payment"})
+            found.append({"event_index": index, "signal": "new_channel", "detail": f"first {e['channel']} payment"})
         if minutes is not None and 0 <= minutes <= 180:
-            found.append({"signal": "soon_after_text", "detail": f"{minutes} min after the text"})
+            found.append({"event_index": index, "signal": "soon_after_text", "detail": f"{minutes} min after the text"})
         if any(_is_takeover(t.get("event_type")) and (_when(t) or sent) <= (when or sent) for t in after):
-            found.append({"signal": "takeover_before_payment", "detail": "SIM or device change came before this payment"})
+            found.append({"event_index": index, "signal": "takeover_before_payment", "detail": "SIM or device change came before this payment"})
     return found
 
 
