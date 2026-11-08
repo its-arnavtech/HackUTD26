@@ -48,7 +48,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A15 | Recovery UI | Arnav | Codex design (GPT 6 Astra) | MVP | A14 | todo | #29 |
 | A16 | Consent screen, campaign view and accuracy page | Arnav | Codex design (GPT 6 Astra) | MVP | A7 | todo | #30 |
 | A17 | Frontend on the live API | Arnav | Cursor | MVP | A14, A15, A16, L9 | todo | #31 |
-| A18 | End-to-end scenario tests | Arnav | Claude Code | MVP | G1 | todo | #32 |
+| A18 | End-to-end scenario tests | Arnav | Claude Code | MVP | G1 | in progress | #32 · `arnav-shared` |
 | G2 | Gate: all three scenarios end to end in the app | Both | any | MVP | A17, A18, L10, L11 | todo | #33 |
 | A19 | Replay fixtures and backup video | Arnav | Claude Code | Demo | G2 | todo | #34 |
 | A20 | Capital One and Best Design pitch | Arnav | any | Demo | G2 | todo | #35 |
@@ -77,6 +77,18 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - Notes and gotchas: ...
 - Resumed by: <tool> from <tool>, if any
 ```
+
+### A18 End-to-end scenario tests (#32)
+- Agent: Claude Code (Opus 5.5) · Person: Arnav · Folder: `C:\HackUTD26-cc` · Branch: `arnav-shared`
+- Started: 2026-11-07 20:41 · Last checkpoint: 2026-11-07 20:41
+- Done so far:
+  - `backend/tests/test_scenarios_e2e.py`: all three scenarios through `scripts.run_scenario.run_scenario` in **replay mode with every socket blocked**, so whatever `run_scenario.AGENT` points at is tested and the L8 swap stays one line in `run_scenario.py`. Checks: trail shape and planned tools = tools used, redaction before the agent, guardrails (enums, ≤3 actions, very-likely needs 2 tools, no phone numbers or links, bare domains only if official), plans differ (1 vs 3, 1 vs 2), scenario 1 plan = script, verdicts, Nessie findings (scenario 2 finds the planted $900 transfer and asks "Was this you?", scenario 3 finds the bill paid on 2026-11-01).
+  - Two worlds: `synthetic` (Cursor's FakeNessie seeded with `seed_nessie`, scenario calls recorded to a temp fixtures folder, then replayed; skipped once AGENT is the real agent, which needs recorded Nemotron) and `recorded` (committed `data/nessie_seed.json` + `data/fixtures/`, auto-enabled after P4 and A19).
+  - Verified on a scratch checkout of G1's branch (`cursor/g1-run-scenario-55c7`, PR #46): 16 passed, 15 skipped (recorded world); full suite there 338 passed. On `arnav-shared` the module skips because `run_scenario` is still the G1 stub.
+- Next step (exact): when PR #46 (G1) merges into `arnav-shared`, run `pytest tests/test_scenarios_e2e.py`; then the Playwright smoke test for scenario 1 (`frontend/`) and the CI job (`.github/workflows/ci.yml`, owned by A6/Cursor: coordinate). After P4 and A19, confirm the `recorded` world runs.
+- Files touched: `backend/tests/test_scenarios_e2e.py`, `CHANGELOG.md`
+- How to run or test: `cd backend; ..\.venv\Scripts\python -m pytest -q tests/test_scenarios_e2e.py -rs`
+- Notes and gotchas: the synthetic world patches `nessie_tools.load_seed` and `nessie_tools.client_from_settings` (their defaults bind `SEED_PATH` at import) and `cache.FIXTURES_DIR`. RDAP stays in replay, where an unrecorded lookup means "age unknown". The stand-in's reason says "imitates capitalone.com": allowed because it's the official domain; a scam domain in the reason fails the test.
 
 
 
@@ -160,6 +172,6 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 ## Blockers and open questions
 
 - Gemini key arrives Sunday morning; L4 and L10 wait for it. Gate P3 is pending until then (update `docs/POC_RESULTS.md`).
-- **Gate P4 failed its first live run (2026-11-07 20:25), on two A2 bugs in PR #44** (details in `docs/POC_RESULTS.md`): (1) Nessie returns HTTP 404 "No transfers found" for an empty list and `NessieClient._get_list` raises instead of returning `[]`, so the seed stops before any transfer, and the planted $900 transfer doesn't exist yet; (2) Nessie stores purchase amounts as whole dollars ($49.30 → 49), so the seed's `(description, date, amount)` match misses and every run re-creates purchases (Nessie now holds 48, 24 planned). Fix in A2 (Cursor), delete the 24 duplicate purchases, then rerun the seed twice and update P4. **Handed to Cursor** on 2026-11-07 at about 20:30 at Arnav's request: fixes, cleanup, tests and rerun steps are in the PR #44 comment. The rerun needs `NESSIE_API_KEY`, which Cursor's cloud agent doesn't have, so Arnav runs it or adds the key to Cursor secrets.
+- **Gate P4 failed its first live run (2026-11-07 20:25), on two A2 bugs in PR #44** (details in `docs/POC_RESULTS.md`): (1) Nessie returns HTTP 404 "No transfers found" for an empty list and `NessieClient._get_list` raises instead of returning `[]`, so the seed stops before any transfer, and the planted $900 transfer doesn't exist yet; (2) Nessie stores purchase amounts as whole dollars ($49.30 → 49), so the seed's `(description, date, amount)` match misses and every run re-creates purchases (Nessie now holds 48, 24 planned). Fix in A2 (Cursor), delete the 24 duplicate purchases, then rerun the seed twice and update P4. **Handed to Cursor** on 2026-11-07 at about 20:30 at Arnav's request: fixes, cleanup, tests and rerun steps are in the PR #44 comment. The rerun needs `NESSIE_API_KEY`, which Cursor's cloud agent doesn't have, so Arnav runs it or adds the key to Cursor secrets. **20:36:** a P4 rerun was requested, but PR #44's branch was still at `94bc769` (20:29, before the handoff), with no `--dedupe` and no 404 fix (`cursor/g1-…` and `cursor/a11-…` don't have them either), so it wasn't run; nothing was created or deleted.
 - Official short codes and sender IDs for the demo brands: fill `data/brands.json` from the brands' own pages (A10).
 - Taxonomy: ours (v1) is in `data/taxonomy.json` (A21). If a mentor shares T-Mobile's, map it and regenerate.
