@@ -34,6 +34,16 @@ PLANTED = NessieRecentActivityResult(
 PAID_BILL = NessieBillStatusResult(found=True, last_status="completed", last_payment_date=date(2026, 11, 1), amount_due_now=0, recurring=True)
 
 
+@pytest.fixture(autouse=True)
+def phone_salt(monkeypatch):
+    from app.config import get_settings
+
+    monkeypatch.setenv("PHONE_HASH_SALT", "synthetic-test-salt")
+    get_settings.cache_clear()
+    yield
+    get_settings.cache_clear()
+
+
 @pytest.fixture
 def tools(monkeypatch):
     """Replace the tool table with canned results, as A10 and A11 would return them."""
@@ -144,3 +154,14 @@ def test_cli_text_and_json(capsys):
     data = json.loads(capsys.readouterr().out)
     AgentResult.model_validate(data["result"])
     assert data["mode"] == "check" and data["trail"][0]["kind"] == "plan"
+
+
+def test_missing_phone_salt_stops_instead_of_using_the_stand_in(monkeypatch, capsys):
+    from app.config import get_settings
+
+    monkeypatch.setenv("PHONE_HASH_SALT", "")
+    get_settings.cache_clear()
+    with pytest.raises(ValueError, match="PHONE_HASH_SALT"):
+        rs.run_scenario(1)
+    assert rs.main(["1"]) == 2
+    assert "PHONE_HASH_SALT" in capsys.readouterr().err

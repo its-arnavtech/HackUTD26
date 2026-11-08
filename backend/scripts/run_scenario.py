@@ -16,6 +16,7 @@ The agent loop is the single `AGENT = ...` line below. When L8 merges, set it to
 from __future__ import annotations
 
 import argparse
+import functools
 import hashlib
 import json
 import re
@@ -30,7 +31,7 @@ import tldextract
 from pydantic import BaseModel
 
 from app.agent.loop import MAX_TOOL_CALLS, run_agent  # noqa: F401  (run_agent: see AGENT below)
-from app.classifier.baseline import baseline_predict
+from app.classifier.baseline import BaselineModel, baseline_predict, load_split, train_baseline
 from app.classifier.predict import predict
 from app.config import DATA_DIR, get_settings
 from app.contracts import (
@@ -222,10 +223,15 @@ def stand_in_extract_features(text_redacted: str) -> Features:
     )
 
 
+@functools.lru_cache(maxsize=1)
+def _baseline_model() -> BaselineModel:
+    return train_baseline(load_split().train)
+
+
 def baseline_classifier(text_redacted: str) -> ClassifierOutput:
     """A1's baseline, used while L7's `predict` isn't merged. It returns labels only, so the score is a placeholder."""
     message = Message(message_id="scenario", text=text_redacted, sender="<redacted>")
-    [label] = baseline_predict([message])
+    [label] = baseline_predict([message], _baseline_model())
     return ClassifierOutput(category=label, score=0.5, top3=[(label, 0.5)], baseline_score=None)
 
 
@@ -498,7 +504,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--json", action="store_true", help="print stages, agent input, trail and result as JSON")
     args = parser.parse_args(argv)
 
-    run = run_scenario(args.scenario, AgentMode(args.mode) if args.mode else None)
+    try:
+        run = run_scenario(args.scenario, AgentMode(args.mode) if args.mode else None)
+    except ValueError as exc:
+        if "PHONE_HASH_SALT" not in str(exc):
+            raise
+        print("Redaction (A3) needs PHONE_HASH_SALT: put any random string in .env, then run again.", file=sys.stderr)
+        return 2
     if args.json:
         print(
             json.dumps(
