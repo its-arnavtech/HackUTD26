@@ -29,6 +29,21 @@ function renderRecovery() {
 }
 
 describe("RecoveryView", () => {
+  it("offers 'Alert my trusted contact' under the checklist only when given a message (L16)", () => {
+    const { rerender } = render(
+      <MemoryRouter>
+        <RecoveryView stage="checklist" poll={mockResult("scenario2")} />
+      </MemoryRouter>,
+    );
+    expect(screen.queryByRole("button", { name: /Alert my trusted contact/ })).not.toBeInTheDocument();
+    rerender(
+      <MemoryRouter>
+        <RecoveryView stage="checklist" poll={mockResult("scenario2")} alertMessageId="msg_0002" />
+      </MemoryRouter>,
+    );
+    expect(screen.getByRole("button", { name: /Alert my trusted contact/ })).toBeInTheDocument();
+  });
+
   it("shows a 'Was this you?' card with the amount, payee and time after the text", () => {
     const spec = recoverySpecimen();
     render(

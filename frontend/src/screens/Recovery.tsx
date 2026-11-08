@@ -7,6 +7,7 @@ import { isLinked } from "../linking";
 import { ActionButton, ChecklistItem, EmptyState, Notice, PageTitle, WasThisYouCard } from "../components";
 import { activitySummary, minutesAfter, recoveryChecklist, recoverySteps } from "../present";
 import type { Action, ResultPoll, WasThisYouItem } from "../types";
+import { TrustedAlertPhone } from "../trustedAlert";
 
 export type RecoveryStage = "intro" | "checking" | "transfer" | "checklist";
 
@@ -40,8 +41,11 @@ export function RecoveryView({
   onTrail,
   onDone,
   onRetry,
+  alertMessageId,
 }: {
   stage: RecoveryStage;
+  /** Shows "Alert my trusted contact" under the checklist (L16). */
+  alertMessageId?: string;
   linked?: boolean;
   poll?: ResultPoll;
   item?: WasThisYouItem;
@@ -205,10 +209,11 @@ export function RecoveryView({
       <p className="quiet-note left">
         {done} of {steps.length} marked complete by you. Checking a box records progress only.
       </p>
+      {alertMessageId && <TrustedAlertPhone messageId={alertMessageId} />}
       <ActionButton onClick={onDone} icon={<ArrowRight size={20} />}>
         Return to messages
       </ActionButton>
-      <p className="quiet-note">SentinelAI doesn’t freeze cards, change passwords, or place calls.</p>
+      <p className="quiet-note">SentinelAI doesn’t freeze cards or change passwords. It calls your trusted contact only when you tap.</p>
     </div>
   );
 }
@@ -299,6 +304,7 @@ export default function Recovery() {
       onTrail={() => navigate(`/trail/${encodeURIComponent(messageId)}`)}
       onDone={() => navigate("/inbox")}
       onRetry={retry}
+      alertMessageId={messageId}
     />
   );
 }

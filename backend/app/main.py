@@ -28,7 +28,7 @@ import threading
 from collections.abc import AsyncIterator, Callable
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import TYPE_CHECKING, Annotated
+from typing import TYPE_CHECKING, Annotated, Any
 
 from fastapi import APIRouter, Depends, FastAPI, Request
 from pydantic import BaseModel, Field
@@ -348,20 +348,31 @@ def post_confirm(
     return c.ConfirmResponse(ref=ref, was_me=body.was_me, recorded=True)
 
 
-@router.post("/actions", response_model=c.ActionResponse)
+@router.post("/actions")
 def post_action(
-    body: c.ActionRequest, settings: SettingsDep, store: StoreDep, principal: PrincipalDep
-) -> c.ActionResponse:
-    """Simulated block, report or alert. Only called after a customer tap; nothing is ever sent."""
+    body: c.ActionRequest, request: Request, settings: SettingsDep, store: StoreDep, principal: PrincipalDep
+) -> dict[str, Any]:
+    """Block, report or alert. Only called after a customer tap.
+
+    Other actions stay simulated. `alert_trusted_contact` keeps that note and
+    adds `alert`, the live call status (`app.alerts.AlertStatus`).
+    """
     if not settings.route_is_mocked("actions"):
         _own(store, body.message_id, principal)
         with bind_message_id(body.message_id):
             log.info("action tapped (simulated)", extra={"fields": {"action": body.action.value}})
-    return c.ActionResponse(
+    payload = c.ActionResponse(
         message_id=body.message_id,
         action=body.action,
         note=_action_note(body, store, principal, settings),
-    )
+    ).model_dump(mode="json")
+    if body.action == c.Action.alert_trusted_contact:
+        from app.alerts import start_alert
+
+        audit = request.app.state.auth.store.audit if request.app.state.auth is not None else None
+        status = start_alert(body.message_id, principal.user_id, settings=settings, store=store, audit=audit)
+        payload["alert"] = status.model_dump(mode="json")
+    return payload
 
 
 def _action_note(body: c.ActionRequest, store: StateStore, principal: Principal, settings: Settings) -> str:
@@ -489,6 +500,23 @@ def get_agent_metrics() -> dict:
 class TrustedContactRequest(BaseModel):
     name: str = Field(min_length=1, max_length=40)
     phone: str = Field(min_length=10, max_length=24)
+
+
+@router.get("/trusted-contact/alerts/{message_id}")
+def get_trusted_contact_alert(
+    message_id: str, settings: SettingsDep, store: StoreDep, principal: PrincipalDep
+) -> dict[str, Any]:
+    """Latest trusted-contact alert for this message (L16), or 404."""
+    from app.alerts import AlertStatus, get_alert
+
+    if store.has_message(message_id):
+        _own(store, message_id, principal)
+    elif not settings.route_is_mocked("actions"):
+        _own(store, message_id, principal)
+    status = get_alert(message_id)
+    if status is None:
+        raise NotFoundError("No alert for this message")
+    return AlertStatus.model_validate(status).model_dump(mode="json")
 
 
 @router.get("/trusted-contact")
@@ -675,6 +703,9 @@ def create_app(
     install_error_handlers(app)
     app.add_middleware(RequestContextMiddleware)
     app.include_router(router)
+    from app.voice import router as voice_router  # L16 trial calls: Twilio fetches the signed TwiML here
+
+    app.include_router(voice_router)
     if settings.AUTH_ENABLED:  # L13: sign-in routes and real sessions; off means one fixed demo customer
         from app.auth.context import AuthContext
         from app.auth.routes import router as auth_router

@@ -1212,3 +1212,6 @@
   color: inherit;
   font-weight: 700;
 }
+
+/* L16 trusted-contact call status */
+.cx-trusted-alert { display: grid; gap: 8px; justify-items: start; margin: 12px 0; }

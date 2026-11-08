@@ -280,3 +280,14 @@ Access JWT claims: `iss`, `aud`, `sub` (user UUID), `role`, `fam` (sign-in id), 
 A route with no rule is refused for everyone. `customer` can use inbox, messages, result, clicked, confirm, actions, privacy, campaigns and metrics, only for messages they own. Another user's `message_id` or transaction ref answers 404, the same as an unknown one. `admin` also gets `POST /api/demo/reset` and `GET /api/audit`. An admin can't read customers' messages either.
 
 Errors use the usual shape (L2) with codes `unauthorized` (401), `forbidden` or `csrf_failed` (403) and `rate_limited` (429). A failed sign-in always answers the same generic 401, whether the username exists, the password is wrong or the account is locked.
+
+## 10. Trusted-contact call and email (L16)
+
+Only after the customer taps "Alert my trusted contact", and only when `VOICE_ALERTS_ENABLED=true` and `DEMO_MODE=live`. Otherwise the alert is simulated and nothing leaves the machine.
+
+- **Twilio (voice call)** receives the trusted contact's phone number and the content-free `alert_text` to read aloud (and leave as a voicemail).
+- **Gmail (fallback email, only when the call isn't answered)** receives the trusted contact's email address and the same content-free `alert_text`.
+
+The alert text says that the customer asked for help and should be called back. It never contains the message text (raw or redacted), links, sender, amounts, account or card data, or the classifier's or Nemotron's output. Neither service gets the customer's own phone number.
+
+`GET /api/trusted-contact/alerts/{message_id}` returns `AlertStatus` (declared in `frontend/src/api.ts`, not `types.ts`): `message_id`, `state` (`calling` or `done`), `call_outcome` (`answered`, `voicemail`, `no_answer`, `failed` or null), `email_sent`, `simulated`, `called_at`, `email_sent_at`, `alert_text`, `detail`. `POST /api/actions` with `alert_trusted_contact` returns its usual response plus `alert`. The UI shows `alert_text` as plain text only, never as a link.

@@ -22,6 +22,7 @@ import hashlib
 import hmac
 import logging
 from collections.abc import Mapping
+from xml.sax.saxutils import escape
 
 import httpx
 
@@ -91,3 +92,120 @@ class TwilioClient:
         sid = response.json().get("sid")
         log.info("sms sent", extra={"fields": {"chars": len(body)}})
         return sid
+
+    def create_call(
+        self,
+        to: str,
+        from_: str,
+        twiml: str,
+        timeout: int = 25,
+        machine_detection: str = "DetectMessageEnd",
+    ) -> str | None:
+        """Place a call that speaks `twiml`. Returns the call SID, or None in replay mode.
+
+        Nothing here is logged except the TwiML length: not the number, the
+        caller id, or the words.
+        """
+        if self.demo_mode == DemoMode.replay:
+            log.info("call not placed (replay mode)", extra={"fields": {"chars": len(twiml)}})
+            return None
+        url = f"{API_BASE}/Accounts/{self.account_sid}/Calls.json"
+        try:
+            with httpx.Client(timeout=TIMEOUT_S, transport=self._transport) as client:
+                response = client.post(
+                    url,
+                    data={
+                        "To": to,
+                        "From": from_,
+                        "Twiml": twiml,
+                        "Timeout": str(timeout),
+                        "MachineDetection": machine_detection,
+                    },
+                    auth=(self.account_sid, self.auth_token),
+                )
+        except httpx.HTTPError as exc:
+            raise TwilioError(f"Twilio unreachable ({type(exc).__name__})") from None
+        if response.status_code >= 300:
+            code = ""
+            try:
+                code = str(response.json().get("code", ""))
+            except ValueError:
+                pass
+            raise TwilioError(f"Twilio refused the call (HTTP {response.status_code}, code {code or 'n/a'})")
+        try:
+            sid = response.json().get("sid")
+        except ValueError:
+            raise TwilioError("Twilio returned a call id that was not JSON") from None
+        if not sid:
+            raise TwilioError("Twilio returned no call id")
+        log.info("call placed", extra={"fields": {"chars": len(twiml)}})
+        return str(sid)
+
+    def create_call_url(self, to: str, from_: str, url: str) -> str | None:
+        """Trial-account call: only To, From and Url (Twilio fetches the TwiML from `url`).
+
+        Returns the call SID, or None in replay mode. Nothing is logged but the outcome.
+        """
+        if self.demo_mode == DemoMode.replay:
+            log.info("call not placed (replay mode)")
+            return None
+        endpoint = f"{API_BASE}/Accounts/{self.account_sid}/Calls.json"
+        try:
+            with httpx.Client(timeout=TIMEOUT_S, transport=self._transport) as client:
+                response = client.post(
+                    endpoint, data={"To": to, "From": from_, "Url": url}, auth=(self.account_sid, self.auth_token)
+                )
+        except httpx.HTTPError as exc:
+            raise TwilioError(f"Twilio unreachable ({type(exc).__name__})") from None
+        if response.status_code >= 300:
+            code = ""
+            try:
+                code = str(response.json().get("code", ""))
+            except ValueError:
+                pass
+            raise TwilioError(f"Twilio refused the call (HTTP {response.status_code}, code {code or 'n/a'})")
+        try:
+            sid = response.json().get("sid")
+        except ValueError:
+            raise TwilioError("Twilio returned a call id that was not JSON") from None
+        if not sid:
+            raise TwilioError("Twilio returned no call id")
+        log.info("call placed (trial, url)")
+        return str(sid)
+
+    def get_call(self, sid: str) -> dict[str, str | None]:
+        """`{"status", "answered_by"}` for a call. `answered_by` is None when Twilio omits it."""
+        if self.demo_mode == DemoMode.replay:
+            log.info("call status not fetched (replay mode)")
+            return {"status": "no-answer", "answered_by": None}
+        url = f"{API_BASE}/Accounts/{self.account_sid}/Calls/{sid}.json"
+        try:
+            with httpx.Client(timeout=TIMEOUT_S, transport=self._transport) as client:
+                response = client.get(url, auth=(self.account_sid, self.auth_token))
+        except httpx.HTTPError as exc:
+            raise TwilioError(f"Twilio unreachable ({type(exc).__name__})") from None
+        if response.status_code >= 300:
+            code = ""
+            try:
+                code = str(response.json().get("code", ""))
+            except ValueError:
+                pass
+            raise TwilioError(f"Twilio refused the call lookup (HTTP {response.status_code}, code {code or 'n/a'})")
+        try:
+            body = response.json()
+        except ValueError:
+            raise TwilioError("Twilio returned a call status that was not JSON") from None
+        answered = body.get("answered_by")
+        status = str(body.get("status") or "")
+        known = {"queued", "ringing", "in-progress", "completed", "busy", "failed", "no-answer", "canceled"}
+        log.info("call status read", extra={"fields": {"status": status if status in known else "other"}})
+        return {"status": status, "answered_by": str(answered) if answered else None}
+
+
+def voice_twiml(alert_text: str) -> str:
+    """Inline TwiML: say the alert, pause one second, say it again.
+
+    The words are escaped. The alert itself must already be content-free.
+    """
+    said = escape(alert_text)
+    return f'<Response><Say>{said}</Say><Pause length="1"/><Say>{said}</Say></Response>'

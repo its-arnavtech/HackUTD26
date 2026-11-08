@@ -148,6 +148,28 @@ def configure_logging(level: str = "INFO", fmt: str = "json") -> None:
         logging.getLogger(noisy).setLevel(logging.WARNING)
 
 
+_VOICE_TOKEN = re.compile(r"(/api/voice/twiml/)[^/?\s\"]+")
+
+
+def redact_path(text: str) -> str:
+    """Hide L16 TwiML tokens (single-use call secrets) in anything logged."""
+    return _VOICE_TOKEN.sub(r"\1[redacted]", text)
+
+
+class _RedactTokens(logging.Filter):
+    """uvicorn's access log prints the raw path; strip TwiML tokens from it."""
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        if isinstance(record.args, tuple):
+            record.args = tuple(redact_path(a) if isinstance(a, str) else a for a in record.args)
+        if isinstance(record.msg, str):
+            record.msg = redact_path(record.msg)
+        return True
+
+
+logging.getLogger("uvicorn.access").addFilter(_RedactTokens())
+
+
 class RequestContextMiddleware:
     """Binds `message_id` from the path for the whole request and logs one line per request."""
 
@@ -179,7 +201,7 @@ class RequestContextMiddleware:
                         extra={
                             "fields": {
                                 "method": scope.get("method"),
-                                "path": path,
+                                "path": redact_path(path),
                                 "status": status["code"],
                                 "ms": round((time.perf_counter() - start) * 1000, 1),
                             }
