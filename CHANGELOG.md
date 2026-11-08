@@ -38,7 +38,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A11 | Nessie tools | Arnav | Cursor | MVP | A2 | todo | #19 |
 | A12 | Campaign store, seeding and `match_campaign` | Arnav | Codex | MVP | A1, A3 | done | #20 · #49 (arnav-shared) |
 | A13 | Evaluation harness | Arnav | Claude Code | MVP | A1 | done | #21 · #49 (arnav-shared) |
-| L7 | Improved classifier | Lavanya | Claude Code | MVP | A1, A9, A13 | todo | #22 |
+| L7 | Improved classifier | Arnav | Codex | MVP | A1, A9, A13 | in progress | #22 · codex-shared |
 | L8 | Agent loop with plan, re-plan and guardrails | Lavanya | Claude Code | MVP | A4, L5 | todo | #23 |
 | L9 | API endpoints and pipeline orchestration | Lavanya | Claude Code | MVP | L3, L8 | todo | #24 |
 | G1 | Gate: scenario 1 end to end in the CLI | Both | any | MVP | A3, A9, A10, A11, L8 | todo | #25 |
@@ -58,6 +58,16 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 ---
 
 ## In progress
+
+### L7 Improved classifier (#22)
+- Agent: Codex (GPT-6) · Person: Arnav · Folder: C:\HackUTD26-codex · Branch: codex-shared (origin/arnav-shared)
+- Started: 2026-11-07 23:05 · Last checkpoint: 2026-11-07 23:05
+- Done so far: Read resume instructions; reset and pulled shared branch with rebase=merges; reassigned issue from Lavanya to Arnav. A1/A9/A13 are complete. L7 is scaffold only; no prior training checkpoint.
+- Next step (exact): Implement local TF-IDF word/character features plus A9 features and logistic regression; train only on saved train IDs and select model/decision thresholds using validation only. Add batch and pipeline prediction plus artifact loading. Freeze configuration before final A13 evaluation on synthetic and public test sets.
+- Files touched: backend/app/classifier/train.py, backend/app/classifier/predict.py, backend/scripts/train_classifier.py, classifier tests, CHANGELOG.md; any evaluation report changes will be aggregate only.
+- How to run or test: From backend, .\.venv\Scripts\python.exe -m pytest tests/test_baseline.py tests/test_evaluate.py -q. Training CLI to follow.
+- Notes and gotchas: Never use held-out test/public messages for fitting, features or tuning. Redaction before classifier. Public labels are binary; compare binary macro F1, spam recall and FPR. Strict target synthetic macro F1 >0.807 and FPR <=0.127; failure must be documented without retuning on tests. A13 reports a raw/redacted cost experiment; pipeline uses redacted inputs only.
+- Resumed by: Codex from Lavanya's Claude Code scaffold, at Arnav's request.
 
 <!-- One block per active issue. Copy the template, keep it current at every checkpoint. -->
 
@@ -131,6 +141,8 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 ---
 
 ## Decisions
+
+- 2026-11-07 23:05 · L7 (#22) moves from Lavanya to Arnav, implemented by Codex on arnav-shared at Arnav's request. Train/tune on A1 train/validation only; final test/public scores are a one-time frozen-model evaluation.
 
 - 2026-11-07 21:43 · **Planted $900 is a purchase, not a transfer (P4, A2/A11).** Live Nessie transfers accept only `transaction_date`, `status`, `amount` and `description` (probed on a throwaway customer; 18 receiver field names rejected; no `/transfers` routes), so a transfer can't name who got the money. The seed plants the $900 as a purchase at new merchant **"Unknown Payee"** on Linda's checking, 17 minutes after scenario 2's message, with its exact time in the manifest's `purchase_times`. A11 flags it as "first purchase at this merchant" plus 10x the 30-day purchase median (live: 23.1x). "Was this you?" items for it have `type: "purchase"`. There is no DELETE for purchases, so the demo customer is a fresh "Linda Sentinel" at 802 Demo Way; the one at 800 keeps old duplicates. Details in DATA_SPEC section 6. Code: PR #44 `02aae13` (seed, client, fake, `data/nessie_seed.json`), PR #45 `649f690` (tool).
 - 2026-11-07 21:43 · On `arnav-shared`, after a merge commit from `main`, pull with `git pull --rebase=merges` (or a plain `git pull`). A plain `git pull --rebase` flattens the merge and replays `main`'s commits one by one, which conflicts.
