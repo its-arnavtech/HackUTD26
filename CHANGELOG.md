@@ -61,21 +61,6 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 <!-- One block per active issue. Copy the template, keep it current at every checkpoint. -->
 
-
-
-```
-### <ID> <title> (#<issue>)
-- Agent: <tool> (<model>) · Person: <Arnav | Lavanya> · Folder: <path> · Branch: <branch>
-- Started: YYYY-MM-DD HH:MM · Last checkpoint: YYYY-MM-DD HH:MM
-- Done so far:
-  - ...
-- Next step (exact): ...
-- Files touched: ...
-- How to run or test: ...
-- Notes and gotchas: ...
-- Resumed by: <tool> from <tool>, if any
-```
-
 ### G1 Gate: scenario 1 end to end in the CLI (#25), prep
 - Agent: Cursor (Claude Opus 5.5, cloud agent) · Person: Arnav · Folder: Cursor cloud VM (`/workspace`) · Branch: `cursor/g1-run-scenario-55c7`
 - Started: 2026-11-07 19:17 · Last checkpoint: 2026-11-07 20:40
@@ -92,6 +77,21 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - How to run or test: from `backend/`: `python -m scripts.run_scenario 1`, then `python -m pytest`
 - Notes and gotchas: set `PHONE_HASH_SALT` in `.env` (any random string) or the run stops at redaction. Based directly on `main` (not on #44): on `main` today, redaction and `check_link`/`check_sender` are real, the classifier is A1's baseline, and the Nessie tools say "not available yet" until #44 and #45 merge; scenario 1 already gives the expected plan and `likely_scam / very likely`. `match_campaign` (A12) and `public_scam_reports` (L10) aren't in the stand-in's `TOOLS` table, so scenario 3's plan differs from its expected plan until L8 drives the tools through L5's registry.
 - Resumed by: none
+
+
+
+```
+### <ID> <title> (#<issue>)
+- Agent: <tool> (<model>) · Person: <Arnav | Lavanya> · Folder: <path> · Branch: <branch>
+- Started: YYYY-MM-DD HH:MM · Last checkpoint: YYYY-MM-DD HH:MM
+- Done so far:
+  - ...
+- Next step (exact): ...
+- Files touched: ...
+- How to run or test: ...
+- Notes and gotchas: ...
+- Resumed by: <tool> from <tool>, if any
+```
 
 
 ---
