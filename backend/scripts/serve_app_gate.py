@@ -80,6 +80,7 @@ def main() -> int:
             "NEMOTRON_MODEL": "nvidia/nemotron-3.5-bolt-e4b", "NEMOTRON_PROTOCOL": "native",
             "NEMOTRON_BASE_URL": "https://integrate.api.nvidia.com/v1", "NEMOTRON_MAX_TOKENS": "2048",
             "NESSIE_BASE_URL": "https://api.nessieisreal.com", "LOG_LEVEL": "WARNING",
+            **({"NVIDIA_API_KEY": "", "NESSIE_API_KEY": ""} if args.mode == "replay" else {}),
         }))
         get_settings.cache_clear()
         temporary = stack.enter_context(TemporaryDirectory(prefix="sentinel-app-gate-"))

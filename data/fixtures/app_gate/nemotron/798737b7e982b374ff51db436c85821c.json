@@ -1,6 +1,6 @@
 {
   "key": "798737b7e982b374ff51db436c85821c",
-  "recorded_at": "2026-11-08T06:41:27+00:00",
+  "recorded_at": "2026-11-08T06:48:44+00:00",
   "request": {
     "base_url": "https://integrate.api.nvidia.com/v1",
     "max_tokens": 2048,
@@ -165,48 +165,23 @@
   "response": {
     "choices": [
       {
-        "finish_reason": "tool_calls",
+        "finish_reason": "stop",
         "index": 0,
         "logprobs": null,
         "message": {
           "annotations": null,
           "audio": null,
-          "content": null,
+          "content": "[\n  {\n    \"tool_name\": \"check_link\",\n    \"parameters\": {\n      \"url_id\": \"URL_1\"\n    }\n  },\n  {\n    \"tool_name\": \"check_sender\",\n    \"parameters\": {\n      \"claimed_brand\": \"Capital One\"\n    }\n  },\n  {\n    \"tool_name\": \"nessie_recent_activity\",\n    \"parameters\": {\n      \"days\": \"7\"\n    }\n  },\n  {\n    \"tool_name\": \"match_campaign\",\n    \"parameters\": {}\n  }\n]",
           "function_call": null,
           "reasoning_content": null,
           "refusal": null,
           "role": "assistant",
-          "tool_calls": [
-            {
-              "function": {
-                "arguments": "{\"claimed_brand\":\"Capital One\"}",
-                "name": "check_sender"
-              },
-              "id": "call-e30b0c72-4251-45f6-a8b4-edaccce88480",
-              "type": "function"
-            },
-            {
-              "function": {
-                "arguments": "{\"url_id\":\"URL_1\"}",
-                "name": "check_link"
-              },
-              "id": "call-61609b84-da88-4e25-8970-29ff63f10c74",
-              "type": "function"
-            },
-            {
-              "function": {
-                "arguments": "{\"days\":\"7\"}",
-                "name": "nessie_recent_activity"
-              },
-              "id": "call-b444473a-a720-48ec-8207-8e5b5ab072ae",
-              "type": "function"
-            }
-          ]
+          "tool_calls": null
         }
       }
     ],
-    "created": 1794120089,
-    "id": "chatcmpl-06cdf58c-b2bf-4e3f-8d73-a17f5056b9c2",
+    "created": 1794120524,
+    "id": "chatcmpl-86e2ae48-682e-4dd2-a8a4-7c024973baeb",
     "metadata": null,
     "model": "nvidia/nemotron-3.5-bolt-e4b",
     "moderation": null,
@@ -214,7 +189,7 @@
     "service_tier": null,
     "system_fingerprint": null,
     "usage": {
-      "completion_tokens": 53,
+      "completion_tokens": 143,
       "completion_tokens_details": {
         "accepted_prediction_tokens": null,
         "audio_tokens": null,
@@ -226,11 +201,11 @@
       "prompt_tokens_details": {
         "audio_tokens": null,
         "cache_write_tokens": null,
-        "cached_tokens": 1056,
+        "cached_tokens": 1440,
         "image_tokens": null,
         "text_tokens": null
       },
-      "total_tokens": 1513
+      "total_tokens": 1603
     }
   },
   "service": "nemotron",

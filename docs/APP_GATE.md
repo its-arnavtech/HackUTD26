@@ -10,6 +10,9 @@ passed 65 frontend tests/build, 673 backend tests, and all three app flows in
 record mode and offline replay. A17's owner checkout and branch were not
 changed. Gate tooling is submitted separately so A17 stays with its owner.
 
+The same gate also passed directly on the main-based frontend in record mode
+and offline replay. The gate PR contains no A17 implementation commits.
+
 ## Run the gate
 
 Use a checkout with backend requirements, frontend dependencies, and the same
@@ -33,6 +36,21 @@ The gate starts isolated API/web servers on 8022/5189 and stops them afterward.
 loopback DNS and socket connections during backend replay; service cache misses
 cannot silently reach a live API. The same frozen classifier and original
 authored scenario timestamps are used in both runs.
+
+For manual exploration, use two PowerShell terminals from this checkout:
+
+```powershell
+# Terminal 1, backend/
+.\.venv\Scripts\python.exe -m scripts.serve_app_gate replay --port 8022
+
+# Terminal 2, frontend/
+$env:API_PORT = '8022'
+$env:WEB_PORT = '5189'
+npm run dev -- --host 127.0.0.1
+```
+
+Open `http://127.0.0.1:5189`. Replay covers the authored inbox and recovery
+flow; arbitrary new messages need their own deliberate recording or live mode.
 
 For deliberate re-recording of these authored/synthetic scenarios, set
 `GATE_MODE='record'`. NVIDIA/Nessie credentials must already be private in that

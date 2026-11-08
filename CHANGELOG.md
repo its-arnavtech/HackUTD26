@@ -50,8 +50,8 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A16 | Consent screen, campaign view and accuracy page | Arnav | Claude Code (covering for Codex design) | MVP | A7 | done | #30 · PR #55 |
 | A17 | Frontend on the live API | Arnav | Cursor | MVP | A14, A15, A16, L9 | todo | #31 |
 | A18 | End-to-end scenario tests | Arnav | Codex | MVP | G1 | done | #32 · PR #64 |
-| G2 | Gate: all three scenarios end to end in the app | Both | any | MVP | A17, A18, L10, L11 | todo | #33 |
-| A19 | Replay fixtures and backup video | Arnav | Codex | Demo | G2 | in progress | #34 · codex/a18-replay (preparation; G2 pending) |
+| G2 | Gate: all three scenarios end to end in the app | Both | Codex | MVP | A17, A18, L10, L11 | in review | #33 · codex/g2-replay-only (all flows passed) |
+| A19 | Replay fixtures and backup video | Arnav | Codex | Demo | G2 | in progress | #34 · CLI + app fixtures verified; video excluded by user |
 | A20 | Capital One and Best Design pitch | Arnav | any | Demo | G2 | todo | #35 |
 | L12 | NVIDIA and T-Mobile pitch, Devpost | Lavanya | Claude Code | Demo | G2 | todo | #36 |
 | G3 | Rehearse the 3-minute demo three times | Both | any | Demo | A19, A20, L12 | todo | #37 |
@@ -62,11 +62,22 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 <!-- One block per active issue. Copy the template, keep it current at every checkpoint. -->
 
+### G2 App gate (#33), implementation/testing only
+- Agent: Codex (GPT-6), Arnav; C:/HackUTD26/.worktrees/wrap-up; codex/g2-replay-only.
+- Started / checkpoint: 2026-11-08 00:53; prior isolated A17 candidate on codex/g2-app-gate.
+- Done: All three actual app flows passed record/live using hosted Nemotron, synthetic Nessie and frozen L7 v2, then passed with outbound DNS/sockets blocked. Same gate passed on main-based frontend; no A17 implementation commits in this PR. Bank/bill plans differ, $900 txn_28 at Unknown Payee/17 min, confirm only after tap, bill paid Nov 1/$0 due; privacy, real campaigns/accuracy and browser console checks pass. 673 backend tests and main/A17 candidate 50/65 frontend tests/build passed.
+- Next: PR/CI/merge; reviewed reset-generation fix #68 needs integration. A17 stays with its owner. Presentation/video and Gemini access excluded by latest user steering.
+- Files: scripts/serve_app_gate.py, frontend/gates/app.pw.ts, gate config/package script, data/fixtures/app_gate, eval/app_gate_*.json, docs/APP_GATE.md, docs/TESTING.md, CHANGELOG.md.
+- Commands: GATE_MODE=record or replay; npm run test:app; E2E_PYTHON is local 3.12 venv. Ports 8022/5189.
+- Gotchas: Ignored local v2 artifact hash 824af47739cee1d63e3828b3978a01b946bdf324bf5b9c9046334e34bd747b8e required for replay. Optional public search unavailable. No held-out evaluation/training changes. Fixture secret scan passed.
+
+
+
 ### A19 Replay and backup preparation (#34)
 - Agent: Codex (GPT-6), Arnav; C:/HackUTD26/.worktrees/wrap-up; branch codex/a18-replay.
 - Started / checkpoint: 2026-11-07 23:59
 - Done so far: Claimed; preparing exact cache recordings and no-network verification around A18.
-- Next step: Record all three CLI scenarios under a repeatable synthetic-data profile; then live/replay app proof after L9/A17. Backup video and G2 remain unverified.
+- Done update: CLI and real-app fixtures recorded and verified offline; G2 observed on main-based frontend. Backup video is outside current user scope; keep #34 open for that excluded acceptance item.
 - Files touched: planned replay script, fixtures, tests, docs; browser smoke in separate workflow.
 - How to test: python -m pytest tests/test_scenarios_e2e.py; npm run test:e2e.
 - Gotchas: replay cache keys include message IDs, classifier outputs, phone hash, model and prompts. Never claim arbitrary new messages replay.

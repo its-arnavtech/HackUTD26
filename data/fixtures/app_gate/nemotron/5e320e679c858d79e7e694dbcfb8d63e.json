@@ -1,6 +1,6 @@
 {
   "key": "5e320e679c858d79e7e694dbcfb8d63e",
-  "recorded_at": "2026-11-08T06:41:28+00:00",
+  "recorded_at": "2026-11-08T06:48:44+00:00",
   "request": {
     "base_url": "https://integrate.api.nvidia.com/v1",
     "max_tokens": 2048,
@@ -187,7 +187,7 @@
         "message": {
           "annotations": null,
           "audio": null,
-          "content": "{\"plan\": [\"check_link\", \"check_sender\"], \"verdict\": \"likely_safe\", \"confidence_words\": \"likely\", \"reason\": \"The message was a personal conversation and did not contain any links or claim to be from a specific company.\", \"evidence\": [], \"actions\": [\"ignore\"], \"was_this_you\": [], \"replan\": false}",
+          "content": "{\"plan\": [\"check_link\", \"check_sender\"], \"verdict\": \"likely_safe\", \"confidence_words\": \"likely\", \"reason\": \"The message is a personal conversation and does not contain links or claim to be from a specific company.\", \"evidence\": [], \"actions\": [\"ignore\"], \"was_this_you\": [], \"replan\": false}",
           "function_call": null,
           "reasoning_content": null,
           "refusal": null,
@@ -196,8 +196,8 @@
         }
       }
     ],
-    "created": 1794120090,
-    "id": "chatcmpl-02624135-0d11-437d-8669-2a5244356a17",
+    "created": 1794120525,
+    "id": "chatcmpl-288cd52b-8fea-4fe2-9563-5bd7b423bec6",
     "metadata": null,
     "model": "nvidia/nemotron-3.5-bolt-e4b",
     "moderation": null,
@@ -205,7 +205,7 @@
     "service_tier": null,
     "system_fingerprint": null,
     "usage": {
-      "completion_tokens": 80,
+      "completion_tokens": 79,
       "completion_tokens_details": {
         "accepted_prediction_tokens": null,
         "audio_tokens": null,
@@ -217,11 +217,11 @@
       "prompt_tokens_details": {
         "audio_tokens": null,
         "cache_write_tokens": null,
-        "cached_tokens": 1376,
+        "cached_tokens": 1856,
         "image_tokens": null,
         "text_tokens": null
       },
-      "total_tokens": 1937
+      "total_tokens": 1936
     }
   },
   "service": "nemotron",

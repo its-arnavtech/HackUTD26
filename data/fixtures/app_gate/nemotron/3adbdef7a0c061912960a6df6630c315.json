@@ -1,6 +1,6 @@
 {
   "key": "3adbdef7a0c061912960a6df6630c315",
-  "recorded_at": "2026-11-08T06:41:27+00:00",
+  "recorded_at": "2026-11-08T06:48:44+00:00",
   "request": {
     "base_url": "https://integrate.api.nvidia.com/v1",
     "max_tokens": 2048,
@@ -165,48 +165,23 @@
   "response": {
     "choices": [
       {
-        "finish_reason": "tool_calls",
+        "finish_reason": "stop",
         "index": 0,
         "logprobs": null,
         "message": {
           "annotations": null,
           "audio": null,
-          "content": null,
+          "content": "[\n  {\n    \"tool_name\": \"check_sender\",\n    \"parameters\": {\n      \"claimed_brand\": \"T-Mobile\"\n    }\n  },\n  {\n    \"tool_name\": \"check_link\",\n    \"parameters\": {\n      \"url_id\": \"URL_1\"\n    }\n  },\n  {\n    \"tool_name\": \"nessie_bill_status\",\n    \"parameters\": {\n      \"payee\": \"T-Mobile\"\n    }\n  },\n  {\n    \"tool_name\": \"match_campaign\",\n    \"parameters\": {}\n  }\n]",
           "function_call": null,
           "reasoning_content": null,
           "refusal": null,
           "role": "assistant",
-          "tool_calls": [
-            {
-              "function": {
-                "arguments": "{\"claimed_brand\":\"T-Mobile\"}",
-                "name": "check_sender"
-              },
-              "id": "call-ba6b093e-18b5-47b7-bc3f-9d48b92d3eae",
-              "type": "function"
-            },
-            {
-              "function": {
-                "arguments": "{\"url_id\":\"URL_1\"}",
-                "name": "check_link"
-              },
-              "id": "call-6122fcc4-57bf-4129-81d2-714138cc13b3",
-              "type": "function"
-            },
-            {
-              "function": {
-                "arguments": "{\"payee\":\"T-Mobile\"}",
-                "name": "nessie_bill_status"
-              },
-              "id": "call-3867a2de-062b-488e-b013-1d8114765e35",
-              "type": "function"
-            }
-          ]
+          "tool_calls": null
         }
       }
     ],
-    "created": 1794120089,
-    "id": "chatcmpl-510ffea7-a50e-4bda-ae09-71bb75dd3026",
+    "created": 1794120524,
+    "id": "chatcmpl-bc7050e2-b2c5-4bcd-84ac-ed687d1ed80b",
     "metadata": null,
     "model": "nvidia/nemotron-3.5-bolt-e4b",
     "moderation": null,
@@ -214,7 +189,7 @@
     "service_tier": null,
     "system_fingerprint": null,
     "usage": {
-      "completion_tokens": 57,
+      "completion_tokens": 147,
       "completion_tokens_details": {
         "accepted_prediction_tokens": null,
         "audio_tokens": null,
@@ -226,11 +201,11 @@
       "prompt_tokens_details": {
         "audio_tokens": null,
         "cache_write_tokens": null,
-        "cached_tokens": 0,
+        "cached_tokens": 1440,
         "image_tokens": null,
         "text_tokens": null
       },
-      "total_tokens": 1528
+      "total_tokens": 1618
     }
   },
   "service": "nemotron",

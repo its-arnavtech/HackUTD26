@@ -1,13 +1,15 @@
 {
   "mode": "replay",
-  "observed_at": "2026-11-08T06:45:13.271Z",
+  "observed_at": "2026-11-08T06:51:43.137Z",
   "use_mocks": false,
   "classifier": "frozen local L7 v2",
   "plans": {
     "bank": [
-      "check_sender",
       "check_link",
-      "nessie_recent_activity"
+      "check_sender",
+      "nessie_recent_activity",
+      "match_campaign",
+      "public_scam_reports"
     ],
     "recovery": [
       "nessie_recent_activity",
@@ -18,7 +20,8 @@
     "bill": [
       "check_sender",
       "check_link",
-      "nessie_bill_status"
+      "nessie_bill_status",
+      "match_campaign"
     ]
   },
   "verdicts": [

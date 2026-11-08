@@ -1,13 +1,15 @@
 {
   "mode": "record",
-  "observed_at": "2026-11-08T06:41:49.431Z",
+  "observed_at": "2026-11-08T06:49:15.144Z",
   "use_mocks": false,
   "classifier": "frozen local L7 v2",
   "plans": {
     "bank": [
-      "check_sender",
       "check_link",
-      "nessie_recent_activity"
+      "check_sender",
+      "nessie_recent_activity",
+      "match_campaign",
+      "public_scam_reports"
     ],
     "recovery": [
       "nessie_recent_activity",
@@ -18,7 +20,8 @@
     "bill": [
       "check_sender",
       "check_link",
-      "nessie_bill_status"
+      "nessie_bill_status",
+      "match_campaign"
     ]
   },
   "verdicts": [
@@ -34,6 +37,8 @@
   },
   "bill": "Last bill completed, paid on 2026-11-01, $0.00 due now",
   "privacy_model_bank_details_absent": true,
+  "campaign_view_checked": true,
+  "real_accuracy_page_checked": true,
   "browser_errors": [],
   "replay_outbound_network_blocked": false,
   "public_search": "explicitly unavailable"

@@ -1,6 +1,6 @@
 {
   "key": "b03dc017f322aba2e7bba65eb4f84f5c",
-  "recorded_at": "2026-11-08T06:41:26+00:00",
+  "recorded_at": "2026-11-08T06:48:42+00:00",
   "request": {
     "base_url": "https://integrate.api.nvidia.com/v1",
     "max_tokens": 2048,
@@ -180,8 +180,8 @@
         }
       }
     ],
-    "created": 1794120089,
-    "id": "chatcmpl-2fb9cfa6-9a68-42f0-93bd-d76a482c4e78",
+    "created": 1794120524,
+    "id": "chatcmpl-78b216ab-dd44-4f16-b4fe-a14a47cd0b07",
     "metadata": null,
     "model": "nvidia/nemotron-3.5-bolt-e4b",
     "moderation": null,
@@ -201,7 +201,7 @@
       "prompt_tokens_details": {
         "audio_tokens": null,
         "cache_write_tokens": null,
-        "cached_tokens": 1056,
+        "cached_tokens": 1312,
         "image_tokens": null,
         "text_tokens": null
       },
