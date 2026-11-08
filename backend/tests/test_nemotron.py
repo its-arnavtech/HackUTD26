@@ -5,6 +5,7 @@ import logging
 import httpx2 as sdk_http
 import pytest
 from openai import APIStatusError, OpenAI
+from pydantic import SecretStr
 
 from app.contracts import DemoMode
 from app.integrations import nemotron
@@ -119,6 +120,7 @@ def test_client_configuration_and_missing_key(monkeypatch):
     with pytest.raises(ValueError, match="NVIDIA_API_KEY"):
         nemotron._client(settings)
     settings.NEMOTRON_BASE_URL = "http://127.0.0.1:8080/v1"
+    settings.NVIDIA_API_KEY = SecretStr("synthetic-hosted-key")
     with nemotron._client(settings) as client:
         assert client.max_retries == 0
         assert client.timeout == settings.NEMOTRON_TIMEOUT_SECONDS

@@ -35,12 +35,11 @@ def get_nemotron_settings() -> NemotronSettings:
 
 
 def _client(settings: NemotronSettings) -> OpenAI:
+    local = urlparse(settings.NEMOTRON_BASE_URL).hostname in {"localhost", "127.0.0.1", "::1"}
     key = settings.NVIDIA_API_KEY
-    token = key.get_secret_value() if key else ""
+    token = "local-no-key" if local else (key.get_secret_value() if key else "")
     if not token:
-        if urlparse(settings.NEMOTRON_BASE_URL).hostname not in {"localhost", "127.0.0.1", "::1"}:
-            raise ValueError("Set NVIDIA_API_KEY in the worktree .env")
-        token = "local-no-key"
+        raise ValueError("Set NVIDIA_API_KEY in the worktree .env")
     return OpenAI(api_key=token, base_url=settings.NEMOTRON_BASE_URL,
                   timeout=settings.NEMOTRON_TIMEOUT_SECONDS,
                   max_retries=0)

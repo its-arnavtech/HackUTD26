@@ -61,3 +61,9 @@ def test_slow_model_caps_tool_calls_at_four(monkeypatch):
     monkeypatch.setattr(smoke.nemotron, "chat", lambda *a: response(calls=[{"id": "0", "function": {"name": "get_bill_status", "arguments": '{"payee":"T-Mobile"}'}}]))
     outcome = smoke.run_case(smoke.CASES[0], "native")
     assert not outcome.passed and len(outcome.calls) == 4
+
+
+def test_inputs_use_current_project_taxonomy():
+    from app.config import DATA_DIR
+    labels = {row["id"] for row in json.loads((DATA_DIR / "taxonomy.json").read_text())["categories"]}
+    assert all(smoke.agent_input(case)["classifier"]["category"] in labels for case in smoke.CASES)

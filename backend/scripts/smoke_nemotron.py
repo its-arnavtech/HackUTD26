@@ -68,7 +68,7 @@ def agent_input(case: Case) -> dict[str, Any]:
         "urls": [{"id": "URL_1", "registered_domain": "billing-check.example", "is_shortener": False,
                   "brand_term_in_domain": None, "is_official_brand_domain": False}] if has_link else [],
         "features": {"requested_action": "click_link_and_pay" if has_link else "pay_bill", "asks_for": []},
-        "classifier": {"category": "bill_payment", "score": 0.85, "top3": [["bill_payment", 0.85]], "baseline_score": 0.8},
+        "classifier": {"category": "billing_scam", "score": 0.85, "top3": [["billing_scam", 0.85]], "baseline_score": 0.8},
         "customer_context": {"linked_bank": True, "linked_institutions": ["Capital One"]},
     }).model_dump(mode="json", exclude_none=True)
 
@@ -93,11 +93,15 @@ FINAL_INSTRUCTION = (
     '"actions":["open_official_app"],"was_this_you":[],"replan":false}. '
     "verdict is likely_scam, unsure, or likely_safe. confidence_words is very likely, likely, or not sure. "
     "Use only completed tools in plan and evidence. Every plan item and evidence.tool is a STRING. "
-    "Return well-formed JSON with all closing braces. For JSON action transport wrap it as {\"action\":\"finish\",\"result\": RESULT}; "
-    "otherwise return the result object directly."
+    "Return well-formed JSON with all closing braces."
 )
 
 
+
+def final_instruction(protocol: str) -> str:
+    envelope = (' Wrap the result as {"action":"finish","result": RESULT}.'
+                if protocol == "json_action" else ' Return the result object directly, without an action envelope.')
+    return FINAL_INSTRUCTION + envelope
 
 
 @dataclass
@@ -183,7 +187,7 @@ def run_case(case: Case, protocol: str) -> Outcome:
                 if isinstance(exc, ValidationError):
                     error = json.dumps(exc.errors(include_input=False, include_url=False))
                     messages.append({"role": "assistant", "content": message.get("content") or ""})
-                    correction = "Invalid final result: " + error + ". " + FINAL_INSTRUCTION
+                    correction = "Invalid final result: " + error + ". " + final_instruction(protocol)
                 else:
                     correction = "Invalid output. Use ONLY tools named get_bill_status or check_domain with exact required arguments; final plan uses strings. Follow the JSON envelope."
                 messages.append({"role": "user", "content": correction + " Retry once."})
@@ -200,7 +204,7 @@ def run_case(case: Case, protocol: str) -> Outcome:
                     messages.append({"role": "user", "content": json.dumps({"tool": name, "result": data})})
                 print(f"  {case.name} tool={name} latency_ms={tool_ms}")
             if case.expected.issubset(outcome.calls):
-                messages.append({"role": "system", "content": FINAL_INSTRUCTION})
+                messages.append({"role": "system", "content": final_instruction(protocol)})
         raise RuntimeError("turn limit reached")
     except Exception as exc:
         # Never print provider exception bodies; they can contain sensitive data.
