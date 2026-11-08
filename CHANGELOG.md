@@ -66,9 +66,10 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - Started: 2026-11-07 21:30 · Last checkpoint: 2026-11-07 21:30
 - Done so far:
   - Claimed (CHANGELOG only)
+  - Frontend tests: Vitest + Testing Library + jsdom (`npm test`, config in `vite.config.ts`, setup in `src/test/setup.ts`); first tests cover `pollResult`. CI's frontend job now runs `npm test` after the build
 - Next step (exact): wait for Claude Code's `design-lab-snapshot` branch, read its `DESIGN.md` and `HANDOFF.md`, then port its tokens, components, phone frame and inbox into `frontend/` per `prompts/design-01-frontend.md` (no redesign), against the existing mocks and `src/api.ts`. Add `/gallery` with every screen in every state, and frontend tests.
-- Files touched: `CHANGELOG.md`
-- How to run or test: `npm run build` in `frontend/`; `scripts/dev.ps1` for the app on the mocks
+- Files touched: `CHANGELOG.md`, `frontend/package.json`, `frontend/package-lock.json`, `frontend/vite.config.ts`, `frontend/tsconfig.json`, `frontend/src/test/setup.ts`, `frontend/src/api.test.ts`, `.github/workflows/ci.yml`
+- How to run or test: `npm run build` and `npm test` in `frontend/`; `scripts/dev.ps1` for the app on the mocks
 - Notes and gotchas: data access stays in `src/api.ts`; screens never fetch. No contract changes without a separate `[contracts]` PR. UI copy follows POC_MVP 4.4 exactly.
 - Resumed by: Cursor from Codex design (not started by Codex)
 
