@@ -13,7 +13,7 @@ DOC = REPO_ROOT / "docs" / "POC_RESULTS.md"
 def _gate_rows() -> dict[str, str]:
     rows = {}
     for line in DOC.read_text(encoding="utf-8").splitlines():
-        m = re.match(r"\| (P[1-5]) \|[^|]*\| \*\*(Pass|Fail|Pending)\*\* \|", line)
+        m = re.match(r"\| (P[1-5]) \|[^|]*\| \*\*(Pass|Fail|Pending|Blocked)\*\* \|", line)
         if m:
             rows[m.group(1)] = m.group(2)
     return rows

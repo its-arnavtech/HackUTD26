@@ -28,7 +28,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | L1 | Record and replay cache | Lavanya | Claude Code | POC | scaffold | done | #9 · PR #42 |
 | L2 | Core runtime: app factory, settings, logging, errors | Lavanya | Claude Code | POC | scaffold | done | #10 · PR #39 |
 | L3 | State store and background job runner | Lavanya | Claude Code | POC | L2 | done | #11 · PR #47 |
-| L4 | Gemini grounded search smoke test (Sunday morning, when the Gemini key is set) | Lavanya | Claude Code | POC | scaffold | todo | #12 |
+| L4 | Gemini grounded search smoke test | Arnav | Codex | POC | scaffold | blocked | #12 · code ready; P3 HTTP 429 / generation access |
 | A22 | Initial Devpost draft by 11:00 PM Saturday | Arnav | any | POC | none | todo | #13 |
 | A8 | POC gate report | Arnav | Claude Code | POC | A1, A2, A3, A4, L4 | done | #14 · PR #49 (arnav-shared) |
 | L5 | Tool registry and runtime | Lavanya | Claude Code | MVP | L2 | done | #15 · PR #48 |
@@ -43,7 +43,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | L8 | Agent loop with plan, re-plan and guardrails | Lavanya | Claude Code | MVP | A4, L5 | done | #23 · PR #56 |
 | L9 | API endpoints and pipeline orchestration | Lavanya | Claude Code | MVP | L3, L8 | in progress | #24 · l9-pipeline |
 | G1 | Gate: scenario 1 end to end in the CLI | Both | any | MVP | A3, A9, A10, A11, L8 | done | #25 · PR #46 (prep), PR #61 |
-| L10 | `public_scam_reports` tool | Arnav | Claude Code | MVP | L4, L5 | todo | #26 |
+| L10 | `public_scam_reports` tool | Arnav | Codex | MVP | L4, L5 | done | #26 · PR #66 (P3 live gate blocked) |
 | L11 | Recovery mode re-plan | Arnav | Codex | MVP | L8, A11 | done | #27 · PR #63 |
 | A14 | Result card, "How we checked" and privacy panel | Arnav | Cursor (covering for Codex design) | MVP | A7 | done | #28 · PR #53 |
 | A15 | Recovery UI | Arnav | Claude Code (covering for Codex design) | MVP | A14 | done | #29 · PR #55 (#54 closed as superseded) |
@@ -61,6 +61,16 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 ## In progress
 
 <!-- One block per active issue. Copy the template, keep it current at every checkpoint. -->
+
+### L4 Gemini live citation gate (#12), blocked; L10 implementation finished in #66
+- Agent: Codex (GPT-6), Arnav; C:/HackUTD26/.worktrees/wrap-up; codex/l4-l10-gemini.
+- Started / checkpoint: 2026-11-08 00:13.
+- Done so far: Key present without printing it; provider model listing succeeds. Implemented cache-backed Search grounding, support-segment/chunk citations, fixed four-field input, source ranking, dates/stale handling, contact stripping, official guidance and recovery references. 14 synthetic tests pass.
+- Next: Live smoke on available Gemini model; 3.5 Flash/Flash Lite return HTTP 429 and listed 2.5 Flash returns 404. Live P3 remains blocked on usable provider quota. Do not claim P3 without a live cited result. Combined suite 650 passed, zero skips. PR next; do not close L4 live gate without real cited output.
+- Files touched: integrations/gemini.py, tools/public_reports.py, scripts/smoke_gemini.py, tests/test_gemini.py, .env.example, CHANGELOG.md.
+- Commands: python -m scripts.smoke_gemini --list-models; python -m scripts.smoke_gemini; python -m pytest tests/test_gemini.py.
+- Gotchas: No provider bodies/keys printed. Only four DATA_SPEC 4.1 fields are sent; model tool args cannot smuggle personal text. Community-only results are dropped. L9/A17 remain with their owners. No changes to model evaluation or held-out data.
+
 
 ### A19 Replay and backup preparation (#34)
 - Agent: Codex (GPT-6), Arnav; C:/HackUTD26/.worktrees/wrap-up; branch codex/a18-replay.
@@ -108,6 +118,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 ## Done log
 
 - 2026-11-08 00:34 · A18 follow-up / L9 CI unblock · Codex (GPT-6) · PR pending · Recovery tests clear the prior callback and wait for the current poller before sending a fake result; fixes CI race seen in #65 while preserving A17 application code; 50 frontend tests and build pass.
+- 2026-11-08 00:34 · L10 (L4 client ready, live P3 blocked) · Codex (GPT-6) · #66 · Fixed four-field Gemini lookup, cached Google grounding, support/chunk-only facts, ranking/stale/contact rules, model-argument isolation, safe smoke script; 14 new tests, combined backend 650 passed/no skips · follow-up: #12 needs usable generation quota (3.5/3.5 Lite 429, listed 2.5 404); no Gemini-backed demo claim until a cited live pass.
 
 - 2026-11-08 00:06 · A18 · Codex (GPT-6), resumed Claude Code · #64 · All three real-agent authored scenarios now required in socket-blocked replay; 31 service recordings; Playwright inbox/result/trail/privacy smoke and browser CI; 617 backend passed with no skips, 49 frontend tests/build, Chromium pass · follow-ups: G2 app recordings and A19 backup video still pending L9/A17; CLI profile deliberately uses real A1 baseline, public search unavailable.
 
@@ -250,7 +261,7 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 ## Blockers and open questions
 
 - `NESSIE_API_KEY` isn't available to the Cursor cloud agent. A2's live seed (gate P4) waits for Arnav to run `python -m scripts.seed_nessie` with his key, or to add the key in Cursor secrets.
-- Gemini key arrives Sunday morning; L4 and L10 wait for it. Gate P3 is pending until then (update `docs/POC_RESULTS.md`).
+- Gemini key is now present and model listing succeeds, but P3 is blocked on generation access/quota: 3.5 Flash/Flash Lite return 429; listed 2.5 Flash returns 404. L4 client and L10 tool are implemented with 14 synthetic tests; live P3 cannot be marked passed. See docs/GEMINI.md.
 - **Resolved 2026-11-07 21:40: gate P4 passes** (third live run; see Decisions 21:43 and `docs/POC_RESULTS.md`). Seed `Created 33`, then `Created 0`. Scenario 2's $900 is now a purchase at "Unknown Payee". PRs #44 and #45 carry the code and `data/nessie_seed.json`. History of the first two runs follows. Gate P4 failed its first live run (2026-11-07 20:25), on two A2 bugs in PR #44 (details in `docs/POC_RESULTS.md`): (1) Nessie returns HTTP 404 "No transfers found" for an empty list and `NessieClient._get_list` raises instead of returning `[]`, so the seed stops before any transfer, and the planted $900 transfer doesn't exist yet; (2) Nessie stores purchase amounts as whole dollars ($49.30 → 49), so the seed's `(description, date, amount)` match misses and every run re-creates purchases (Nessie now holds 48, 24 planned). Fix in A2 (Cursor), delete the 24 duplicate purchases, then rerun the seed twice and update P4. **Handed to Cursor** on 2026-11-07 at about 20:30 at Arnav's request: fixes, cleanup, tests and rerun steps are in the PR #44 comment. The rerun needs `NESSIE_API_KEY`, which Cursor's cloud agent doesn't have, so Arnav runs it or adds the key to Cursor secrets. **20:36:** a P4 rerun was requested, but PR #44's branch was still at `94bc769` (20:29, before the handoff), with no `--dedupe` and no 404 fix (`cursor/g1-…` and `cursor/a11-…` don't have them either), so it wasn't run; nothing was created or deleted. **20:43:** reran on PR #44 `f07cf08` (Cursor's fixes). The preview works (35 present, 24 duplicates, 4 transfers to create), but Nessie rejects both writes: `DELETE /purchases/{id}` → 403 "Missing Authentication Token" (no such route), and `POST /accounts/{id}/transfers` → 400, `medium` and `payee_id` "extra fields not permitted". Nothing changed in Nessie and no `data/nessie_seed.json` exists yet. Handed back to Cursor on PR #44. If transfers can't name a payee, pivot for transfers only (local fixture via replay); reads and bills work.
 - T-Mobile's official texting short codes: not published on T-Mobile's pages (checked 2026-11-07). Ask a T-Mobile mentor, then fill `data/brands.json` (A10 follow-up).
 - Taxonomy: ours (v1) is in `data/taxonomy.json` (A21). If a mentor shares T-Mobile's, map it and regenerate.
