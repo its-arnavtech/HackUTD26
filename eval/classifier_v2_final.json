@@ -1,0 +1,249 @@
+{
+  "algorithm": "l7-public-binary-v2",
+  "comparison": {
+    "public_original_full_set_v1": {
+      "binary_macro_f1": 0.5299,
+      "metrics": {
+        "false_positive_rate": 0.0292,
+        "ham": 4827,
+        "n": 5574,
+        "spam": 747,
+        "spam_precision": 0.3221,
+        "spam_recall": 0.0897
+      },
+      "n": 5574
+    },
+    "public_same_holdout": {
+      "baseline": {
+        "binary_macro_f1": 0.598,
+        "confusion": {
+          "fn": 302,
+          "fp": 79,
+          "tn": 2335,
+          "tp": 71
+        },
+        "false_positive_rate": 0.0327,
+        "ham": 2414,
+        "n": 2787,
+        "spam": 373,
+        "spam_precision": 0.4733,
+        "spam_recall": 0.1903
+      },
+      "n": 2787,
+      "v1": {
+        "binary_macro_f1": 0.5193,
+        "confusion": {
+          "fn": 345,
+          "fp": 68,
+          "tn": 2346,
+          "tp": 28
+        },
+        "false_positive_rate": 0.0282,
+        "ham": 2414,
+        "n": 2787,
+        "spam": 373,
+        "spam_precision": 0.2917,
+        "spam_recall": 0.0751
+      },
+      "v2": {
+        "binary_macro_f1": 0.9257,
+        "confusion": {
+          "fn": 84,
+          "fp": 3,
+          "tn": 2411,
+          "tp": 289
+        },
+        "false_positive_rate": 0.0012,
+        "ham": 2414,
+        "n": 2787,
+        "spam": 373,
+        "spam_precision": 0.9897,
+        "spam_recall": 0.7748
+      }
+    },
+    "synthetic_test": {
+      "n": 388,
+      "v1": {
+        "accuracy": 0.884,
+        "categories": [
+          {
+            "category": "bank_impersonation",
+            "f1": 0.7333,
+            "precision": 0.7333,
+            "recall": 0.7333,
+            "support": 30
+          },
+          {
+            "category": "billing_scam",
+            "f1": 0.8889,
+            "precision": 0.8485,
+            "recall": 0.9333,
+            "support": 30
+          },
+          {
+            "category": "delivery_scam",
+            "f1": 0.9836,
+            "precision": 0.9677,
+            "recall": 1.0,
+            "support": 30
+          },
+          {
+            "category": "account_security",
+            "f1": 0.8197,
+            "precision": 0.8065,
+            "recall": 0.8333,
+            "support": 30
+          },
+          {
+            "category": "toll_government",
+            "f1": 0.931,
+            "precision": 0.9643,
+            "recall": 0.9,
+            "support": 30
+          },
+          {
+            "category": "prize_refund",
+            "f1": 0.9,
+            "precision": 0.9,
+            "recall": 0.9,
+            "support": 30
+          },
+          {
+            "category": "job_offer",
+            "f1": 0.9474,
+            "precision": 0.9643,
+            "recall": 0.931,
+            "support": 29
+          },
+          {
+            "category": "conversation_lure",
+            "f1": 0.8,
+            "precision": 0.7742,
+            "recall": 0.8276,
+            "support": 29
+          },
+          {
+            "category": "legit",
+            "f1": 0.8986,
+            "precision": 0.911,
+            "recall": 0.8867,
+            "support": 150
+          }
+        ],
+        "false_positive_rate": 0.1133,
+        "macro_f1": 0.8781,
+        "n": 388,
+        "scam_precision": 0.9298,
+        "scam_recall": 0.9454
+      },
+      "v2": {
+        "accuracy": 0.884,
+        "categories": [
+          {
+            "category": "bank_impersonation",
+            "f1": 0.6897,
+            "precision": 0.7143,
+            "recall": 0.6667,
+            "support": 30
+          },
+          {
+            "category": "billing_scam",
+            "f1": 0.8889,
+            "precision": 0.8485,
+            "recall": 0.9333,
+            "support": 30
+          },
+          {
+            "category": "delivery_scam",
+            "f1": 0.9836,
+            "precision": 0.9677,
+            "recall": 1.0,
+            "support": 30
+          },
+          {
+            "category": "account_security",
+            "f1": 0.8387,
+            "precision": 0.8125,
+            "recall": 0.8667,
+            "support": 30
+          },
+          {
+            "category": "toll_government",
+            "f1": 0.9091,
+            "precision": 1.0,
+            "recall": 0.8333,
+            "support": 30
+          },
+          {
+            "category": "prize_refund",
+            "f1": 0.918,
+            "precision": 0.9032,
+            "recall": 0.9333,
+            "support": 30
+          },
+          {
+            "category": "job_offer",
+            "f1": 0.9492,
+            "precision": 0.9333,
+            "recall": 0.9655,
+            "support": 29
+          },
+          {
+            "category": "conversation_lure",
+            "f1": 0.8,
+            "precision": 0.9524,
+            "recall": 0.6897,
+            "support": 29
+          },
+          {
+            "category": "legit",
+            "f1": 0.899,
+            "precision": 0.879,
+            "recall": 0.92,
+            "support": 150
+          }
+        ],
+        "false_positive_rate": 0.08,
+        "macro_f1": 0.8751,
+        "n": 388,
+        "scam_precision": 0.9481,
+        "scam_recall": 0.9202
+      }
+    }
+  },
+  "counts": {
+    "binary_fit": 4047,
+    "category_fit": 1127,
+    "public_fit": 2229,
+    "public_val": 558,
+    "synthetic_train": 1818,
+    "synthetic_val": 390
+  },
+  "model_sha256": "824af47739cee1d63e3828b3978a01b946bdf324bf5b9c9046334e34bd747b8e",
+  "prior_exposure": "all rows were evaluated in L7 v1; holdout is isolated from this follow-up development, not a never-seen sample",
+  "protocol": "public development/holdout 50/50; 20% of development validation; train-only fits; synthetic/public validation only; one final redacted scoring run; no post-test tuning",
+  "public_holdout_counts": {
+    "ham": 2414,
+    "rows": 2787,
+    "spam": 373
+  },
+  "public_improves_baseline": true,
+  "public_improves_v1": true,
+  "public_split_digest": "bb5b1ddd51a6554f6d34c08f5d608d47293075182578bb76516b6760b05cb4d1",
+  "redaction_cost": "not rerun for v2; historical v1 cost remains archived",
+  "seed": 20261108,
+  "selection_frozen": {
+    "c": 8.0,
+    "char_weight": 1.0,
+    "constraints_met": true,
+    "feature_weight": 0.25,
+    "legit_bias": 1.0,
+    "objective": 0.9476,
+    "public_binary_macro_f1": 0.9472,
+    "public_fpr": 0.0041,
+    "synthetic_fpr": 0.0671,
+    "synthetic_macro_f1": 0.9479
+  },
+  "status": "complete",
+  "synthetic_target_met": true
+}

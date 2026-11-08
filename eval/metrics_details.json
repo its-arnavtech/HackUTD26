@@ -1,4 +1,6 @@
 {
+  "ours_model": "frozen public-binary v2 artifact",
+  "baseline_model": "original synthetic-only A1 baseline",
   "conditions": {
     "redacted": {
       "ours": {
@@ -8,9 +10,9 @@
             {
               "category": "bank_impersonation",
               "support": 30,
-              "precision": 0.7333,
-              "recall": 0.7333,
-              "f1": 0.7333
+              "precision": 0.7143,
+              "recall": 0.6667,
+              "f1": 0.6897
             },
             {
               "category": "billing_scam",
@@ -29,51 +31,51 @@
             {
               "category": "account_security",
               "support": 30,
-              "precision": 0.8065,
-              "recall": 0.8333,
-              "f1": 0.8197
+              "precision": 0.8125,
+              "recall": 0.8667,
+              "f1": 0.8387
             },
             {
               "category": "toll_government",
               "support": 30,
-              "precision": 0.9643,
-              "recall": 0.9,
-              "f1": 0.931
+              "precision": 1.0,
+              "recall": 0.8333,
+              "f1": 0.9091
             },
             {
               "category": "prize_refund",
               "support": 30,
-              "precision": 0.9,
-              "recall": 0.9,
-              "f1": 0.9
+              "precision": 0.9032,
+              "recall": 0.9333,
+              "f1": 0.918
             },
             {
               "category": "job_offer",
               "support": 29,
-              "precision": 0.9643,
-              "recall": 0.931,
-              "f1": 0.9474
+              "precision": 0.9333,
+              "recall": 0.9655,
+              "f1": 0.9492
             },
             {
               "category": "conversation_lure",
               "support": 29,
-              "precision": 0.7742,
-              "recall": 0.8276,
+              "precision": 0.9524,
+              "recall": 0.6897,
               "f1": 0.8
             },
             {
               "category": "legit",
               "support": 150,
-              "precision": 0.911,
-              "recall": 0.8867,
-              "f1": 0.8986
+              "precision": 0.879,
+              "recall": 0.92,
+              "f1": 0.899
             }
           ],
-          "macro_f1": 0.8781,
+          "macro_f1": 0.8751,
           "accuracy": 0.884,
-          "false_positive_rate": 0.1133,
-          "scam_recall": 0.9454,
-          "scam_precision": 0.9298
+          "false_positive_rate": 0.08,
+          "scam_recall": 0.9202,
+          "scam_precision": 0.9481
         },
         "test_generated_only": {
           "n": 338,
@@ -81,9 +83,9 @@
             {
               "category": "bank_impersonation",
               "support": 26,
-              "precision": 0.7037,
-              "recall": 0.7308,
-              "f1": 0.717
+              "precision": 0.6923,
+              "recall": 0.6923,
+              "f1": 0.6923
             },
             {
               "category": "billing_scam",
@@ -95,58 +97,58 @@
             {
               "category": "delivery_scam",
               "support": 26,
-              "precision": 1.0,
+              "precision": 0.963,
               "recall": 1.0,
-              "f1": 1.0
+              "f1": 0.9811
             },
             {
               "category": "account_security",
               "support": 26,
-              "precision": 0.8077,
-              "recall": 0.8077,
-              "f1": 0.8077
+              "precision": 0.8148,
+              "recall": 0.8462,
+              "f1": 0.8302
             },
             {
               "category": "toll_government",
               "support": 26,
-              "precision": 0.9583,
-              "recall": 0.8846,
-              "f1": 0.92
+              "precision": 1.0,
+              "recall": 0.8462,
+              "f1": 0.9167
             },
             {
               "category": "prize_refund",
               "support": 26,
-              "precision": 0.8889,
-              "recall": 0.9231,
-              "f1": 0.9057
+              "precision": 0.8929,
+              "recall": 0.9615,
+              "f1": 0.9259
             },
             {
               "category": "job_offer",
               "support": 26,
-              "precision": 0.96,
-              "recall": 0.9231,
-              "f1": 0.9412
+              "precision": 0.9259,
+              "recall": 0.9615,
+              "f1": 0.9434
             },
             {
               "category": "conversation_lure",
               "support": 26,
-              "precision": 0.7857,
-              "recall": 0.8462,
-              "f1": 0.8148
+              "precision": 0.95,
+              "recall": 0.7308,
+              "f1": 0.8261
             },
             {
               "category": "legit",
               "support": 130,
-              "precision": 0.92,
-              "recall": 0.8846,
-              "f1": 0.902
+              "precision": 0.9008,
+              "recall": 0.9077,
+              "f1": 0.9042
             }
           ],
-          "macro_f1": 0.8779,
-          "accuracy": 0.8846,
-          "false_positive_rate": 0.1154,
-          "scam_recall": 0.9519,
-          "scam_precision": 0.9296
+          "macro_f1": 0.8792,
+          "accuracy": 0.8876,
+          "false_positive_rate": 0.0923,
+          "scam_recall": 0.9375,
+          "scam_precision": 0.942
         },
         "test_handwritten_only": {
           "n": 50,
@@ -155,8 +157,8 @@
               "category": "bank_impersonation",
               "support": 4,
               "precision": 1.0,
-              "recall": 0.75,
-              "f1": 0.8571
+              "recall": 0.5,
+              "f1": 0.6667
             },
             {
               "category": "billing_scam",
@@ -168,9 +170,9 @@
             {
               "category": "delivery_scam",
               "support": 4,
-              "precision": 0.8,
+              "precision": 1.0,
               "recall": 1.0,
-              "f1": 0.8889
+              "f1": 1.0
             },
             {
               "category": "account_security",
@@ -183,8 +185,8 @@
               "category": "toll_government",
               "support": 4,
               "precision": 1.0,
-              "recall": 1.0,
-              "f1": 1.0
+              "recall": 0.75,
+              "f1": 0.8571
             },
             {
               "category": "prize_refund",
@@ -203,35 +205,35 @@
             {
               "category": "conversation_lure",
               "support": 3,
-              "precision": 0.6667,
-              "recall": 0.6667,
-              "f1": 0.6667
+              "precision": 1.0,
+              "recall": 0.3333,
+              "f1": 0.5
             },
             {
               "category": "legit",
               "support": 20,
-              "precision": 0.8571,
-              "recall": 0.9,
-              "f1": 0.878
+              "precision": 0.7692,
+              "recall": 1.0,
+              "f1": 0.8696
             }
           ],
-          "macro_f1": 0.8771,
-          "accuracy": 0.88,
-          "false_positive_rate": 0.1,
-          "scam_recall": 0.9,
-          "scam_precision": 0.931
+          "macro_f1": 0.8329,
+          "accuracy": 0.86,
+          "false_positive_rate": 0.0,
+          "scam_recall": 0.8,
+          "scam_precision": 1.0
         },
         "test_confusion": {
           "account_security": {
-            "account_security": 25,
-            "bank_impersonation": 2,
+            "account_security": 26,
+            "bank_impersonation": 1,
             "billing_scam": 1,
             "legit": 2
           },
           "bank_impersonation": {
             "account_security": 5,
-            "bank_impersonation": 22,
-            "legit": 3
+            "bank_impersonation": 20,
+            "legit": 5
           },
           "billing_scam": {
             "billing_scam": 28,
@@ -239,46 +241,53 @@
             "prize_refund": 1
           },
           "conversation_lure": {
-            "conversation_lure": 24,
+            "conversation_lure": 20,
             "job_offer": 1,
-            "legit": 3,
+            "legit": 7,
             "prize_refund": 1
           },
           "delivery_scam": {
             "delivery_scam": 30
           },
           "job_offer": {
-            "job_offer": 27,
-            "legit": 2
+            "job_offer": 28,
+            "legit": 1
           },
           "legit": {
             "account_security": 1,
-            "bank_impersonation": 5,
+            "bank_impersonation": 6,
             "billing_scam": 3,
-            "conversation_lure": 6,
             "delivery_scam": 1,
-            "legit": 133,
-            "toll_government": 1
+            "job_offer": 1,
+            "legit": 138
           },
           "prize_refund": {
             "conversation_lure": 1,
-            "legit": 2,
-            "prize_refund": 27
+            "legit": 1,
+            "prize_refund": 28
           },
           "toll_government": {
             "bank_impersonation": 1,
             "billing_scam": 1,
+            "legit": 2,
             "prize_refund": 1,
-            "toll_government": 27
+            "toll_government": 25
           }
         },
         "public": {
-          "n": 5574,
-          "spam": 747,
-          "ham": 4827,
-          "spam_recall": 0.0897,
-          "false_positive_rate": 0.0292,
-          "spam_precision": 0.3221
+          "n": 2787,
+          "binary_macro_f1": 0.9257,
+          "confusion": {
+            "tp": 289,
+            "fp": 3,
+            "fn": 84,
+            "tn": 2411
+          },
+          "spam": 373,
+          "ham": 2414,
+          "spam_recall": 0.7748,
+          "false_positive_rate": 0.0012,
+          "spam_precision": 0.9897
         }
       },
       "baseline": {
@@ -556,12 +565,19 @@
           }
         },
         "public": {
-          "n": 5574,
-          "spam": 747,
-          "ham": 4827,
-          "spam_recall": 0.1767,
-          "false_positive_rate": 0.0342,
-          "spam_precision": 0.4444
+          "n": 2787,
+          "binary_macro_f1": 0.598,
+          "confusion": {
+            "tp": 71,
+            "fp": 79,
+            "fn": 302,
+            "tn": 2335
+          },
+          "spam": 373,
+          "ham": 2414,
+          "spam_recall": 0.1903,
+          "false_positive_rate": 0.0327,
+          "spam_precision": 0.4733
         }
       }
     },
@@ -1122,25 +1138,246 @@
           "false_positive_rate": 0.0406,
           "spam_precision": 0.4909
         }
-      }
+      },
+      "historical_v1_only": true
     }
+  },
+  "comparison": {
+    "synthetic_test": {
+      "n": 388,
+      "v1": {
+        "n": 388,
+        "categories": [
+          {
+            "category": "bank_impersonation",
+            "support": 30,
+            "precision": 0.7333,
+            "recall": 0.7333,
+            "f1": 0.7333
+          },
+          {
+            "category": "billing_scam",
+            "support": 30,
+            "precision": 0.8485,
+            "recall": 0.9333,
+            "f1": 0.8889
+          },
+          {
+            "category": "delivery_scam",
+            "support": 30,
+            "precision": 0.9677,
+            "recall": 1.0,
+            "f1": 0.9836
+          },
+          {
+            "category": "account_security",
+            "support": 30,
+            "precision": 0.8065,
+            "recall": 0.8333,
+            "f1": 0.8197
+          },
+          {
+            "category": "toll_government",
+            "support": 30,
+            "precision": 0.9643,
+            "recall": 0.9,
+            "f1": 0.931
+          },
+          {
+            "category": "prize_refund",
+            "support": 30,
+            "precision": 0.9,
+            "recall": 0.9,
+            "f1": 0.9
+          },
+          {
+            "category": "job_offer",
+            "support": 29,
+            "precision": 0.9643,
+            "recall": 0.931,
+            "f1": 0.9474
+          },
+          {
+            "category": "conversation_lure",
+            "support": 29,
+            "precision": 0.7742,
+            "recall": 0.8276,
+            "f1": 0.8
+          },
+          {
+            "category": "legit",
+            "support": 150,
+            "precision": 0.911,
+            "recall": 0.8867,
+            "f1": 0.8986
+          }
+        ],
+        "macro_f1": 0.8781,
+        "accuracy": 0.884,
+        "false_positive_rate": 0.1133,
+        "scam_recall": 0.9454,
+        "scam_precision": 0.9298
+      },
+      "v2": {
+        "n": 388,
+        "categories": [
+          {
+            "category": "bank_impersonation",
+            "support": 30,
+            "precision": 0.7143,
+            "recall": 0.6667,
+            "f1": 0.6897
+          },
+          {
+            "category": "billing_scam",
+            "support": 30,
+            "precision": 0.8485,
+            "recall": 0.9333,
+            "f1": 0.8889
+          },
+          {
+            "category": "delivery_scam",
+            "support": 30,
+            "precision": 0.9677,
+            "recall": 1.0,
+            "f1": 0.9836
+          },
+          {
+            "category": "account_security",
+            "support": 30,
+            "precision": 0.8125,
+            "recall": 0.8667,
+            "f1": 0.8387
+          },
+          {
+            "category": "toll_government",
+            "support": 30,
+            "precision": 1.0,
+            "recall": 0.8333,
+            "f1": 0.9091
+          },
+          {
+            "category": "prize_refund",
+            "support": 30,
+            "precision": 0.9032,
+            "recall": 0.9333,
+            "f1": 0.918
+          },
+          {
+            "category": "job_offer",
+            "support": 29,
+            "precision": 0.9333,
+            "recall": 0.9655,
+            "f1": 0.9492
+          },
+          {
+            "category": "conversation_lure",
+            "support": 29,
+            "precision": 0.9524,
+            "recall": 0.6897,
+            "f1": 0.8
+          },
+          {
+            "category": "legit",
+            "support": 150,
+            "precision": 0.879,
+            "recall": 0.92,
+            "f1": 0.899
+          }
+        ],
+        "macro_f1": 0.8751,
+        "accuracy": 0.884,
+        "false_positive_rate": 0.08,
+        "scam_recall": 0.9202,
+        "scam_precision": 0.9481
+      }
+    },
+    "public_same_holdout": {
+      "n": 2787,
+      "v1": {
+        "n": 2787,
+        "binary_macro_f1": 0.5193,
+        "confusion": {
+          "tp": 28,
+          "fp": 68,
+          "fn": 345,
+          "tn": 2346
+        },
+        "spam": 373,
+        "ham": 2414,
+        "spam_recall": 0.0751,
+        "false_positive_rate": 0.0282,
+        "spam_precision": 0.2917
+      },
+      "v2": {
+        "n": 2787,
+        "binary_macro_f1": 0.9257,
+        "confusion": {
+          "tp": 289,
+          "fp": 3,
+          "fn": 84,
+          "tn": 2411
+        },
+        "spam": 373,
+        "ham": 2414,
+        "spam_recall": 0.7748,
+        "false_positive_rate": 0.0012,
+        "spam_precision": 0.9897
+      },
+      "baseline": {
+        "n": 2787,
+        "binary_macro_f1": 0.598,
+        "confusion": {
+          "tp": 71,
+          "fp": 79,
+          "fn": 302,
+          "tn": 2335
+        },
+        "spam": 373,
+        "ham": 2414,
+        "spam_recall": 0.1903,
+        "false_positive_rate": 0.0327,
+        "spam_precision": 0.4733
+      }
+    },
+    "public_original_full_set_v1": {
+      "n": 5574,
+      "metrics": {
+        "n": 5574,
+        "spam": 747,
+        "ham": 4827,
+        "spam_recall": 0.0897,
+        "false_positive_rate": 0.0292,
+        "spam_precision": 0.3221
+      },
+      "binary_macro_f1": 0.5299
+    }
+  },
+  "public_split": {
+    "seed": 20261108,
+    "counts": {
+      "test": {
+        "ham": 2414,
+        "rows": 2787,
+        "spam": 373
+      },
+      "train": {
+        "ham": 1930,
+        "rows": 2229,
+        "spam": 299
+      },
+      "val": {
+        "ham": 483,
+        "rows": 558,
+        "spam": 75
+      }
+    },
+    "prior_exposure": "all rows were evaluated in L7 v1; holdout is isolated from this follow-up development, not a never-seen sample"
   },
   "split": {
     "train": 1818,
     "val": 390,
     "test": 388
   },
-  "public_set": {
-    "dataset": "ucirvine/sms_spam",
-    "path": "data/raw/public_sms (A5, gitignored)",
-    "present": true
-  },
-  "agent_sample": [],
-  "ours_model": "frozen local L7 artifact",
-  "baseline_model": "scripts.evaluate:baseline_factory",
-  "l7_final_protocol": "one final A13 evaluation; train-only fits; validation-only selection; raw control frozen before scoring; no post-test tuning",
-  "public_binary_macro_f1": {
-    "ours": 0.5298968687038148,
-    "baseline": 0.5878191614427839
-  }
+  "redaction_cost_note": "not rerun for v2; historical v1 cost remains archived"
 }

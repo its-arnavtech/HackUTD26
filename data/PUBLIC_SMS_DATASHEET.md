@@ -55,3 +55,30 @@ redaction-cost field is null, and the historical v1 cost stays archived.
 These public IDs never enter campaign seeds, blocklists, model prompts or
 outside services. The explicitly authorized public-development exception
 applies only to this local classifier and its saved roles.
+
+## Frozen follow-up result
+
+V2 was selected on validation only and then scored once. No post-score tuning.
+
+| Evaluation (redacted) | V1 | V2 | Original A1 baseline |
+| --- | ---: | ---: | ---: |
+| Synthetic category macro F1 (388) | 0.8781 | 0.8751 | 0.7915 |
+| Synthetic legitimate FPR (388) | 0.1133 | 0.0800 | 0.1600 |
+| Public binary macro F1 (same 2787 held-out rows) | 0.5193 | 0.9257 | 0.5980 |
+| Public spam recall (same heldout) | 0.0751 | 0.7748 | 0.1903 |
+| Public legitimate FPR (same heldout) | 0.0282 | 0.0012 | 0.0327 |
+
+Synthetic F1 is 0.0030 lower than v1, with fewer false alarms; v2 still beats
+the original raw-text baseline target of 0.807 F1 / 0.127 FPR. Public v2 has
+289 true spam detections, 84 missed spam, 3 false alarms and 2,411 true ham.
+
+For historical context only, v1 on the **entire 5,574-row public set** scored
+binary F1 0.5299, spam recall 0.0897 and FPR 0.0292. That is a different sample
+from the new holdout; do not use it as the matched old/new comparison. The
+same-half table above is the direct comparison, and v2 learned from the other
+half. This is an in-distribution held-out result under the revised protocol,
+not a new independent external or zero-shot evaluation.
+
+Reports: `eval/classifier_v2_final.json`, current `eval/metrics.json` and
+`metrics_details.json`; historical reports in `eval/classifier_v1/`. The final
+report records frozen parameters, model hash, saved split digest and exposure.

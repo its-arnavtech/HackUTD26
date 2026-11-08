@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-08T05:12:56.607296Z",
+  "generated_at": "2026-11-08T05:38:51.377072Z",
   "split": "test",
   "n_test": 388,
   "categories": [
@@ -7,9 +7,9 @@
       "category": "bank_impersonation",
       "support": 30,
       "ours": {
-        "precision": 0.7333,
-        "recall": 0.7333,
-        "f1": 0.7333
+        "precision": 0.7143,
+        "recall": 0.6667,
+        "f1": 0.6897
       },
       "baseline": {
         "precision": 0.6429,
@@ -49,9 +49,9 @@
       "category": "account_security",
       "support": 30,
       "ours": {
-        "precision": 0.8065,
-        "recall": 0.8333,
-        "f1": 0.8197
+        "precision": 0.8125,
+        "recall": 0.8667,
+        "f1": 0.8387
       },
       "baseline": {
         "precision": 0.7097,
@@ -63,9 +63,9 @@
       "category": "toll_government",
       "support": 30,
       "ours": {
-        "precision": 0.9643,
-        "recall": 0.9,
-        "f1": 0.931
+        "precision": 1.0,
+        "recall": 0.8333,
+        "f1": 0.9091
       },
       "baseline": {
         "precision": 0.8667,
@@ -77,9 +77,9 @@
       "category": "prize_refund",
       "support": 30,
       "ours": {
-        "precision": 0.9,
-        "recall": 0.9,
-        "f1": 0.9
+        "precision": 0.9032,
+        "recall": 0.9333,
+        "f1": 0.918
       },
       "baseline": {
         "precision": 0.7941,
@@ -91,9 +91,9 @@
       "category": "job_offer",
       "support": 29,
       "ours": {
-        "precision": 0.9643,
-        "recall": 0.931,
-        "f1": 0.9474
+        "precision": 0.9333,
+        "recall": 0.9655,
+        "f1": 0.9492
       },
       "baseline": {
         "precision": 0.913,
@@ -105,8 +105,8 @@
       "category": "conversation_lure",
       "support": 29,
       "ours": {
-        "precision": 0.7742,
-        "recall": 0.8276,
+        "precision": 0.9524,
+        "recall": 0.6897,
         "f1": 0.8
       },
       "baseline": {
@@ -119,9 +119,9 @@
       "category": "legit",
       "support": 150,
       "ours": {
-        "precision": 0.911,
-        "recall": 0.8867,
-        "f1": 0.8986
+        "precision": 0.879,
+        "recall": 0.92,
+        "f1": 0.899
       },
       "baseline": {
         "precision": 0.8129,
@@ -131,28 +131,25 @@
     }
   ],
   "macro_f1": {
-    "ours": 0.8781,
+    "ours": 0.8751,
     "baseline": 0.7915
   },
   "false_positive_rate": {
-    "ours": 0.1133,
+    "ours": 0.08,
     "baseline": 0.16
   },
   "public_set": {
-    "dataset": "ucirvine/sms_spam",
-    "n": 5574,
+    "dataset": "ucirvine/sms_spam: saved 50% holdout (seed 20261108)",
+    "n": 2787,
     "spam_recall": {
-      "ours": 0.0897,
-      "baseline": 0.1767
+      "ours": 0.7748,
+      "baseline": 0.1903
     },
     "false_positive_rate": {
-      "ours": 0.0292,
-      "baseline": 0.0342
+      "ours": 0.0012,
+      "baseline": 0.0327
     }
   },
-  "redaction_cost": {
-    "macro_f1_unredacted": 0.8962,
-    "macro_f1_redacted": 0.8781
-  },
+  "redaction_cost": null,
   "agent_sample": null
 }
