@@ -37,6 +37,7 @@ if TYPE_CHECKING:
 
 PUBLIC = "public"  # anyone, no session (auth routes run their own checks)
 SESSION = "session"  # any signed-in user
+WEBHOOK = "webhook"  # an outside service calling us (no session or CSRF); the route checks its signature
 
 # The demo customer. With auth off every request is this user; with auth on,
 # `scripts.create_user --demo` creates the account with this id, so the seeded
@@ -56,6 +57,7 @@ ROUTE_PERMISSIONS: dict[tuple[str, str], str] = {
     ("GET", "/api/inbox"): "messages:read",
     ("POST", "/api/messages"): "messages:write",
     ("GET", "/api/messages/{message_id}/result"): "messages:read",
+    ("GET", "/api/messages/{message_id}/agent"): "messages:read",
     ("POST", "/api/messages/{message_id}/clicked"): "messages:write",
     ("POST", "/api/transactions/{ref}/confirm"): "messages:write",
     ("POST", "/api/actions"): "actions:write",
@@ -71,6 +73,9 @@ ROUTE_PERMISSIONS: dict[tuple[str, str], str] = {
     ("POST", "/api/auth/passkey/login/verify"): PUBLIC,
     ("POST", "/api/auth/refresh"): PUBLIC,
     ("POST", "/api/auth/logout"): PUBLIC,
+    ("POST", "/api/sms/inbound"): WEBHOOK,
+    ("GET", "/api/whatsapp/webhook"): WEBHOOK,
+    ("POST", "/api/whatsapp/webhook"): WEBHOOK,
     ("GET", "/api/auth/me"): SESSION,
     ("POST", "/api/auth/passkey/register/options"): SESSION,
     ("POST", "/api/auth/passkey/register/verify"): SESSION,
@@ -140,6 +145,9 @@ def authorize(request: Request) -> None:
 
     if ctx is None:  # auth off
         request.state.principal = DEMO_PRINCIPAL
+        return
+    if permission == WEBHOOK:
+        request.state.principal = None
         return
 
     ip_hash = client_ip_hash(ctx, request)

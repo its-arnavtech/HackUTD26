@@ -6,6 +6,7 @@ import "@fontsource/source-sans-3/latin-600.css";
 import "@fontsource/source-sans-3/latin-700.css";
 import "@fontsource-variable/newsreader";
 import "./theme.css";
+import "./console/console.css";
 import App from "./App";
 
 createRoot(document.getElementById("root")!).render(

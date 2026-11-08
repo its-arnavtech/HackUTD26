@@ -45,6 +45,8 @@ from app.state import JobRunner, StateStore
 
 if TYPE_CHECKING:
     from app.auth.context import AuthContext
+    from app.sms import SmsService
+    from app.whatsapp import WhatsAppService
 
 INBOX_SEED = DATA_DIR / "scenarios" / "inbox.json"
 METRICS_PATH = REPO_ROOT / "eval" / "metrics.json"
@@ -305,6 +307,21 @@ def get_result(
     return _progress(message_id, advance=True)
 
 
+@router.get("/messages/{message_id}/agent")
+def get_agent_transcript(message_id: str, settings: SettingsDep, store: StoreDep, principal: PrincipalDep) -> dict:
+    """L14 System view: each real Nemotron call for this message (model, latency, tools it chose, reasoning).
+    Redacted data only. Empty when routes are mocked (no model runs)."""
+    from app import transcript
+
+    if not settings.route_is_mocked("result"):
+        _own(store, message_id, principal)
+    t = transcript.get(message_id)
+    return (t.model_dump(mode="json") if t else {"message_id": message_id, "runs": []}) | {
+        "model": settings.NEMOTRON_MODEL,
+        "live": not settings.route_is_mocked("result"),
+    }
+
+
 @router.post("/messages/{message_id}/clicked", response_model=c.ClickedResponse)
 def post_clicked(
     message_id: str, settings: SettingsDep, store: StoreDep, runner: RunnerDep, job: JobDep, principal: PrincipalDep
@@ -383,6 +400,9 @@ def post_demo_reset(
     """Clears demo state and reloads the demo inbox. Admin only when auth is on."""
     if request.app.state.auth is not None:
         request.app.state.auth.store.audit.record("demo.reset", actor=principal.user_id)
+    from app import transcript
+
+    transcript.clear()
     if not settings.route_is_mocked("demo_reset"):
         store.reset()
         seed_inbox(store)
@@ -402,6 +422,47 @@ def _list_campaigns() -> list[c.Campaign]:
     return list_campaigns()
 
 
+def _sms_service(settings: Settings) -> SmsService:
+    from app.integrations.twilio import TwilioClient
+    from app.sms import SmsService
+
+    assert settings.TWILIO_AUTH_TOKEN is not None and settings.PHONE_HASH_SALT is not None
+    client = TwilioClient(
+        settings.TWILIO_ACCOUNT_SID,
+        settings.TWILIO_AUTH_TOKEN.get_secret_value(),
+        settings.TWILIO_FROM_NUMBER,
+        settings.DEMO_MODE,
+    )
+    return SmsService(
+        client=client,
+        public_base_url=settings.PUBLIC_BASE_URL,
+        phone_salt=settings.PHONE_HASH_SALT.get_secret_value(),
+        allowed=settings.sms_allowed_numbers,
+    )
+
+
+def _whatsapp_service(settings: Settings) -> WhatsAppService:
+    from app.integrations.whatsapp import WhatsAppClient
+    from app.whatsapp import WhatsAppService
+
+    assert settings.WHATSAPP_ACCESS_TOKEN and settings.WHATSAPP_APP_SECRET and settings.WHATSAPP_VERIFY_TOKEN
+    assert settings.PHONE_HASH_SALT is not None
+    client = WhatsAppClient(
+        settings.WHATSAPP_ACCESS_TOKEN.get_secret_value(),
+        settings.WHATSAPP_PHONE_NUMBER_ID,
+        settings.WHATSAPP_GRAPH_VERSION,
+        settings.DEMO_MODE,
+    )
+    return WhatsAppService(
+        client=client,
+        app_secret=settings.WHATSAPP_APP_SECRET.get_secret_value(),
+        verify_token=settings.WHATSAPP_VERIFY_TOKEN.get_secret_value(),
+        public_base_url=settings.PUBLIC_BASE_URL,
+        phone_salt=settings.PHONE_HASH_SALT.get_secret_value(),
+        allowed=frozenset(p.strip() for p in settings.WHATSAPP_ALLOWED_NUMBERS.split(",") if p.strip()),
+    )
+
+
 def create_app(
     settings: Settings | None = None,
     *,
@@ -409,6 +470,8 @@ def create_app(
     list_campaigns: Callable[[], list[c.Campaign]] | None = None,
     metrics_path: Path | None = None,
     auth_context: AuthContext | None = None,
+    sms_service: SmsService | None = None,
+    whatsapp_service: WhatsAppService | None = None,
 ) -> FastAPI:
     """Build the app. Raises `SettingsError` with a clear message if settings are invalid.
 
@@ -456,6 +519,18 @@ def create_app(
 
         app.state.auth = auth_context or AuthContext(settings)
         app.include_router(auth_router)
+    app.state.sms = None
+    if settings.sms_enabled:  # L14: text it, get a reply
+        app.state.sms = sms_service or _sms_service(settings)
+        from app.sms import router as sms_router
+
+        app.include_router(sms_router)
+    app.state.whatsapp = None
+    if settings.whatsapp_enabled:  # L14: the free way to message SentinelAI from a phone
+        app.state.whatsapp = whatsapp_service or _whatsapp_service(settings)
+        from app.whatsapp import router as whatsapp_router
+
+        app.include_router(whatsapp_router)
 
     modes = {k: v["mode"] for k, v in integration_modes(settings).items()}
     mocked = sorted(r for r in ROUTES if settings.route_is_mocked(r))

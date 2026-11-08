@@ -534,10 +534,35 @@ def test_tool_call_written_as_text_is_run():
         ('delete_everything{confirm:<|"|>yes<|"|>}', None),  # not one of our tools
         (json.dumps(GOOD_FINAL), None),  # a final answer, not a call
         ("NONE", None),
+        # L14, seen live with a 0.71 classifier score: a JSON list of {tool_name, parameters}.
+        ('[{"tool_name": "check_link", "parameters": {"url_id": "URL_1"}}, {"tool_name": "nessie_recent_activity", "parameters": {"days": "7"}}]',
+         [("check_link", {"url_id": "URL_1"}), ("nessie_recent_activity", {"days": "7"})]),
+        ('```json\n[{"name": "check_sender", "arguments": "{\\"claimed_brand\\": \\"Capital One\\"}"}]\n```',
+         [("check_sender", {"claimed_brand": "Capital One"})]),
+        ('{"tool_name": "match_campaign", "parameters": {}}', [("match_campaign", {})]),
+        ('[{"function": {"name": "check_link", "arguments": {"url_id": "URL_1"}}}]', [("check_link", {"url_id": "URL_1"})]),
+        ('[{"tool_name": "check_link", "parameters": {}}, {"tool_name": "drop_tables", "parameters": {}}]', None),  # one unknown tool: none run
+        ('[{"tool_name": "check_link", "parameters": ["URL_1"]}]', None),  # arguments must be an object
+        ('[1, 2, 3]', None),
     ],
 )
 def test_leaked_tool_call_parser(text, expected):
     assert loop._leaked_tool_calls(text) == expected
+
+
+def test_json_list_of_tool_calls_is_run_not_skipped():
+    """Seen live (L14): Bolt chose four checks but wrote them as a JSON list in its text; they were dropped
+    and the final answer then cited checks that never ran. Now they run like native tool calls."""
+    listed = json.dumps([
+        {"tool_name": "check_link", "parameters": {"url_id": "URL_1"}},
+        {"tool_name": "check_sender", "parameters": {"claimed_brand": "Capital One"}},
+    ])
+    chat = FakeChat(final_turn(listed), final_turn({**GOOD_FINAL, "confidence_words": "likely"}))
+    tools = FakeTools()
+    res, trail = run(chat, tools)
+    assert [n for n, _ in tools.called] == ["check_link", "check_sender"]
+    assert kinds(trail)[:3] == [c.TrailKind.plan, c.TrailKind.tool, c.TrailKind.tool]
+    assert not any(m.get("content") == prompts.NUDGE_TOOLS for req in chat.requests for m in req)  # no nudge needed
 
 
 def test_no_checks_yet_gets_one_nudge_then_tools_run():

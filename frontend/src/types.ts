@@ -29,7 +29,7 @@ export type ToolName =
   | "nessie_recent_activity"
   | "nessie_bill_status"
   | "public_scam_reports";
-export type MessageSource = "generated" | "handwritten" | "public" | "scenario" | "authored";
+export type MessageSource = "generated" | "handwritten" | "public" | "scenario" | "authored" | "sms";
 export type ActivityType = "transfer" | "purchase" | "bill" | "deposit" | "withdrawal";
 
 /** ISO 8601 date-time string. */

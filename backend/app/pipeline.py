@@ -179,7 +179,14 @@ class Pipeline:
         agent_input, _ = self.build_input(message_id, message, mode)
         prepared_ms = _ms(started)
 
-        result = self.agent(agent_input, on_trail)
+        if self.agent is run_agent:  # L14: record each real Nemotron call for the System view
+            from app import transcript
+            from app.config import get_settings
+
+            chat = transcript.recording_chat(message_id, agent_input.mode.value, get_settings().NEMOTRON_MODEL)
+            result = run_agent(agent_input, on_trail, chat=chat)
+        else:
+            result = self.agent(agent_input, on_trail)
 
         if agent_input.mode == AgentMode.check and self.record_campaign is not None:
             try:  # campaign counts must never break a check

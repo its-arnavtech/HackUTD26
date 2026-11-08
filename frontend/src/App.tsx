@@ -3,9 +3,11 @@ import { Link, Navigate, NavLink, Route, Routes, useLocation } from "react-route
 import { ArrowUpRight, BookOpen, ChevronRight, Layers3, Sparkles } from "lucide-react";
 import type { Health } from "./api";
 import { AccountLine, AuthGate } from "./auth";
+import Console, { ResultPage } from "./console/Console";
+import SystemView from "./console/SystemView";
+import { AccuracyShell, PatternsPage, SecurityPage } from "./console/Pages";
 import { Brand, PhoneFrame } from "./components";
 import { useHealth } from "./hooks";
-import AccuracyPage from "./screens/AccuracyPage";
 import CampaignView from "./screens/CampaignView";
 import Consent from "./screens/Consent";
 import Gallery from "./screens/Gallery";
@@ -125,7 +127,8 @@ function PhoneExperience() {
   );
 }
 
-export default function App() {
+/** The original phone-frame demo (A7, A14 to A16), kept at its old URLs until Arnav signs off on the console. */
+function ClassicApp() {
   const { pathname } = useLocation();
   useEffect(() => {
     document.title = `SentinelAI · ${pathname === "/gallery" ? "Screen gallery" : pathname === "/accuracy" ? "Accuracy" : "A little certainty"}`;
@@ -141,6 +144,7 @@ export default function App() {
           <Brand />
         </Link>
         <nav aria-label="Demo">
+          <NavLink to="/">Console</NavLink>
           <NavLink to="/inbox">Demo</NavLink>
           <NavLink to="/gallery">
             <Layers3 size={15} />
@@ -155,17 +159,28 @@ export default function App() {
       <div id="main-content" tabIndex={-1}>
         <Routes>
           <Route path="/gallery" element={<Gallery />} />
-          <Route
-            path="/accuracy"
-            element={
-              <AuthGate>
-                <AccuracyPage />
-              </AuthGate>
-            }
-          />
           <Route path="*" element={<PhoneExperience />} />
         </Routes>
       </div>
     </>
+  );
+}
+
+/** L14: the console is the default screen; the classic phone demo keeps its URLs (/inbox, /result/…, /gallery). */
+export default function App() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    if (pathname === "/" || pathname.startsWith("/r/")) document.title = "SentinelAI · Console";
+  }, [pathname]);
+  return (
+    <Routes>
+      <Route path="/" element={<AuthGate><SystemView /></AuthGate>} />
+      <Route path="/customer" element={<AuthGate><Console /></AuthGate>} />
+      <Route path="/r/:messageId" element={<AuthGate><ResultPage /></AuthGate>} />
+      <Route path="/patterns" element={<AuthGate><PatternsPage /></AuthGate>} />
+      <Route path="/accuracy" element={<AuthGate><AccuracyShell /></AuthGate>} />
+      <Route path="/security" element={<SecurityPage />} />
+      <Route path="*" element={<ClassicApp />} />
+    </Routes>
   );
 }

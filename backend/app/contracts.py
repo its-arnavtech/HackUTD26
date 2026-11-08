@@ -130,6 +130,7 @@ class MessageSource(str, Enum):
     public = "public"  # public real SMS set via Hugging Face (A5)
     scenario = "scenario"
     authored = "authored"
+    sms = "sms"  # texted or forwarded to the SentinelAI number (L14)
 
 
 # ---------------------------------------------------------------------------

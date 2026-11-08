@@ -58,7 +58,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
 }
 
 /** "Signed in as …", add a passkey, sign out. Renders nothing when auth is off. Never shows a token. */
-export function AccountLine() {
+export function AccountLine({ compact = false }: { compact?: boolean }) {
   const authOn = useHealth()?.auth_enabled === true;
   const [me, setMe] = useState<Me>();
   const [note, setNote] = useState<string>();
@@ -98,6 +98,26 @@ export function AccountLine() {
       setMe(undefined);
     }
   };
+
+  if (compact) {
+    return (
+      <div className="cx-account">
+        <span>
+          {me.display_name}
+          {me.role === "admin" ? " · admin" : ""}
+        </span>
+        {me.passkeys === 0 && (
+          <button className="cx-link-button" onClick={() => void addPasskey()}>
+            Add passkey
+          </button>
+        )}
+        <button className="cx-link-button" onClick={() => void signOut()}>
+          Sign out
+        </button>
+        {note && <span className="cx-muted" role="status">{note}</span>}
+      </div>
+    );
+  }
 
   return (
     <div className="account-line">
