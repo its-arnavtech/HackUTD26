@@ -76,37 +76,24 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - Resumed by: <tool> from <tool>, if any
 ```
 
-### A2 Nessie client and idempotent seed script (#3)
-- Agent: Cursor (Claude Opus 5.5, cloud agent) · Person: Arnav · Folder: Cursor cloud VM (`/workspace`) · Branch: `cursor/a2-nessie-client-55c7`
-- Started: 2026-11-07 19:02 · Last checkpoint: 2026-11-07 20:19
-- Done so far:
-  - Claimed (CHANGELOG only: the cloud agent can't comment on issues)
-  - Checked real field names with read-only calls (no `NESSIE_API_KEY` here; GETs answer with any key). Differences from DATA_SPEC 6 are in Decisions.
-  - `integrations/nessie.py`: every call goes through L1's `cached_call` (a replay miss raises `NessieReplayMiss`; `NessieClient(mode=...)` overrides `DEMO_MODE`), `id` is normalized to `_id`, transfers get `payer_id`, `payee_id` and `at` from `data/nessie_seed.json`, http is upgraded to https, and the key never appears in errors or cache keys
-  - `scripts/seed_nessie.py`: everything in POC_MVP 7.7, idempotent by natural keys, `--dry-run`, writes `data/nessie_seed.json`
-  - 13 tests against an in-memory fake Nessie shaped like the live API (`tests/fake_nessie.py`); suite passes on 3.11 and 3.12 and in replay
-  - PR #44 open
-  - 2026-11-07 20:19: rebased onto `main` (L1, L2, L3, #41) and dropped the temporary cache fallback; record-then-replay test checks the key never reaches a fixture
-- Next step (exact): Arnav puts `NESSIE_API_KEY` in `.env` (or in Cursor secrets so the cloud agent can do it), then from `backend/` runs `python -m scripts.seed_nessie --dry-run`, `python -m scripts.seed_nessie` twice (the second run must print `Created 0`), and commits `data/nessie_seed.json`. If a POST is rejected, fix the body in `scripts/seed_nessie.py`.
-- Files touched: `backend/app/integrations/nessie.py`, `backend/scripts/seed_nessie.py`, `backend/tests/fake_nessie.py`, `backend/tests/test_nessie_client.py`, `backend/tests/test_seed_nessie.py`, `.env.example`, `CHANGELOG.md`
-- How to run or test: `python -m pytest` in `backend/`; the seed needs `NESSIE_API_KEY` in `.env`: `python -m scripts.seed_nessie`
-- Notes and gotchas: never write to Nessie with a made-up key. Nessie dates have no time, so the planted transfer's 09:31 time lives in the manifest. A11 should limit check mode to activity before `received_at`, so scenario 1 (check) doesn't see the transfer that scenario 2 (recovery) finds.
-- Resumed by: none
 ### G1 Gate: scenario 1 end to end in the CLI (#25), prep
 - Agent: Cursor (Claude Opus 5.5, cloud agent) · Person: Arnav · Folder: Cursor cloud VM (`/workspace`) · Branch: `cursor/g1-run-scenario-55c7`
-- Started: 2026-11-07 19:17 · Last checkpoint: 2026-11-07 20:22
+- Started: 2026-11-07 19:17 · Last checkpoint: 2026-11-07 20:40
 - Done so far:
   - Claimed (CHANGELOG only)
   - `scripts/run_scenario.py`: redaction, sender redaction, URL features, message features, claimed brand and classifier each use the real module (or, for the classifier, A1's baseline) once it stops raising `NotImplementedError`, and a marked stand-in until then. The stages table prints which one ran. Tools run through a `TOOLS` table, with errors returned as data. The stand-in agent (rule-based plan and verdict, no model) is the single line `AGENT = stand_in_agent`. Supports scenarios 1 to 3 (2 runs in recovery mode) and `--json`.
   - 9 tests (`tests/test_run_scenario.py`). The suite passes on 3.11 and 3.12 and in replay mode.
   - Verified in a scratch merge with A10 and A11 (not committed) against the seeded fake Nessie: scenario 1 gives plan `check_link, check_sender, nessie_recent_activity` (the expected plan) and `likely_scam / very likely`; scenario 2 flags the planted transfer; scenario 3 finds the paid bill
   - PR #46 open
+  - 2026-11-07 20:40: moved off the #44/#45 chain onto `main` (#40 and #43 merged), so it can merge before #44; 296 tests pass
   - 2026-11-07 20:22: rebased onto `main`; real A3 redaction and A1's baseline are picked up automatically (baseline trained once per run, train split only). Redaction needs `PHONE_HASH_SALT` in `.env`, and the CLI says so instead of falling back to the stand-in. Scratch merge with #43 and #45: 321 tests pass, scenario 1 runs with real redaction and gives the expected plan and `likely_scam / very likely`
 - Next step (exact): when L8 merges, change `AGENT = stand_in_agent` to `AGENT = run_agent` in `scripts/run_scenario.py`. Register the tools with L5 (TODOs in `tools/link.py`, `tools/sender.py`, `tools/nessie_tools.py`). Run `python -m scripts.run_scenario 1` with the real seed (A2) and check the trail and verdict. Then finish G1.
 - Files touched: `backend/scripts/run_scenario.py`, `backend/tests/test_run_scenario.py`, `CHANGELOG.md`
 - How to run or test: from `backend/`: `python -m scripts.run_scenario 1`, then `python -m pytest`
-- Notes and gotchas: set `PHONE_HASH_SALT` in `.env` (any random string) or the run stops at redaction. On `main` alone, redaction is real, the classifier is A1's baseline, the other stages are stand-ins and the tools say "not available yet", so the verdict is `unsure`. That's expected. `match_campaign` (A12) and `public_scam_reports` (L10) aren't in the stand-in's `TOOLS` table, so scenario 3's plan differs from its expected plan until L8 drives the tools through L5's registry.
+- Notes and gotchas: set `PHONE_HASH_SALT` in `.env` (any random string) or the run stops at redaction. Based directly on `main` (not on #44): on `main` today, redaction and `check_link`/`check_sender` are real, the classifier is A1's baseline, and the Nessie tools say "not available yet" until #44 and #45 merge; scenario 1 already gives the expected plan and `likely_scam / very likely`. `match_campaign` (A12) and `public_scam_reports` (L10) aren't in the stand-in's `TOOLS` table, so scenario 3's plan differs from its expected plan until L8 drives the tools through L5's registry.
 - Resumed by: none
+
+
 ---
 
 ## Done log
