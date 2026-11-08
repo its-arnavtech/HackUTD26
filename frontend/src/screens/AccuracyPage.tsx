@@ -273,6 +273,13 @@ export function AccuracyView({
             ? `On a sample of ${agent.n} messages run through the full agent, ${pct(agent.share_correct)} were correct and ${pct(agent.share_unsure)} came back “not sure.”`
             : "The full-agent sample hasn’t been run yet, so agent accuracy and the share returned as “not sure” aren’t shown."}
         </p>
+        {showing === "public" && publicSet && publicSet.spam_recall.ours < publicSet.spam_recall.baseline && (
+          <p>
+            <strong>Where it falls short.</strong> On real public messages, SentinelAI catches fewer spam texts than the
+            simple baseline ({pct(publicSet.spam_recall.ours)} vs {pct(publicSet.spam_recall.baseline)}). The classifier
+            is one signal; the agent still checks the facts with its tools before it answers.
+          </p>
+        )}
       </div>
       <footer className="accuracy-footer">
         SentinelAI · HackUTD 2026 <span>Synthetic test data · No live customer data</span>

@@ -13,7 +13,7 @@ import Consent from "./Consent";
 vi.mock("../api", () => ({ getCampaigns: vi.fn(), getInbox: vi.fn(), getMetrics: vi.fn() }));
 const api = vi.mocked(await import("../api"));
 
-/** A13's real output: nine taxonomy categories including `legit`, and no agent sample yet. */
+/** A13's real output (L7 classifier): nine taxonomy categories including `legit`, and no agent sample yet. */
 const realMetrics = () => structuredClone(realMetricsJson as Metrics);
 
 function inRouter(ui: ReactNode, path = "/") {
@@ -107,27 +107,38 @@ describe("Accuracy page", () => {
       expect(within(table).getByText(label)).toBeInTheDocument();
     }
     expect(within(table).getAllByRole("row")).toHaveLength(2 + metrics.categories.length);
-    expect(screen.getAllByText("16.0%")).toHaveLength(2);
-    expect(screen.getByText("0.81")).toBeInTheDocument();
-    expect(screen.getByText("0.79")).toBeInTheDocument();
+    expect(screen.getByText("16.0%")).toBeInTheDocument();
+    expect(screen.getByText("11.3%")).toBeInTheDocument();
+    expect(screen.getByText("0.90")).toBeInTheDocument();
+    expect(screen.getByText("0.88")).toBeInTheDocument();
+    expect(screen.getByText("Macro F1 · baseline 0.79 · SentinelAI 0.88")).toBeInTheDocument();
+    expect(screen.getByText("Measured on the held-out test split.")).toBeInTheDocument();
     expect(screen.getByText("388 messages · Test split only")).toBeInTheDocument();
     expect(screen.getByText(/full-agent sample hasn’t been run yet/)).toBeInTheDocument();
   });
 
-  it("says so while SentinelAI's column is still the baseline stand-in", () => {
-    expect(oursMatchesBaseline(realMetrics())).toBe(true);
+  it("says so when SentinelAI's column is only the baseline stand-in", () => {
+    const standIn = realMetrics();
+    standIn.macro_f1.ours = standIn.macro_f1.baseline;
+    standIn.false_positive_rate.ours = standIn.false_positive_rate.baseline;
+    for (const row of standIn.categories) row.ours = { ...row.baseline };
+    expect(oursMatchesBaseline(realMetrics())).toBe(false);
     expect(oursMatchesBaseline(mockMetrics())).toBe(false);
-    render(<AccuracyView metrics={realMetrics()} />);
+    expect(oursMatchesBaseline(standIn)).toBe(true);
+    render(<AccuracyView metrics={standIn} />);
     expect(screen.getByText("SentinelAI’s classifier is still the baseline stand-in.")).toBeInTheDocument();
   });
 
-  it("switches to the public SMS set: one row of spam recall and false positives", () => {
+  it("switches to the public SMS set and says plainly where SentinelAI falls short", () => {
     render(<AccuracyView metrics={realMetrics()} />);
     fireEvent.click(screen.getByRole("button", { name: "Public SMS" }));
     expect(screen.getByText("ucirvine/sms_spam")).toBeInTheDocument();
     expect(screen.getByText("5574 messages · Test split only")).toBeInTheDocument();
-    expect(within(screen.getByRole("table")).getAllByText("17.7%")).toHaveLength(2);
-    expect(within(screen.getByRole("table")).getAllByText("3.4%")).toHaveLength(2);
+    const table = within(screen.getByRole("table"));
+    for (const value of ["17.7%", "9.0%", "3.4%", "2.9%"]) expect(table.getByText(value)).toBeInTheDocument();
+    expect(screen.getByText(/catches fewer spam texts than the simple baseline \(9.0% vs 17.7%\)/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Held-out synthetic" }));
+    expect(screen.queryByText(/catches fewer spam texts/)).not.toBeInTheDocument();
   });
 
   it("shows the agent sample when there is one, and labels the mock as illustrative", () => {
