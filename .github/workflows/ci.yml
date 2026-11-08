@@ -60,6 +60,8 @@ jobs:
         run: npm ci
       - name: Type-check and build
         run: npm run build
+      - name: Tests
+        run: npm test
 
   dev-script:
     name: scripts/dev.ps1 smoke test (Windows)

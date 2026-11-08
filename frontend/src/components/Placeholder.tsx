@@ -1,10 +1,12 @@
-/** Placeholder until the named issue builds the real screen. */
+import { PageTitle } from ".";
+
+/** Placeholder until the named issue ports the real screen from the design lab. */
 export default function Placeholder({ name, issue, note }: { name: string; issue: string; note: string }) {
   return (
-    <div className="flex min-h-full flex-col gap-3 p-6">
-      <h1 className="text-2xl font-semibold">{name}</h1>
-      <p className="text-unsure">Placeholder. Built in issue {issue}.</p>
-      <p>{note}</p>
+    <div className="screen-pad">
+      <PageTitle eyebrow={`Coming in ${issue}`} description={note}>
+        {name}
+      </PageTitle>
     </div>
   );
 }
