@@ -33,7 +33,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A8 | POC gate report | Arnav | Claude Code | POC | A1, A2, A3, A4, L4 | todo | #14 |
 | L5 | Tool registry and runtime | Lavanya | Claude Code | MVP | L2 | todo | #15 |
 | L6 | Privacy audit log and `/api/privacy` | Lavanya | Claude Code | MVP | L3, L5 | todo | #16 |
-| A9 | Feature extraction | Arnav | Codex | MVP | A3 | todo | #17 |
+| A9 | Feature extraction | Arnav | Codex | MVP | A3 | in progress | codex-shared / #17 |
 | A10 | `check_link` and `check_sender` tools | Arnav | Cursor | MVP | L1 | todo | #18 |
 | A11 | Nessie tools | Arnav | Cursor | MVP | A2 | todo | #19 |
 | A12 | Campaign store, seeding and `match_campaign` | Arnav | Codex | MVP | A1, A3 | todo | #20 |
@@ -60,6 +60,17 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 ## In progress
 
 <!-- One block per active issue. Copy the template, keep it current at every checkpoint. -->
+
+### A9 Feature extraction (#17)
+- Agent: Codex (GPT-6) · Person: Arnav · Folder: C:\HackUTD26-codex · Branch: codex-shared (origin/arnav-shared)
+- Started: 2026-11-07 20:18 · Last checkpoint: 2026-11-07 20:18
+- Done so far: Read issue/checkpoints, ownership, DATA_SPEC 3.1 and POC_MVP 7.5/13. A3 is complete. PR #41 merged; synced main before starting A9.
+- Next step (exact): Implement extract_urls, extract_features and detect_claimed_brand with local-only parsing and fixed feature vocabulary; add 10 hand-written synthetic message cases and privacy/URL boundary checks; run full backend pytest.
+- Files touched: CHANGELOG.md
+- How to run or test: From backend, .\.venv\Scripts\python.exe -m pytest tests/test_extract.py -q; .\.venv\Scripts\python.exe -m pytest -q (clear inherited service credentials only in child process for full suite).
+- Notes and gotchas: Touch only backend/app/features/ and its tests; no shared contracts changes. Never resolve links or fetch suffix lists. Do not read held-out/public test messages to derive rules. Preserve URL_n ordering and return domains only; feature text comes only from redacted text. A9 follows current DATA_SPEC; L7 waits for it.
+
+
 
 
 
