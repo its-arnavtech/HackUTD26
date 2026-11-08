@@ -165,6 +165,7 @@ class MessagingService:
     phone_salt: str
     allowed: frozenset[str]
     channel: str = "sms"
+    ack_first: bool = False  # True: send the acknowledgement before starting the check (API channels)
     timeout_s: float = CHECK_TIMEOUT_S
     conversations: dict[str, Conversation] = field(default_factory=dict)
     limiter: RateLimiter = field(default_factory=lambda: RateLimiter(10))
@@ -241,12 +242,14 @@ class MessagingService:
             return HELP
         return self._check(request, conversation, actor, body)
 
-    def _check(self, request: Request, conversation: Conversation, actor: str, body: str) -> Reply:
+    def _check(self, request: Request, conversation: Conversation, actor: str, body: str) -> Reply | None:
         store = request.app.state.store
         sender, text = split_sender(body)
         message = c.MessageIn(text=text, sender=sender, received_at=datetime.now(timezone.utc))
         message_id = store.add_message(message, source=c.MessageSource.sms, owner_id=DEMO_CUSTOMER_ID)
         conversation.message_id, conversation.pending_ref = message_id, None
+        if self.ack_first:
+            self.send(conversation, ACK)
         future = request.app.state.runner.submit(message_id, _job(request))
         _audit(request, f"{self.channel}.check", actor, message_id=message_id)
 
@@ -258,13 +261,15 @@ class MessagingService:
             self.send(conversation, verdict_reply(poll.result, self.result_url(message_id)))
 
         self.watch(future, done)
-        return ACK
+        return None if self.ack_first else ACK
 
-    def _clicked(self, request: Request, conversation: Conversation, actor: str) -> Reply:
+    def _clicked(self, request: Request, conversation: Conversation, actor: str) -> Reply | None:
         message_id = conversation.message_id
         if not message_id:
             return NO_MESSAGE
         store = request.app.state.store
+        if self.ack_first:
+            self.send(conversation, CHECKING_ACTIVITY)
         future = request.app.state.runner.submit(message_id, _job(request), mode=c.AgentMode.recovery)
         _audit(request, f"{self.channel}.clicked", actor, message_id=message_id)
         received_at = store.get_message(message_id).received_at
@@ -283,7 +288,7 @@ class MessagingService:
                     poll.result, "SentinelAI: We didn't find new activity since that message in what we checked. Still, here's what to do."))
 
         self.watch(future, done)
-        return CHECKING_ACTIVITY
+        return None if self.ack_first else CHECKING_ACTIVITY
 
     def _answer(self, request: Request, conversation: Conversation, actor: str, was_me: bool) -> Reply:
         if not conversation.message_id or not conversation.pending_ref:

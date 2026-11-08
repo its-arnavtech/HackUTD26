@@ -31,6 +31,7 @@ export const toolTitles: Record<ToolName, string> = {
   nessie_recent_activity: "Bank activity",
   nessie_bill_status: "Bill status",
   public_scam_reports: "Public scam reports",
+  check_request: "What it asks you to do",
 };
 
 const toolServices: Partial<Record<ToolName, Row["service"]>> = {
@@ -40,6 +41,7 @@ const toolServices: Partial<Record<ToolName, Row["service"]>> = {
   public_scam_reports: "Gemini",
   check_sender: "local",
   match_campaign: "local",
+  check_request: "local",
 };
 
 const planTools = (entry: TrailEntry): string | undefined => entry.finding ?? undefined;

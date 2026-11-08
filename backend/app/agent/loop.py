@@ -38,10 +38,12 @@ from app import privacy_log
 from app.agent import guardrails, prompts, recovery, registry
 from app.agent.registry import PrivacyHook, ToolCall
 from app.contracts import (
+    Action,
     AgentInput,
     AgentMode,
     AgentResult,
     ConfidenceWords,
+    Evidence,
     NessieRecentActivityResult,
     ToolName,
     TrailEntry,
@@ -115,7 +117,7 @@ def run_agent(
         on_trail,
         chat=chat or _default_chat,
         call_tool=call_tool or registry.call_tool,
-        tool_schemas=tool_schemas if tool_schemas is not None else registry.openai_tool_schemas(),
+        tool_schemas=tool_schemas if tool_schemas is not None else _schemas_for(agent_input),
         protocol=protocol or _default_protocol(),
         on_call=on_call,
     )
@@ -174,6 +176,7 @@ class _Run:
         self.planned: list[ToolName] | None = None
         self.attempted: list[ToolName] = []
         self.tools_run: list[ToolName] = []  # tools that answered ok
+        self.request_found: str | None = None  # L15f: check_request proved a code or password request
         self.evidence: list[dict[str, str]] = []
         self.replanned = False
         self.recovery_refs: list[str] = []
@@ -377,6 +380,10 @@ class _Run:
             if call.ok:
                 self.tools_run.append(name)
                 self.evidence.append({"tool": name.value, "finding": finding})
+                if name == ToolName.check_request and isinstance(call.result, dict) and (
+                    call.result.get("asks_for_code") or call.result.get("asks_for_password")
+                ):
+                    self.request_found = finding
                 if name == ToolName.nessie_recent_activity and self.input.mode == AgentMode.recovery:
                     activity = NessieRecentActivityResult.model_validate(call.result)
                     self.recovery_refs.extend(item.ref for item in activity.flagged)
@@ -435,6 +442,19 @@ class _Run:
         if self.input.mode == AgentMode.recovery:
             result = result.model_copy(update={"plan": list(dict.fromkeys(self.attempted))})
         result, notes = guardrails.apply_guardrails(result, self.input.classifier, self.tools_run, self.attempted)
+        if self.request_found and result.verdict == Verdict.unsure:
+            # L15f: a verified request to share a one-time code or password is a scam sign on its own
+            # (real companies never ask for one). "Likely", not "very likely": that still needs two findings.
+            evidence = [e for e in result.evidence if e.tool != ToolName.check_request]
+            evidence.append(Evidence(tool=ToolName.check_request, finding=self.request_found))
+            result = result.model_copy(update={
+                "verdict": Verdict.likely_scam,
+                "confidence_words": ConfidenceWords.likely,
+                "reason": "It asks you to share a one-time code or password, which real companies never do. Don't reply with it.",
+                "evidence": evidence,
+                "actions": result.actions or [Action.block_sender, Action.report_spam],
+            })
+            notes.append("A verified request for a code or password made this a likely scam.")
         update: dict[str, Any] = {"replan": self.replanned}
         result = result.model_copy(update=update)
         result = recovery.finish_recovery(result, self.input, self.recovery_refs)
@@ -686,6 +706,19 @@ def _plan_why(names: list[ToolName]) -> str:
     return "Nemotron chose these checks for what the message claims."
 
 
+def _schemas_for(agent_input: AgentInput) -> list[dict[str, Any]]:
+    """Every registered tool, except `check_request` when the message asks for nothing (L15f).
+
+    Keeps the tool list for ordinary messages exactly as before, so recorded runs still replay.
+    """
+    from app.tools.request import mentions_a_request
+
+    schemas = registry.openai_tool_schemas()
+    if mentions_a_request(agent_input.text_redacted):
+        return schemas
+    return [s for s in schemas if (s.get("function") or {}).get("name") != ToolName.check_request.value]
+
+
 def _tool_why(name: ToolName, agent_input: AgentInput) -> str:
     brand = agent_input.sender.claimed_brand
     return {
@@ -695,6 +728,7 @@ def _tool_why(name: ToolName, agent_input: AgentInput) -> str:
         ToolName.nessie_recent_activity: "The message is about the customer's bank account",
         ToolName.nessie_bill_status: "The message makes a claim about a bill",
         ToolName.public_scam_reports: "Looking for public reports of this scam",
+        ToolName.check_request: "The message asks you to do something",
     }[name]
 
 
@@ -781,4 +815,18 @@ _SUMMARIES: dict[ToolName, Callable[[dict[str, Any]], str]] = {
     ToolName.nessie_recent_activity: _sum_activity,
     ToolName.nessie_bill_status: _sum_bill,
     ToolName.public_scam_reports: _sum_reports,
+    ToolName.check_request: lambda r: _sum_request(r),
 }
+
+
+def _sum_request(r: dict[str, Any]) -> str:
+    asks = []
+    if r.get("asks_for_code"):
+        asks.append("share a one-time code")
+    if r.get("asks_for_password"):
+        asks.append("share a password")
+    if asks:
+        return "It asks you to " + " and ".join(asks) + ", which real companies never do"
+    if r.get("asks_to_reply"):
+        return "It asks for a reply, but not for a code or password"
+    return "No request for codes or passwords"

@@ -35,6 +35,7 @@ class WhatsAppService(MessagingService):
     app_secret: str = ""
     verify_token: str = ""
     channel: str = "whatsapp"
+    ack_first: bool = True
 
     def deliver(self, conversation: Conversation, reply: Reply) -> None:
         assert self.client is not None

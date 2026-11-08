@@ -28,7 +28,8 @@ export type ToolName =
   | "match_campaign"
   | "nessie_recent_activity"
   | "nessie_bill_status"
-  | "public_scam_reports";
+  | "public_scam_reports"
+  | "check_request";
 export type MessageSource = "generated" | "handwritten" | "public" | "scenario" | "authored" | "sms";
 export type ActivityType = "transfer" | "purchase" | "bill" | "deposit" | "withdrawal";
 

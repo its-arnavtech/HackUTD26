@@ -254,3 +254,15 @@ Tests: backend 840 passed, frontend 87 passed (new `alert.test.tsx`), plus the l
 **Safety center** (`/safety`): six common scams (bank impersonation, one-time-code theft, fake delivery, investment, job, family emergency). Each has how it works, the warning signs, a synthetic example, how to protect yourself and what to do if you already fell for it. Quizzes are not built.
 
 Tests: frontend 90 passed (new `examples.test.tsx`).
+
+## L15f: code-theft texts fixed
+
+**New tool `check_request`.** It's local and reads only the redacted text. It flags requests to reply with, send, share or read back a one-time code, PIN or password, and ignores negated wording ("never share this code") and normal sign-in wording ("enter this code"). Nemotron is offered it **only when a message asks for something**, so ordinary messages keep exactly the same tool list and system prompt, and all recorded replays still pass.
+
+**Rule.** If `check_request` verifies a code or password request and the answer would be "not sure", it becomes "likely scam" with the reason "real companies never ask for one". "Very likely" still needs two independent findings.
+
+**Live result** (`scripts/typed_check.py`, 11 messages): **8 of 8 scams caught**, including both code-theft texts. The 3 genuine messages (a Capital One code, a Capital One purchase alert, a T-Mobile bill) are "not sure" and none is called a scam.
+
+**Also fixed.** WhatsApp sends "Checking this now" before starting the check, so it can't arrive after the verdict.
+
+**Contracts:** `ToolName.check_request`, `CheckRequestArgs` and `CheckRequestResult` were added (mirrored in `types.ts`). Tests: backend 852 passed, frontend 90 passed.

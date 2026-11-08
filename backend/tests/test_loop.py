@@ -269,7 +269,11 @@ def test_build_messages_shape_and_payload():
 
 
 def test_system_prompt_names_every_tool_but_not_the_result_schema():
+    # check_request (L15f) is offered only when a message asks for something, and explains itself
+    # through its own tool description. The system prompt stays byte-identical so recorded runs replay.
     for tool in c.ToolName:
+        if tool == c.ToolName.check_request:
+            continue
         assert tool.value in prompts.SYSTEM_PROMPT
     # Two-phase prompting: the result schema comes later.
     assert "confidence_words" not in prompts.SYSTEM_PROMPT and "was_this_you" not in prompts.SYSTEM_PROMPT

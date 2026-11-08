@@ -112,7 +112,7 @@ class JobStatus(str, Enum):
 
 
 class ToolName(str, Enum):
-    """DATA_SPEC 3.2: the six agent tools."""
+    """DATA_SPEC 3.2: the agent tools (`check_request` added in L15f)."""
 
     check_link = "check_link"
     check_sender = "check_sender"
@@ -120,6 +120,7 @@ class ToolName(str, Enum):
     nessie_recent_activity = "nessie_recent_activity"
     nessie_bill_status = "nessie_bill_status"
     public_scam_reports = "public_scam_reports"
+    check_request = "check_request"  # L15f: what the message asks you to do (codes, passwords)
 
 
 class MessageSource(str, Enum):
@@ -682,3 +683,19 @@ class AuditView(Contract):
     chain_intact: bool
     first_broken_id: Optional[int] = None
     events: list[AuditEventView]
+
+
+# ---------------------------------------------------------------------------
+# check_request (L15f): what the message asks you to do. Local, reads text_redacted only.
+# ---------------------------------------------------------------------------
+
+
+class CheckRequestArgs(Contract):
+    """No arguments: it always checks the current message."""
+
+
+class CheckRequestResult(Contract):
+    asks_for_code: bool
+    asks_for_password: bool
+    asks_to_reply: bool
+    phrases: list[str] = Field(default_factory=list, max_length=3)

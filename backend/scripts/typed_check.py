@@ -21,6 +21,8 @@ CASES: list[tuple[bool, str, str]] = [
     (True, "+18885550105", "Wells Fargo: We noticed a new sign-in. Reply with the 6-digit code we just sent you to confirm it was you."),
     (True, "+18885550106", "Apple ID: Your account will be disabled today. Restore access now at appleid-support-verify.com"),
     (True, "+18885550107", "UPS: Your package could not be delivered. Pay the $1.99 redelivery fee at ups-redelivery-fee.com"),
+    (True, "+18885550112", "Amazon: We are refunding your $89.99 order. To receive it, reply with the 6-digit code we just texted you."),
+    (False, "227898", "Capital One: Your one-time code is 481920. It expires in 10 minutes. We will never call or text to ask for this code."),
     (False, "227898", "Capital One: A purchase of $42.17 at H-E-B was made on your Venture card. If this wasn't you, call the number on the back of your card."),
     (False, "T-Mobile", "Free T-Mobile msg: Your bill of $85.00 is ready. AutoPay will charge your saved card on 11/15. Details in the T-Mobile app."),
 ]

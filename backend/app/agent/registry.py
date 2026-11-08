@@ -324,6 +324,7 @@ def builtin_tools() -> list[ToolSpec]:
     from app.tools.link import check_link
     from app.tools.nessie_tools import nessie_bill_status, nessie_recent_activity
     from app.tools.public_reports import public_scam_reports
+    from app.tools.request import check_request
     from app.tools.sender import check_sender
 
     return [
@@ -397,6 +398,19 @@ def builtin_tools() -> list[ToolSpec]:
             result_model=c.GeminiOutput,
             fn=public_scam_reports,
             timeout_s=20.0,  # grounded search is slower
+        ),
+        ToolSpec(
+            name=ToolName.check_request,
+            description=(
+                "Check what the message asks the customer to do: share a one-time code, verification code or PIN, "
+                "share a password, or reply. Ignores negated wording like 'never share this code'. Takes no "
+                "arguments: it always checks the current message. Use when the message asks for a code, a password "
+                "or a reply."
+            ),
+            args_model=c.CheckRequestArgs,
+            result_model=c.CheckRequestResult,
+            fn=check_request,
+            reads=("text_redacted",),
         ),
     ]
 

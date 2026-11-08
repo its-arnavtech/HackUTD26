@@ -28,6 +28,7 @@ const toolIcons: Record<ToolName, typeof Link2> = {
   nessie_recent_activity: Landmark,
   nessie_bill_status: Landmark,
   public_scam_reports: Megaphone,
+  check_request: UserCheck,
 };
 
 function RowIcon({ row }: { row: Row }) {
