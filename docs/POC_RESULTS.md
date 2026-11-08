@@ -6,13 +6,13 @@ Issue A8 (#14). Gates and pivots are defined in [POC_MVP.md](POC_MVP.md) section
 | --- | --- | --- | --- | --- |
 | P1 | Usable dataset and a baseline score? | **Pass** | Dataset QC passes; baseline test macro F1 **0.807**, FPR **0.127** | None (macro F1 < 0.97) |
 | P2 | Does Nemotron call our tools reliably? | **Pass** | **5/5** native tool calls with schema-valid answers; median step 2,635 ms, worst 4,161 ms | None (native protocol) |
-| P3 | Does Gemini grounded search return cited sources? | **Pending** | Not run: the Gemini key arrives Sunday morning (L4, Lavanya) | If it fails: Gemini becomes cut item 2 |
+| P3 | Does Gemini grounded search return cited sources? | **Blocked** | 2026-11-08: key/model listing works; 3.5 Flash and Flash Lite generation return HTTP 429; listed 2.5 Flash returns 404. L4/L10 code and 14 synthetic tests complete; no live citation pass | Optional lookup unavailable until model/quota is enabled; no fabricated reports |
 | P4 | Can we seed and read Nessie? | **Pass** | 3rd live run at about 21:40: seed `Created 33`, then `Created 0`, and everything reads back. Scenario 2 finds the planted $900 17 minutes after the message; scenario 3 finds the bill paid 2026-11-01 | Partial: live transfers can't name a payee, so the planted $900 is a purchase at merchant "Unknown Payee" (fallback chosen by Arnav) |
 | P5 | Does redaction work? | **Pass** | **20/20** hand-written gate strings; 50/50 redaction tests | None |
 
 **G1 (2026-11-07, about 23:20):** scenario 1 runs end to end in the CLI with L8's real agent against live Nemotron and Nessie: pass. Scenario 2 flags the $900 but doesn't return it as "Was this you?" yet (L11). Details in the G1 section at the end.
 
-**POC exit:** four of five gates pass (P1, P2, P4, P5). P3 is pending on the Gemini key. P4 passed on its third live run, with one partial pivot: live Nessie transfers can't name a payee, so the planted $900 is a purchase at merchant "Unknown Payee". No pivot has been taken.
+**POC exit:** four of five gates pass (P1, P2, P4, P5). P3 is blocked on Gemini generation access/quota. P4 passed on its third live run, with one partial pivot: live Nessie transfers can't name a payee, so the planted $900 is a purchase at merchant "Unknown Payee". Public-report lookup remains optional and unavailable until P3 passes.
 
 ## P1: dataset and baseline (A21, A1)
 
@@ -55,9 +55,9 @@ cd backend
 ..\.venv\Scripts\python -m scripts.smoke_nemotron --protocol native
 ```
 
-## P3: Gemini grounded search (L4): pending
+## P3: Gemini grounded search (L4): blocked on provider quota
 
-The Gemini key arrives Sunday morning, and L4 (Lavanya) runs the demo query then. **Pass test:** at least one source URL in the grounding metadata, in our JSON shape (DATA_SPEC section 4.3). **If it fails:** Gemini becomes the second item in the cut order (POC_MVP section 11). The `public_scam_reports` step then drops out of scenario 3's plan, and the result card says public reports weren't checked.
+The Gemini key is present and model listing succeeds. On 2026-11-08, grounded generation returned HTTP 429 on verified-listed Gemini 3.5 Flash/Flash Lite and 404 on listed 2.5 Flash. The cache-backed implementation, strict citation parser, fixed four-field input and 14 synthetic tests are complete; **no live cited result has passed**. See [GEMINI.md](GEMINI.md). **Pass test:** at least one source URL in grounding metadata, in DATA_SPEC 4.3 shape. This is the second cut item (POC_MVP section 11); report an unavailable check honestly until provider quota works, and never treat no reports as evidence of safety.
 
 ## P4: Nessie seed and read (A2): pass, third live run
 
