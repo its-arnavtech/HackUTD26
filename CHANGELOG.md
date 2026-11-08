@@ -76,14 +76,16 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 ### SETUP: scaffold, folders, issues (no issue)
 - Agent: Claude Code (Opus 5.5) · Person: Arnav · Folder: C:\HackUTD26 · Branch: main
-- Started: 2026-11-07 17:47 · Last checkpoint: 2026-11-07 17:47
+- Started: 2026-11-07 17:47 · Last checkpoint: 2026-11-07 18:03
 - Done so far:
-  - Checked tooling: `python` on PATH is 3.10, so the backend venv uses `py -3.13`; Node 24, gh logged in as its-arnavtech
-  - Read AGENTS.md, CHANGELOG.md, POC_MVP.md, DATA_SPEC.md, prompts/README.md
-- Next step (exact): scaffold the backend per `prompts/cursor-01-scaffold.md` section 1
-- Files touched: CHANGELOG.md
-- How to run or test: n/a yet
-- Notes and gotchas: scaffold is run by Claude Code instead of Cursor; worktrees and issues follow after the scaffold push
+  - Checked tooling: `python` on PATH is 3.10, so the backend venv uses Python 3.12 (uv's CPython 3.12.13 via `py -V:Astral/CPython3.12.13`); Node 24, gh logged in as its-arnavtech
+  - Read AGENTS.md, CHANGELOG.md, POC_MVP.md, DATA_SPEC.md, prompts/README.md; rebased onto the plan update (cff46b6)
+  - Backend scaffold done locally (not yet pushed): contracts, config (incl. DeepSeek and NEMOTRON_EMBED_MODEL), mocks, mock routes, stubs naming their issue, scripts (incl. A21 `generate_dataset.py`), tests; `pytest` 36 passed; uvicorn serves `/api/inbox`
+  - data/ (brands, taxonomy placeholder, scenarios, .gitkeeps), .env.example, .gitignore
+- Next step (exact): scaffold `frontend/` per `prompts/cursor-01-scaffold.md` section 2, then README Setup, then commit and push
+- Files touched: CHANGELOG.md, .gitignore, .env.example, backend/**, data/**, eval/.gitkeep
+- How to run or test: `cd backend; .\.venv\Scripts\python.exe -m pytest`
+- Notes and gotchas: scaffold is run by Claude Code instead of Cursor; worktrees and issues follow after the scaffold push. An unrelated stash ("README line-ending change before syncing docs") exists in C:\HackUTD26; left untouched.
 - Resumed by: 
 
 ---
