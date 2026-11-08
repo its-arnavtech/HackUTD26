@@ -5,6 +5,7 @@ import type { Health } from "./api";
 import { AccountLine, AuthGate } from "./auth";
 import Console, { ResultPage } from "./console/Console";
 import SystemView from "./console/SystemView";
+import Connect from "./console/Connect";
 import { AccuracyShell, PatternsPage, SecurityPage } from "./console/Pages";
 import { Brand, PhoneFrame } from "./components";
 import { useHealth } from "./hooks";
@@ -178,6 +179,7 @@ export default function App() {
       <Route path="/customer" element={<AuthGate><Console /></AuthGate>} />
       <Route path="/r/:messageId" element={<AuthGate><ResultPage /></AuthGate>} />
       <Route path="/patterns" element={<AuthGate><PatternsPage /></AuthGate>} />
+      <Route path="/connect" element={<AuthGate><Connect /></AuthGate>} />
       <Route path="/accuracy" element={<AuthGate><AccuracyShell /></AuthGate>} />
       <Route path="/security" element={<SecurityPage />} />
       <Route path="*" element={<ClassicApp />} />

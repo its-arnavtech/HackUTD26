@@ -18,7 +18,7 @@ import {
   Sigma,
   Wrench,
 } from "lucide-react";
-import { getInbox, getPrivacy, postClicked, resetDemo } from "../api";
+import { getInbox, getPrivacy, postClicked, postMessage, resetDemo } from "../api";
 import { categoryLabel, verdictLabel } from "../components";
 import { useResult } from "../hooks";
 import { isRedactionTag, redactedText, splitRedacted } from "../present";
@@ -79,11 +79,6 @@ const SERVICE: Record<string, string> = {
   nessie_bill_status: "Capital One Nessie API",
   public_scam_reports: "Google Gemini search",
 };
-
-const SCENARIOS: [string, string][] = [
-  ["msg_0001", "Scenario 1: bank text"],
-  ["msg_0003", "Scenario 3: overdue bill"],
-];
 
 function args(a: Record<string, unknown>) {
   const parts = Object.entries(a).map(([k, v]) => `${k}=${typeof v === "string" ? JSON.stringify(v) : JSON.stringify(v)}`);
@@ -353,11 +348,143 @@ function Outcome({ message, poll, onClicked, busy }: { message?: InboxItem; poll
 // Page
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// Check any message (live)
+// ---------------------------------------------------------------------------
+
+interface Sample {
+  scenario_id: string;
+  category: string;
+  text: string;
+  sender: string;
+  claimed_brand?: string | null;
+  truth: { is_scam: boolean; account_fraud: boolean; explanation?: string | null };
+}
+
+export interface Truth {
+  category: string;
+  is_scam: boolean;
+  source: string;
+}
+
+async function getSamples(category: string): Promise<{ categories: string[]; samples: Sample[] }> {
+  const q = category ? `?category=${encodeURIComponent(category)}` : "";
+  const res = await fetch(`/api/demo/samples${q}`, { credentials: "same-origin" });
+  if (!res.ok) throw new Error(`samples ${res.status}`);
+  return res.json();
+}
+
+function CheckAnyMessage({ busy, onCheck }: { busy: boolean; onCheck: (text: string, sender: string, truth?: Truth) => void }) {
+  const [text, setText] = useState("");
+  const [sender, setSender] = useState("");
+  const [category, setCategory] = useState("");
+  const [categories, setCategories] = useState<string[]>([]);
+  const [truth, setTruth] = useState<Truth>();
+  const [problem, setProblem] = useState<string>();
+
+  useEffect(() => {
+    getSamples("")
+      .then((d) => setCategories(d.categories))
+      .catch(() => undefined);
+  }, []);
+
+  const surprise = async () => {
+    setProblem(undefined);
+    try {
+      const { samples } = await getSamples(category);
+      const s = samples[0];
+      if (!s) return;
+      const t = { category: s.category, is_scam: s.truth.is_scam, source: s.scenario_id };
+      setText(s.text);
+      setSender(s.sender);
+      setTruth(t);
+      onCheck(s.text, s.sender, t); // run it right away: a fresh message for every judge
+    } catch {
+      setProblem("Could not load a sample message.");
+    }
+  };
+
+  return (
+    <section className="cx-card sx-check" aria-label="Check any message">
+      <div className="sx-check-head">
+        <h2 className="sx-h">
+          <MessageSquareText size={16} aria-hidden="true" /> Check any message, live
+        </h2>
+        <span className="cx-muted cx-small">Type or paste anything a customer might receive, or let a judge pick a scam type.</span>
+      </div>
+      <div className="sx-check-grid">
+        <textarea
+          className="sx-input sx-textarea"
+          value={text}
+          maxLength={1600}
+          placeholder="e.g. USPS: your package is on hold, pay the $1.99 redelivery fee at usps-redeliver.com"
+          onChange={(e) => {
+            setText(e.target.value);
+            setTruth(undefined);
+          }}
+          aria-label="Message text"
+        />
+        <div className="sx-check-side">
+          <label className="cx-small">
+            From (number, short code or name)
+            <input className="sx-input" value={sender} maxLength={40} placeholder="+1 555 010 0177" onChange={(e) => setSender(e.target.value)} />
+          </label>
+          <button className="cx-button cx-button-primary" disabled={busy || !text.trim()} onClick={() => onCheck(text.trim(), sender.trim() || "unknown", truth)}>
+            <Play size={15} aria-hidden="true" /> Check it
+          </button>
+          <div className="sx-surprise">
+            <select className="sx-input" value={category} onChange={(e) => setCategory(e.target.value)} aria-label="Scam type for a random message">
+              <option value="">Any scam type</option>
+              {categories.map((c) => (
+                <option key={c} value={c}>
+                  {categoryLabel(c)}
+                </option>
+              ))}
+            </select>
+            <button className="cx-button" disabled={busy} onClick={() => void surprise()}>
+              Surprise me
+            </button>
+          </div>
+          {problem && <p className="cx-alert">{problem}</p>}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function TruthBadge({ truth, poll }: { truth?: Truth; poll?: ResultPoll }) {
+  if (!truth) return null;
+  const verdict = poll?.status === "done" ? poll.result?.verdict : undefined;
+  const agreed =
+    verdict === undefined ? undefined : verdict === "unsure" ? "unsure" : (verdict === "likely_scam") === truth.is_scam ? "yes" : "no";
+  const note =
+    agreed === undefined
+      ? "Waiting for the agent..."
+      : agreed === "yes"
+        ? "✓ SentinelAI got it right"
+        : agreed === "unsure"
+          ? "SentinelAI said it is not sure"
+          : "✗ SentinelAI got this one wrong";
+  return (
+    <div className={`sx-truth sx-truth-${agreed ?? "wait"}`}>
+      <span className="cx-eyebrow">Correct answer (from the labelled scenario)</span>
+      <strong>{truth.is_scam ? `Scam · ${categoryLabel(truth.category)}` : "Real message (legitimate)"}</strong>
+      <span className="cx-small">{note}</span>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Page
+// ---------------------------------------------------------------------------
+
 export default function SystemView() {
   const [items, setItems] = useState<InboxItem[]>([]);
   const [selected, setSelected] = useState<string>();
   const [version, setVersion] = useState(0);
   const [busy, setBusy] = useState(false);
+  const [truth, setTruth] = useState<Truth>();
+  const [autoClick, setAutoClick] = useState(false);
   const seen = useRef<Set<string> | null>(null);
 
   const load = useCallback(async () => {
@@ -383,6 +510,7 @@ export default function SystemView() {
     const fresh = items.find((i) => i.source === "sms" && !seen.current!.has(i.message_id));
     items.forEach((i) => seen.current!.add(i.message_id));
     if (fresh) {
+      setTruth(undefined);
       setSelected(fresh.message_id);
       setVersion((v) => v + 1);
     }
@@ -397,27 +525,32 @@ export default function SystemView() {
       setBusy(false);
     }
   };
+  const open = (id: string, opts: { truth?: Truth; autoClick?: boolean } = {}) => {
+    seen.current?.add(id);
+    setTruth(opts.truth);
+    setAutoClick(Boolean(opts.autoClick));
+    setSelected(id);
+    setVersion((v) => v + 1);
+  };
+  const scenario = (id: string, autoClickAfter = false) =>
+    run(async () => {
+      await resetDemo().catch(() => undefined);
+      await load();
+      open(id, { autoClick: autoClickAfter });
+    });
 
   return (
     <Shell wide>
       <div className="cx-scenarios" role="toolbar" aria-label="Demo scenarios">
-        {SCENARIOS.map(([id, label]) => (
-          <button
-            key={id}
-            className={`cx-button ${id === "msg_0001" ? "cx-button-primary" : ""}`}
-            disabled={busy}
-            onClick={() =>
-              void run(async () => {
-                await resetDemo().catch(() => undefined);
-                await load();
-                setSelected(id);
-                setVersion((v) => v + 1);
-              })
-            }
-          >
-            <Play size={15} aria-hidden="true" /> {label}
-          </button>
-        ))}
+        <button className="cx-button cx-button-primary" disabled={busy} onClick={() => void scenario("msg_0001")}>
+          <Play size={15} aria-hidden="true" /> Scenario 1: bank text
+        </button>
+        <button className="cx-button" disabled={busy} onClick={() => void scenario("msg_0001", true)}>
+          <AlertTriangle size={15} aria-hidden="true" /> Scenario 2: she already clicked
+        </button>
+        <button className="cx-button" disabled={busy} onClick={() => void scenario("msg_0003")}>
+          <Play size={15} aria-hidden="true" /> Scenario 3: overdue bill
+        </button>
         <button
           className="cx-button cx-button-ghost"
           disabled={busy}
@@ -425,6 +558,7 @@ export default function SystemView() {
             void run(async () => {
               await resetDemo().catch(() => undefined);
               setSelected(undefined);
+              setTruth(undefined);
               await load();
             })
           }
@@ -433,13 +567,26 @@ export default function SystemView() {
         </button>
         <span className="cx-hint">Everything below is the live system: real Nemotron calls, real tool results.</span>
       </div>
+      <CheckAnyMessage
+        busy={busy}
+        onCheck={(text, sender, t) =>
+          void run(async () => {
+            const { message_id } = await postMessage({ text, sender, received_at: new Date().toISOString() });
+            await load();
+            open(message_id, { truth: t });
+          })
+        }
+      />
       <SystemBody
         key={`${selected ?? "none"}-${version}`}
         message={message}
         busy={busy}
+        truth={truth}
+        autoClick={autoClick}
         onClicked={() =>
           void run(async () => {
             if (!selected) return;
+            setAutoClick(false);
             await postClicked(selected);
             setVersion((v) => v + 1);
           })
@@ -449,8 +596,28 @@ export default function SystemView() {
   );
 }
 
-function SystemBody({ message, onClicked, busy }: { message?: InboxItem; onClicked: () => void; busy: boolean }) {
+function SystemBody({
+  message,
+  onClicked,
+  busy,
+  truth,
+  autoClick = false,
+}: {
+  message?: InboxItem;
+  onClicked: () => void;
+  busy: boolean;
+  truth?: Truth;
+  autoClick?: boolean;
+}) {
   const { poll, privacy, agent } = useSystem(message);
+  const clicked = useRef(false);
+  // Scenario 2: once the first check is done, she says she already tapped the link.
+  useEffect(() => {
+    if (autoClick && !clicked.current && poll?.status === "done" && poll.mode === "check") {
+      clicked.current = true;
+      onClicked();
+    }
+  }, [autoClick, poll?.status, poll?.mode, onClicked]);
   return (
     <>
       <Pipeline message={message} poll={poll} privacy={privacy} agent={agent} />
@@ -459,6 +626,7 @@ function SystemBody({ message, onClicked, busy }: { message?: InboxItem; onClick
         <AgentPanel agent={agent} />
         <ToolsPanel poll={poll} privacy={privacy} />
       </div>
+      <TruthBadge truth={truth} poll={poll} />
       <Outcome message={message} poll={poll} onClicked={onClicked} busy={busy} />
     </>
   );

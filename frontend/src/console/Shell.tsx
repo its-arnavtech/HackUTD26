@@ -21,6 +21,7 @@ export function ModeBadge() {
 const links: [string, string][] = [
   ["/", "System"],
   ["/customer", "Customer view"],
+  ["/connect", "Plug into any system"],
   ["/patterns", "Scam patterns"],
   ["/accuracy", "Accuracy"],
   ["/security", "Security"],

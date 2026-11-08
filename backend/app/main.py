@@ -31,7 +31,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Annotated
 
 from fastapi import APIRouter, Depends, FastAPI, Request
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from app import contracts as c
 from app import mocks, privacy_log
@@ -391,6 +391,40 @@ def get_metrics(request: Request, settings: SettingsDep) -> c.Metrics:
             raise NotFoundError("Metrics aren't generated yet: run `python -m scripts.evaluate` from backend/")
         return c.Metrics.model_validate_json(path.read_text(encoding="utf-8"))
     return mocks.load("metrics.json")
+
+
+class ConnectPreviewRequest(BaseModel):
+    """Records in the source system's own format (up to 200); omit to use the built-in synthetic sample."""
+
+    records: list[dict] | None = Field(default=None, max_length=200)
+    message_at: str | None = Field(default=None, max_length=40)
+
+
+@router.get("/demo/samples")
+def get_demo_samples(category: str | None = None, n: int = 1) -> dict:
+    """L14 live demo: random messages from the synthetic linked scenarios (template set A, never the test split)."""
+    from app import connect
+
+    return {"categories": connect.categories(), "samples": connect.sample_messages(category, max(1, min(n, 10)))}
+
+
+@router.get("/connect/sources")
+def get_connect_sources() -> list[dict]:
+    """L14: the systems SentinelAI can read account activity from, each defined by one mapping file."""
+    from app import connect
+
+    return connect.sources()
+
+
+@router.post("/connect/{source}/preview")
+def post_connect_preview(source: str, body: ConnectPreviewRequest) -> dict:
+    """L14: map records from one system into canonical events and compute the fraud signals the agent sees."""
+    from app import connect
+
+    try:
+        return connect.preview(source, body.records, body.message_at or connect.MESSAGE_AT)
+    except KeyError:
+        raise NotFoundError("Unknown source system") from None
 
 
 @router.post("/demo/reset", response_model=c.DemoResetResponse)
