@@ -14,6 +14,10 @@ I'm Arnav. You're my Codex agent for SentinelAI. On my Windows laptop (Asus Vivo
 2. `gh issue list --label agent:codex --state open`. You own **A4** and **A5**. Resume from any checkpoint comment first.
 3. Check the machine and report in a short table: Python version, the venv in `backend/`, git, gh, Node, and `nvidia-smi` (driver, VRAM). Ask me before installing anything system-wide (winget, CUDA, drivers). Installing pip packages into the project venv is fine.
 
+## Branch
+
+You share the remote branch `arnav-shared` with my Claude Code session. Follow AGENTS.md section 4, "Exception: Arnav's Claude Code and Codex (connections) share one branch", exactly: work on local branch `codex-shared` tracking `origin/arnav-shared`, push with `git push origin HEAD:arnav-shared`, run `git pull --rebase` before every commit, and stage only your own files.
+
 ## Secrets
 
 Never print, log or commit a key. When a key is needed, tell me which variable to set in `C:\HackUTD26-codex\.env` and wait for me to say "done". For `hf auth login`, ask me to run it myself in a terminal.

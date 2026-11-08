@@ -37,6 +37,17 @@ Each agent works in its own folder (a git worktree for Arnav's tools, section 12
 5. Tick the issue's checkboxes, **finish** the CHANGELOG entry (section 5), and open a PR that says `Closes #<n>`, with a short summary and how you tested it.
 6. Tell your human what changed and how to check it, then wait before starting another issue.
 
+### Exception: Arnav's Claude Code and Codex (connections) share one branch
+
+Arnav's Claude Code (`C:\HackUTD26-cc`) and his Codex connections session (`C:\HackUTD26-codex`) commit to one shared remote branch, `arnav-shared`, instead of a branch per issue. Cursor and the Codex design session keep a branch per issue. Git won't check out the same local branch in two folders, so:
+
+- **Claude Code** (`C:\HackUTD26-cc`): `git fetch`, then `git switch -c arnav-shared origin/main` and `git push -u origin arnav-shared` if the branch doesn't exist yet, otherwise `git switch -c arnav-shared --track origin/arnav-shared`.
+- **Codex** (`C:\HackUTD26-codex`): `git fetch`, then `git switch -c codex-shared --track origin/arnav-shared`. Push with `git push origin HEAD:arnav-shared`.
+- **Before every commit:** `git pull --rebase`. Stage only your own files with `git add <paths>`; never `git add -A` or `git add .`, because the other agent's work lives on the same branch. Commit small and push right away.
+- **Who owns which files:** Codex owns `backend/app/integrations/nemotron.py`, `backend/scripts/smoke_nemotron.py`, the Hugging Face download code, `docs/LOCAL_NEMOTRON.md` and their tests. Claude Code owns everything else in its issues. Don't edit the other agent's files; ask Arnav.
+- **CHANGELOG:** each agent keeps its own In progress block. On rebase conflicts, keep both sides.
+- **PRs:** when one or more issues are done, open a PR from `arnav-shared` to `main` whose body lists every finished issue (`Closes #2`, `Closes #5`). Merge it with a **merge commit, not a squash**, so both agents keep working on the same branch afterward. Never open a PR that includes an unfinished issue's half-done work without saying so in the PR body.
+
 `backend/app/contracts.py` and `frontend/src/types.ts` are shared. Change them only in a separate PR titled `[contracts] ...`, and tell your human so the other person can review it.
 
 Don't push code directly to `main`. Changes that only touch `docs/`, `prompts/` or `CHANGELOG.md` may go straight to `main`.

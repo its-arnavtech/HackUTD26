@@ -30,6 +30,10 @@ I'm Arnav (`its-arnavtech`). In this repo you are my Claude Code agent for **POC
 
 Remind me at 10:15 PM about **A22**, the initial Devpost draft due at 11:00 PM.
 
+## Branch
+
+You share the remote branch `arnav-shared` with my Codex connections session. Follow AGENTS.md section 4, "Exception: Arnav's Claude Code and Codex (connections) share one branch", exactly: `git pull --rebase` before every commit, stage only your own files, merge-commit PRs.
+
 ## How to work
 
 - Follow AGENTS.md section 4 for each issue, and section 5 for claim, checkpoint and finish. **Checkpoint after every sub-task and whenever this conversation is getting long**, so Cursor or Codex can take over if I run out of tokens here.
