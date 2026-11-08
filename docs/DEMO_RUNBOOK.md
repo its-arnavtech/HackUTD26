@@ -4,7 +4,7 @@ PowerShell, from a checkout that already has `.env`. Never print a key. Actions 
 
 The planted $900 is a **purchase at Unknown Payee**, 17 minutes after scenario 2's text. Scenario 3's campaign match is **historical** (28 on record). The last-24-hour count is 0 because those fingerprints keep their original dates. Say "on record", not "today" or "in the last day".
 
-Public reports are **unavailable** until PR #66 merges. On current `main`, `public_scam_reports` is not implemented. The committed CLI replay profile says so on purpose. Do not invent a citation.
+Public reports are the merged L10 tool (PR #66). The live Gemini citation gate is blocked: 3.5 returns 429 and the listed 2.5 model returns 404. Say a public report only when that tool actually returned a citation. The A18 CLI profile and PR #69's app-gate profile both set public search explicitly unavailable. Do not invent a citation.
 
 ## Startup
 
@@ -43,22 +43,26 @@ Also, before judging: Consent can link or skip, and skip does not start a bank c
 
 ## Replay fallback
 
-CLI fixtures are already committed and were checked with sockets blocked. They do **not** replay the app: cache keys include the message id, the classifier output, the phone-hash salt, and the model. Record the app walk once, on the machine that will present.
+CLI fixtures are already on `main` and were checked with sockets blocked. They do **not** replay the app: cache keys include the message id, the classifier output, the phone-hash salt, and the model.
+
+App-shaped recordings are on PR #69 (`codex/g2-replay-only`), not on this branch. That PR conflicts with current `main` and still needs a merge commit after a rebase. Its profile pins a local L7 v2 pickle (`data/models/classifier-v2.pkl`, gitignored). Do not retrain or pass `--evaluate`. Once that branch is current:
+
+```powershell
+cd C:\HackUTD26\frontend
+$env:E2E_PYTHON = (Resolve-Path ..\backend\.venv\Scripts\python.exe).Path
+$env:GATE_MODE = 'replay'
+npm run test:app
+```
+
+That gate uses the real API with `USE_MOCKS=false`, allows only loopback, and fails a cache miss instead of calling out. `docs/APP_GATE.md` on that branch is the full note.
 
 ```powershell
 cd C:\HackUTD26\backend
 # CLI proof, no network, no keys. Expect three likely_scam results and public search unavailable.
 .\.venv\Scripts\python.exe -m scripts.replay_demo replay
-
-# App recording. In .env set DEMO_MODE=record and USE_MOCKS=false, keep the same PHONE_HASH_SALT, then:
-cd ..
-.\scripts\dev.ps1
-# Walk scenario 1, then "I clicked" for scenario 2, then scenario 3. Stop the script.
-# Set DEMO_MODE=replay, turn Wi-Fi off, start .\scripts\dev.ps1 again, and walk the same three.
-# Commit new files under data/fixtures/ only after confirming they contain no API key or raw customer payload.
 ```
 
-`python -m pytest tests/test_scenarios_e2e.py` is the offline check for the CLI recordings. `npm run test:e2e` is the mock-API browser smoke (scenario 1 only). Neither one is the live app walk.
+`python -m pytest tests/test_scenarios_e2e.py` is the offline check for the CLI recordings. `npm run test:e2e` is the mock-API browser smoke (scenario 1 only). Neither one is the live app walk. Re-record only if #69's fixtures are rejected: `DEMO_MODE=record`, `USE_MOCKS=false`, same `PHONE_HASH_SALT`, walk scenario 1, then "I clicked" for scenario 2, then scenario 3. Commit new files under `data/fixtures/` only after they contain no API key or raw customer payload.
 
 ## Backup video (Arnav records; not recorded yet)
 
@@ -70,7 +74,7 @@ One take, under 3:00, with `USE_MOCKS=false`. If the network is unreliable, use 
 | 0:20 | Accuracy page: ours against the baseline, by category, false positives, public holdout. |
 | 0:40 | Scenario 1: trail filling in, what the bank check found, verdict, privacy panel. |
 | 1:20 | Scenario 2: "I clicked", re-plan, $900 purchase at Unknown Payee, "Was this you?", checklist. |
-| 2:00 | Scenario 3: a different plan, bill paid 2026-11-01, campaign on record. Say public reports are not in this build if #66 is not merged. |
+| 2:00 | Scenario 3: a different plan, bill paid 2026-11-01, campaign on record. Mention a public report only if L10 returned a citation. The live Gemini gate is blocked, and the recorded app profile leaves that lookup unavailable. |
 | 2:40 | "Nemotron plans, Nessie checks the money, the customer decides." |
 
 Do not say the account is fine, that money moved, or that a message was sent.
