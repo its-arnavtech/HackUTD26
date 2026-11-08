@@ -65,7 +65,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 ### G2 App gate (#33), implementation/testing only
 - Agent: Codex (GPT-6), Arnav; C:/HackUTD26/.worktrees/wrap-up; codex/g2-replay-only.
 - Started / checkpoint: 2026-11-08 00:53; prior isolated A17 candidate on codex/g2-app-gate.
-- Done: All three actual app flows passed record/live using hosted Nemotron, synthetic Nessie and frozen L7 v2, then passed with outbound DNS/sockets blocked. Same gate passed on main-based frontend; no A17 implementation commits in this PR. Bank/bill plans differ, $900 txn_28 at Unknown Payee/17 min, confirm only after tap, bill paid Nov 1/$0 due; privacy, real campaigns/accuracy and browser console checks pass. 673 backend tests and main/A17 candidate 50/65 frontend tests/build passed.
+- Done: All three actual app flows passed record/live using hosted Nemotron, synthetic Nessie and frozen L7 v2, then passed with outbound DNS/sockets blocked. Same gate passed on main-based frontend; no A17 implementation commits in this PR. Bank/bill plans differ, $900 txn_28 at Unknown Payee/17 min, confirm only after tap, bill paid Nov 1/$0 due; privacy, real campaigns/accuracy and browser console checks pass. Final combined validation: 688 backend tests, 50 frontend tests/build, explicit live app gate and keyless outbound-blocked replay all pass; A17 candidate separately passed 65 frontend tests/build.
 - Next: CI/merge #69, which integrates Cursor reset-generation fix #68 while retaining already-merged test fix #67. Core flows are verified; G2 issue completion awaits the A17 owner PR/merge. A17 stays with its owner. Presentation/video and Gemini access excluded by latest user steering.
 - Files: scripts/serve_app_gate.py, frontend/gates/app.pw.ts, gate config/package script, data/fixtures/app_gate, eval/app_gate_*.json, docs/APP_GATE.md, docs/TESTING.md, CHANGELOG.md.
 - Commands: GATE_MODE=record or replay; npm run test:app; E2E_PYTHON is local 3.12 venv. Ports 8022/5189.
@@ -143,6 +143,8 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 ---
 
 ## Done log
+
+- 2026-11-08 01:01 · G2 technical evidence / A19 fixtures / reset safety · Codex (GPT-6) with Cursor reset fix · #69 (includes #68) · All three UI flows pass live, record, and offline replay with frozen L7 v2; actual $900 purchase/confirmation, bill paid/$0 due, privacy/campaigns/accuracy, no browser errors; reset-generation regression integrated; 688 backend and 50 frontend tests/build pass · formal #33 signoff awaits A17 owner PR/merge; video/presentation excluded by user.
 
 - 2026-11-08 00:34 · A18 follow-up / L9 CI unblock · Codex (GPT-6) · #67 · Recovery tests clear the prior callback and wait for the current poller before sending a fake result; fixes CI race seen in #65 while preserving A17 application code; 50 frontend tests and build pass.
 - 2026-11-08 00:34 · L10 (L4 client ready, live P3 blocked) · Codex (GPT-6) · #66 · Fixed four-field Gemini lookup, cached Google grounding, support/chunk-only facts, ranking/stale/contact rules, model-argument isolation, safe smoke script; 14 new tests, combined backend 650 passed/no skips · follow-up: #12 needs usable generation quota (3.5/3.5 Lite 429, listed 2.5 404); no Gemini-backed demo claim until a cited live pass.

@@ -65,6 +65,7 @@ test("all three authored scenarios use the real API, recover the purchase, and d
   await expect(page.getByText("17 minutes after the text", { exact: true })).toBeVisible();
   const second: ResultPoll = await (await request.get("/api/messages/msg_0001/result")).json();
   expect(second.mode).toBe("recovery");
+  expect(second.result!.verdict).toBe("likely_scam");
   expect(second.result!.was_this_you).toContain("txn_28");
   expect(second.result!.replan).toBe(true);
   expect(second.result!.actions).toContain("freeze_card");

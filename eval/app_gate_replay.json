@@ -1,6 +1,6 @@
 {
   "mode": "replay",
-  "observed_at": "2026-11-08T06:55:27.861Z",
+  "observed_at": "2026-11-08T06:58:19.616Z",
   "use_mocks": false,
   "classifier": "frozen local L7 v2",
   "plans": {

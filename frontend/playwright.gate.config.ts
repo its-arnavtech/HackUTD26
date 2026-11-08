@@ -1,7 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
 const mode = process.env.GATE_MODE || "replay";
-if (!["record", "replay"].includes(mode)) throw new Error("GATE_MODE must be record or replay");
+if (!["live", "record", "replay"].includes(mode)) throw new Error("GATE_MODE must be live, record or replay");
 const apiPort = process.env.GATE_API_PORT || "8022";
 const webPort = process.env.GATE_WEB_PORT || "5189";
 

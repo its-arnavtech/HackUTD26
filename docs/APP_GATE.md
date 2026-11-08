@@ -11,7 +11,9 @@ record mode and offline replay. A17's owner checkout and branch were not
 changed. Gate tooling is submitted separately so A17 stays with its owner.
 
 The same gate also passed directly on the main-based frontend in record mode
-and offline replay. The gate PR contains no A17 implementation commits.
+and offline replay, then passed in explicit `DEMO_MODE=live` with recording
+disabled. The gate PR contains no A17 implementation commits. Formal G2 issue
+completion still waits for the A17 owner's PR/merge.
 
 ## Run the gate
 
@@ -71,7 +73,7 @@ fixtures. Do not re-record arbitrary customer messages.
   category rows match the current metrics, and the public holdout disclosure
   is visible. There are no browser page or console errors.
 
-Aggregate observations are in `eval/app_gate_record.json` and
-`eval/app_gate_replay.json`. The app recordings are separate from A18's
+Aggregate observations are in `eval/app_gate_live.json`,
+`eval/app_gate_record.json` and `eval/app_gate_replay.json`. The app recordings are separate from A18's
 artifact-independent CLI baseline profile. This work covers implementation and
 testing; presentation, video and Gemini access are outside the current request.

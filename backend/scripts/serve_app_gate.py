@@ -31,7 +31,7 @@ PROFILE = "authored-app-l7-v2-v1"
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("mode", choices=["record", "replay"])
+    parser.add_argument("mode", choices=["live", "record", "replay"])
     parser.add_argument("--port", type=int, default=8022)
     args = parser.parse_args()
     if not MODEL_PATH.exists():
@@ -42,7 +42,7 @@ def main() -> int:
         profile = json.loads(profile_path.read_text(encoding="utf-8"))
         if profile["profile"] != PROFILE or profile["model_sha256"] != model_hash:
             raise SystemExit("Replay profile/model mismatch. Use the same frozen local artifact as the recording.")
-    else:
+    elif args.mode == "record":
         FIXTURES.mkdir(parents=True, exist_ok=True)
         profile_path.write_text(json.dumps({"profile": PROFILE, "model_sha256": model_hash,
             "classifier": "frozen local L7 v2", "public_search": "explicitly unavailable",
