@@ -59,7 +59,7 @@ def test_health_with_mocks(client):
 
 
 def test_health_in_live_mode_never_shows_keys(make_client):
-    client = make_client(USE_MOCKS=False, DEMO_MODE="live", NVIDIA_API_KEY=FAKE_KEY, MOCK_ROUTES="campaigns")
+    client = make_client(USE_MOCKS=False, DEMO_MODE="live", NVIDIA_API_KEY=FAKE_KEY, MOCK_ROUTES="campaigns", PHONE_HASH_SALT="test-salt")
     r = client.get("/api/health")
     assert FAKE_KEY not in r.text
     body = r.json()
@@ -72,7 +72,7 @@ def test_health_in_live_mode_never_shows_keys(make_client):
 
 
 def test_route_without_mock_returns_json_501(make_client):
-    client = make_client(USE_MOCKS=False, DEMO_MODE="replay", MOCK_ROUTES="campaigns")
+    client = make_client(USE_MOCKS=False, DEMO_MODE="replay", MOCK_ROUTES="campaigns", PHONE_HASH_SALT="test-salt")
     assert client.get("/api/campaigns").status_code == 200
     r = client.get("/api/privacy/msg_0001")
     assert r.status_code == 501
@@ -82,9 +82,9 @@ def test_route_without_mock_returns_json_501(make_client):
 
 
 def test_live_route_override_with_mocks_on(make_client):
-    client = make_client(USE_MOCKS=True, DEMO_MODE="replay", LIVE_ROUTES="metrics")
+    client = make_client(USE_MOCKS=True, DEMO_MODE="replay", LIVE_ROUTES="confirm")
     assert client.get("/api/inbox").status_code == 200
-    assert client.get("/api/metrics").json()["error"]["details"] == {"issue": "A13"}
+    assert client.post("/api/transactions/txn_3/confirm", json={"was_me": False}).json()["error"]["details"] == {"issue": "L11"}
 
 
 def test_404_is_json_and_carries_message_id(client):

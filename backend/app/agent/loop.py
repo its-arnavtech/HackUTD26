@@ -47,6 +47,11 @@ from app.contracts import (
     Verdict,
 )
 
+try:  # L6 privacy log (PR #57); optional until it merges. Its hooks do nothing outside a job.
+    from app import privacy_log as _privacy_log
+except ImportError:  # pragma: no cover - depends on merge order
+    _privacy_log = None
+
 log = logging.getLogger(__name__)
 
 MAX_TOOL_CALLS = 6
@@ -197,6 +202,7 @@ class _Run:
     # -- main loop ---------------------------------------------------------------
 
     def execute(self) -> AgentResult:
+        _privacy("record_model", "nemotron", self.input)  # L6: exactly what Nemotron receives
         for _ in range(MAX_TURNS):
             response, ms = self.ask()
             if response is None:
@@ -354,6 +360,7 @@ class _Run:
                 self.evidence.append({"tool": name.value, "finding": finding})
 
     def tool_message(self, pending: _Pending, call: ToolCall) -> None:
+        _privacy("record_tool_result", "nemotron", call.to_tool_message())  # L6: each result sent back
         payload = json.dumps(call.to_tool_message(), ensure_ascii=False, default=str)
         if self.protocol == "json_action" and pending.id.startswith("json_"):
             self.messages.append({"role": "user", "content": json.dumps({"tool": pending.name, "result": json.loads(payload)}, ensure_ascii=False)})
@@ -432,6 +439,16 @@ class _Run:
 
 def _ms(started: float) -> int:
     return max(0, round((time.perf_counter() - started) * 1000))
+
+
+def _privacy(hook: str, *args: Any) -> None:
+    """Call an L6 `privacy_log` hook if L6 is merged. Never breaks a check."""
+    if _privacy_log is None:
+        return
+    try:
+        getattr(_privacy_log, hook)(*args)
+    except Exception:
+        log.exception("privacy hook failed", extra={"fields": {"hook": hook}})
 
 
 def _first_choice(response: dict[str, Any]) -> tuple[dict[str, Any], str | None]:
@@ -664,7 +681,8 @@ def _sum_sender(r: dict[str, Any]) -> str:
 def _sum_campaign(r: dict[str, Any]) -> str:
     if r.get("campaign_id"):
         n = r.get("similar_last_24h") or 0
-        return f"Matches a known scam campaign, {n} similar message{'s' if n != 1 else ''} in the last 24 hours"
+        # Only real counts: A12 never re-dates history, so "0 in the last 24 hours" is common; don't say it.
+        return f"Matches a known scam campaign, {n} similar message{'s' if n != 1 else ''} in the last 24 hours" if n else "Matches a known scam campaign"
     return "No match with a known scam campaign"
 
 

@@ -276,52 +276,53 @@ def test_many_messages_in_parallel(store, runner):
 # --- routes on the real store (mocks off for these routes) -----------------------
 
 LIVE = "inbox,post_message,result,clicked,demo_reset"
+SALT = "test-salt-not-a-secret"
 
 
-def test_routes_use_store_and_runner(make_client, monkeypatch):
-    from app import main
+class FakePipeline:
+    """Stands in for L9's Pipeline: no redaction, classifier or Nemotron."""
 
-    def fake_pipeline(message_id, message, on_trail):
+    def __init__(self):
+        self.jobs = []
+
+    def job(self, message_id, message, on_trail):
+        self.jobs.append((message_id, message.mode))
         on_trail.add(c.TrailKind.plan, why=f"plan for {message.mode.value}")
         return RESULT
 
-    monkeypatch.setattr(main, "pipeline_job", fake_pipeline)
-    client = make_client(DEMO_MODE="replay", LIVE_ROUTES=LIVE)
-    body = {"text": MSG.text, "sender": MSG.sender, "received_at": MSG.received_at.isoformat()}
-    mid = client.post("/api/messages", json=body).json()["message_id"]
-    assert mid == "msg_0001"
+    def warm(self):
+        pass
 
+
+def _wait(client, mid):
     deadline = time.monotonic() + 5
     while (poll := client.get(f"/api/messages/{mid}/result").json())["status"] != "done":
         assert time.monotonic() < deadline
         time.sleep(0.01)
+    return poll
+
+
+def test_routes_use_store_and_runner(make_client):
+    client = make_client(DEMO_MODE="replay", LIVE_ROUTES=LIVE, PHONE_HASH_SALT=SALT)
+    client.app.state.pipeline = FakePipeline()
+    body = {"text": MSG.text, "sender": MSG.sender, "received_at": MSG.received_at.isoformat()}
+    mid = client.post("/api/messages", json=body).json()["message_id"]
+    assert mid == "msg_0004"  # msg_0001, msg_0003 and msg_0101 are the preloaded demo inbox
+
+    poll = _wait(client, mid)
     assert poll["result"]["verdict"] == "likely_scam" and poll["trail"][0]["why"] == "plan for check"
-    assert client.get("/api/inbox").json()[0]["verdict"] == "likely_scam"
+    assert next(i for i in client.get("/api/inbox").json() if i["message_id"] == mid)["verdict"] == "likely_scam"
 
     r = client.post(f"/api/messages/{mid}/clicked")
     assert r.status_code == 200 and r.json()["mode"] == "recovery"
-    while (poll := client.get(f"/api/messages/{mid}/result").json())["status"] != "done":
-        assert time.monotonic() < deadline
-        time.sleep(0.01)
+    poll = _wait(client, mid)
     assert poll["mode"] == "recovery" and poll["trail"][0]["why"] == "plan for recovery"
 
-    assert client.post("/api/demo/reset").json() == {"ok": True, "inbox_count": 0}
+    assert client.post("/api/demo/reset").json() == {"ok": True, "inbox_count": 3}
     assert client.get(f"/api/messages/{mid}/result").status_code == 404
 
 
 def test_unknown_message_on_store_routes_is_404(make_client):
-    client = make_client(DEMO_MODE="replay", LIVE_ROUTES=LIVE)
+    client = make_client(DEMO_MODE="replay", LIVE_ROUTES=LIVE, PHONE_HASH_SALT=SALT)
     assert client.get("/api/messages/msg_9999/result").json()["error"]["code"] == "not_found"
     assert client.post("/api/messages/msg_9999/clicked").status_code == 404
-
-
-def test_before_l9_a_posted_message_ends_unsure(make_client):
-    """Until L9 fills in run_pipeline, the real route still finishes with an honest unsure result."""
-    client = make_client(DEMO_MODE="replay", LIVE_ROUTES=LIVE)
-    body = {"text": "hello", "sender": "+15550100000", "received_at": "2026-11-08T10:00:00-06:00"}
-    mid = client.post("/api/messages", json=body).json()["message_id"]
-    deadline = time.monotonic() + 5
-    while (poll := client.get(f"/api/messages/{mid}/result").json())["status"] != "done":
-        assert time.monotonic() < deadline
-        time.sleep(0.01)
-    assert poll["result"]["verdict"] == "unsure" and poll["result"]["reason"] == FAILED_REASON

@@ -209,7 +209,16 @@ def check_settings(s: Settings) -> list[SettingsIssue]:
     missing("NVIDIA_API_KEY", "the Nemotron agent can't run in live or record mode", required=True)
     missing("NESSIE_API_KEY", "the Nessie tools return an error instead of account activity", required=False)
     missing("GEMINI_API_KEY", "public_scam_reports is skipped until it's set (expected Sunday morning)", required=False)
-    missing("PHONE_HASH_SALT", "redaction (A3) uses it to hash personal phone numbers", required=False)
+    # Redaction is local, so the salt matters in every DEMO_MODE: without it every real check fails (L9).
+    pipeline_live = any(not s.route_is_mocked(r) for r in ("post_message", "result", "clicked"))
+    if s.PHONE_HASH_SALT is None and pipeline_live:
+        issues.append(SettingsIssue(
+            "error", "PHONE_HASH_SALT",
+            "not set; redaction (A3) needs it to hash phone numbers, so every message check would fail. "
+            "Put any long random string in .env (see .env.example).",
+        ))
+    else:
+        missing("PHONE_HASH_SALT", "redaction (A3) uses it to hash personal phone numbers", required=False)
 
     if calls_out and not s.NEMOTRON_MODEL.strip():
         issues.append(SettingsIssue("error", "NEMOTRON_MODEL", "empty; set the model ID (confirm it with GET /v1/models)."))
@@ -225,11 +234,12 @@ def validate_settings(s: Settings) -> list[SettingsIssue]:
     issues = check_settings(s)
     errors = [i for i in issues if i.level == "error"]
     if errors:
+        # Mocks or replay avoid outside calls; they don't help a missing redaction salt.
+        hint = "" if all(i.variable == "PHONE_HASH_SALT" for i in errors) else "; set USE_MOCKS=true or DEMO_MODE=replay to run without keys"
         raise SettingsError(
             "SentinelAI can't start with these settings:\n"
             + "\n".join(f"  - {i}" for i in errors)
-            + f"\n(DEMO_MODE={s.DEMO_MODE.value}, USE_MOCKS={str(s.USE_MOCKS).lower()}; "
-            "set USE_MOCKS=true or DEMO_MODE=replay to run without keys.)"
+            + f"\n(DEMO_MODE={s.DEMO_MODE.value}, USE_MOCKS={str(s.USE_MOCKS).lower()}{hint}.)"
         )
     return [i for i in issues if i.level == "warning"]
 

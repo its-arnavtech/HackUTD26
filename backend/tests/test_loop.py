@@ -585,6 +585,20 @@ def test_stripping_a_contact_is_not_shown_in_the_trail():
     assert notes == []
 
 
+@pytest.mark.parametrize(
+    "result,expected",
+    [
+        ({"campaign_id": "camp_07", "similar_last_24h": 140}, "Matches a known scam campaign, 140 similar messages in the last 24 hours"),
+        ({"campaign_id": "camp_07", "similar_last_24h": 1}, "Matches a known scam campaign, 1 similar message in the last 24 hours"),
+        ({"campaign_id": "camp_07", "similar_last_24h": 0}, "Matches a known scam campaign"),  # seen live: scenario 3
+        ({"campaign_id": None, "similar_last_24h": 0}, "No match with a known scam campaign"),
+    ],
+)
+def test_campaign_summary_never_says_zero_in_24_hours(result, expected):
+    call = ToolCall(name="match_campaign", args={}, ok=True, result=result)
+    assert loop._summarize(c.ToolName.match_campaign, call) == expected
+
+
 def test_prompt_says_unknown_channels_prove_nothing():
     assert "official_channels_known is false" in prompts.SYSTEM_PROMPT
 
