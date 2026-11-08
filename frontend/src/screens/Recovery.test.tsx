@@ -60,6 +60,26 @@ describe("RecoveryView", () => {
   });
 });
 
+describe("RecoveryView with a flagged purchase (the live Nessie seed plants the $900 as a purchase)", () => {
+  it("names the purchase on the card and in the checklist banner", () => {
+    const spec = recoverySpecimen();
+    const purchase = { ...spec.item!, type: "purchase" as const };
+    const { rerender } = render(
+      <MemoryRouter>
+        <RecoveryView stage="transfer" {...spec} item={purchase} />
+      </MemoryRouter>,
+    );
+    expect(screen.getByText("A new purchase after the text.")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Yes, I made this purchase/ })).toBeInTheDocument();
+    rerender(
+      <MemoryRouter>
+        <RecoveryView stage="checklist" poll={spec.poll} activityNoun="purchase" />
+      </MemoryRouter>,
+    );
+    expect(screen.getByText("If the purchase wasn’t yours, contact your bank promptly.")).toBeInTheDocument();
+  });
+});
+
 describe("Recovery on the mock API", () => {
   let update: (poll: ResultPoll) => void;
 

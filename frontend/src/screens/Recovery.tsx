@@ -28,6 +28,7 @@ export function RecoveryView({
   minutesAfterMessage,
   recognized = false,
   noActivity = false,
+  activityNoun = "transfer",
   checked = [],
   notice = "",
   busy = false,
@@ -50,6 +51,8 @@ export function RecoveryView({
   recognized?: boolean;
   /** The activity check finished with nothing to confirm. */
   noActivity?: boolean;
+  /** What the flagged activity was ("transfer", "purchase"), for the checklist banner. */
+  activityNoun?: string;
   checked?: Action[];
   notice?: string;
   busy?: boolean;
@@ -181,7 +184,7 @@ export function RecoveryView({
               ? "Your checklist is complete."
               : noActivity && result
                 ? activitySummary(result)
-                : "If the transfer wasn’t yours, contact your bank promptly."}
+                : `If the ${activityNoun} wasn’t yours, contact your bank promptly.`}
           </p>
         </div>
       )}
@@ -282,6 +285,7 @@ export default function Recovery() {
       minutesAfterMessage={current ? minutesAfter(message?.received_at, current.at) : undefined}
       recognized={answered.length > 0 && answered.every(Boolean)}
       noActivity={finished && items.length === 0}
+      activityNoun={items[0] ? nouns[items[0].type] : undefined}
       checked={checked}
       notice={notice}
       busy={busy}
