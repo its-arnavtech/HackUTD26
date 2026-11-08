@@ -60,11 +60,20 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | L14 | Live demo: System view, check any message, plug into any system, agent tool-call fix | Lavanya | Claude Code | Demo | G2, SYN | in review | `l14-live-demo` · docs/L14_LIVE_DEMO_REVIEW.md |
 | L15 | Agent accuracy, any payment system as agent source, trusted contact, scam waves | Lavanya | Claude Code | Demo | L14, SYN | in review | `l15-agent-eval-and-alerts` · docs/L15_FEATURES_POC.md |
 | SYN | Synthetic linked scenarios, payment schema, multiclass SMS | Arnav | Cursor | Demo | A21 | done | #72 · cursor/synthetic-linked-scenarios-6119 |
+| L16 (frontend) | Trusted-contact call: alert status polling in the recovery checklist (phone + console) | Arnav | Claude Code | Demo | L15 | in progress | `l16-alert-frontend` |
 
 ---
 
 ## In progress
 
+### L16 frontend: trusted-contact call status (no issue number)
+- Agent: Claude Code (Opus 5.5) · Person: Arnav · Folder: `C:\HackUTD26` · Branch: `l16-alert-frontend`
+- Started: 2026-11-08 09:24 · Last checkpoint: 2026-11-08 09:24
+- Done so far: claimed. Backend half is Grok 4.7 on `l16-alert-backend`; both merge into `l16-voice-alert` for one PR.
+- Next step (exact): `AlertStatus` + `getAlertStatus` + `postAlertAction` in `frontend/src/api.ts`; shared polling hook/component; wire into `screens/Recovery.tsx` and `console/CustomerPanel.tsx`.
+- Files touched: CHANGELOG.md
+- How to run or test: `cd frontend; npm run build; npm test`
+- Notes and gotchas: fixed interface in the user's L16 brief: POST /api/actions returns `alert`; GET /api/trusted-contact/alerts/{message_id}; poll 2 s while `calling`, stop at `done` or 120 s.
 
 ### L13 Full authentication and security pillars (#71)
 - Agent: Claude Code (Opus 5.5) · Person: Lavanya · Folder: `C:\Users\gocomets\Downloads\HackUTD26` · Branch: `sec-auth`
