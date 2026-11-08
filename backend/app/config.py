@@ -121,6 +121,9 @@ class Settings(BaseSettings):
     # Twilio trial accounts reject inline Twiml, MachineDetection and Timeout: the call then sends only
     # To, From and Url, and Twilio fetches the words from PUBLIC_BASE_URL/api/voice/twiml/{token}.
     TWILIO_TRIAL_MODE: bool = False
+    # Keep true. False is a demo-only escape hatch: the TwiML route then skips X-Twilio-Signature but
+    # still needs the single-use, 10-minute, 32-byte token. A warning is logged at startup.
+    TWILIO_VERIFY_SIGNATURE: bool = True
     TRUSTED_CONTACT_PHONE: str = ""  # E.164 number that is called
     ALERT_EMAIL_FROM: str = ""  # Gmail address the alert is sent from
     ALERT_EMAIL_APP_PASSWORD: SecretStr | None = None  # Google app password, not the mailbox password
@@ -347,6 +350,12 @@ def check_settings(s: Settings) -> list[SettingsIssue]:
                 level, name,
                 "not set; voice alerts need it while VOICE_ALERTS_ENABLED=true. Add it to .env (see .env.example).",
             ))
+    if not s.TWILIO_VERIFY_SIGNATURE:
+        issues.append(SettingsIssue(
+            "warning", "TWILIO_VERIFY_SIGNATURE",
+            "false: Twilio signature verification is OFF for /api/voice/twiml (the one-time token is still "
+            "required). Demo only; set it back to true.",
+        ))
     if s.API_PORT == s.WEB_PORT:
         issues.append(SettingsIssue("error", "API_PORT", f"same as WEB_PORT ({s.WEB_PORT}); give each its own port."))
     return issues

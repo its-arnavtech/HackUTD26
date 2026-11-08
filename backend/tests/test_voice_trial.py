@@ -183,6 +183,41 @@ def test_unknown_or_expired_token_is_404(voice_client):
     assert voice_client.get(path, headers=_signed(path)).status_code == 404
 
 
+def test_signature_check_is_on_by_default():
+    from tests.conftest import make_settings
+
+    assert make_settings().TWILIO_VERIFY_SIGNATURE is True
+
+
+def test_verify_off_skips_signature_but_still_needs_the_token(make_client):
+    c = make_client(TWILIO_AUTH_TOKEN=TOKEN, PUBLIC_BASE_URL=BASE, TWILIO_VERIFY_SIGNATURE=False)
+    token = alerts.issue_twiml_token("Please call Linda.")
+    path = f"/api/voice/twiml/{token}"
+    r = c.post(path, data={"CallSid": "CA1"}, headers={"X-Twilio-Signature": "bogus"})
+    assert r.status_code == 200 and r.text.count("<Say>Please call Linda.</Say>") == 2
+    assert c.post(path, data={"CallSid": "CA1"}).status_code == 404  # still single use
+    assert c.get("/api/voice/twiml/not-a-real-token").status_code == 404
+
+
+def test_verify_off_warns_at_startup():
+    from app.config import validate_settings
+    from tests.conftest import make_settings
+
+    issues = validate_settings(make_settings(TWILIO_VERIFY_SIGNATURE=False))
+    assert any(i.variable == "TWILIO_VERIFY_SIGNATURE" and i.level == "warning" for i in issues)
+    assert not any(i.variable == "TWILIO_VERIFY_SIGNATURE" for i in validate_settings(make_settings()))
+
+
+def test_failed_signature_logs_booleans_only(voice_client, caplog):
+    token = alerts.issue_twiml_token("Please call Linda.")
+    path = f"/api/voice/twiml/{token}"
+    with caplog.at_level("INFO"):
+        assert voice_client.post(path, data={"CallSid": "CA1"}, headers={"X-Twilio-Signature": "bogus"}).status_code == 403
+    text = " ".join(str(getattr(r, "fields", "")) + r.getMessage() for r in caplog.records if r.name.startswith(("app", "uvicorn")))
+    assert "signature diagnosis" in text
+    assert token not in text and "bogus" not in text and TOKEN not in text
+
+
 def test_route_refuses_when_public_base_url_is_unset(make_client):
     c = make_client(TWILIO_AUTH_TOKEN=TOKEN, PUBLIC_BASE_URL="")
     token = alerts.issue_twiml_token("Hi")

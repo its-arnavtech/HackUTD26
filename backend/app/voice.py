@@ -40,6 +40,33 @@ def _url_variants(url: str) -> list[str]:
     return [url, with_port, without_port]
 
 
+def _log_signature_diagnosis(
+    auth_token: str, url: str, arrived: str, params: dict[str, str], signature: str | None
+) -> None:
+    """Booleans only: which URL/param variant would have matched. No token, URL or signature values."""
+    parts = urlsplit(url)
+    swap = "http" if parts.scheme == "https" else "https"
+    variants = {
+        "configured": url,
+        "with_443": _url_variants(url)[1],
+        "without_port": _url_variants(url)[2],
+        "other_scheme": urlunsplit((swap, parts.netloc, parts.path, parts.query, "")),
+        "trailing_slash": url + "/",
+        "as_arrived": arrived,
+    }
+    found = {name: verify_signature(auth_token, u, params, signature) for name, u in variants.items()}
+    found.update({f"{name}_no_params": verify_signature(auth_token, u, {}, signature) for name, u in variants.items()})
+    log.info(
+        "voice twiml signature diagnosis",
+        extra={"fields": {
+            "has_signature": bool(signature),
+            "has_auth_token": bool(auth_token),
+            "post_param_count": len(params),
+            "matches": found,
+        }},
+    )
+
+
 async def _twiml(request: Request, token: str) -> Response:
     settings = request.app.state.settings if hasattr(request.app.state, "settings") else get_settings()
     auth_token = settings.TWILIO_AUTH_TOKEN.get_secret_value() if settings.TWILIO_AUTH_TOKEN else ""
@@ -52,9 +79,14 @@ async def _twiml(request: Request, token: str) -> Response:
         raw = (await request.body()).decode("utf-8", errors="replace")
         params = dict(parse_qsl(raw, keep_blank_values=True))
     signature = request.headers.get("x-twilio-signature")
-    if not base or not any(verify_signature(auth_token, u, params, signature) for u in _url_variants(url)):
+    verified = bool(base) and any(verify_signature(auth_token, u, params, signature) for u in _url_variants(url))
+    if not verified:
+        _log_signature_diagnosis(auth_token, url, str(request.url), params, signature)
+    if not verified and getattr(settings, "TWILIO_VERIFY_SIGNATURE", True):
         log.info("voice twiml refused", extra={"fields": {"reason": "bad_signature"}})
         raise ForbiddenError("Invalid webhook signature")
+    if not verified:
+        log.warning("voice twiml served without a valid signature (TWILIO_VERIFY_SIGNATURE=false)")
     text = consume_twiml_token(token)
     if text is None:
         log.info("voice twiml refused", extra={"fields": {"reason": "unknown_or_expired"}})
