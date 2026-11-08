@@ -1,0 +1,13 @@
+{
+  "key": "1c5d32f72cda7bc231d290fc5e78b167",
+  "recorded_at": "2026-11-08T06:48:45+00:00",
+  "request": {
+    "domain": "tmobile-billpay-now.com"
+  },
+  "response": {
+    "found": false,
+    "registered_at": null
+  },
+  "service": "rdap",
+  "version": 1
+}

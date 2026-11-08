@@ -1,0 +1,25 @@
+{
+  "key": "30c7dd2a4c5291aa0e1dcf3bb4f87ff8",
+  "recorded_at": "2026-11-08T06:48:46+00:00",
+  "request": {
+    "body": null,
+    "method": "GET",
+    "path": "/accounts/4983d467-9369-4b9b-b46c-227a9b3a9115/bills"
+  },
+  "response": [
+    {
+      "_id": "2b63977d-49ae-405c-8c24-a0c327cc1d13",
+      "account_id": "4983d467-9369-4b9b-b46c-227a9b3a9115",
+      "creation_date": "2026-11-08",
+      "nickname": "Phone bill",
+      "payee": "T-Mobile",
+      "payment_amount": 85.0,
+      "payment_date": "2026-11-01",
+      "recurring_date": 1,
+      "status": "completed",
+      "upcoming_payment_date": "2026-12-01"
+    }
+  ],
+  "service": "nessie",
+  "version": 1
+}

@@ -1,0 +1,27 @@
+{
+  "key": "0cd8fefc316c1772dc9e8b0dfd62294e",
+  "recorded_at": "2026-11-08T06:49:04+00:00",
+  "request": {
+    "body": null,
+    "method": "GET",
+    "path": "/merchants/369ab32b-f61d-4d6e-a548-1d644bc8d2ed"
+  },
+  "response": {
+    "_id": "369ab32b-f61d-4d6e-a548-1d644bc8d2ed",
+    "address": {
+      "city": "Richardson",
+      "state": "TX",
+      "street_name": "Demo Way",
+      "street_number": "800",
+      "zip": "75080"
+    },
+    "category": "Health",
+    "geocode": {
+      "lat": 32.9858,
+      "lng": -96.7501
+    },
+    "name": "Sentinel Demo Pharmacy"
+  },
+  "service": "nessie",
+  "version": 1
+}

@@ -1,0 +1,123 @@
+{
+  "key": "d03f3a3dbde211eac3d6f22a1699f36d",
+  "recorded_at": "2026-11-08T06:49:03+00:00",
+  "request": {
+    "body": null,
+    "method": "GET",
+    "path": "/accounts/4983d467-9369-4b9b-b46c-227a9b3a9115/purchases"
+  },
+  "response": [
+    {
+      "_id": "384fdfad-fd25-4e40-b532-bdbca1fbeac5",
+      "amount": 71,
+      "description": "Groceries",
+      "medium": "balance",
+      "merchant_id": "5113a183-40e6-4425-b422-80a0bbacdb80",
+      "payer_id": "4983d467-9369-4b9b-b46c-227a9b3a9115",
+      "purchase_date": "2026-10-18",
+      "status": "completed",
+      "type": "merchant"
+    },
+    {
+      "_id": "49998a0e-37fb-407c-95a2-e419b0fb860b",
+      "amount": 900,
+      "description": "Online payment",
+      "medium": "balance",
+      "merchant_id": "ed195bc1-c288-4cb1-9153-c2d69bbe37c1",
+      "payer_id": "4983d467-9369-4b9b-b46c-227a9b3a9115",
+      "purchase_date": "2026-11-08",
+      "status": "completed",
+      "type": "merchant"
+    },
+    {
+      "_id": "49b6ce76-eade-40db-b2b7-9191e53ec792",
+      "amount": 49,
+      "description": "Groceries",
+      "medium": "balance",
+      "merchant_id": "5113a183-40e6-4425-b422-80a0bbacdb80",
+      "payer_id": "4983d467-9369-4b9b-b46c-227a9b3a9115",
+      "purchase_date": "2026-10-22",
+      "status": "completed",
+      "type": "merchant"
+    },
+    {
+      "_id": "4c513432-8005-4d5b-a1b8-23145bbd5889",
+      "amount": 64,
+      "description": "Groceries",
+      "medium": "balance",
+      "merchant_id": "5113a183-40e6-4425-b422-80a0bbacdb80",
+      "payer_id": "4983d467-9369-4b9b-b46c-227a9b3a9115",
+      "purchase_date": "2026-10-26",
+      "status": "completed",
+      "type": "merchant"
+    },
+    {
+      "_id": "6b267fe7-944a-4809-8240-14e2fc1aa4f7",
+      "amount": 64,
+      "description": "Groceries",
+      "medium": "balance",
+      "merchant_id": "5113a183-40e6-4425-b422-80a0bbacdb80",
+      "payer_id": "4983d467-9369-4b9b-b46c-227a9b3a9115",
+      "purchase_date": "2026-10-10",
+      "status": "completed",
+      "type": "merchant"
+    },
+    {
+      "_id": "ad37ad80-d3fa-4155-9ffb-325f0b3143ed",
+      "amount": 71,
+      "description": "Groceries",
+      "medium": "balance",
+      "merchant_id": "5113a183-40e6-4425-b422-80a0bbacdb80",
+      "payer_id": "4983d467-9369-4b9b-b46c-227a9b3a9115",
+      "purchase_date": "2026-11-03",
+      "status": "completed",
+      "type": "merchant"
+    },
+    {
+      "_id": "e7f65fdb-05b1-4e45-b232-d42b6f87d081",
+      "amount": 58,
+      "description": "Groceries",
+      "medium": "balance",
+      "merchant_id": "5113a183-40e6-4425-b422-80a0bbacdb80",
+      "payer_id": "4983d467-9369-4b9b-b46c-227a9b3a9115",
+      "purchase_date": "2026-10-14",
+      "status": "completed",
+      "type": "merchant"
+    },
+    {
+      "_id": "ee225fe5-3a72-422d-8d27-76303a7f8f13",
+      "amount": 49,
+      "description": "Groceries",
+      "medium": "balance",
+      "merchant_id": "5113a183-40e6-4425-b422-80a0bbacdb80",
+      "payer_id": "4983d467-9369-4b9b-b46c-227a9b3a9115",
+      "purchase_date": "2026-11-07",
+      "status": "completed",
+      "type": "merchant"
+    },
+    {
+      "_id": "ee685db5-3301-43ca-b1af-210f9a1bb412",
+      "amount": 58,
+      "description": "Groceries",
+      "medium": "balance",
+      "merchant_id": "5113a183-40e6-4425-b422-80a0bbacdb80",
+      "payer_id": "4983d467-9369-4b9b-b46c-227a9b3a9115",
+      "purchase_date": "2026-10-30",
+      "status": "completed",
+      "type": "merchant"
+    },
+    {
+      "_id": "fe356d7a-2c7f-4364-878a-23ba70781a7b",
+      "amount": 18,
+      "description": "Pharmacy",
+      "medium": "balance",
+      "merchant_id": "369ab32b-f61d-4d6e-a548-1d644bc8d2ed",
+      "payer_id": "4983d467-9369-4b9b-b46c-227a9b3a9115",
+      "purchase_date": "2026-10-21",
+      "status": "completed",
+      "type": "merchant"
+    }
+  ],
+  "service": "nessie",
+  "version": 1
+}

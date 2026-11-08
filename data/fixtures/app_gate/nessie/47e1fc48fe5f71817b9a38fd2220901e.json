@@ -1,0 +1,27 @@
+{
+  "key": "47e1fc48fe5f71817b9a38fd2220901e",
+  "recorded_at": "2026-11-08T06:49:04+00:00",
+  "request": {
+    "body": null,
+    "method": "GET",
+    "path": "/merchants/b13556f6-5f22-4bad-9d95-7fde5610feec"
+  },
+  "response": {
+    "_id": "b13556f6-5f22-4bad-9d95-7fde5610feec",
+    "address": {
+      "city": "Richardson",
+      "state": "TX",
+      "street_name": "Demo Way",
+      "street_number": "800",
+      "zip": "75080"
+    },
+    "category": "Entertainment",
+    "geocode": {
+      "lat": 32.9858,
+      "lng": -96.7501
+    },
+    "name": "Sentinel Demo Streaming"
+  },
+  "service": "nessie",
+  "version": 1
+}

@@ -1,0 +1,178 @@
+{
+  "key": "c364eeaed06239439b7963ab7e0006c9",
+  "recorded_at": "2026-11-08T06:49:03+00:00",
+  "request": {
+    "body": null,
+    "method": "GET",
+    "path": "/accounts/83dce5c6-2962-4a67-9281-0b2e4c0f7fde/purchases"
+  },
+  "response": [
+    {
+      "_id": "1d6dc3cf-8cd1-4ed7-a97d-d09186018789",
+      "amount": 5,
+      "description": "Coffee",
+      "medium": "balance",
+      "merchant_id": "b451f5d7-a44d-4590-a880-8e33d367868c",
+      "payer_id": "83dce5c6-2962-4a67-9281-0b2e4c0f7fde",
+      "purchase_date": "2026-11-02",
+      "status": "completed",
+      "type": "merchant"
+    },
+    {
+      "_id": "2906f309-f631-45d0-8f55-57ff0d8514f7",
+      "amount": 6,
+      "description": "Coffee",
+      "medium": "balance",
+      "merchant_id": "b451f5d7-a44d-4590-a880-8e33d367868c",
+      "payer_id": "83dce5c6-2962-4a67-9281-0b2e4c0f7fde",
+      "purchase_date": "2026-11-05",
+      "status": "completed",
+      "type": "merchant"
+    },
+    {
+      "_id": "4027beb8-cd85-4f0f-a195-5421568d06d5",
+      "amount": 39,
+      "description": "Fuel",
+      "medium": "balance",
+      "merchant_id": "04588b80-cdd6-4143-a049-7c33cb8b1df7",
+      "payer_id": "83dce5c6-2962-4a67-9281-0b2e4c0f7fde",
+      "purchase_date": "2026-11-01",
+      "status": "completed",
+      "type": "merchant"
+    },
+    {
+      "_id": "45703ec5-6a1a-43bf-b6c4-b875b0d5029d",
+      "amount": 5,
+      "description": "Coffee",
+      "medium": "balance",
+      "merchant_id": "b451f5d7-a44d-4590-a880-8e33d367868c",
+      "payer_id": "83dce5c6-2962-4a67-9281-0b2e4c0f7fde",
+      "purchase_date": "2026-10-21",
+      "status": "completed",
+      "type": "merchant"
+    },
+    {
+      "_id": "46c8d358-396e-4558-8a31-c4d5647e1a06",
+      "amount": 6,
+      "description": "Coffee",
+      "medium": "balance",
+      "merchant_id": "b451f5d7-a44d-4590-a880-8e33d367868c",
+      "payer_id": "83dce5c6-2962-4a67-9281-0b2e4c0f7fde",
+      "purchase_date": "2026-10-18",
+      "status": "completed",
+      "type": "merchant"
+    },
+    {
+      "_id": "5b517c83-4092-483e-9c47-03a276760dea",
+      "amount": 6,
+      "description": "Coffee",
+      "medium": "balance",
+      "merchant_id": "b451f5d7-a44d-4590-a880-8e33d367868c",
+      "payer_id": "83dce5c6-2962-4a67-9281-0b2e4c0f7fde",
+      "purchase_date": "2026-10-12",
+      "status": "completed",
+      "type": "merchant"
+    },
+    {
+      "_id": "77e7e4c8-45b0-4bcb-8114-15302df6e9a5",
+      "amount": 42,
+      "description": "Fuel",
+      "medium": "balance",
+      "merchant_id": "04588b80-cdd6-4143-a049-7c33cb8b1df7",
+      "payer_id": "83dce5c6-2962-4a67-9281-0b2e4c0f7fde",
+      "purchase_date": "2026-10-11",
+      "status": "completed",
+      "type": "merchant"
+    },
+    {
+      "_id": "81d2b9f2-a15d-4526-83bd-96d0489c4183",
+      "amount": 5,
+      "description": "Coffee",
+      "medium": "balance",
+      "merchant_id": "b451f5d7-a44d-4590-a880-8e33d367868c",
+      "payer_id": "83dce5c6-2962-4a67-9281-0b2e4c0f7fde",
+      "purchase_date": "2026-10-09",
+      "status": "completed",
+      "type": "merchant"
+    },
+    {
+      "_id": "869495db-2aee-4769-b2f3-cf0ae7d51a3c",
+      "amount": 42,
+      "description": "Fuel",
+      "medium": "balance",
+      "merchant_id": "04588b80-cdd6-4143-a049-7c33cb8b1df7",
+      "payer_id": "83dce5c6-2962-4a67-9281-0b2e4c0f7fde",
+      "purchase_date": "2026-10-25",
+      "status": "completed",
+      "type": "merchant"
+    },
+    {
+      "_id": "9b02ebf5-1914-43be-83ac-e11eb03fdbf9",
+      "amount": 39,
+      "description": "Fuel",
+      "medium": "balance",
+      "merchant_id": "04588b80-cdd6-4143-a049-7c33cb8b1df7",
+      "payer_id": "83dce5c6-2962-4a67-9281-0b2e4c0f7fde",
+      "purchase_date": "2026-10-18",
+      "status": "completed",
+      "type": "merchant"
+    },
+    {
+      "_id": "bbfa5d1f-a8ec-4d98-998f-d017a25f9eb5",
+      "amount": 5,
+      "description": "Coffee",
+      "medium": "balance",
+      "merchant_id": "b451f5d7-a44d-4590-a880-8e33d367868c",
+      "payer_id": "83dce5c6-2962-4a67-9281-0b2e4c0f7fde",
+      "purchase_date": "2026-10-15",
+      "status": "completed",
+      "type": "merchant"
+    },
+    {
+      "_id": "cf0f3339-523d-41a1-a2e5-3a77170bb9ce",
+      "amount": 6,
+      "description": "Coffee",
+      "medium": "balance",
+      "merchant_id": "b451f5d7-a44d-4590-a880-8e33d367868c",
+      "payer_id": "83dce5c6-2962-4a67-9281-0b2e4c0f7fde",
+      "purchase_date": "2026-10-30",
+      "status": "completed",
+      "type": "merchant"
+    },
+    {
+      "_id": "d18478d1-4e35-4217-bee7-4fc1e964d4ba",
+      "amount": 15,
+      "description": "Streaming subscription",
+      "medium": "balance",
+      "merchant_id": "b13556f6-5f22-4bad-9d95-7fde5610feec",
+      "payer_id": "83dce5c6-2962-4a67-9281-0b2e4c0f7fde",
+      "purchase_date": "2026-10-14",
+      "status": "completed",
+      "type": "merchant"
+    },
+    {
+      "_id": "dfbef9b3-24a9-4a63-8e3f-37cfcecb3355",
+      "amount": 5,
+      "description": "Coffee",
+      "medium": "balance",
+      "merchant_id": "b451f5d7-a44d-4590-a880-8e33d367868c",
+      "payer_id": "83dce5c6-2962-4a67-9281-0b2e4c0f7fde",
+      "purchase_date": "2026-10-27",
+      "status": "completed",
+      "type": "merchant"
+    },
+    {
+      "_id": "e2807f67-f915-4759-b44f-d90458370481",
+      "amount": 6,
+      "description": "Coffee",
+      "medium": "balance",
+      "merchant_id": "b451f5d7-a44d-4590-a880-8e33d367868c",
+      "payer_id": "83dce5c6-2962-4a67-9281-0b2e4c0f7fde",
+      "purchase_date": "2026-10-24",
+      "status": "completed",
+      "type": "merchant"
+    }
+  ],
+  "service": "nessie",
+  "version": 1
+}

@@ -1,0 +1,31 @@
+{
+  "key": "759e784972dfbe421868deb6bae2cfc4",
+  "recorded_at": "2026-11-08T06:49:03+00:00",
+  "request": {
+    "body": null,
+    "method": "GET",
+    "path": "/customers/7698b521-be8f-454e-8a7a-e70d60f37687/accounts"
+  },
+  "response": [
+    {
+      "_id": "6c833838-72fe-4702-b67e-6a3775431834",
+      "account_number": "7360697950480468",
+      "balance": 100,
+      "customer_id": "7698b521-be8f-454e-8a7a-e70d60f37687",
+      "nickname": "Probe A",
+      "rewards": 0,
+      "type": "Checking"
+    },
+    {
+      "_id": "da38f42d-2ab4-4034-b18f-f9ce237ad2bc",
+      "account_number": "9962929581557913",
+      "balance": 100,
+      "customer_id": "7698b521-be8f-454e-8a7a-e70d60f37687",
+      "nickname": "Probe B",
+      "rewards": 0,
+      "type": "Checking"
+    }
+  ],
+  "service": "nessie",
+  "version": 1
+}
