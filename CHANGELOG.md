@@ -35,7 +35,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | L6 | Privacy audit log and `/api/privacy` | Lavanya | Claude Code | MVP | L3, L5 | todo | #16 |
 | A9 | Feature extraction | Arnav | Codex | MVP | A3 | todo | #17 |
 | A10 | `check_link` and `check_sender` tools | Arnav | Cursor | MVP | L1 | done | #18 · PR #43 |
-| A11 | Nessie tools | Arnav | Cursor | MVP | A2 | todo | #19 |
+| A11 | Nessie tools | Arnav | Cursor | MVP | A2 | in progress | #19 · `cursor/a11-nessie-tools-55c7` |
 | A12 | Campaign store, seeding and `match_campaign` | Arnav | Codex | MVP | A1, A3 | todo | #20 |
 | A13 | Evaluation harness | Arnav | Claude Code | MVP | A1 | todo | #21 |
 | L7 | Improved classifier | Lavanya | Claude Code | MVP | A1, A9, A13 | todo | #22 |
@@ -94,6 +94,16 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - Notes and gotchas: never write to Nessie with a made-up key. Nessie dates have no time, so the planted transfer's 09:31 time lives in the manifest. A11 should limit check mode to activity before `received_at`, so scenario 1 (check) doesn't see the transfer that scenario 2 (recovery) finds.
 - Resumed by: none
 
+### A11 Nessie tools (#19)
+- Agent: Cursor (Claude Opus 5.5, cloud agent) · Person: Arnav · Folder: Cursor cloud VM (`/workspace`) · Branch: `cursor/a11-nessie-tools-55c7` (stacked on A2's `cursor/a2-nessie-client-55c7`)
+- Started: 2026-11-07 19:07 · Last checkpoint: 2026-11-07 19:07
+- Done so far:
+  - Claimed (CHANGELOG only)
+- Next step (exact): implement `nessie_recent_activity`, `nessie_bill_status` and `resolve_ref` in `tools/nessie_tools.py` against A2's client, with tests on the fake Nessie seeded by `seed_nessie.seed`
+- Files touched: `CHANGELOG.md`
+- How to run or test: `python -m pytest` in `backend/`
+- Notes and gotchas: merge A2 (#44) first, then retarget this PR to `main`
+- Resumed by: none
 
 ---
 
