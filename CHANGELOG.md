@@ -44,7 +44,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | G1 | Gate: scenario 1 end to end in the CLI | Both | any | MVP | A3, A9, A10, A11, L8 | todo | #25 |
 | L10 | `public_scam_reports` tool | Lavanya | Claude Code | MVP | L4, L5 | todo | #26 |
 | L11 | Recovery mode re-plan | Lavanya | Claude Code | MVP | L8, A11 | todo | #27 |
-| A14 | Result card, "How we checked" and privacy panel | Arnav | Codex design (GPT 6 Astra) | MVP | A7 | todo | #28 |
+| A14 | Result card, "How we checked" and privacy panel | Arnav | Cursor (covering for Codex design) | MVP | A7 | in progress | #28 · `cursor/a14-result-trail-privacy-55c7` |
 | A15 | Recovery UI | Arnav | Codex design (GPT 6 Astra) | MVP | A14 | todo | #29 |
 | A16 | Consent screen, campaign view and accuracy page | Arnav | Codex design (GPT 6 Astra) | MVP | A7 | todo | #30 |
 | A17 | Frontend on the live API | Arnav | Cursor | MVP | A14, A15, A16, L9 | todo | #31 |
@@ -60,6 +60,17 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 ## In progress
 
 <!-- One block per active issue. Copy the template, keep it current at every checkpoint. -->
+
+### A14 Result card, "How we checked" and privacy panel (#28)
+- Agent: Cursor (Claude Opus 5.5, cloud agent), covering for Codex design until about 23:00 · Person: Arnav · Folder: Cursor cloud VM (`/workspace`) · Branch: `cursor/a14-result-trail-privacy-55c7` (stacked on A7's `cursor/a7-phone-inbox-55c7`, PR #52)
+- Started: 2026-11-07 21:58 · Last checkpoint: 2026-11-07 21:58
+- Done so far:
+  - Claimed (CHANGELOG only)
+- Next step (exact): port the lab's `Result.tsx`, `Trail.tsx` and `Privacy.tsx` as presentational views over `ResultPoll` and `PrivacyView`, with containers that poll through `src/api.ts`, then fill their `/gallery` slots (scam, unsure, safe, mixed, billing, error, trail, billing plan, recovery re-plan, privacy)
+- Files touched: `CHANGELOG.md`
+- How to run or test: `npm run build` and `npm test` in `frontend/`; `scripts/dev.ps1` for the app on the mocks, then `/result/msg_0001` and `/gallery`
+- Notes and gotchas: see the A7 decision (views plus containers; derive lab display fields in the UI, never in `types.ts`)
+- Resumed by: Cursor from Codex design (not started by Codex)
 
 ```
 ### <ID> <title> (#<issue>)
