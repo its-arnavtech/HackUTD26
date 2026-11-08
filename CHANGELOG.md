@@ -41,7 +41,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | L7 | Improved classifier | Arnav | Codex | MVP | A1, A9, A13 | done | #22 · #58 (arnav-shared); public gate failed, pivot documented |
 | L8 | Agent loop with plan, re-plan and guardrails | Lavanya | Claude Code | MVP | A4, L5 | done | #23 · PR #56 |
 | L9 | API endpoints and pipeline orchestration | Lavanya | Claude Code | MVP | L3, L8 | todo | #24 |
-| G1 | Gate: scenario 1 end to end in the CLI | Both | any | MVP | A3, A9, A10, A11, L8 | in progress | #25 · PR #46 merged (prep: stand-in agent until L8) |
+| G1 | Gate: scenario 1 end to end in the CLI | Both | any | MVP | A3, A9, A10, A11, L8 | done | #25 · PR #46 (prep), PR #61 |
 | L10 | `public_scam_reports` tool | Arnav | Claude Code | MVP | L4, L5 | todo | #26 |
 | L11 | Recovery mode re-plan | Lavanya | Claude Code | MVP | L8, A11 | todo | #27 |
 | A14 | Result card, "How we checked" and privacy panel | Arnav | Cursor (covering for Codex design) | MVP | A7 | done | #28 · PR #53 |
@@ -60,24 +60,6 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 ## In progress
 
 <!-- One block per active issue. Copy the template, keep it current at every checkpoint. -->
-
-
-### G1 Gate: scenario 1 end to end in the CLI (#25), prep
-- Agent: Cursor (Claude Opus 5.5, cloud agent) · Person: Arnav · Folder: Cursor cloud VM (`/workspace`) · Branch: `cursor/g1-run-scenario-55c7`
-- Started: 2026-11-07 19:17 · Last checkpoint: 2026-11-07 20:40
-- Done so far:
-  - Claimed (CHANGELOG only)
-  - `scripts/run_scenario.py`: redaction, sender redaction, URL features, message features, claimed brand and classifier each use the real module (or, for the classifier, A1's baseline) once it stops raising `NotImplementedError`, and a marked stand-in until then. The stages table prints which one ran. Tools run through a `TOOLS` table, with errors returned as data. The stand-in agent (rule-based plan and verdict, no model) is the single line `AGENT = stand_in_agent`. Supports scenarios 1 to 3 (2 runs in recovery mode) and `--json`.
-  - 9 tests (`tests/test_run_scenario.py`). The suite passes on 3.11 and 3.12 and in replay mode.
-  - Verified in a scratch merge with A10 and A11 (not committed) against the seeded fake Nessie: scenario 1 gives plan `check_link, check_sender, nessie_recent_activity` (the expected plan) and `likely_scam / very likely`; scenario 2 flags the planted transfer; scenario 3 finds the paid bill
-  - PR #46 open
-  - 2026-11-07 20:22: rebased onto `main`; real A3 redaction and A1's baseline are picked up automatically (baseline trained once per run, train split only). Redaction needs `PHONE_HASH_SALT` in `.env`, and the CLI says so instead of falling back to the stand-in. Scratch merge with #43 and #45: 321 tests pass, scenario 1 runs with real redaction and gives the expected plan and `likely_scam / very likely`
-  - 2026-11-07 20:40: moved off the #44/#45 chain onto `main` (#40 and #43 merged), so it can merge before #44; 296 tests pass
-- Next step (exact): when L8 merges, change `AGENT = stand_in_agent` to `AGENT = run_agent` in `scripts/run_scenario.py`. Register the tools with L5 (TODOs in `tools/link.py`, `tools/sender.py`, `tools/nessie_tools.py`). Run `python -m scripts.run_scenario 1` with the real seed (A2) and check the trail and verdict. Then finish G1.
-- Files touched: `backend/scripts/run_scenario.py`, `backend/tests/test_run_scenario.py`, `CHANGELOG.md`
-- How to run or test: from `backend/`: `python -m scripts.run_scenario 1`, then `python -m pytest`
-- Notes and gotchas: set `PHONE_HASH_SALT` in `.env` (any random string) or the run stops at redaction. Based directly on `main` (not on #44): on `main` today, redaction and `check_link`/`check_sender` are real, the classifier is A1's baseline, and the Nessie tools say "not available yet" until #44 and #45 merge; scenario 1 already gives the expected plan and `likely_scam / very likely`. `match_campaign` (A12) and `public_scam_reports` (L10) aren't in the stand-in's `TOOLS` table, so scenario 3's plan differs from its expected plan until L8 drives the tools through L5's registry.
-- Resumed by: none
 
 
 
@@ -137,6 +119,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID · tool · PR · summary · follow-ups`.
 
+- 2026-11-07 23:31 · G1 · Claude Code (Opus 5.5); finished from Cursor's prep (#46) · #61 · `run_scenario.py` runs L8's `run_agent`. Live Nemotron + live Nessie, all three scenarios: 1 likely scam (link + sender), plan link, sender, Nessie, campaign; 2 recovery flags `txn_28`, the planted $900 at Unknown Payee 17 min after, but `was_this_you` comes back empty (3 of 3 runs); 3 very likely scam, finds the bill paid 2026-11-01. Plans differ per scenario. Results in `docs/POC_RESULTS.md` (G1 section). `test_run_scenario.py` pins the stand-in so tests never call Nemotron; 545 passed · follow-ups: L11 returns flagged refs as "Was this you?" and recovery actions; L8 guardrail could drop `ignore` beside `block_sender` on a likely scam; A19 records the scenarios so A18's tests run on the real agent
 - 2026-11-07 23:16 · L7 · Codex (GPT-6), Arnav takeover from Lavanya · #58 · Train-only TF-IDF word/character + A9 features with validation-selected logistic regression; pipeline/batch predict and local artifact; one frozen A13 run: synthetic F1 0.8781/FPR 0.1133 (original target 0.807/0.127 met), public binary F1 0.5299 vs 0.5878 baseline (gate failed), public recall 0.0897 vs 0.1767, FPR 0.0292 vs 0.0342; 26 new tests; after main/L8/G1 integration, full backend 586 passed/15 recorded-world skips under pinned NumPy 2.4.6, including simulated missing-artifact checkout · follow-ups: L9 wires predict; present public failure honestly; further generalization needs separate development and fresh untouched evaluation data
 - 2026-11-07 22:51 · L6 · Claude Code (Opus 5.5, Arnav; taken over from Lavanya) · #57 · `app/privacy_log.py`: per-run `PrivacyLog` that L3's `JobRunner` binds around each job; L5's registry records every tool call into it automatically (validated args plus the agent-input fields the tool `reads`); `record_redaction`, `record_local`, `record_model`, `record_tool_result` for L9/L8/L10 (no-ops outside a run, never raise); store keeps every run's records (superseded runs too) and the latest redaction, cleared on reset; `GET /api/privacy/{id}` serves it when the route isn't mocked; `never_sent` lists only items checked against every payload (name and other hidden words, account digits, phone numbers, original text, sender number, full link), a failed check drops the item and logs the leak without its value; after L8 merged, two one-line hooks in `agent/loop.py` record exactly what Nemotron receives (the agent-input message and every tool result sent back); 21 tests (607 pass) · follow-ups: L9 calls `record_redaction` and `record_local("classifier", ...)` (PR description); frontend chip regex misses `<PHONE_HASH_…>` (lowercase hex)
 - 2026-11-07 22:48 · L8 · Claude Code (Opus 5.5, Lavanya) · #56 · `agent/loop.py` `run_agent`: plan logged before tools, tool results back as data, mid-run `replan` steps, at most 6 calls (4 after a step over 10 s), final-result schema sent only after tools return (A4's two-phase fix), one retry then honest `unsure`, never raises; reads tool calls Bolt writes as text (seen live); `agent/guardrails.py` per POC_MVP 7.4 (enums, two tools for "very likely", disagreement means `unsure`, max 3 actions, phones, links and domains stripped, invented checks dropped); Nemotron's `reasoning_content` becomes the trail's `why`; `scripts/live_agent_check.py` 3/3 correct against hosted Nemotron; 560 tests pass · follow-ups: G1 switches `AGENT = run_agent`; L9 calls `run_agent`; L6 passes `on_call`; L11 recovery; post-MVP security phase (SECURITY_PLAN): hostile-input tests and `[contracts]` claim labels
