@@ -17,7 +17,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 | ID | Issue | Owner | Agent | Milestone | Depends on | Status | Branch / PR |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| A21 | Synthetic message dataset generator | Arnav | Claude Code | POC | scaffold | in progress | #1 · `arnav-shared` |
+| A21 | Synthetic message dataset generator | Arnav | Claude Code | POC | scaffold | done | #1 · #41 (arnav-shared) |
 | A1 | Dataset loader, stratified split and baseline metrics | Arnav | Claude Code | POC | A21 | todo | #2 |
 | A2 | Nessie client and idempotent seed script | Arnav | Cursor | POC | scaffold | todo | #3 |
 | A3 | Redaction module | Arnav | Claude Code | POC | scaffold | todo | #4 |
@@ -83,26 +83,13 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - How to run or test: From backend, .\.venv\Scripts\python.exe -m pytest -q
 - Notes and gotchas: Public set is external evaluation ONLY; never training/tuning/prompts/blocklists/campaign seeds. HF card license unknown; upstream UCI lists CC BY 4.0 (record both). Do not commit public SMS rows or model weights. #41 currently contains A4 plus A21 claim; disclose A5 while unfinished.
 
-### A21 Synthetic message dataset generator (#1)
-- Agent: Claude Code (Opus 5.5) · Person: Arnav · Folder: `C:\HackUTD26-cc` · Branch: `arnav-shared`
-- Started: 2026-11-07 18:40 · Last checkpoint: 2026-11-07 19:10
-- Done so far:
-  - Claimed. Created `.venv` (Python 3.12) in `C:\HackUTD26-cc`.
-  - `data/taxonomy.json` v1: 8 scam categories (`bank_impersonation`, `billing_scam`, `delivery_scam`, `account_security`, `toll_government`, `prize_refund`, `job_offer`, `conversation_lure`) plus `legit`, each with generator subtypes.
-  - `backend/scripts/dataset_prompts.py`: prompt sets `train_v1` (varied writers) and `test_v1` (quiz-card framing, varied recipients, extra brands).
-  - `backend/scripts/generate_dataset.py`: job plan, cached DeepSeek calls, phone rewrite to 555-01XX, quality filter, dedupe (exact, near, test vs train), trim, synthetic senders and times. Smoke run (1 call per category) looked good.
-  - Full run started (423 calls, `deepseek-flash`).
-- Next step (exact): when the full run ends, read `data/generated/quality_report.json` and spot-check messages; then draft ~50 hand-written test messages in `data/generated/handwritten.jsonl` for Arnav's approval, write tests and the datasheet.
-- Files touched: `CHANGELOG.md`, `.gitignore`, `data/taxonomy.json`, `backend/scripts/generate_dataset.py`, `backend/scripts/dataset_prompts.py`
-- How to run or test: `cd backend; ..\.venv\Scripts\python -m scripts.generate_dataset` (add `--dry-run` for the plan, `--offline` to rebuild from cache)
-- Notes and gotchas: `cache.py` (L1) isn't built yet, so DeepSeek calls are cached by the script itself under `data/generated/cache/` (committed so reruns are free). `deepseek-flash` reasons before answering and sometimes returns empty content; the script retries and never caches a bad response. Changing a prompt or `MAX_TOKENS` changes every cache key.
-
 ---
 
 ## Done log
 
 Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID · tool · PR · summary · follow-ups`.
 
+- 2026-11-07 19:00 · A21 · Claude Code (Opus 5.5) · #41 · Taxonomy v1 (8 scam categories + `legit`); DeepSeek generator with separate `train_v1`/`test_v1` prompt sets, cached calls, quality filter, dedupe incl. test-vs-train; 2,596 messages (train_v1 2,208, test_v1 338, hand-written 50), 38% legit; datasheet `data/generated/README.md`; 100 tests pass incl. offline rebuild · follow-ups: Arnav approves the 50 drafted hand-written messages before merge; A1 splits per the Decisions entry; mock `metrics.json` says `legitimate`, real id is `legit` (A13)
 - 2026-11-07 18:51 · A4 · Codex (GPT-6) · #41 · Hosted Bolt verified, embedding 2048D, JSON fallback 5/5 (median 1104ms, worst 2708ms), 65 tests pass · follow-ups: L1 cache and L8 production loop; native initially 0/5
 
 - 2026-11-07 18:14 · setup (issues) · Claude Code (Opus 5.5) · direct to main · Labels, milestones (POC, MVP, Demo) and all 37 issues #1 to #37 from POC_MVP section 13 (A* and G* assigned to its-arnavtech, L* unassigned), dependencies linked by number, pinned tracker #38 · follow-ups: add Lavanya as a collaborator
@@ -115,6 +102,10 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 ---
 
 ## Decisions
+
+- 2026-11-07 19:00 · A21 taxonomy v1 is final unless T-Mobile shares one: `bank_impersonation`, `billing_scam`, `delivery_scam`, `account_security`, `toll_government`, `prize_refund`, `job_offer`, `conversation_lure`, `legit`. The classifier, Nemotron and the UI use only these ids (`legit`, not `legitimate`).
+- 2026-11-07 19:00 · A21 split protocol for A1: train + validation = `data/generated/messages.jsonl` rows with `prompt_set == "train_v1"` (2,208; split about 82/18 stratified by category, fixed seed, = 70/15 of the total). Test = `prompt_set == "test_v1"` (338) plus `data/generated/handwritten.jsonl` (50) = 388, 15%. Senders in the generated set are assigned by rule, so sender-type features mean little on it.
+- 2026-11-07 19:00 · A21 caches DeepSeek calls inside `scripts/generate_dataset.py` (under `data/generated/cache/`, committed) instead of `integrations/cache.py`: L1 isn't built, and DeepSeek is offline data generation only, not a runtime call. `--offline` rebuilds the dataset with no key.
 
 - 2026-11-07 18:49 · A4 verified hosted model `nvidia/nemotron-3.5-bolt-e4b` via authenticated GET /v1/models; `nvidia/nemotron-3.5-embed-1b` returns 2048 dimensions. Native tool calling initially failed 0/5; verified JSON action fallback 5/5, median model step 1104ms, worst 2708ms (four cases required one format retry). Set NEMOTRON_PROTOCOL=json_action; L8 should preserve one invalid-output retry and unsure on repeated failure.
 
@@ -136,4 +127,4 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 
 - Gemini key arrives Sunday morning; L4 and L10 wait for it.
 - Official short codes and sender IDs for the demo brands: fill `data/brands.json` from the brands' own pages (A10).
-- Taxonomy: use T-Mobile's if a mentor shares one, otherwise ours in `data/taxonomy.json` (A21).
+- Taxonomy: ours (v1) is in `data/taxonomy.json` (A21). If a mentor shares T-Mobile's, map it and regenerate.
