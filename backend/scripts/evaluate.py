@@ -128,7 +128,9 @@ def redact_split(split: Split) -> Split:
 
 def load_public_set(path: Path = PUBLIC_PARQUET) -> list[Message] | None:
     """The public real SMS set as `Message`s (spam -> is_scam True). External
-    evaluation only: never train, tune, prompt, seed campaigns or blocklists.
+    evaluation in the original v1 protocol only. For the user-authorized L7
+    follow-up, app.classifier.public_data loads saved development/holdout roles;
+    never use this full-set loader to evaluate a public-trained model.
     Returns None when A5's download isn't present."""
     if not path.exists():
         return None
@@ -159,8 +161,14 @@ def score_public(messages: list[Message], predictions: list[str]) -> dict[str, f
     ham = [p != LEGIT for m, p in zip(messages, predictions) if not m.is_scam]
     flagged = sum(1 for p in predictions if p != LEGIT)
     tp = sum(spam)
+    fp = sum(ham)
+    fn, tn = len(spam)-tp, len(ham)-fp
+    spam_f1 = 2*tp/(2*tp+fp+fn) if 2*tp+fp+fn else 0.0
+    ham_f1 = 2*tn/(2*tn+fp+fn) if 2*tn+fp+fn else 0.0
     return {
         "n": len(messages),
+        "binary_macro_f1": (spam_f1+ham_f1)/2,
+        "confusion": {"tp": tp, "fp": fp, "fn": fn, "tn": tn},
         "spam": len(spam),
         "ham": len(ham),
         "spam_recall": tp / len(spam) if spam else 0.0,

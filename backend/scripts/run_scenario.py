@@ -232,7 +232,7 @@ def trained_classifier(text_redacted: str, features: Features) -> ClassifierOutp
     try:
         return predict(text_redacted, features)
     except FileNotFoundError as exc:
-        raise NotImplementedError("L7 local artifact missing; run python -m scripts.train_classifier") from exc
+        raise NotImplementedError("L7 local artifact missing; run python -m scripts.train_public_classifier") from exc
 
 
 def baseline_classifier(text_redacted: str) -> ClassifierOutput:

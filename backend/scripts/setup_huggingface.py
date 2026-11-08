@@ -3,7 +3,8 @@
 From backend: python -m scripts.setup_huggingface
 Login yourself first with .venv\\Scripts\\hf.exe auth login; set HF_TOKEN in
 repo .env. Credentials are passed via environment, never command arguments.
-No public message text is printed, committed, or submitted to a model.
+No public message text is printed, committed, or submitted to an external model.
+L7 follow-up uses only saved public development IDs for local binary training.
 """
 from __future__ import annotations
 

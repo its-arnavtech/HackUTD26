@@ -3,6 +3,7 @@ import { fireEvent, render, screen, within } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import realMetricsJson from "../../../eval/metrics.json";
+import historicalMetricsJson from "../../../eval/classifier_v1/metrics.json";
 import { checkedInbox, mockCampaigns, mockMetrics } from "../fixtures";
 import { isLinked } from "../linking";
 import type { Metrics } from "../types";
@@ -99,7 +100,7 @@ describe("Campaign view", () => {
 });
 
 describe("Accuracy page", () => {
-  it("reads the real eval/metrics.json shape: every category, FPR and redaction cost", () => {
+  it("reads current metrics: every category, FPR and explicitly absent redaction cost", () => {
     const metrics = realMetrics();
     render(<AccuracyView metrics={metrics} />);
     const table = screen.getByRole("table");
@@ -108,9 +109,9 @@ describe("Accuracy page", () => {
     }
     expect(within(table).getAllByRole("row")).toHaveLength(2 + metrics.categories.length);
     expect(screen.getByText("16.0%")).toBeInTheDocument();
-    expect(screen.getByText("11.3%")).toBeInTheDocument();
-    expect(screen.getByText("0.90")).toBeInTheDocument();
-    expect(screen.getByText("0.88")).toBeInTheDocument();
+    expect(screen.getByText("8.0%")).toBeInTheDocument();
+    expect(screen.getByText(/Not measured for this model/)).toBeInTheDocument();
+    expect(metrics.redaction_cost).toBeNull();
     expect(screen.getByText("Macro F1 · baseline 0.79 · SentinelAI 0.88")).toBeInTheDocument();
     expect(screen.getByText("Measured on the held-out test split.")).toBeInTheDocument();
     expect(screen.getByText("388 messages · Test split only")).toBeInTheDocument();
@@ -129,13 +130,24 @@ describe("Accuracy page", () => {
     expect(screen.getByText("SentinelAI’s classifier is still the baseline stand-in.")).toBeInTheDocument();
   });
 
-  it("switches to the public SMS set and says plainly where SentinelAI falls short", () => {
-    render(<AccuracyView metrics={realMetrics()} />);
+  it("labels the public half, its development use and prior evaluation exposure", () => {
+    const metrics = realMetrics();
+    render(<AccuracyView metrics={metrics} />);
     fireEvent.click(screen.getByRole("button", { name: "Public SMS" }));
-    expect(screen.getByText("ucirvine/sms_spam")).toBeInTheDocument();
-    expect(screen.getByText("5574 messages · Test split only")).toBeInTheDocument();
+    expect(screen.getByText(metrics.public_set!.dataset)).toBeInTheDocument();
+    expect(screen.getByText("2787 messages · Test split only")).toBeInTheDocument();
     const table = within(screen.getByRole("table"));
-    for (const value of ["17.7%", "9.0%", "3.4%", "2.9%"]) expect(table.getByText(value)).toBeInTheDocument();
+    for (const value of ["19.0%", "77.5%", "3.3%", "0.1%"]) expect(table.getByText(value)).toBeInTheDocument();
+    expect(table.getByText(/other half supplies training and validation/)).toBeInTheDocument();
+    expect(screen.getByText(/dataset was already evaluated in the earlier experiment/)).toBeInTheDocument();
+    expect(screen.queryByText(/Used for evaluation only, never for training/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/catches fewer spam texts/)).not.toBeInTheDocument();
+  });
+
+  it("retains the honest shortfall message for archived v1 metrics", () => {
+    render(<AccuracyView metrics={structuredClone(historicalMetricsJson as Metrics)} />);
+    fireEvent.click(screen.getByRole("button", { name: "Public SMS" }));
+    expect(screen.getByText("5574 messages · Test split only")).toBeInTheDocument();
     expect(screen.getByText(/catches fewer spam texts than the simple baseline \(9.0% vs 17.7%\)/)).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Held-out synthetic" }));
     expect(screen.queryByText(/catches fewer spam texts/)).not.toBeInTheDocument();

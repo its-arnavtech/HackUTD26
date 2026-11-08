@@ -1,0 +1,33 @@
+{
+  "algorithm": "l7-tfidf-a9-v1",
+  "model_sha256": "12429ef8293a95493001e993f4a6babbf9c92d7d9325d4fb2576f47b55a0617a",
+  "optional_encoders": "not attempted; local sparse model selected on validation",
+  "protocol": "one final A13 evaluation; train-only fits; validation-only selection; raw control frozen before scoring; no post-test tuning",
+  "public_binary_macro_f1": {
+    "baseline": 0.5878191614427839,
+    "ours": 0.5298968687038148
+  },
+  "public_no_worse_than_baseline": false,
+  "raw_control_note": "same selected TF-IDF representation/C; raw validation selects legit bias; production artifact remains redacted",
+  "raw_control_selection": {
+    "c": 2.0,
+    "char_weight": 1.0,
+    "false_positive_rate": 0.020134228187919462,
+    "feature_weight": 0.25,
+    "legit_bias": 0.75,
+    "macro_f1": 0.9737219540788966
+  },
+  "selection_frozen": {
+    "c": 2.0,
+    "char_weight": 1.0,
+    "false_positive_rate": 0.026845637583892617,
+    "feature_weight": 0.25,
+    "legit_bias": 0.75,
+    "macro_f1": 0.9650023127498597
+  },
+  "split_digest": "1c3969eeab5bb5fff6be0878cbbf77b2bd7b6d3a27b2bf89a4af3007f7f38baa",
+  "status": "complete",
+  "synthetic_false_positive_rate": 0.1133,
+  "synthetic_macro_f1": 0.8781,
+  "synthetic_strict_target_met": true
+}

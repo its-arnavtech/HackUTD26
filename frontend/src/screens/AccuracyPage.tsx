@@ -70,10 +70,15 @@ function Pair({
 
 /** The public SMS set has no categories: one row of spam recall and false positive rate. */
 function PublicSetTable({ metrics }: { metrics: NonNullable<Metrics["public_set"]> }) {
+  const followupHoldout = metrics.dataset.includes("saved 50% holdout");
   return (
     <div className="table-scroll">
       <table className="metric-table">
-        <caption>Real public SMS messages. Used for evaluation only, never for training.</caption>
+        <caption>
+          {followupHoldout
+            ? "Held-out public SMS half. The other half supplies training and validation."
+            : "Real public SMS messages. Used for evaluation only, never for training."}
+        </caption>
         <thead>
           <tr>
             <th rowSpan={2}>Messages</th>
@@ -93,7 +98,7 @@ function PublicSetTable({ metrics }: { metrics: NonNullable<Metrics["public_set"
         </thead>
         <tbody>
           <tr>
-            <th scope="row">All messages</th>
+            <th scope="row">{followupHoldout ? "Held-out messages" : "All messages"}</th>
             <td>{metrics.n}</td>
             <td>{pct(metrics.spam_recall.baseline)}</td>
             <td>{pct(metrics.false_positive_rate.baseline)}</td>
@@ -118,6 +123,7 @@ export function AccuracyView({
 }) {
   const [dataset, setDataset] = useState<Dataset>("synthetic");
   const publicSet = metrics?.public_set ?? undefined;
+  const followupHoldout = publicSet?.dataset.includes("saved 50% holdout") ?? false;
   const showing: Dataset = dataset === "public" && publicSet ? "public" : "synthetic";
   const fpr = showing === "public" ? publicSet?.false_positive_rate : metrics?.false_positive_rate;
   const agent = metrics?.agent_sample;
@@ -225,9 +231,11 @@ export function AccuracyView({
             beforeLabel="Before redaction"
             afterLabel="After redaction"
           >
-            The same classifier and test set,
-            <br />
-            with personal details removed.
+            {metrics && !metrics.redaction_cost ? (
+              "Not measured for this model. Earlier redaction-cost results are archived."
+            ) : (
+              <>The same classifier and test set,<br />with personal details removed.</>
+            )}
           </Pair>
         )}
         <article className="method-card">
@@ -267,6 +275,13 @@ export function AccuracyView({
           <strong>A fair comparison.</strong> Both models use the same held-out split. Test messages never train the
           model, seed campaigns, or shape prompts.
         </p>
+        {showing === "public" && followupHoldout && (
+          <p>
+            <strong>What this split means.</strong> This model trained and tuned on the other public half.
+            This half was held out from the follow-up. The dataset was already evaluated in the earlier
+            experiment, so these are not new external messages.
+          </p>
+        )}
         <p>
           <strong>An honest boundary.</strong> Classifier scores are separate from the full agent verdict.{" "}
           {agent
@@ -282,7 +297,7 @@ export function AccuracyView({
         )}
       </div>
       <footer className="accuracy-footer">
-        SentinelAI · HackUTD 2026 <span>Synthetic test data · No live customer data</span>
+        SentinelAI · HackUTD 2026 <span>{showing === "public" ? "Public SMS evaluation" : "Synthetic test data"} · No live customer data</span>
       </footer>
     </main>
   );

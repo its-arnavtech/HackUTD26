@@ -93,6 +93,10 @@ class ImprovedModel:
     report: dict
     baseline: object
 
+    @property
+    def classes_(self) -> np.ndarray:
+        return self.classifier.classes_
+
     def predict_proba_texts(self, texts: list[str], features: list[Features] | None = None) -> np.ndarray:
         if not texts:
             return np.empty((0, len(self.classifier.classes_)))

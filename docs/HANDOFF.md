@@ -64,8 +64,8 @@ A21 dataset (2,596 generated messages; split train 1,818 / val 390 / test 388, t
 | G2 all scenarios in the app | Not yet |
 
 ### Accuracy numbers (for the T-Mobile pitch)
-- Synthetic test (388, redacted): baseline macro F1 0.807 / FPR 0.127 → L7 **0.878 / 0.113**.
-- Public real SMS set: L7 binary F1 0.530 vs baseline 0.588 (worse), with fewer false positives. An **L7 follow-up issue** is open: split the public set 50/50, train on one half, score only the held-out half, report old and new side by side. Be honest about this in the pitch.
+- Synthetic test (388, redacted): A1 baseline F1/FPR 0.7915/0.1600; v1 0.8781/0.1133; v2 0.8751/0.0800 (PR #62). Original raw baseline target: 0.807/0.127.
+- Public follow-up #59 is complete in PR #62: seed 20261108, 2787 development (2229 fit + 558 validation) / 2787 holdout. Same-half binary F1 v1 0.5193 to v2 0.9257, recall 0.0751 to 0.7748, FPR 0.0282 to 0.0012. Original v1 full-set n5574 F1 0.5299/recall0.0897/FPR0.0292 remains archived. All rows had prior v1 evaluation exposure: this half is held out from the follow-up, not previously unseen external data. Final scoring complete; do not retune or rescore. See data/PUBLIC_SMS_DATASHEET.md. Reproduce the local v2 artifact with python -m scripts.train_public_classifier.
 
 ### Open PRs (merge with merge commits once CI is green)
 | PR | What | Notes |
@@ -87,7 +87,7 @@ A21 dataset (2,596 generated messages; split train 1,818 / val 390 / test 388, t
 | L6 #16 | Claude Code session B | Get #57 green and merged |
 | A15 #29, A16 #30 | Claude Code session A | Get #55 green and merged |
 | A17 #31 | Claude Code session A | Wire to L9 when it merges |
-| L7 follow-up | Codex connections | Public-set split fix |
+| L7 follow-up #59 | Codex connections | PR #62 ready for review; merge commit, no new held-out scoring |
 | L4 #12, L10 #26 Gemini | Codex connections | Needs `GEMINI_API_KEY` (free at aistudio.google.com); follow DATA_SPEC 4 exactly |
 | G1 #25 | Shared | Merge #61 if results are right |
 | A18 #32 end-to-end tests | Claude Code session B | Replay mode, real agent, all 3 scenarios |
