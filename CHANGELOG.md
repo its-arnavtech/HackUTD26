@@ -23,7 +23,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A3 | Redaction module | Arnav | Codex | POC | scaffold | done | #4 · #41 (arnav-shared) |
 | A4 | Nemotron connection and tool-calling smoke test | Arnav | Codex | POC | scaffold | done | #41 (arnav-shared) |
 | A5 | Hugging Face connection | Arnav | Codex | POC | scaffold | done | #41 (arnav-shared) |
-| A6 | Dev infrastructure: CI, dev scripts, worktrees | Arnav | Cursor | POC | scaffold | todo | #7 |
+| A6 | Dev infrastructure: CI, dev scripts, worktrees | Arnav | Cursor | POC | scaffold | in progress | #7 · `cursor/a6-dev-infra-55c7` |
 | A7 | Phone shell and inbox on the mock API | Arnav | Codex design (GPT 6 Astra) | POC | scaffold | todo | #8 |
 | L1 | Record and replay cache | Lavanya | Claude Code | POC | scaffold | done | #9 · PR #42 |
 | L2 | Core runtime: app factory, settings, logging, errors | Lavanya | Claude Code | POC | scaffold | done | #10 · PR #39 |
@@ -76,6 +76,16 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - Resumed by: <tool> from <tool>, if any
 ```
 
+### A6 Dev infrastructure: CI, dev scripts, worktrees (#7)
+- Agent: Cursor (Claude Opus 5.5, cloud agent) · Person: Arnav · Folder: Cursor cloud VM (`/workspace`) · Branch: `cursor/a6-dev-infra-55c7`
+- Started: 2026-11-07 18:39 · Last checkpoint: 2026-11-07 18:39
+- Done so far:
+  - Claimed
+- Next step (exact): write `.github/workflows/ci.yml`, then `scripts/dev.ps1`, then `docs/WORKTREES.md`
+- Files touched: `CHANGELOG.md`
+- How to run or test: `python -m pytest` in `backend/`, `npm run build` in `frontend/`
+- Notes and gotchas: branch name follows the cloud agent's `cursor/...-55c7` naming instead of `a6-dev-infra`
+- Resumed by: none
 
 ---
 
