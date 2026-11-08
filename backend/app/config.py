@@ -115,6 +115,14 @@ class Settings(BaseSettings):
     PUBLIC_BASE_URL: str = ""  # the tunnel URL, e.g. https://xyz.trycloudflare.com
     SMS_ALLOWED_NUMBERS: str = ""  # comma-separated E.164 numbers that may use it
 
+    # Trusted-contact voice call and email (L16). Off unless VOICE_ALERTS_ENABLED is true.
+    # Replay mode never dials or emails, even when the flag is on.
+    VOICE_ALERTS_ENABLED: bool = False
+    TRUSTED_CONTACT_PHONE: str = ""  # E.164 number that is called
+    ALERT_EMAIL_FROM: str = ""  # Gmail address the alert is sent from
+    ALERT_EMAIL_APP_PASSWORD: SecretStr | None = None  # Google app password, not the mailbox password
+    TRUSTED_CONTACT_EMAIL: str = ""  # inbox that receives the alert
+
     # WhatsApp Cloud API (L14). Off unless the four Meta values and PUBLIC_BASE_URL are set.
     WHATSAPP_ACCESS_TOKEN: SecretStr | None = None
     WHATSAPP_PHONE_NUMBER_ID: str = ""
@@ -148,7 +156,7 @@ class Settings(BaseSettings):
 
     @field_validator(
         "NVIDIA_API_KEY", "DEEPSEEK_API_KEY", "GEMINI_API_KEY", "NESSIE_API_KEY", "HF_TOKEN", "PHONE_HASH_SALT",
-        "JWT_PRIVATE_KEY", "DATA_ENCRYPTION_KEYS", "TWILIO_AUTH_TOKEN",
+        "JWT_PRIVATE_KEY", "DATA_ENCRYPTION_KEYS", "TWILIO_AUTH_TOKEN", "ALERT_EMAIL_APP_PASSWORD",
         "WHATSAPP_ACCESS_TOKEN", "WHATSAPP_APP_SECRET", "WHATSAPP_VERIFY_TOKEN", mode="before",
     )
     @classmethod
@@ -194,6 +202,26 @@ class Settings(BaseSettings):
     @property
     def any_route_live(self) -> bool:
         return any(not self.route_is_mocked(r) for r in ROUTES)
+
+
+def _missing_voice_settings(s: Settings) -> list[str]:
+    """Names of the voice-alert settings that are blank. Listed when the flag is on."""
+    missing: list[str] = []
+    if not s.TWILIO_ACCOUNT_SID.strip():
+        missing.append("TWILIO_ACCOUNT_SID")
+    if s.TWILIO_AUTH_TOKEN is None:
+        missing.append("TWILIO_AUTH_TOKEN")
+    if not s.TWILIO_FROM_NUMBER.strip():
+        missing.append("TWILIO_FROM_NUMBER")
+    if not s.TRUSTED_CONTACT_PHONE.strip():
+        missing.append("TRUSTED_CONTACT_PHONE")
+    if not s.ALERT_EMAIL_FROM.strip():
+        missing.append("ALERT_EMAIL_FROM")
+    if s.ALERT_EMAIL_APP_PASSWORD is None:
+        missing.append("ALERT_EMAIL_APP_PASSWORD")
+    if not s.TRUSTED_CONTACT_EMAIL.strip():
+        missing.append("TRUSTED_CONTACT_EMAIL")
+    return missing
 
 
 def _split(value: str) -> list[str]:
@@ -308,6 +336,14 @@ def check_settings(s: Settings) -> list[SettingsIssue]:
         issues.append(SettingsIssue("warning", "WHATSAPP_ACCESS_TOKEN", "WhatsApp is off: set WHATSAPP_ACCESS_TOKEN, WHATSAPP_PHONE_NUMBER_ID, WHATSAPP_APP_SECRET, WHATSAPP_VERIFY_TOKEN and PUBLIC_BASE_URL."))
     if s.whatsapp_enabled and s.PHONE_HASH_SALT is None:
         issues.append(SettingsIssue("error", "PHONE_HASH_SALT", "not set; WhatsApp needs it to hash phone numbers."))
+    if s.VOICE_ALERTS_ENABLED:
+        # Replay never dials, so a missing key is listed but does not stop startup.
+        level: Literal["error", "warning"] = "warning" if s.DEMO_MODE == DemoMode.replay else "error"
+        for name in _missing_voice_settings(s):
+            issues.append(SettingsIssue(
+                level, name,
+                "not set; voice alerts need it while VOICE_ALERTS_ENABLED=true. Add it to .env (see .env.example).",
+            ))
     if s.API_PORT == s.WEB_PORT:
         issues.append(SettingsIssue("error", "API_PORT", f"same as WEB_PORT ({s.WEB_PORT}); give each its own port."))
     return issues
@@ -319,7 +355,17 @@ def validate_settings(s: Settings) -> list[SettingsIssue]:
     errors = [i for i in issues if i.level == "error"]
     if errors:
         # Mocks or replay avoid outside calls; they don't help a missing redaction salt.
-        hint = "" if all(i.variable == "PHONE_HASH_SALT" for i in errors) else "; set USE_MOCKS=true or DEMO_MODE=replay to run without keys"
+        # Voice-alert keys are the exception: replay (or the flag off) is what skips them.
+        voice_vars = {
+            "TWILIO_ACCOUNT_SID", "TWILIO_AUTH_TOKEN", "TWILIO_FROM_NUMBER", "TRUSTED_CONTACT_PHONE",
+            "ALERT_EMAIL_FROM", "ALERT_EMAIL_APP_PASSWORD", "TRUSTED_CONTACT_EMAIL",
+        }
+        if all(i.variable == "PHONE_HASH_SALT" for i in errors):
+            hint = ""
+        elif all(i.variable in voice_vars for i in errors):
+            hint = "; set VOICE_ALERTS_ENABLED=false or DEMO_MODE=replay to run without the voice-alert keys"
+        else:
+            hint = "; set USE_MOCKS=true or DEMO_MODE=replay to run without keys"
         raise SettingsError(
             "SentinelAI can't start with these settings:\n"
             + "\n".join(f"  - {i}" for i in errors)
