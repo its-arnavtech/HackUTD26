@@ -30,14 +30,14 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | L3 | State store and background job runner | Lavanya | Claude Code | POC | L2 | done | #11 · PR #47 |
 | L4 | Gemini grounded search smoke test (Sunday morning, when the Gemini key is set) | Lavanya | Claude Code | POC | scaffold | todo | #12 |
 | A22 | Initial Devpost draft by 11:00 PM Saturday | Arnav | any | POC | none | todo | #13 |
-| A8 | POC gate report | Arnav | Claude Code | POC | A1, A2, A3, A4, L4 | todo | #14 |
+| A8 | POC gate report | Arnav | Claude Code | POC | A1, A2, A3, A4, L4 | in progress | #14 · `arnav-shared` |
 | L5 | Tool registry and runtime | Lavanya | Claude Code | MVP | L2 | todo | #15 |
 | L6 | Privacy audit log and `/api/privacy` | Lavanya | Claude Code | MVP | L3, L5 | todo | #16 |
 | A9 | Feature extraction | Arnav | Codex | MVP | A3 | in progress | codex-shared / #17 |
 | A10 | `check_link` and `check_sender` tools | Arnav | Cursor | MVP | L1 | todo | #18 |
 | A11 | Nessie tools | Arnav | Cursor | MVP | A2 | todo | #19 |
 | A12 | Campaign store, seeding and `match_campaign` | Arnav | Codex | MVP | A1, A3 | todo | #20 |
-| A13 | Evaluation harness | Arnav | Claude Code | MVP | A1 | done | #21 · #41 (arnav-shared) |
+| A13 | Evaluation harness | Arnav | Claude Code | MVP | A1 | done | #21 · #49 (arnav-shared) |
 | L7 | Improved classifier | Lavanya | Claude Code | MVP | A1, A9, A13 | todo | #22 |
 | L8 | Agent loop with plan, re-plan and guardrails | Lavanya | Claude Code | MVP | A4, L5 | todo | #23 |
 | L9 | API endpoints and pipeline orchestration | Lavanya | Claude Code | MVP | L3, L8 | todo | #24 |
@@ -87,6 +87,16 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - Resumed by: <tool> from <tool>, if any
 ```
 
+### A8 POC gate report (#14)
+- Agent: Claude Code (Opus 5.5) · Person: Arnav · Folder: `C:\HackUTD26-cc` · Branch: `arnav-shared`
+- Started: 2026-11-07 20:21 · Last checkpoint: 2026-11-07 20:21
+- Done so far:
+  - Claimed. A13 finished in PR #49 (PR #41 merged before A13 landed).
+- Next step (exact): rerun each gate's check (P1 `run_baseline`, P2 A4 smoke in replay or its recorded result, P4 A2 status, P5 redaction tests), write `docs/POC_RESULTS.md`; P3 (L4) is pending until the Gemini key arrives Sunday morning.
+- Files touched: `CHANGELOG.md`
+- How to run or test: see `docs/POC_RESULTS.md` once written
+- Notes and gotchas: A2 (Nessie, Cursor) was still `todo` at claim time; report P4 as pending if it hasn't landed.
+
 
 
 ---
@@ -95,7 +105,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID · tool · PR · summary · follow-ups`.
 
-- 2026-11-07 20:20 · A13 · Claude Code (Opus 5.5) · #41 · `scripts/evaluate.py`: any model via a `(train, val)` factory, scored against the baseline on A1's saved test split and the public SMS set, on redacted text, plus a redaction-cost row and an agent sample mode; writes `eval/metrics.json` + `metrics_details.json`; ours = baseline stand-in until L7; 251 tests pass · follow-ups: L7 exposes a factory and reruns; agent sample once L8/L9 land; A3 brand over-redaction (Decisions)
+- 2026-11-07 20:20 · A13 · Claude Code (Opus 5.5) · #49 · `scripts/evaluate.py`: any model via a `(train, val)` factory, scored against the baseline on A1's saved test split and the public SMS set, on redacted text, plus a redaction-cost row and an agent sample mode; writes `eval/metrics.json` + `metrics_details.json`; ours = baseline stand-in until L7; 251 tests pass · follow-ups: L7 exposes a factory and reruns; agent sample once L8/L9 land; A3 brand over-redaction (Decisions)
 - 2026-11-07 19:32 · A3 · Codex (GPT-6) · #41 · Local redactor, HMAC phone/sender handling, private URL ordering and report; P5 20/20, 50 redaction tests; full merged backend 219 passed in credential-free child process; real L1 adapters synced · follow-ups: A9, A13 redaction-cost evaluation; regex name/address limits documented
 
 - 2026-11-07 19:18 · A1 · Claude Code (Opus 5.5) · #41 · Loader into `Message`, saved 70/15/15 split (`data/generated/splits.json`: train 1,818 / val 390 / test 388, test = `test_v1` + hand-written), baseline keyword rules + TF-IDF + LR; `eval/baseline_metrics.json` test macro F1 0.807, FPR 0.127; `eval/baseline_details.json` adds val, per-subset scores and confusion; 121 tests pass · follow-ups: rescore on redacted text once A3 lands (A13 redaction cost)
