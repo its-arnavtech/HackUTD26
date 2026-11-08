@@ -7,7 +7,12 @@ model.
 
 The demo customer is Linda from `data/nessie_seed.json` (A2). Check mode only
 looks at activity up to the message's `received_at`; recovery mode looks from
-`since` onward, which is how scenario 2 finds the transfer that scenario 1 can't.
+`since` onward, which is how scenario 2 finds the planted $900 that scenario 1 can't.
+
+The planted $900 is a purchase at a merchant named "Unknown Payee" (live Nessie
+transfers can't name a receiving account; see the A2 seed). It is flagged as the
+first purchase at that merchant and far above the 30-day purchase median, and its
+exact time comes from the seed manifest, so `minutes_after_message` is set.
 """
 
 from __future__ import annotations
@@ -34,6 +39,10 @@ from app.integrations.nessie import NessieClient, NessieError, client_from_setti
 MEDIAN_WINDOW_DAYS = 30
 MEDIAN_FACTOR = 3.0
 MIN_HISTORY_FOR_MEDIAN = 2
+MIN_PURCHASE_HISTORY_FOR_MEDIAN = 5  # purchases are many and small; don't judge from the first few days
+# Purchases mix $5 coffees with $70 grocery runs, so the median is low and ordinary
+# groceries reach 4-5x it. "Far above" for a purchase means 10x (the planted $900 is ~45x).
+PURCHASE_MEDIAN_FACTOR = 10.0
 DEMO_CUSTOMER = "linda"
 
 ItemType = Literal["transfer", "purchase"]
@@ -95,10 +104,11 @@ def _scan(client: NessieClient, seed: dict[str, Any], tz: tzinfo) -> tuple[list[
     for account in accounts:
         account_id = account["_id"]
         for p in client.get_purchases(account_id):
-            when = _parse_day(p.get("purchase_date"), tz)
+            at = _parse_at(p.get("at"))  # exact time from the seed manifest (the planted purchase), else None
+            when = at or _parse_day(p.get("purchase_date"), tz)
             if when is None:
                 continue
-            item = Activity("", "purchase", float(p.get("amount", 0)), when, False, account_id, p.get("merchant_id"))
+            item = Activity("", "purchase", float(p.get("amount", 0)), when, at is not None, account_id, p.get("merchant_id"))
             rows.append((when, p["_id"], item, p))
         for t in client.get_transfers(account_id):
             at = _parse_at(t.get("at"))
@@ -167,6 +177,11 @@ def _flag(item: Activity, history: list[Activity], own_accounts: set[str], messa
     else:
         if item.counterparty_id and item.counterparty_id not in {h.counterparty_id for h in earlier if h.type == "purchase"}:
             reasons.append("first purchase at this merchant")
+        recent = [h.amount for h in earlier if h.type == "purchase" and h.when >= item.when - timedelta(days=MEDIAN_WINDOW_DAYS)]
+        if len(recent) >= MIN_PURCHASE_HISTORY_FOR_MEDIAN:
+            median = statistics.median(recent)
+            if median > 0 and item.amount >= PURCHASE_MEDIAN_FACTOR * median:
+                reasons.append(f"{_ratio_text(item.amount / median)} the 30-day median")
 
     if not reasons:
         return None

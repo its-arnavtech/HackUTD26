@@ -13,7 +13,7 @@ from app.contracts import (
     NessieRecentActivityArgs,
     NessieRecentActivityResult,
 )
-from app.integrations.nessie import NessieClient, NessieError, transfer_details_from_seed
+from app.integrations.nessie import NessieClient, NessieError, purchase_times_from_seed, transfer_details_from_seed
 from app.tools import nessie_tools
 from app.tools.nessie_tools import (
     NESSIE_BILL_STATUS_SPEC,
@@ -43,7 +43,13 @@ def bank():
     fake = FakeNessie()
     bootstrap = NessieClient(API_KEY, "https://api.nessieisreal.com", http=fake.client())
     manifest = seed_nessie.seed(bootstrap).manifest
-    client = NessieClient(API_KEY, "https://api.nessieisreal.com", http=fake.client(), transfer_details=transfer_details_from_seed(manifest))
+    client = NessieClient(
+        API_KEY,
+        "https://api.nessieisreal.com",
+        http=fake.client(),
+        transfer_details=transfer_details_from_seed(manifest),
+        purchase_times=purchase_times_from_seed(manifest),
+    )
     return fake, client, manifest
 
 
@@ -68,16 +74,24 @@ def test_scenario_1_check_mode_finds_nothing_unusual(bank):
     assert result.flagged == []
 
 
-def test_scenario_2_recovery_finds_the_planted_transfer(bank):
+def test_scenario_2_recovery_finds_the_planted_900(bank):
+    """Live Nessie transfers can't name a payee, so the planted $900 is a purchase at "Unknown Payee"."""
     result = activity(bank, NessieRecentActivityArgs(since=datetime.fromisoformat(RECEIVED_AT)), recovery_input())
     assert result.items_checked == 1
     [item] = result.flagged
-    assert item.type == "transfer"
+    assert item.type == "purchase"
     assert item.amount == 900
-    assert item.new_payee is True
     assert item.minutes_after_message == 17
-    assert item.reason == "new payee, 6x the 30-day median"
+    first, ratio = item.reason.split(", ")
+    assert first == "first purchase at this merchant"
+    assert ratio.endswith("x the 30-day median") and float(ratio.split("x")[0]) > 20
     assert item.ref.startswith("txn_")
+
+
+def test_routine_purchases_are_never_above_the_median_rule(bank):
+    """Only the planted purchase trips the purchase-median rule, over all 30 days."""
+    result = activity(bank, NessieRecentActivityArgs(days=30), check_input())
+    assert not any("median" in f.reason for f in result.flagged)
 
 
 def test_check_mode_never_sees_activity_after_the_message(bank):
@@ -89,7 +103,7 @@ def test_ref_resolves_to_customer_facing_details_only_in_the_app(bank):
     _, client, manifest = bank
     [item] = activity(bank, NessieRecentActivityArgs(since=datetime.fromisoformat(RECEIVED_AT)), recovery_input()).flagged
     detail = resolve_ref(item.ref, client=client, seed=manifest)
-    assert (detail.payee, detail.amount, detail.type) == ("Unknown Payee", 900, "transfer")
+    assert (detail.payee, detail.amount, detail.type) == ("Unknown Payee", 900, "purchase")
     assert detail.at == datetime.fromisoformat("2026-11-08T09:31:00-06:00")
 
     nessie_tools._REF_DETAILS.clear()
@@ -111,7 +125,8 @@ def test_first_purchase_at_a_new_merchant_is_flagged(bank):
     )
     result = activity(bank, NessieRecentActivityArgs(days=7), check_input())
     [item] = result.flagged
-    assert (item.type, item.amount, item.reason, item.new_payee) == ("purchase", 499.0, "first purchase at this merchant", False)
+    assert (item.type, item.amount, item.new_payee) == ("purchase", 499.0, False)
+    assert item.reason.startswith("first purchase at this merchant, ") and item.reason.endswith("x the 30-day median")
     assert item.minutes_after_message is None
     assert resolve_ref(item.ref, client=client, seed=manifest).payee == "Sentinel Demo Electronics"
 
