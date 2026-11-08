@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { Eye, EyeOff, Fingerprint, LockKeyhole } from "lucide-react";
 import { getPrivacy } from "../api";
 import { useData } from "../hooks";
-import { PageTitle, PrivacyChip } from "../components";
+import { LoadFailure, PageTitle, PrivacyChip } from "../components";
 import { claimedBrand, receivedLines, recipientLabel, redactedText, redactionCounts } from "../present";
 import type { PrivacyView as PrivacyData } from "../types";
 
@@ -85,15 +85,21 @@ export function PrivacyView({ view }: { view?: PrivacyData }) {
 
 export default function PrivacyPanel() {
   const { messageId = "msg_0001" } = useParams();
-  const { data, error } = useData(() => getPrivacy(messageId), [messageId]);
-  if (error) {
+  const { data, failure, retry } = useData(() => getPrivacy(messageId), [messageId]);
+  if (failure) {
     return (
       <div className="screen-pad privacy-screen">
-        <PageTitle eyebrow="Private before intelligent" description="We couldn’t load this check. Nothing extra was sent.">
+        <PageTitle eyebrow="Private before intelligent">
           What we checked.
           <br />
           What we never saw.
         </PageTitle>
+        <LoadFailure
+          failure={failure}
+          title="We couldn’t load this privacy record."
+          description="Nothing extra was sent. Personal details are still hidden before any check."
+          onRetry={retry}
+        />
       </div>
     );
   }

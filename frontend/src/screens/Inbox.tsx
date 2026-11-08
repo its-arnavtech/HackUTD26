@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { ArrowUpRight, LoaderCircle, MessageSquareText, ScanLine } from "lucide-react";
 import { useInbox } from "../hooks";
-import { ActionButton, EmptyState, PageTitle, VerdictBadge, excerpt } from "../components";
+import { ActionButton, EmptyState, LoadFailure, Notice, PageTitle, VerdictBadge, excerpt } from "../components";
+import type { Failure } from "../api";
 import type { InboxItem, ResultPoll } from "../types";
 
 const time = (value: string) =>
@@ -31,18 +32,24 @@ export function InboxView({
   items,
   progress = {},
   state = "ready",
+  failure,
+  notice = "",
   posting = false,
   onOpen,
   onCheckNew,
   onRetry,
+  onDismissNotice,
 }: {
   items: InboxItem[];
   progress?: Record<string, ResultPoll>;
   state?: "ready" | "loading" | "empty" | "error";
+  failure?: Failure;
+  notice?: string;
   posting?: boolean;
   onOpen?: (messageId: string) => void;
   onCheckNew?: () => void;
   onRetry?: () => void;
+  onDismissNotice?: () => void;
 }) {
   const checkingItem = items.find(isChecking);
   const empty = state === "empty" || (state === "ready" && items.length === 0);
@@ -52,12 +59,14 @@ export function InboxView({
         One message.
         <br />A clearer mind.
       </PageTitle>
+      {notice && <Notice onClose={onDismissNotice}>{notice}</Notice>}
       {state === "error" ? (
-        <EmptyState
-          error
+        <LoadFailure
+          failure={failure === "not_found" ? undefined : failure}
           title="We couldn’t load your messages."
           description="Nothing was checked yet. Don’t use any links while you wait."
           onRetry={onRetry}
+          retryLabel="Load messages again"
         />
       ) : empty ? (
         <EmptyState onRetry={onCheckNew} />
@@ -121,12 +130,15 @@ export function InboxView({
 
 export default function Inbox() {
   const navigate = useNavigate();
-  const { items, progress, error, posting, retry, checkNew } = useInbox();
+  const { items, progress, error, failure, notice, dismissNotice, posting, retry, checkNew } = useInbox();
   return (
     <InboxView
       items={items ?? []}
       progress={progress}
       state={error ? "error" : items ? "ready" : "loading"}
+      failure={failure}
+      notice={notice}
+      onDismissNotice={dismissNotice}
       posting={posting}
       onOpen={(id) => navigate(`/result/${encodeURIComponent(id)}`)}
       onCheckNew={() => void checkNew()}

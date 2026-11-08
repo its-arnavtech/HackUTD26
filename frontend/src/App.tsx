@@ -1,7 +1,9 @@
 import { useEffect } from "react";
 import { Link, Navigate, NavLink, Route, Routes, useLocation } from "react-router-dom";
 import { ArrowUpRight, BookOpen, ChevronRight, Layers3, Sparkles } from "lucide-react";
+import type { Health } from "./api";
 import { Brand, PhoneFrame } from "./components";
+import { useHealth } from "./hooks";
 import AccuracyPage from "./screens/AccuracyPage";
 import CampaignView from "./screens/CampaignView";
 import Consent from "./screens/Consent";
@@ -22,8 +24,19 @@ const nav = [
   ["/campaigns", "The wider pattern"],
 ];
 
+/** One line for the stage: whether the API is serving mocks, real code, or a mix (`/api/health`). */
+export function apiModeLine(health?: Health): string | undefined {
+  if (!health) return undefined;
+  const routes = Object.values(health.mocked_routes);
+  const mocked = routes.filter(Boolean).length;
+  if (mocked === 0) return "Live API.";
+  if (mocked === routes.length) return "Mock API responses.";
+  return `Live API · ${mocked} of ${routes.length} routes on mocks.`;
+}
+
 function PhoneExperience() {
   const { pathname } = useLocation();
+  const apiMode = apiModeLine(useHealth());
   return (
     <main className="stage-shell">
       <aside className="stage-left">
@@ -95,6 +108,12 @@ function PhoneExperience() {
             Authored demo scenarios.
             <br />
             Synthetic data. No live account.
+            {apiMode && (
+              <>
+                <br />
+                {apiMode}
+              </>
+            )}
           </p>
         </div>
       </aside>
