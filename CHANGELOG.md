@@ -19,7 +19,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | A21 | Synthetic message dataset generator | Arnav | Claude Code | POC | scaffold | done | #1 · #41 (arnav-shared) |
 | A1 | Dataset loader, stratified split and baseline metrics | Arnav | Claude Code | POC | A21 | done | #2 · #41 (arnav-shared) |
-| A2 | Nessie client and idempotent seed script | Arnav | Cursor | POC | scaffold | todo | #3 |
+| A2 | Nessie client and idempotent seed script | Arnav | Cursor | POC | scaffold | in progress | #3 · `cursor/a2-nessie-client-55c7` |
 | A3 | Redaction module | Arnav | Codex | POC | scaffold | done | #4 · #41 (arnav-shared) |
 | A4 | Nemotron connection and tool-calling smoke test | Arnav | Codex | POC | scaffold | done | #41 (arnav-shared) |
 | A5 | Hugging Face connection | Arnav | Codex | POC | scaffold | done | #41 (arnav-shared) |
@@ -76,6 +76,17 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - Resumed by: <tool> from <tool>, if any
 ```
 
+### A2 Nessie client and idempotent seed script (#3)
+- Agent: Cursor (Claude Opus 5.5, cloud agent) · Person: Arnav · Folder: Cursor cloud VM (`/workspace`) · Branch: `cursor/a2-nessie-client-55c7`
+- Started: 2026-11-07 19:02 · Last checkpoint: 2026-11-07 19:02
+- Done so far:
+  - Claimed (CHANGELOG only: the cloud agent can't comment on issues)
+  - Checked real field names with read-only calls (no `NESSIE_API_KEY` here; GETs answer with any key). The `http://` base URL returns 502 and `https://` works. Account listings of transfers return `id`, amount, date, status and description only, with no `payer_id` or `payee_id`.
+- Next step (exact): write `integrations/nessie.py` (normalizes `id` to `_id`, fills payer and payee from the seed manifest), then `scripts/seed_nessie.py` (idempotent by natural keys), then tests against an in-memory fake Nessie
+- Files touched: `CHANGELOG.md`
+- How to run or test: `python -m pytest` in `backend/`; the seed needs `NESSIE_API_KEY` in `.env`: `python -m scripts.seed_nessie`
+- Notes and gotchas: never write to Nessie with a made-up key. Arnav runs the first real seed.
+- Resumed by: none
 
 ---
 
