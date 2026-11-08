@@ -33,7 +33,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A8 | POC gate report | Arnav | Claude Code | POC | A1, A2, A3, A4, L4 | done | #14 · #49 (arnav-shared) |
 | L5 | Tool registry and runtime | Lavanya | Claude Code | MVP | L2 | todo | #15 |
 | L6 | Privacy audit log and `/api/privacy` | Lavanya | Claude Code | MVP | L3, L5 | todo | #16 |
-| A9 | Feature extraction | Arnav | Codex | MVP | A3 | in progress | codex-shared / #17 |
+| A9 | Feature extraction | Arnav | Codex | MVP | A3 | done | #17 · #49 (arnav-shared) |
 | A10 | `check_link` and `check_sender` tools | Arnav | Cursor | MVP | L1 | todo | #18 |
 | A11 | Nessie tools | Arnav | Cursor | MVP | A2 | todo | #19 |
 | A12 | Campaign store, seeding and `match_campaign` | Arnav | Codex | MVP | A1, A3 | todo | #20 |
@@ -61,15 +61,6 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 <!-- One block per active issue. Copy the template, keep it current at every checkpoint. -->
 
-### A9 Feature extraction (#17)
-- Agent: Codex (GPT-6) · Person: Arnav · Folder: C:\HackUTD26-codex · Branch: codex-shared (origin/arnav-shared)
-- Started: 2026-11-07 20:18 · Last checkpoint: 2026-11-07 20:24
-- Done so far: Implemented typed URL metadata, claimed-brand detection and canonical message features. Focused suite passed 56 tests including the 10 required hand-written messages; two additional malformed-email URL checks added for the full run. Offline suffix parsing verified with network calls blocked. No contracts or other agents' modules changed.
-- Next step (exact): Run full backend pytest in a credential-free child process; review diff; open/update shared PR with Closes #17; finish issue checkboxes and CHANGELOG.
-- Files touched: backend/app/features/extract.py, backend/tests/test_extract.py, CHANGELOG.md
-- How to run or test: From backend, .\.venv\Scripts\python.exe -m pytest tests/test_extract.py -q; .\.venv\Scripts\python.exe -m pytest -q (clear inherited service credentials only in child process for full suite).
-- Notes and gotchas: Touch only backend/app/features/ and its tests; no shared contracts changes. Never resolve links or fetch suffix lists. Do not read held-out/public test messages to derive rules. Preserve URL_n ordering and return domains only; feature text comes only from redacted text. A9 follows current DATA_SPEC; L7 waits for it.
-
 
 
 
@@ -96,6 +87,8 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID · tool · PR · summary · follow-ups`.
 
+- 2026-11-07 20:27 · A9 · Codex (GPT-6) · #49 · Local typed URL/message features and first claimed brand; 10/10 hand-written messages, 58 feature checks, full backend 312 passed · follow-ups: L7 consumes features; A12 next after handoff
+
 - 2026-11-07 20:25 · A8 · Claude Code (Opus 5.5) · #49 · `docs/POC_RESULTS.md`: reran the gates. P1 pass (0.807 / 0.127, no pivot), P2 pass (5/5 native, median 2,635 ms), P5 pass (20/20); P3 pending (Gemini key Sunday morning, L4), P4 pending (A2 in review in PR #44, live seed not run); 254 tests pass · follow-ups: update the P3 and P4 rows when they run
 - 2026-11-07 20:20 · A13 · Claude Code (Opus 5.5) · #49 · `scripts/evaluate.py`: any model via a `(train, val)` factory, scored against the baseline on A1's saved test split and the public SMS set, on redacted text, plus a redaction-cost row and an agent sample mode; writes `eval/metrics.json` + `metrics_details.json`; ours = baseline stand-in until L7; 251 tests pass · follow-ups: L7 exposes a factory and reruns; agent sample once L8/L9 land; A3 brand over-redaction (Decisions)
 - 2026-11-07 19:32 · A3 · Codex (GPT-6) · #41 · Local redactor, HMAC phone/sender handling, private URL ordering and report; P5 20/20, 50 redaction tests; full merged backend 219 passed in credential-free child process; real L1 adapters synced · follow-ups: A9, A13 redaction-cost evaluation; regex name/address limits documented
@@ -119,6 +112,9 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 ---
 
 ## Decisions
+
+- 2026-11-07 20:27 · A9 URL features: parse A3's private raw_urls locally and require exact URL_n occurrence mapping. Output only UrlInfo; never paths/query/userinfo. PSL uses bundled snapshot with HTTP/disk cache disabled, private suffix boundaries and reserved synthetic suffixes. Official-domain flag is relative to the first body-claimed brand, or any registry brand if none; exact hostname/subdomain boundary only. No redirects, DNS, registration or reputation checks. Shortener/brand terms are local lexical heuristics. Brand metadata is process-cached from data/brands.json; restart to refresh.
+- 2026-11-07 20:27 · A9 message vocabulary: threats account_lock/service_suspension/account_deletion/payment_penalty/legal_action; actions open_official_app/reply_with_code/download_app/reply/click_link_and_pay/make_payment/click_link_and_verify/verify_account/share_credentials/click_link/call_number; asks_for login/password/one_time_code/card_details/account_details/personal_information/payment. Values are deterministic hints, not verdicts; nearby negations are suppressed. Account verification at a link may infer login. Deadline output is bounded/canonical; money_amount_claimed is the first explicit currency magnitude, with no conversion. No held-out messages used to develop rules. Full test run clears service credentials only in its child process, leaving .env/global settings unchanged.
 
 - 2026-11-07 20:25 · **POC gates (A8, `docs/POC_RESULTS.md`):** P1 pass (baseline test macro F1 0.807, FPR 0.127; no pivot), P2 pass (5/5 native tool calls, median step 2,635 ms, worst 4,161 ms; keep `NEMOTRON_PROTOCOL=native`), P5 pass (20/20 gate strings). P3 pending until the Gemini key arrives Sunday morning (L4); P4 pending until A2's live seed runs with the Nessie key (PR #44). No pivot taken. Whoever runs P3 or P4 updates its row in `docs/POC_RESULTS.md`.
 
