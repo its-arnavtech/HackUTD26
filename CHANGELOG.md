@@ -43,7 +43,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | L9 | API endpoints and pipeline orchestration | Lavanya | Claude Code | MVP | L3, L8 | todo | #24 |
 | G1 | Gate: scenario 1 end to end in the CLI | Both | any | MVP | A3, A9, A10, A11, L8 | done | #25 · PR #46 (prep), PR #61 |
 | L10 | `public_scam_reports` tool | Arnav | Claude Code | MVP | L4, L5 | todo | #26 |
-| L11 | Recovery mode re-plan | Arnav | Codex | MVP | L8, A11 | in progress | #27 · codex/wrap-up |
+| L11 | Recovery mode re-plan | Arnav | Codex | MVP | L8, A11 | in progress | #27 · codex/wrap-up (implementation complete, PR pending) |
 | A14 | Result card, "How we checked" and privacy panel | Arnav | Cursor (covering for Codex design) | MVP | A7 | done | #28 · PR #53 |
 | A15 | Recovery UI | Arnav | Claude Code (covering for Codex design) | MVP | A14 | done | #29 · PR #55 (#54 closed as superseded) |
 | A16 | Consent screen, campaign view and accuracy page | Arnav | Claude Code (covering for Codex design) | MVP | A7 | done | #30 · PR #55 |
@@ -65,8 +65,8 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - Agent: Codex (GPT-6) · Person: Arnav · Folder: C:/HackUTD26/.worktrees/wrap-up · Branch: codex/wrap-up
 - Started: 2026-11-07 23:42 · Last checkpoint: 2026-11-07 23:42
 - Done so far: Read specs, handoff and live G1 results; merged #61, #55 and #60 with merge commits; resolved #57's changelog-only conflict without dropping decisions. No existing L11 branch or claim. User authorized wrapping up remaining work.
-- Next step (exact): Derive recovery refs only from successful Nessie tool results; ensure since=message receipt, recovery actions, and local detail resolution. Add real-loop tests. Integrate L9 when its owner finishes it.
-- Files touched: CHANGELOG.md; planned agent recovery module/loop/tests and confirmation route/state.
+- Next step (exact): Implementation complete: mandatory read-only activity check since message receipt, verified Nessie refs, recovery actions, app-only detail hydration, current-run confirmation storage, and conflicting ignore action removed. Full backend: 601 passed / 30 expected replay skips before final API test; 10 recovery tests now pass. Next: PR/CI, then A18/A19 replay and browser testing around Lavanya L9 and active A17.
+- Files touched: CHANGELOG.md, backend/app/agent/{recovery,loop,guardrails}.py, backend/app/{state,main}.py, backend/tests/{test_recovery,test_runtime,test_state}.py.
 - How to run or test: C:/HackUTD26/backend/.venv/Scripts/python.exe -m pytest -q from this worktree's backend.
 - Notes and gotchas: L9 remains actively owned by Lavanya. Never forward payee names or banking detail to Nemotron; no protective action without a tap. Gemini key still missing. Do not close G2/A19/G3 without actual evidence.
 - Resumed by: Codex from unclaimed L11; user-authorized wrap-up.
@@ -172,6 +172,8 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 ---
 
 ## Decisions
+
+- 2026-11-07 23:55 · L11 recovery: after the customer taps /clicked, code requires a read-only Nessie check since received_at before further model-directed checks. Only refs from successful, schema-valid Nessie flags can become Was this you items, including when Nemotron later fails. Full payee details resolve locally in JobRunner after the loop; confirmation records only a customer tap for a completed current recovery run. Suggestions never call banking writes. L9 and A17 stay with their active owners per Arnav.
 
 - 2026-11-07 23:30 · Finish plan. Lavanya: L9 (critical path), then L12. Arnav's Claude Code (C:\HackUTD26-main): G1, then PR #57 (L6), then L11 if Lavanya hasn't started it, then A18 and A19. Arnav's Claude Code (C:\HackUTD26): PR #55 (A15, A16), the privacy-chip fix, then A17. Codex connections: the L7 public-split follow-up, then L4 and L10 once the Gemini key is in `.env`. Codex design: polish and Devpost screenshots. Correction: L7 was done by Codex for Arnav (merged in #58), not by Lavanya.
 - 2026-11-07 23:20 · L7 integration with newer main: kept all changelog entries/statuses while merging L8/G1 and the completed Cursor work. G1 now treats an absent ignored L7 artifact as explicitly unavailable and uses its existing labeled baseline fallback (with train command), rather than crashing on FileNotFoundError. No model/selection changes or held-out rescore. 26 L7 tests; integrated suite 586 passed/15 recorded-world skips, with MODEL_PATH set to an absent file to simulate fresh CI.

@@ -87,6 +87,13 @@ CREATE TABLE redaction (
     redacted    TEXT    NOT NULL,
     PRIMARY KEY (message_id, run)
 );
+CREATE TABLE confirmations (
+    message_id TEXT NOT NULL REFERENCES messages(message_id) ON DELETE CASCADE,
+    run        INTEGER NOT NULL,
+    ref        TEXT NOT NULL,
+    was_me     INTEGER NOT NULL,
+    PRIMARY KEY (message_id, run, ref)
+);
 """
 
 # Shown when a run crashes. Honest wording (POC_MVP 4.4): say what happened, don't reassure.
@@ -309,6 +316,23 @@ class StateStore:
             was_this_you_items=[c.WasThisYouItem.model_validate(i) for i in json.loads(row["was_this_you"])],
         )
 
+    # -- customer confirmations (L11) -----------------------------------------
+    def confirm_transaction(self, ref: str, was_me: bool) -> c.ConfirmResponse:
+        """Record a tap only for an item shown in a completed, current recovery run."""
+        with self._tx():
+            rows = self._db.execute(
+                "SELECT message_id, run, was_this_you FROM messages WHERE mode = ? AND status = ? ORDER BY seq DESC",
+                (c.AgentMode.recovery.value, c.JobStatus.done.value),
+            ).fetchall()
+            for row in rows:
+                if any(item["ref"] == ref for item in json.loads(row["was_this_you"])):
+                    self._db.execute(
+                        "INSERT OR REPLACE INTO confirmations (message_id, run, ref, was_me) VALUES (?, ?, ?, ?)",
+                        (row["message_id"], row["run"], ref, int(was_me)),
+                    )
+                    return c.ConfirmResponse(ref=ref, was_me=was_me, recorded=True)
+        raise NotFoundError("This activity is not part of a completed recovery check")
+
     # -- privacy log (L6) ------------------------------------------------------
     #
     # Unlike the trail, privacy records are kept for every run, including a run
@@ -454,6 +478,13 @@ class JobRunner:
                 result = job(message_id, message, TrailWriter(self.store, message_id, run))
             if not isinstance(result, c.AgentResult):
                 raise TypeError(f"job returned {type(result).__name__}, expected AgentResult")
+            if message.mode == c.AgentMode.recovery and result.was_this_you:
+                # Resolve locally after the agent ends. Names and exact banking
+                # details never enter a Nemotron message or its privacy record.
+                from app.tools.nessie_tools import resolve_ref
+
+                items = [resolve_ref(ref) for ref in result.was_this_you]
+                self.store.set_was_this_you(message_id, run, items)
             self.store.finish(message_id, run, result)
             log.info("job done", extra={"fields": {"run": run, "verdict": result.verdict.value}})
         except NotFoundError:

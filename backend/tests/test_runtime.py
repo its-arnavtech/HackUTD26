@@ -74,11 +74,11 @@ def test_health_in_live_mode_never_shows_keys(make_client):
 def test_route_without_mock_returns_json_501(make_client):
     client = make_client(USE_MOCKS=False, DEMO_MODE="replay", MOCK_ROUTES="campaigns")
     assert client.get("/api/campaigns").status_code == 200
-    r = client.post("/api/transactions/txn_1/confirm", json={"was_me": False})
+    r = client.post("/api/actions", json={"message_id": "msg_1", "action": "block_sender"})
     assert r.status_code == 501
     body = r.json()
     _assert_error_shape(body, "not_implemented")
-    assert body["error"]["details"] == {"issue": "L11"}
+    assert body["error"]["details"] == {"issue": "L9"}
 
 
 def test_live_route_override_with_mocks_on(make_client):
