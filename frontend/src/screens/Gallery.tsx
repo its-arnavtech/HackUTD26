@@ -261,7 +261,7 @@ export default function Gallery() {
       )}
       <footer className="gallery-footer">
         Violet marks an action. Amber marks a scam warning. Cyan marks a finished check.
-        <span>Instrument Serif · Outfit · IBM Plex Mono</span>
+        <span>Newsreader · Schibsted Grotesk</span>
       </footer>
     </div>
   );
