@@ -7,10 +7,10 @@ Issue A8 (#14). Gates and pivots are defined in [POC_MVP.md](POC_MVP.md) section
 | P1 | Usable dataset and a baseline score? | **Pass** | Dataset QC passes; baseline test macro F1 **0.807**, FPR **0.127** | None (macro F1 < 0.97) |
 | P2 | Does Nemotron call our tools reliably? | **Pass** | **5/5** native tool calls with schema-valid answers; median step 2,635 ms, worst 4,161 ms | None (native protocol) |
 | P3 | Does Gemini grounded search return cited sources? | **Pending** | Not run: the Gemini key arrives Sunday morning (L4, Lavanya) | If it fails: Gemini becomes cut item 2 |
-| P4 | Can we seed and read Nessie? | **Fail** | 2nd live run at 20:43 (A2 fixes `f07cf08`): reads and the dry run now work (35 objects found, 24 duplicates and 4 missing transfers identified), but Nessie rejects both writes. `DELETE /purchases/{id}` returns 403 and `POST …/transfers` returns 400 on `medium` and `payee_id`. Nothing was changed | Not taken yet: Cursor finds the live transfer and delete API, then rerun. If it can't: local fixture mirroring Nessie's schema, served through the replay cache |
+| P4 | Can we seed and read Nessie? | **Pass** | 3rd live run at about 21:40: seed `Created 33`, then `Created 0`, and everything reads back. Scenario 2 finds the planted $900 17 minutes after the message; scenario 3 finds the bill paid 2026-11-01 | Partial: live transfers can't name a payee, so the planted $900 is a purchase at merchant "Unknown Payee" (fallback chosen by Arnav) |
 | P5 | Does redaction work? | **Pass** | **20/20** hand-written gate strings; 50/50 redaction tests | None |
 
-**POC exit:** three of five gates pass (P1, P2, P5). P3 is pending on the Gemini key. P4 has failed two live runs. The first hit two client bugs, which are now fixed. The second (20:43) shows Nessie rejecting A2's transfer and delete calls. Reads work. Its pivot (a local fixture, possibly for transfers only) is ready but not taken yet. No pivot has been taken.
+**POC exit:** four of five gates pass (P1, P2, P4, P5). P3 is pending on the Gemini key. P4 passed on its third live run, with one partial pivot: live Nessie transfers can't name a payee, so the planted $900 is a purchase at merchant "Unknown Payee". No pivot has been taken.
 
 ## P1: dataset and baseline (A21, A1)
 
@@ -57,7 +57,28 @@ cd backend
 
 The Gemini key arrives Sunday morning, and L4 (Lavanya) runs the demo query then. **Pass test:** at least one source URL in the grounding metadata, in our JSON shape (DATA_SPEC section 4.3). **If it fails:** Gemini becomes the second item in the cut order (POC_MVP section 11). The `public_scam_reports` step then drops out of scenario 3's plan, and the result card says public reports weren't checked.
 
-## P4: Nessie seed and read (A2): fail, fix pending
+## P4: Nessie seed and read (A2): pass, third live run
+
+**Result, 2026-11-07 at about 21:40.** Claude Code finished A2's live parts on Cursor's branches, at Arnav's request.
+- **Transfer probe**, on a throwaway customer "Probe Throwaway" with two accounts, not Linda:
+  - `POST /accounts/{id}/transfers` requires exactly `transaction_date`, `status`, `amount` and `description`;
+  - all 18 receiver field names tried were rejected ("extra fields not permitted");
+  - `/transfers` routes don't exist.
+  - **So a transfer can't name a receiving account.** It took 1 minute of the 20-minute timebox.
+- **Fallback taken.** The planted $900 is a purchase at a new merchant "Unknown Payee" on Linda's checking, 17 minutes after scenario 2's message, with its exact time kept in the manifest (DATA_SPEC section 6).
+- **Duplicates:** Nessie has no DELETE for purchases, so the seed creates a fresh "Linda Sentinel" at 802 Demo Way. The customer at 800 Demo Way keeps the duplicates and is abandoned.
+- **Seed** (PR #44, `02aae13`): run 1 `Created 33, already present 5`; run 2 `Created 0, already present 38`. `data/nessie_seed.json` is committed on PR #44's branch.
+- **Read back with A11's tools** (PR #45, `649f690`), against live Nessie and that manifest:
+
+| Scenario | Tool | Live result |
+| --- | --- | --- |
+| 1, check, 7 days | `nessie_recent_activity` | 2 accounts, 6 items, nothing flagged |
+| 2, recovery | `nessie_recent_activity` | 1 item: `txn_28`, $900 purchase, 17 minutes after, "first purchase at this merchant, 23.1x the 30-day median"; app resolves it to "Unknown Payee" |
+| 3 | `nessie_bill_status` (T-Mobile) | found, completed, paid 2026-11-01, $0 due |
+
+- **Tests:** PR #44's branch 338 passed; PR #45's branch 351 passed. The fake Nessie now rejects extra transfer fields (400) and DELETE (403), like live.
+
+### History: the first two live runs
 
 Cursor built the client and the idempotent seed in [PR #44](https://github.com/its-arnavtech/HackUTD26/pull/44), in review. Claude Code ran it live on 2026-11-07 at about 20:25, using Arnav's key, from a temporary checkout of PR #44's branch (`9b69d5b`). It ran the dry run plus read-only inventory scripts only, so it created nothing and deleted nothing.
 
@@ -77,17 +98,13 @@ Cursor built the client and the idempotent seed in [PR #44](https://github.com/i
 
 A final `--dry-run --dedupe` listed exactly the same 24 and 4, so **nothing in Nessie changed**, and no `data/nessie_seed.json` was written. Nessie's API description isn't public (`/openapi.json` returns 403), so the right transfer fields need Nessie's docs or a careful probe. That's handed back to Cursor on PR #44.
 
-**What it means for the demo:** reads work, so `nessie_bill_status` (scenario 3) and the 30 days of purchases are fine. Scenario 2's "Was this you?" needs the planted transfer. If the transfer API can't take a payee, take the P4 pivot for transfers only: serve the planted transfer from a local fixture through the replay cache.
-
-**To rerun after the fix**, with the key in `.env`, on PR #44's branch:
+**To rerun**, with the key in `.env`, on PR #44's branch:
 
 ```powershell
 cd backend
-..\.venv\Scripts\python -m scripts.seed_nessie   # first run creates; the second must create nothing
-..\.venv\Scripts\python -m scripts.seed_nessie
+..\.venv\Scripts\python -m scripts.seed_nessie --dry-run  # after the live seed: "Would create 0"
+..\.venv\Scripts\python -m scripts.seed_nessie            # must print "Created 0"
 ```
-
-**If it fails:** use a local fixture that mirrors Nessie's schema (DATA_SPEC section 6), served through the replay cache.
 
 ## P5: redaction (A3)
 

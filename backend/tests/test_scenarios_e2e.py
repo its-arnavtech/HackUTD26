@@ -100,12 +100,15 @@ def _synthetic_world(mp: pytest.MonkeyPatch, tmp_path_factory) -> dict:
     base_url = "https://fake-nessie.test"
     seeded = seed(nessie_mod.NessieClient(API_KEY, base_url, http=fake.client(), mode="record"))
     manifest = seeded.manifest
-    details = nessie_mod.transfer_details_from_seed(manifest)
+    # Transfer payees/times and the planted purchase's time live in the manifest (DATA_SPEC 6).
+    details = {"transfer_details": nessie_mod.transfer_details_from_seed(manifest)}
+    if hasattr(nessie_mod, "purchase_times_from_seed"):
+        details["purchase_times"] = nessie_mod.purchase_times_from_seed(manifest)
     mp.setattr(nessie_tools, "load_seed", lambda *a, **k: manifest)
 
     # Record: the Nessie client talks to the fake and saves fixtures; RDAP stays in
     # replay (an unrecorded lookup means "age unknown", as in the demo).
-    recorder = nessie_mod.NessieClient(API_KEY, base_url, http=fake.client(), mode="record", transfer_details=details)
+    recorder = nessie_mod.NessieClient(API_KEY, base_url, http=fake.client(), mode="record", **details)
     mp.setattr(nessie_tools, "client_from_settings", lambda *a, **k: recorder)
     for n in SCENARIOS:
         rs.run_scenario(n)
@@ -116,7 +119,7 @@ def _synthetic_world(mp: pytest.MonkeyPatch, tmp_path_factory) -> dict:
     def unreachable(request):
         raise AssertionError(f"replay reached the transport: {request.method} {request.url.path}")
 
-    replayer = nessie_mod.NessieClient("", base_url, http=httpx.Client(transport=httpx.MockTransport(unreachable)), transfer_details=details)
+    replayer = nessie_mod.NessieClient("", base_url, http=httpx.Client(transport=httpx.MockTransport(unreachable)), **details)
     mp.setattr(nessie_tools, "client_from_settings", lambda *a, **k: replayer)
     return {"name": "synthetic", "manifest": manifest, "fixtures": len(cache.list_fixtures("nessie"))}
 
@@ -230,16 +233,21 @@ def test_scenario_1_bank_lock_is_a_scam(world):
     assert not run.result.was_this_you, "check mode never asks 'Was this you?'"
 
 
-def test_scenario_2_recovery_finds_the_planted_transfer(world):
+def _planted(manifest: dict) -> dict:
+    """The planted $900: a purchase at "Unknown Payee" (DATA_SPEC 6); older manifests had a transfer."""
+    return manifest.get("planted") or manifest["transfers"]["planted_transfer"]
+
+
+def test_scenario_2_recovery_finds_the_planted_900(world):
     run = world["runs"][2]
     r = run.result
     assert run.mode == AgentMode.recovery
     assert r.plan[0] == ToolName.nessie_recent_activity
-    assert r.was_this_you, "recovery must ask 'Was this you?' about the planted transfer"
+    assert r.was_this_you, "recovery must ask 'Was this you?' about the planted $900"
     finding = next(e.finding for e in run.trail if e.tool == ToolName.nessie_recent_activity)
     assert "you may not have made" in finding or str(PLANTED_AMOUNT) in finding
     assert Action.freeze_card in r.actions
-    planted = world["manifest"]["transfers"]["planted_transfer"]
+    planted = _planted(world["manifest"])
     assert planted["amount"] == PLANTED_AMOUNT
     assert datetime.fromisoformat(planted["at"]) > run.agent_input.received_at
 
