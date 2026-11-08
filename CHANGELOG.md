@@ -21,7 +21,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A1 | Dataset loader, stratified split and baseline metrics | Arnav | Claude Code | POC | A21 | todo | #2 |
 | A2 | Nessie client and idempotent seed script | Arnav | Claude Code | POC | scaffold | todo | #3 |
 | A3 | Redaction module | Arnav | Claude Code | POC | scaffold | todo | #4 |
-| A4 | Nemotron connection and tool-calling smoke test | Arnav | Codex | POC | scaffold | todo | #5 |
+| A4 | Nemotron connection and tool-calling smoke test | Arnav | Codex | POC | scaffold | in progress | codex-shared / #5 |
 | A5 | Hugging Face connection | Arnav | Codex | POC | scaffold | todo | #6 |
 | A6 | Dev infrastructure: CI, dev scripts, worktrees | Arnav | Cursor | POC | scaffold | todo | #7 |
 | A7 | Phone shell and inbox on the mock API | Arnav | Codex design (GPT 6 Astra) | POC | scaffold | todo | #8 |
@@ -74,7 +74,15 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - Resumed by: <tool> from <tool>, if any
 ```
 
-_None yet._
+### A4 Nemotron connection and tool-calling smoke test (#5)
+- Agent: Codex (GPT-6) · Person: Arnav · Folder: C:\HackUTD26-codex · Branch: codex-shared (origin/arnav-shared)
+- Started: 2026-11-07 18:40 · Last checkpoint: 2026-11-07 18:40
+- Done so far: Read required docs and issues; no existing checkpoints. Confirmed GPU and tools; created shared branch; posted claim.
+- Next step (exact): Create backend venv using installed Python 3.13; verify NVIDIA models; implement client and five-case smoke test, then mocked tests.
+- Files touched: CHANGELOG.md
+- How to run or test: From backend, .\.venv\Scripts\python.exe -m pytest
+- Notes and gotchas: cache.py is the L1 stub; use prompt-authorized TODO(L1) until merged. Main venv points at missing uv Python 3.12; installed Python 3.13 available. Never print secrets. API_PORT=8002, WEB_PORT=5176.
+
 
 ---
 
