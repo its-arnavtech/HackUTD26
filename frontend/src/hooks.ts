@@ -31,7 +31,12 @@ let health: Promise<Health | undefined> | undefined;
 
 /** `/api/health`, fetched once per page load. Undefined while loading, or if it failed (then it's asked again next time). */
 export function useHealth() {
-  const [value, setValue] = useState<Health>();
+  return useHealthState().health;
+}
+
+/** Like `useHealth`, plus `settled`: true once health answered or failed (L13's auth gate waits for it). */
+export function useHealthState() {
+  const [state, setState] = useState<{ health?: Health; settled: boolean }>({ settled: false });
   useEffect(() => {
     let active = true;
     health ??= getHealth().catch(() => {
@@ -39,13 +44,13 @@ export function useHealth() {
       return undefined;
     });
     void health.then((h) => {
-      if (active) setValue(h);
+      if (active) setState({ health: h, settled: true });
     });
     return () => {
       active = false;
     };
   }, []);
-  return value;
+  return state;
 }
 
 /** Tests only: forget the cached health answer. */

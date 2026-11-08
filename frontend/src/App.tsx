@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Link, Navigate, NavLink, Route, Routes, useLocation } from "react-router-dom";
 import { ArrowUpRight, BookOpen, ChevronRight, Layers3, Sparkles } from "lucide-react";
 import type { Health } from "./api";
+import { AccountLine, AuthGate } from "./auth";
 import { Brand, PhoneFrame } from "./components";
 import { useHealth } from "./hooks";
 import AccuracyPage from "./screens/AccuracyPage";
@@ -61,6 +62,7 @@ function PhoneExperience() {
         </nav>
       </aside>
       <PhoneFrame back={pathname !== "/consent" && pathname !== "/inbox" ? "/inbox" : undefined} label="SentinelAI demo">
+        <AuthGate>
         <Routes>
           <Route path="/consent" element={<Consent />} />
           <Route path="/inbox" element={<Inbox />} />
@@ -71,6 +73,7 @@ function PhoneExperience() {
           <Route path="/campaigns" element={<CampaignView />} />
           <Route path="*" element={<Navigate to="/inbox" replace />} />
         </Routes>
+        </AuthGate>
       </PhoneFrame>
       <aside className="stage-right">
         <span className="specimen-tag">
@@ -116,6 +119,7 @@ function PhoneExperience() {
             )}
           </p>
         </div>
+        <AccountLine />
       </aside>
     </main>
   );
@@ -151,7 +155,14 @@ export default function App() {
       <div id="main-content" tabIndex={-1}>
         <Routes>
           <Route path="/gallery" element={<Gallery />} />
-          <Route path="/accuracy" element={<AccuracyPage />} />
+          <Route
+            path="/accuracy"
+            element={
+              <AuthGate>
+                <AccuracyPage />
+              </AuthGate>
+            }
+          />
           <Route path="*" element={<PhoneExperience />} />
         </Routes>
       </div>

@@ -1,5 +1,12 @@
 // One typed function per route in POC_MVP.md section 7.1.
 import type {
+  PublicKeyCredentialCreationOptionsJSON,
+  PublicKeyCredentialRequestOptionsJSON,
+} from "@simplewebauthn/browser";
+import type {
+  LoginStep,
+  Me,
+  PasswordLoginRequest,
   Action,
   ActionResponse,
   Campaign,
@@ -41,6 +48,11 @@ export class ApiError extends Error {
   get offline() {
     return this.status === 0;
   }
+
+  /** No session (L13, only when auth is on). */
+  get unauthorized() {
+    return this.status === 401;
+  }
 }
 
 /** How a failed call reads on screen. Never shows the backend's own message. */
@@ -70,21 +82,58 @@ async function errorFrom(res: Response, label: string): Promise<ApiError> {
   return new ApiError(res.status, `${label} failed with ${res.status}`, code, issue);
 }
 
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const label = `${init?.method ?? "GET"} ${path}`;
+/**
+ * The CSRF token from the `sa_csrf` cookie (L13), copied into `X-CSRF-Token` on every POST.
+ * The session cookies themselves are HttpOnly: this page can't read them, by design.
+ * With auth off the cookie doesn't exist and nothing is added.
+ */
+function csrfToken(): string | undefined {
+  if (typeof document === "undefined") return undefined;
+  const match = document.cookie.match(/(?:^|;\s*)sa_csrf=([^;]+)/);
+  return match ? decodeURIComponent(match[1]) : undefined;
+}
+
+/** Fired when the session ended and couldn't be refreshed; the auth gate shows sign-in. */
+export const SIGNED_OUT_EVENT = "sentinel:signed-out";
+
+async function send(path: string, init: RequestInit | undefined, label: string): Promise<Response> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
-  let res: Response;
+  const token = (init?.method ?? "GET") !== "GET" ? csrfToken() : undefined;
   try {
-    res = await fetch(path, {
-      headers: { "Content-Type": "application/json" },
+    return await fetch(path, {
       ...init,
+      headers: { "Content-Type": "application/json", ...(token ? { "X-CSRF-Token": token } : {}), ...init?.headers },
+      credentials: "same-origin",
       signal: controller.signal,
     });
   } catch {
     throw new ApiError(0, `${label} could not reach the API`);
   } finally {
     clearTimeout(timer);
+  }
+}
+
+let refreshing: Promise<boolean> | undefined;
+
+/** One shared refresh for every call that hit a 401 at the same time. */
+function refreshSession(): Promise<boolean> {
+  refreshing ??= send("/api/auth/refresh", { method: "POST" }, "POST /api/auth/refresh")
+    .then((res) => res.ok)
+    .catch(() => false)
+    .finally(() => {
+      refreshing = undefined;
+    });
+  return refreshing;
+}
+
+async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const label = `${init?.method ?? "GET"} ${path}`;
+  let res = await send(path, init, label);
+  if (res.status === 401 && !path.startsWith("/api/auth/")) {
+    // The 10-minute access token may have expired: refresh once, then retry once.
+    if (await refreshSession()) res = await send(path, init, label);
+    if (res.status === 401 && typeof window !== "undefined") window.dispatchEvent(new Event(SIGNED_OUT_EVENT));
   }
   if (!res.ok) throw await errorFrom(res, label);
   return (await res.json()) as T;
@@ -127,10 +176,37 @@ export interface Health {
   status: string;
   demo_mode: string;
   use_mocks: boolean;
+  /** L13: true when sign-in is required. Missing or false means the demo runs as one customer. */
+  auth_enabled?: boolean;
   mocked_routes: Record<string, boolean>;
 }
 
 export const getHealth = () => request<Health>("/api/health");
+
+// ---------------------------------------------------------------------------
+// Authentication (L13, DATA_SPEC section 8). Only called when `auth_enabled`.
+// ---------------------------------------------------------------------------
+
+/** Sets the `sa_csrf` cookie. Call before the first POST. */
+export const getCsrf = () => request<{ ok: boolean }>("/api/auth/csrf");
+
+export const passwordLogin = (body: PasswordLoginRequest) => post<LoginStep>("/api/auth/login", body);
+
+export const totpLogin = (code: string) => post<LoginStep>("/api/auth/login/totp", { code });
+
+export const passkeyLoginOptions = () =>
+  post<PublicKeyCredentialRequestOptionsJSON>("/api/auth/passkey/login/options");
+
+export const passkeyLoginVerify = (credential: unknown) => post<LoginStep>("/api/auth/passkey/login/verify", credential);
+
+export const passkeyRegisterOptions = () =>
+  post<PublicKeyCredentialCreationOptionsJSON>("/api/auth/passkey/register/options");
+
+export const passkeyRegisterVerify = (credential: unknown) => post<Me>("/api/auth/passkey/register/verify", credential);
+
+export const logout = () => post<LoginStep>("/api/auth/logout");
+
+export const getMe = () => request<Me>("/api/auth/me");
 
 /**
  * Poll the result every second until `done`, calling `onUpdate` with each response.
