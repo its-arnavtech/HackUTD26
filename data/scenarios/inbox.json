@@ -1,0 +1,16 @@
+{
+  "note": "The demo inbox (L9). Loaded at startup and by POST /api/demo/reset when the inbox route isn't mocked. Entries with `scenario` take their message from scenario_N.json. Scenario 2 isn't a separate message: it's msg_0001 after the customer taps \"I clicked\". IDs match app/mocks/inbox.json so the frontend sees the same ones. Synthetic data only.",
+  "messages": [
+    {"message_id": "msg_0001", "scenario": 1, "source": "scenario"},
+    {"message_id": "msg_0003", "scenario": 3, "source": "scenario"},
+    {
+      "message_id": "msg_0101",
+      "source": "authored",
+      "message": {
+        "text": "Hi Mom, landed safe. Will call you after dinner tonight.",
+        "sender": "+15550137788",
+        "received_at": "2026-11-08T08:40:00-06:00"
+      }
+    }
+  ]
+}
