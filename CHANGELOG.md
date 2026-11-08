@@ -31,7 +31,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | L4 | Gemini grounded search smoke test (Sunday morning, when the Gemini key is set) | Lavanya | Claude Code | POC | scaffold | todo | #12 |
 | A22 | Initial Devpost draft by 11:00 PM Saturday | Arnav | any | POC | none | todo | #13 |
 | A8 | POC gate report | Arnav | Claude Code | POC | A1, A2, A3, A4, L4 | todo | #14 |
-| L5 | Tool registry and runtime | Lavanya | Claude Code | MVP | L2 | done | #15 · `l5-tool-registry` |
+| L5 | Tool registry and runtime | Lavanya | Claude Code | MVP | L2 | done | #15 · PR #48 |
 | L6 | Privacy audit log and `/api/privacy` | Lavanya | Claude Code | MVP | L3, L5 | todo | #16 |
 | A9 | Feature extraction | Arnav | Codex | MVP | A3 | todo | #17 |
 | A10 | `check_link` and `check_sender` tools | Arnav | Cursor | MVP | L1 | todo | #18 |
@@ -83,7 +83,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID · tool · PR · summary · follow-ups`.
 
-- 2026-11-07 20:19 · L5 · Claude Code (Opus 5.5, Lavanya) · PR for #15 · `agent/registry.py`: `ToolRegistry` with the six built-in tools registered (tool modules untouched); OpenAI `tools=[...]` schemas with refs inlined and injected fields hidden; `call_tool` validates args, runs with a per-tool timeout (Gemini 20 s, others 10 s), returns `ToolCall` with errors as data (`unknown_tool`, `invalid_args`, `timeout`, `unavailable`, `tool_error`) and generic messages; `on_call` gets a `PrivacyRecipient` with exactly what the tool received; 33 tests (266 pass) · follow-ups: L8 uses `openai_tool_schemas()` and `call_tool`; L6 stores the `on_call` records
+- 2026-11-07 20:19 · L5 · Claude Code (Opus 5.5, Lavanya) · #48 · `agent/registry.py`: `ToolRegistry` with the six built-in tools registered (tool modules untouched); OpenAI `tools=[...]` schemas with refs inlined and injected fields hidden; `call_tool` validates args, runs with a per-tool timeout (Gemini 20 s, others 10 s), returns `ToolCall` with errors as data (`unknown_tool`, `invalid_args`, `timeout`, `unavailable`, `tool_error`) and generic messages; `on_call` gets a `PrivacyRecipient` with exactly what the tool received; 33 tests (266 pass) · follow-ups: L8 uses `openai_tool_schemas()` and `call_tool`; L6 stores the `on_call` records
 - 2026-11-07 19:32 · A3 · Codex (GPT-6) · #41 · Local redactor, HMAC phone/sender handling, private URL ordering and report; P5 20/20, 50 redaction tests; full merged backend 219 passed in credential-free child process; real L1 adapters synced · follow-ups: A9, A13 redaction-cost evaluation; regex name/address limits documented
 
 - 2026-11-07 19:18 · A1 · Claude Code (Opus 5.5) · #41 · Loader into `Message`, saved 70/15/15 split (`data/generated/splits.json`: train 1,818 / val 390 / test 388, test = `test_v1` + hand-written), baseline keyword rules + TF-IDF + LR; `eval/baseline_metrics.json` test macro F1 0.807, FPR 0.127; `eval/baseline_details.json` adds val, per-subset scores and confusion; 121 tests pass · follow-ups: rescore on redacted text once A3 lands (A13 redaction cost)
