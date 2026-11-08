@@ -32,7 +32,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A22 | Initial Devpost draft by 11:00 PM Saturday | Arnav | any | POC | none | todo | #13 |
 | A8 | POC gate report | Arnav | Claude Code | POC | A1, A2, A3, A4, L4 | done | #14 · PR #49 (arnav-shared) |
 | L5 | Tool registry and runtime | Lavanya | Claude Code | MVP | L2 | done | #15 · PR #48 |
-| L6 | Privacy audit log and `/api/privacy` | Lavanya | Claude Code | MVP | L3, L5 | todo | #16 |
+| L6 | Privacy audit log and `/api/privacy` | Arnav | Claude Code | MVP | L3, L5 | in progress | #16 · `l6-privacy` |
 | A9 | Feature extraction | Arnav | Codex | MVP | A3 | done | #17 · PR #49 (arnav-shared) |
 | A10 | `check_link` and `check_sender` tools | Arnav | Cursor | MVP | L1 | done | #18 · PR #43, #50, #51 |
 | A11 | Nessie tools | Arnav | Cursor | MVP | A2 | done | #19 · PR #45 |
@@ -42,7 +42,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | L8 | Agent loop with plan, re-plan and guardrails | Lavanya | Claude Code | MVP | A4, L5 | todo | #23 |
 | L9 | API endpoints and pipeline orchestration | Lavanya | Claude Code | MVP | L3, L8 | todo | #24 |
 | G1 | Gate: scenario 1 end to end in the CLI | Both | any | MVP | A3, A9, A10, A11, L8 | in progress | #25 · PR #46 merged (prep: stand-in agent until L8) |
-| L10 | `public_scam_reports` tool | Lavanya | Claude Code | MVP | L4, L5 | todo | #26 |
+| L10 | `public_scam_reports` tool | Arnav | Claude Code | MVP | L4, L5 | todo | #26 |
 | L11 | Recovery mode re-plan | Lavanya | Claude Code | MVP | L8, A11 | todo | #27 |
 | A14 | Result card, "How we checked" and privacy panel | Arnav | Cursor (covering for Codex design) | MVP | A7 | done | #28 · PR #53 |
 | A15 | Recovery UI | Arnav | Codex design (GPT 6 Astra) | MVP | A14 | todo | #29 |
@@ -60,6 +60,17 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 ## In progress
 
 <!-- One block per active issue. Copy the template, keep it current at every checkpoint. -->
+
+### L6 Privacy audit log and `/api/privacy` (#16)
+- Agent: Claude Code (Opus 5.5) · Person: Arnav (taken over from Lavanya) · Folder: `C:\HackUTD26-main` · Branch: `l6-privacy`
+- Started: 2026-11-07 22:42 · Last checkpoint: 2026-11-07 22:42
+- Done so far:
+  - Claimed
+- Next step (exact): read L3's `app/state.py` and L5's `app/agent/registry.py`, then build the per-message privacy log and `GET /api/privacy/{id}`
+- Files touched: `CHANGELOG.md`
+- How to run or test: `cd backend; python -m pytest`
+- Notes and gotchas: don't change L8 (`agent/loop.py`) or L9 (`pipeline.py`) code; hooks they need go in the PR description for Lavanya
+- Resumed by: none
 
 ### G1 Gate: scenario 1 end to end in the CLI (#25), prep
 - Agent: Cursor (Claude Opus 5.5, cloud agent) · Person: Arnav · Folder: Cursor cloud VM (`/workspace`) · Branch: `cursor/g1-run-scenario-55c7`
@@ -172,6 +183,7 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 
 ## Decisions
 
+- 2026-11-07 22:42 · Arnav takes L6 (#16, privacy audit log and `/api/privacy`) and L10 (#26, `public_scam_reports`) from Lavanya; both run on Arnav's Claude Code. Lavanya keeps L7, L8, L9 and L11.
 - 2026-11-07 22:05 · A14 display rules: the result card shows one primary action (the agent's first action; a billing result leads with "Use the official app", as in the lab). The message bubble uses the privacy log's redacted text only when that text is the redacted form of the inbox message. `unsure` and `mixed` are gallery specimens derived from scenario 1, because the mock files have no poll in those states. Nothing was added to `types.ts`.
 - 2026-11-07 21:55 · Frontend structure after the A7 port: each screen exports a presentational `*View` that takes contract types and a default container that loads data through `src/api.ts` (hooks in `src/hooks.ts`). `/gallery` renders the views from `src/fixtures.ts`, which imports `backend/app/mocks/*.json`, so the gallery never fetches. Lab display fields that the contracts lack (`brand`, `activity_summary`, `next_step`) are derived in the UI; nothing was added to `types.ts`. The inbox shows the real sender, formatted, not the brand the text claims.
 - 2026-11-07 21:43 · **Planted $900 is a purchase, not a transfer (P4, A2/A11).** Live Nessie transfers accept only `transaction_date`, `status`, `amount` and `description` (probed on a throwaway customer; 18 receiver field names rejected; no `/transfers` routes), so a transfer can't name who got the money. The seed plants the $900 as a purchase at new merchant **"Unknown Payee"** on Linda's checking, 17 minutes after scenario 2's message, with its exact time in the manifest's `purchase_times`. A11 flags it as "first purchase at this merchant" plus 10x the 30-day purchase median (live: 23.1x). "Was this you?" items for it have `type: "purchase"`. There is no DELETE for purchases, so the demo customer is a fresh "Linda Sentinel" at 802 Demo Way; the one at 800 keeps old duplicates. Details in DATA_SPEC section 6. Code: PR #44 `02aae13` (seed, client, fake, `data/nessie_seed.json`), PR #45 `649f690` (tool).
