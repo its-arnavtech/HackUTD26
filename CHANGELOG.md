@@ -39,7 +39,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A12 | Campaign store, seeding and `match_campaign` | Arnav | Codex | MVP | A1, A3 | todo | #20 |
 | A13 | Evaluation harness | Arnav | Claude Code | MVP | A1 | todo | #21 |
 | L7 | Improved classifier | Lavanya | Claude Code | MVP | A1, A9, A13 | todo | #22 |
-| L8 | Agent loop with plan, re-plan and guardrails | Lavanya | Claude Code | MVP | A4, L5 | todo | #23 |
+| L8 | Agent loop with plan, re-plan and guardrails | Lavanya | Claude Code | MVP | A4, L5 | in progress | #23 · l8-agent-loop |
 | L9 | API endpoints and pipeline orchestration | Lavanya | Claude Code | MVP | L3, L8 | todo | #24 |
 | G1 | Gate: scenario 1 end to end in the CLI | Both | any | MVP | A3, A9, A10, A11, L8 | todo | #25 |
 | L10 | `public_scam_reports` tool | Lavanya | Claude Code | MVP | L4, L5 | todo | #26 |
@@ -60,6 +60,16 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 ## In progress
 
 <!-- One block per active issue. Copy the template, keep it current at every checkpoint. -->
+
+### L8 Agent loop with plan, re-plan and guardrails (#23)
+- Agent: Claude Code (Opus 5.5) · Person: Lavanya · Folder: C:\Users\gocomets\Downloads\HackUTD26 · Branch: l8-agent-loop
+- Started: 2026-11-07 22:06 · Last checkpoint: 2026-11-07 22:06
+- Done so far:
+  - Claimed; plan written (mirrors A4's `scripts/smoke_nemotron.py` loop)
+- Next step (exact): implement `agent/guardrails.py`, then `agent/prompts.py`, then `agent/loop.py`, then `tests/test_loop.py`
+- Files touched: CHANGELOG.md
+- How to run or test: `backend\.venv\Scripts\python.exe -m pytest -q` from `backend/`
+- Notes and gotchas: two-phase prompting (final-result schema sent only after tools return, A4's fix); `finish_reason` ends the loop; `reasoning_content` goes into the trail's `why` when present, never back into history
 
 
 
