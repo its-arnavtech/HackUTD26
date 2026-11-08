@@ -25,7 +25,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A5 | Hugging Face connection | Arnav | Codex | POC | scaffold | todo | #6 |
 | A6 | Dev infrastructure: CI, dev scripts, worktrees | Arnav | Cursor | POC | scaffold | todo | #7 |
 | A7 | Phone shell and inbox on the mock API | Arnav | Codex design (GPT 6 Astra) | POC | scaffold | todo | #8 |
-| L1 | Record and replay cache | Lavanya | Claude Code | POC | scaffold | todo | #9 |
+| L1 | Record and replay cache | Lavanya | Claude Code | POC | scaffold | in progress | #9 · `l1-replay-cache` |
 | L2 | Core runtime: app factory, settings, logging, errors | Lavanya | Claude Code | POC | scaffold | todo | #10 |
 | L3 | State store and background job runner | Lavanya | Claude Code | POC | L2 | todo | #11 |
 | L4 | Gemini grounded search smoke test (Sunday morning, when the Gemini key is set) | Lavanya | Claude Code | POC | scaffold | todo | #12 |
@@ -74,7 +74,16 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - Resumed by: <tool> from <tool>, if any
 ```
 
-_None yet._
+### L1 Record and replay cache (#9)
+- Agent: Claude Code (Opus 5.5) · Person: Lavanya · Folder: Lavanya's clone (`HackUTD26`) · Branch: `l1-replay-cache`
+- Started: 2026-11-07 18:54 · Last checkpoint: 2026-11-07 18:54
+- Done so far:
+  - Claimed; read cache stub and A4's Nemotron client on `arnav-shared` (already calls `cache.cached_call("nemotron", request, fn)`)
+- Next step (exact): implement `request_key` and `cached_call` in `backend/app/integrations/cache.py`, keeping that signature
+- Files touched: CHANGELOG.md
+- How to run or test: `cd backend; ..venvScriptspython.exe -m pytest`
+- Notes and gotchas: Nessie (A2) and RDAP (A10) clients are Arnav's; they wrap with `cached_call` when they land
+- Resumed by:
 
 ---
 
