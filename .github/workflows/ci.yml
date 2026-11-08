@@ -1,0 +1,107 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+# No secrets: tests run on the mocks and fake transports, never live services.
+# DEMO_MODE is not set for pytest because each test picks its own cache mode.
+env:
+  USE_MOCKS: "true"
+
+jobs:
+  backend:
+    name: Backend tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Run pytest
+        run: python -m pytest -q
+
+  frontend:
+    name: Frontend build (Node LTS)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+      - name: Type-check and build
+        run: npm run build
+
+  dev-script:
+    name: scripts/dev.ps1 smoke test (Windows)
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install dependencies
+        shell: pwsh
+        run: |
+          python -m pip install -r backend/requirements.txt
+          npm ci --prefix frontend
+      - name: Start both servers and check API, app and proxy
+        shell: pwsh
+        env:
+          DEMO_MODE: replay
+        run: |
+          Copy-Item .env.example .env
+          $dev = Start-Process pwsh -ArgumentList '-NoLogo', '-File', 'scripts/dev.ps1', '-NoReload' `
+            -PassThru -RedirectStandardOutput dev.log -RedirectStandardError dev.err.log
+          try {
+            $urls = 'http://localhost:8000/api/inbox', 'http://localhost:5173/', 'http://localhost:5173/api/inbox'
+            $deadline = (Get-Date).AddSeconds(120)
+            foreach ($url in $urls) {
+              while ($true) {
+                if ($dev.HasExited) { throw "dev.ps1 exited early with code $($dev.ExitCode)" }
+                try { Invoke-WebRequest $url -UseBasicParsing -TimeoutSec 5 | Out-Null; Write-Host "OK $url"; break }
+                catch { if ((Get-Date) -gt $deadline) { throw "Timed out waiting for $url" }; Start-Sleep -Seconds 2 }
+              }
+            }
+          } finally {
+            # taskkill exits nonzero when part of the tree has already exited; that isn't a test failure.
+            if (-not $dev.HasExited) { taskkill.exe /PID $dev.Id /T /F | Out-Null; $global:LASTEXITCODE = 0 }
+            Get-Content dev.log, dev.err.log -ErrorAction SilentlyContinue
+          }
