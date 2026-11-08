@@ -41,7 +41,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | L7 | Improved classifier | Lavanya | Claude Code | MVP | A1, A9, A13 | todo | #22 |
 | L8 | Agent loop with plan, re-plan and guardrails | Lavanya | Claude Code | MVP | A4, L5 | todo | #23 |
 | L9 | API endpoints and pipeline orchestration | Lavanya | Claude Code | MVP | L3, L8 | todo | #24 |
-| G1 | Gate: scenario 1 end to end in the CLI | Both | any | MVP | A3, A9, A10, A11, L8 | todo | #25 |
+| G1 | Gate: scenario 1 end to end in the CLI | Both | any | MVP | A3, A9, A10, A11, L8 | in progress | #25 · `cursor/g1-run-scenario-55c7` (prep: stand-in agent until L8) |
 | L10 | `public_scam_reports` tool | Lavanya | Claude Code | MVP | L4, L5 | todo | #26 |
 | L11 | Recovery mode re-plan | Lavanya | Claude Code | MVP | L8, A11 | todo | #27 |
 | A14 | Result card, "How we checked" and privacy panel | Arnav | Codex design (GPT 6 Astra) | MVP | A7 | todo | #28 |
@@ -76,6 +76,30 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - Resumed by: <tool> from <tool>, if any
 ```
 
+### A2 Nessie client and idempotent seed script (#3)
+- Agent: Cursor (Claude Opus 5.5, cloud agent) · Person: Arnav · Folder: Cursor cloud VM (`/workspace`) · Branch: `cursor/a2-nessie-client-55c7`
+- Started: 2026-11-07 19:02 · Last checkpoint: 2026-11-07 20:19
+- Done so far:
+  - Claimed (CHANGELOG only: the cloud agent can't comment on issues)
+  - Checked real field names with read-only calls (no `NESSIE_API_KEY` here; GETs answer with any key). Differences from DATA_SPEC 6 are in Decisions.
+  - `integrations/nessie.py`: every call goes through L1's `cached_call` (a replay miss raises `NessieReplayMiss`; `NessieClient(mode=...)` overrides `DEMO_MODE`), `id` is normalized to `_id`, transfers get `payer_id`, `payee_id` and `at` from `data/nessie_seed.json`, http is upgraded to https, and the key never appears in errors or cache keys
+  - `scripts/seed_nessie.py`: everything in POC_MVP 7.7, idempotent by natural keys, `--dry-run`, writes `data/nessie_seed.json`
+  - 13 tests against an in-memory fake Nessie shaped like the live API (`tests/fake_nessie.py`); suite passes on 3.11 and 3.12 and in replay
+  - PR #44 open
+  - 2026-11-07 20:19: rebased onto `main` (L1, L2, L3, #41) and dropped the temporary cache fallback; record-then-replay test checks the key never reaches a fixture
+- Next step (exact): Arnav puts `NESSIE_API_KEY` in `.env` (or in Cursor secrets so the cloud agent can do it), then from `backend/` runs `python -m scripts.seed_nessie --dry-run`, `python -m scripts.seed_nessie` twice (the second run must print `Created 0`), and commits `data/nessie_seed.json`. If a POST is rejected, fix the body in `scripts/seed_nessie.py`.
+- Files touched: `backend/app/integrations/nessie.py`, `backend/scripts/seed_nessie.py`, `backend/tests/fake_nessie.py`, `backend/tests/test_nessie_client.py`, `backend/tests/test_seed_nessie.py`, `.env.example`, `CHANGELOG.md`
+- How to run or test: `python -m pytest` in `backend/`; the seed needs `NESSIE_API_KEY` in `.env`: `python -m scripts.seed_nessie`
+- Notes and gotchas: never write to Nessie with a made-up key. Nessie dates have no time, so the planted transfer's 09:31 time lives in the manifest. A11 should limit check mode to activity before `received_at`, so scenario 1 (check) doesn't see the transfer that scenario 2 (recovery) finds.
+- Resumed by: none
+### G1 Gate: scenario 1 end to end in the CLI (#25), prep
+- Agent: Cursor (Claude Opus 5.5, cloud agent) · Person: Arnav · Folder: Cursor cloud VM (`/workspace`) · Branch: `cursor/g1-run-scenario-55c7`
+- Started: 2026-11-07 19:17 · Last checkpoint: 2026-11-07 19:17
+  - Claimed (CHANGELOG only)
+- Next step (exact): write `scripts/run_scenario.py`. Each stage uses the real module when it's implemented and a marked stand-in when it raises `NotImplementedError`. The agent call is a single `AGENT = ...` line to swap for L8's `run_agent`. Then add tests.
+- Files touched: `CHANGELOG.md`
+- How to run or test: from `backend/`: `python -m scripts.run_scenario 1`, then `python -m pytest`
+- Notes and gotchas: base is `main`, where A3, A9, A10, A11, L7 and L8 are all stubs. Verify with A10 and A11 merged locally too, without committing that merge.
 
 ---
 
