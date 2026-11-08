@@ -24,7 +24,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A4 | Nemotron connection and tool-calling smoke test | Arnav | Codex | POC | scaffold | done | #41 (arnav-shared) |
 | A5 | Hugging Face connection | Arnav | Codex | POC | scaffold | done | #41 (arnav-shared) |
 | A6 | Dev infrastructure: CI, dev scripts, worktrees | Arnav | Cursor | POC | scaffold | done | #7 · PR #40 |
-| A7 | Phone shell and inbox on the mock API | Arnav | Codex design (GPT 6 Astra) | POC | scaffold | todo | #8 |
+| A7 | Phone shell and inbox on the mock API | Arnav | Cursor (covering for Codex design) | POC | scaffold | in progress | #8 · `cursor/a7-phone-inbox-55c7` |
 | L1 | Record and replay cache | Lavanya | Claude Code | POC | scaffold | done | #9 · PR #42 |
 | L2 | Core runtime: app factory, settings, logging, errors | Lavanya | Claude Code | POC | scaffold | done | #10 · PR #39 |
 | L3 | State store and background job runner | Lavanya | Claude Code | POC | L2 | done | #11 · PR #47 |
@@ -60,6 +60,17 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 ## In progress
 
 <!-- One block per active issue. Copy the template, keep it current at every checkpoint. -->
+
+### A7 Phone shell and inbox on the mock API (#8)
+- Agent: Cursor (Claude Opus 5.5, cloud agent), covering for Codex design until about 23:00 · Person: Arnav · Folder: Cursor cloud VM (`/workspace`) · Branch: `cursor/a7-phone-inbox-55c7`
+- Started: 2026-11-07 21:30 · Last checkpoint: 2026-11-07 21:30
+- Done so far:
+  - Claimed (CHANGELOG only)
+- Next step (exact): wait for Claude Code's `design-lab-snapshot` branch, read its `DESIGN.md` and `HANDOFF.md`, then port its tokens, components, phone frame and inbox into `frontend/` per `prompts/design-01-frontend.md` (no redesign), against the existing mocks and `src/api.ts`. Add `/gallery` with every screen in every state, and frontend tests.
+- Files touched: `CHANGELOG.md`
+- How to run or test: `npm run build` in `frontend/`; `scripts/dev.ps1` for the app on the mocks
+- Notes and gotchas: data access stays in `src/api.ts`; screens never fetch. No contract changes without a separate `[contracts]` PR. UI copy follows POC_MVP 4.4 exactly.
+- Resumed by: Cursor from Codex design (not started by Codex)
 
 
 
