@@ -53,7 +53,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | G2 | Gate: all three scenarios end to end in the app | Both | Codex | MVP | A17, A18, L10, L11 | done | #33 · PR #69; live/record/offline UI acceptance passed |
 | A19 | Replay fixtures and backup video | Arnav | Codex | Demo | G2 | in progress | #34 · CLI + app fixtures verified; video excluded by user |
 | A20 | Capital One and Best Design pitch | Arnav | any | Demo | G2 | todo | #35 |
-| #73 | Zero Day cyberwave redesign | Arnav | Cursor, finishing Codex | Demo | A7 | in review | `cursor/cyberwave-redesign-115a` |
+| #73 | Zero Day cyberwave redesign | Arnav | Cursor, finishing Codex | Demo | A7 | in review | #73 · PR #75 |
 | L12 | NVIDIA and T-Mobile pitch, Devpost | Lavanya | Claude Code | Demo | G2 | todo | #36 |
 | G3 | Rehearse the 3-minute demo three times | Both | any | Demo | A19, A20, L12 | todo | #37 |
 | SYN | Synthetic linked scenarios, payment schema, multiclass SMS | Arnav | Cursor | Demo | A21 | done | #72 · cursor/synthetic-linked-scenarios-6119 |
@@ -151,7 +151,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 ## Done log
 
-- 2026-11-08 07:33 · #73 cyberwave redesign · Cursor (Grok 4.7), resumed from Codex (GPT-6 Astra) · branch `cursor/cyberwave-redesign-115a` · Replaced the phone-stage shell with a Zero Day desk: black and deep violet, electric purple actions, magenta emphasis, cyan for navigation and finished checks, amber only for scam warnings. Editorial headline, selectable redact / investigate / you-decide diagram, nine-section navigation, ledger inbox, and restyled result, evidence, privacy, recovery, patterns, accuracy, and gallery. 68 frontend tests and production build pass. Browser review on the mock API at 1440, 1100, 390, and 320. · follow-up: PR #74’s clay direction is superseded by this pass; wording rules in POC_MVP 4.4 are unchanged.
+- 2026-11-08 07:33 · #73 cyberwave redesign · Cursor (Grok 4.7), resumed from Codex (GPT-6 Astra) · #75 · Replaced the phone-stage shell with a Zero Day desk: black and deep violet, electric purple actions, magenta emphasis, cyan for navigation and finished checks, amber only for scam warnings. Editorial headline, selectable redact / investigate / you-decide diagram, nine-section navigation, ledger inbox, and restyled result, evidence, privacy, recovery, patterns, accuracy, and gallery. 68 frontend tests and production build pass. Browser review on the mock API at 1440, 1100, 390, and 320. · follow-up: PR #74’s clay direction is superseded by this pass; wording rules in POC_MVP 4.4 are unchanged.
 
 - 2026-11-08 04:30 · SYN · Cursor (Grok 4.7) · #72 · Seeded generator (no LLM) writes multiclass SMS (200 per taxonomy id, sets A/B, 70/15/15), 32 campaigns, URL/RDAP rows, 320 linked scenarios (40% benign), telecom events, canonical payment schema, six source mappings, and per-scenario Nessie exports. A21 `messages.jsonl`, splits, and eval files were not changed. Datasheet: `data/generated/SYNTHETIC_LINKED_README.md`. Public-set notes: `docs/PUBLIC_DATASETS.md`. 699 backend tests passed.
 
