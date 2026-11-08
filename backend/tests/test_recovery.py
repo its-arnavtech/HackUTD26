@@ -127,7 +127,7 @@ def test_runner_resolves_details_only_for_the_customer(monkeypatch):
 
 
 def test_confirm_route_only_accepts_items_from_a_finished_recovery(make_client):
-    client = make_client(USE_MOCKS=False, DEMO_MODE="replay")
+    client = make_client(USE_MOCKS=False, DEMO_MODE="replay", PHONE_HASH_SALT="test-salt")
     assert client.post("/api/transactions/invented/confirm", json={"was_me": False}).status_code == 404
     store = client.app.state.store
     mid = store.add_message(MSG)
@@ -151,7 +151,7 @@ def test_clicked_route_runs_recovery_and_polls_app_only_details(make_client, mon
         return loop.run_agent(ai, trail, chat=chat, call_tool=RecoveryTools(), tool_schemas=[])
     monkeypatch.setattr(main, "pipeline_job", job)
     monkeypatch.setattr(nessie_tools, "resolve_ref", lambda ref: detail(ref))
-    client = make_client(USE_MOCKS=False, DEMO_MODE="replay")
+    client = make_client(USE_MOCKS=False, DEMO_MODE="replay", PHONE_HASH_SALT="test-salt")
     store = client.app.state.store
     mid = store.add_message(MSG)
     assert store.poll(mid).was_this_you_items == []

@@ -42,15 +42,33 @@ def test_one_live_route_is_enough_to_require_the_key():
         validate_settings(make_settings(USE_MOCKS=True, LIVE_ROUTES="result"))
 
 
-def test_replay_mode_needs_no_keys():
-    s = make_settings(USE_MOCKS=False, DEMO_MODE="replay")
+SALT = "test-salt-not-a-secret"
+
+
+def test_replay_mode_needs_no_service_keys():
+    # The salt is a local secret for redaction, not a service key (see the salt tests below).
+    s = make_settings(USE_MOCKS=False, DEMO_MODE="replay", PHONE_HASH_SALT=SALT)
     assert all(i.level == "warning" for i in check_settings(s))
 
 
 def test_record_mode_with_key_is_valid_and_gemini_is_only_a_warning():
-    s = make_settings(USE_MOCKS=False, DEMO_MODE="record", NVIDIA_API_KEY=FAKE_KEY)
+    s = make_settings(USE_MOCKS=False, DEMO_MODE="record", NVIDIA_API_KEY=FAKE_KEY, PHONE_HASH_SALT=SALT)
     warnings = validate_settings(s)
     assert "GEMINI_API_KEY" in {w.variable for w in warnings}
+
+
+@pytest.mark.parametrize("route", ["post_message", "result", "clicked"])
+def test_salt_is_required_when_the_pipeline_runs_even_in_replay(route):
+    with pytest.raises(SettingsError) as exc:
+        validate_settings(make_settings(USE_MOCKS=True, LIVE_ROUTES=route, DEMO_MODE="replay"))
+    message = str(exc.value)
+    assert "PHONE_HASH_SALT" in message
+    assert "USE_MOCKS=true or DEMO_MODE=replay" not in message  # replay wouldn't fix it
+
+
+def test_salt_is_only_a_warning_when_no_pipeline_route_is_real():
+    issues = check_settings(make_settings(USE_MOCKS=True, LIVE_ROUTES="metrics,campaigns", DEMO_MODE="replay"))
+    assert [i.level for i in issues if i.variable == "PHONE_HASH_SALT"] == ["warning"]
 
 
 def test_same_api_and_web_port_is_an_error():

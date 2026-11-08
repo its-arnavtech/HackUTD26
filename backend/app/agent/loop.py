@@ -695,7 +695,8 @@ def _sum_sender(r: dict[str, Any]) -> str:
 def _sum_campaign(r: dict[str, Any]) -> str:
     if r.get("campaign_id"):
         n = r.get("similar_last_24h") or 0
-        return f"Matches a known scam campaign, {n} similar message{'s' if n != 1 else ''} in the last 24 hours"
+        # Only real counts: A12 never re-dates history, so "0 in the last 24 hours" is common; don't say it.
+        return f"Matches a known scam campaign, {n} similar message{'s' if n != 1 else ''} in the last 24 hours" if n else "Matches a known scam campaign"
     return "No match with a known scam campaign"
 
 
