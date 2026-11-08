@@ -55,7 +55,8 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A20 | Capital One and Best Design pitch | Arnav | any | Demo | G2 | todo | #35 |
 | L12 | NVIDIA and T-Mobile pitch, Devpost | Lavanya | Claude Code | Demo | G2 | todo | #36 |
 | G3 | Rehearse the 3-minute demo three times | Both | any | Demo | A19, A20, L12 | todo | #37 |
-| L13 | Full authentication and security pillars | Lavanya | Claude Code | Demo | G2 | in progress | #71 · `sec-auth` |
+| L13 | Full authentication and security pillars | Lavanya | Claude Code | Demo | G2 | in review | #71 · `l14-live-demo` (auth off by default) |
+| L14 | Live demo: System view, check any message, plug into any system, agent tool-call fix | Lavanya | Claude Code | Demo | G2, SYN | in review | `l14-live-demo` · docs/L14_LIVE_DEMO_REVIEW.md |
 | SYN | Synthetic linked scenarios, payment schema, multiclass SMS | Arnav | Cursor | Demo | A21 | done | #72 · cursor/synthetic-linked-scenarios-6119 |
 
 ---
