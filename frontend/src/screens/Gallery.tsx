@@ -1,16 +1,22 @@
 import type { ReactNode } from "react";
 import { useSearchParams } from "react-router-dom";
 import { PhoneFrame } from "../components";
-import { checkedInbox, runningPoll } from "../fixtures";
+import { checkedInbox, galleryMessage, galleryVerdict, mockPrivacy, mockResult, runningPoll } from "../fixtures";
 import { newestFirst, withProgress } from "../hooks";
 import AccuracyPage from "./AccuracyPage";
 import CampaignView from "./CampaignView";
 import Consent from "./Consent";
-import HowWeChecked from "./HowWeChecked";
+import { TrailView } from "./HowWeChecked";
 import { InboxView } from "./Inbox";
-import PrivacyPanel from "./PrivacyPanel";
+import { PrivacyView } from "./PrivacyPanel";
 import Recovery from "./Recovery";
-import ResultCard from "./ResultCard";
+import { ResultError, ResultView } from "./ResultCard";
+import type { ResultPoll } from "../types";
+
+function resultSpecimen(poll: ResultPoll, messageId: string) {
+  const message = galleryMessage(messageId);
+  return <ResultView poll={poll} messageText={message.text} claimedBrand={message.claimedBrand} />;
+}
 
 /** The overdue-bill text caught two steps into its check; the other rows are finished. */
 function checkingInbox() {
@@ -51,42 +57,42 @@ export const galleryItems: GalleryItem[] = [
     group: "verdicts",
     label: "04 · Very likely a scam",
     detail: "Bank impersonation · authored scenario 1",
-    screen: <ResultCard />,
+    screen: resultSpecimen(mockResult("scenario1"), "msg_0001"),
   },
   {
     id: "unsure",
     group: "verdicts",
     label: "05 · We’re not sure",
     detail: "A clear limit on what we can confirm",
-    screen: <ResultCard />,
+    screen: resultSpecimen(galleryVerdict("unsure"), "msg_0001"),
   },
   {
     id: "safe",
     group: "verdicts",
     label: "06 · Likely safe",
     detail: "Green reserved for this verdict",
-    screen: <ResultCard />,
+    screen: resultSpecimen(mockResult("legit"), "msg_0101"),
   },
   {
     id: "mixed",
     group: "evidence",
     label: "07 · Mixed evidence",
     detail: "Conflicting signals lead to “not sure”",
-    screen: <ResultCard />,
+    screen: resultSpecimen(galleryVerdict("mixed"), "msg_0001"),
   },
   {
     id: "trail",
     group: "evidence",
     label: "08 · How we checked",
     detail: "Plan, findings, reasons · progressive motion",
-    screen: <HowWeChecked />,
+    screen: <TrailView trail={mockResult("scenario1").trail} checking={false} />,
   },
   {
     id: "privacy",
     group: "evidence",
     label: "09 · Privacy",
     detail: "Redaction first · explicit model boundaries",
-    screen: <PrivacyPanel />,
+    screen: <PrivacyView view={mockPrivacy()} />,
   },
   {
     id: "recovery",
@@ -114,14 +120,14 @@ export const galleryItems: GalleryItem[] = [
     group: "campaign",
     label: "13 · Fake billing",
     detail: "Paid bill evidence · authored scenario 3",
-    screen: <ResultCard />,
+    screen: resultSpecimen(mockResult("scenario3"), "msg_0003"),
   },
   {
     id: "billing-plan",
     group: "campaign",
     label: "14 · A different plan",
     detail: "Campaign → bill → public guidance",
-    screen: <HowWeChecked />,
+    screen: <TrailView trail={mockResult("scenario3").trail} checking={false} />,
   },
   {
     id: "campaign",
@@ -135,7 +141,7 @@ export const galleryItems: GalleryItem[] = [
     group: "more",
     label: "16 · Recovery re-plan",
     detail: "The customer’s tap changes the plan",
-    screen: <HowWeChecked />,
+    screen: <TrailView trail={mockResult("scenario2").trail} checking={false} />,
   },
   {
     id: "complete",
@@ -156,7 +162,7 @@ export const galleryItems: GalleryItem[] = [
     group: "edge",
     label: "19 · Check unavailable",
     detail: "No invented verdict · a retry path",
-    screen: <ResultCard />,
+    screen: <ResultError onRetry={() => undefined} />,
   },
   {
     id: "empty-campaign",

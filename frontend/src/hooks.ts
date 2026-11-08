@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { DependencyList } from "react";
-import { getInbox, pollResult, postMessage } from "./api";
+import { ApiError, getInbox, pollResult, postMessage } from "./api";
 import type { InboxItem, ResultPoll } from "./types";
 
 export function useData<T>(loader: () => Promise<T>, deps: DependencyList = []) {
@@ -97,4 +97,44 @@ export function useInbox() {
   const rows = items && newestFirst(items.map((item) => withProgress(item, progress[item.message_id])));
 
   return { items: rows, progress, error, posting, retry: load, checkNew };
+}
+
+/** Errors in a row before a check is shown as unavailable. A 404 fails at once. */
+const MAX_POLL_ERRORS = 3;
+
+/** Poll one message's result until it is done. `retry` starts polling again after an error. */
+export function useResult(messageId: string) {
+  const [poll, setPoll] = useState<ResultPoll>();
+  const [error, setError] = useState(false);
+  const [attempt, setAttempt] = useState(0);
+
+  useEffect(() => {
+    setPoll(undefined);
+    setError(false);
+    let failures = 0;
+    const stop = pollResult(
+      messageId,
+      (next) => {
+        failures = 0;
+        setPoll(next);
+      },
+      (err) => {
+        failures += 1;
+        if ((err instanceof ApiError && err.status === 404) || failures >= MAX_POLL_ERRORS) {
+          stop();
+          setError(true);
+        }
+      },
+    );
+    return stop;
+  }, [messageId, attempt]);
+
+  const retry = useCallback(() => setAttempt((n) => n + 1), []);
+  return { poll, error, retry };
+}
+
+/** The inbox row for one message, for the text shown above its result. */
+export function useInboxItem(messageId: string) {
+  const { data } = useData(() => getInbox(), [messageId]);
+  return data?.find((item) => item.message_id === messageId);
 }
