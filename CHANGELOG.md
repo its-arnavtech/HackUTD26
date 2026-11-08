@@ -63,10 +63,10 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 ### A9 Feature extraction (#17)
 - Agent: Codex (GPT-6) · Person: Arnav · Folder: C:\HackUTD26-codex · Branch: codex-shared (origin/arnav-shared)
-- Started: 2026-11-07 20:18 · Last checkpoint: 2026-11-07 20:18
-- Done so far: Read issue/checkpoints, ownership, DATA_SPEC 3.1 and POC_MVP 7.5/13. A3 is complete. PR #41 merged; synced main before starting A9.
-- Next step (exact): Implement extract_urls, extract_features and detect_claimed_brand with local-only parsing and fixed feature vocabulary; add 10 hand-written synthetic message cases and privacy/URL boundary checks; run full backend pytest.
-- Files touched: CHANGELOG.md
+- Started: 2026-11-07 20:18 · Last checkpoint: 2026-11-07 20:24
+- Done so far: Implemented typed URL metadata, claimed-brand detection and canonical message features. Focused suite passed 56 tests including the 10 required hand-written messages; two additional malformed-email URL checks added for the full run. Offline suffix parsing verified with network calls blocked. No contracts or other agents' modules changed.
+- Next step (exact): Run full backend pytest in a credential-free child process; review diff; open/update shared PR with Closes #17; finish issue checkboxes and CHANGELOG.
+- Files touched: backend/app/features/extract.py, backend/tests/test_extract.py, CHANGELOG.md
 - How to run or test: From backend, .\.venv\Scripts\python.exe -m pytest tests/test_extract.py -q; .\.venv\Scripts\python.exe -m pytest -q (clear inherited service credentials only in child process for full suite).
 - Notes and gotchas: Touch only backend/app/features/ and its tests; no shared contracts changes. Never resolve links or fetch suffix lists. Do not read held-out/public test messages to derive rules. Preserve URL_n ordering and return domains only; feature text comes only from redacted text. A9 follows current DATA_SPEC; L7 waits for it.
 
