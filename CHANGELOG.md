@@ -18,7 +18,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | ID | Issue | Owner | Agent | Milestone | Depends on | Status | Branch / PR |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | A21 | Synthetic message dataset generator | Arnav | Claude Code | POC | scaffold | done | #1 · #41 (arnav-shared) |
-| A1 | Dataset loader, stratified split and baseline metrics | Arnav | Claude Code | POC | A21 | todo | #2 |
+| A1 | Dataset loader, stratified split and baseline metrics | Arnav | Claude Code | POC | A21 | in progress | #2 · `arnav-shared` |
 | A2 | Nessie client and idempotent seed script | Arnav | Cursor | POC | scaffold | todo | #3 |
 | A3 | Redaction module | Arnav | Claude Code | POC | scaffold | todo | #4 |
 | A4 | Nemotron connection and tool-calling smoke test | Arnav | Codex | POC | scaffold | done | #41 (arnav-shared) |
@@ -74,6 +74,15 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - Resumed by: <tool> from <tool>, if any
 ```
 
+### A1 Dataset loader, stratified split and baseline metrics (#2)
+- Agent: Claude Code (Opus 5.5) · Person: Arnav · Folder: `C:\HackUTD26-cc` · Branch: `arnav-shared`
+- Started: 2026-11-07 19:14 · Last checkpoint: 2026-11-07 19:14
+- Done so far:
+  - Claimed.
+- Next step (exact): implement `load_messages` and `stratified_split` in `backend/app/classifier/baseline.py` (train/val from `train_v1`, test = `test_v1` + hand-written), save split ids, then the baseline and `scripts/run_baseline.py`.
+- Files touched: `CHANGELOG.md`
+- How to run or test: `cd backend; ..\.venv\Scripts\python -m scripts.run_baseline`
+- Notes and gotchas: A3 redaction isn't built, so the baseline scores raw text for now.
 
 ---
 
