@@ -9,8 +9,7 @@ falls back to a stand-in, marked STAND-IN below, while it still raises
 `NotImplementedError`. The output says which stages were real. Redaction always
 runs first, and the stand-in agent only sees the redacted `AgentInput`.
 
-The agent loop is the single `AGENT = ...` line below. When L8 merges, set it to
-`run_agent` (already imported).
+The agent loop is the single `AGENT = ...` line below: L8's `run_agent` since G1.
 """
 
 from __future__ import annotations
@@ -414,8 +413,8 @@ def stand_in_agent(agent_input: AgentInput, on_trail: Callable[[TrailEntry], Non
     return result
 
 
-# The agent loop. When L8 merges: AGENT = run_agent
-AGENT: Callable[[AgentInput, Callable[[TrailEntry], None]], AgentResult] = stand_in_agent
+# The agent loop: L8's Nemotron loop (G1). `stand_in_agent` stays for offline tests.
+AGENT: Callable[[AgentInput, Callable[[TrailEntry], None]], AgentResult] = run_agent
 
 
 # ---------------------------------------------------------------------------
