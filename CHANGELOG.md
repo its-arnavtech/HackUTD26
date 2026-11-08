@@ -17,7 +17,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 | ID | Issue | Owner | Agent | Milestone | Depends on | Status | Branch / PR |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Design | Cybercore claymorphism refresh | Arnav | Codex design | Demo | A17 | done | #73 · `codex/clay-security-design` |
+| Design | Cybercore claymorphism refresh | Arnav | Codex design | Demo | A17 | done | #73 · PR #74 (`codex/clay-security-design`) |
 | A21 | Synthetic message dataset generator | Arnav | Claude Code | POC | scaffold | done | #1 · #41 (arnav-shared) |
 | A1 | Dataset loader, stratified split and baseline metrics | Arnav | Claude Code | POC | A21 | done | #2 · #41 (arnav-shared) |
 | A2 | Nessie client and idempotent seed script | Arnav | Cursor | POC | scaffold | done | #3 · PR #44 |
@@ -150,7 +150,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 ## Done log
 
-- 2026-11-08 06:44 · Design #73 · Codex · PR pending · Responsive silver/cobalt clay workspace across all nine destinations; context-preserving message navigation, mobile disclosure with keyboard focus, existing phone gallery retained. 68 frontend tests, production build, and 688 backend tests pass; browser reviewed at 1280/390/320px with no observed console errors. Screenshots and rationale in docs/FRONTEND_DESIGN.md. Follow-up: review and merge the design PR.
+- 2026-11-08 06:44 · Design #73 · Codex · PR #74 · Responsive silver/cobalt clay workspace across all nine destinations; context-preserving message navigation, mobile disclosure with keyboard focus, existing phone gallery retained. 68 frontend tests, production build, and 688 backend tests pass; browser reviewed at 1280/390/320px with no observed console errors. Screenshots and rationale in docs/FRONTEND_DESIGN.md. Follow-up: review and merge the design PR.
 
 - 2026-11-08 01:01 · G2 technical evidence / A19 fixtures / reset safety · Codex (GPT-6) with Cursor reset fix · #69 (includes #68) · All three UI flows pass live, record, and offline replay with frozen L7 v2; actual $900 purchase/confirmation, bill paid/$0 due, privacy/campaigns/accuracy, no browser errors; reset-generation regression integrated; 688 backend and 50 frontend tests/build pass · G2 finished per Arnav explicit request; A17 remains separately with its owner; video/presentation excluded by user.
 
