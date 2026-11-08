@@ -13,9 +13,9 @@ concurrency:
 permissions:
   contents: read
 
-# No secrets: tests run on the mocks and the record and replay cache, never live services.
+# No secrets: tests run on the mocks and fake transports, never live services.
+# DEMO_MODE is not set for pytest because each test picks its own cache mode.
 env:
-  DEMO_MODE: replay
   USE_MOCKS: "true"
 
 jobs:
@@ -84,6 +84,8 @@ jobs:
           npm ci --prefix frontend
       - name: Start both servers and check API, app and proxy
         shell: pwsh
+        env:
+          DEMO_MODE: replay
         run: |
           Copy-Item .env.example .env
           $dev = Start-Process pwsh -ArgumentList '-NoLogo', '-File', 'scripts/dev.ps1', '-NoReload' `
