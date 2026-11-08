@@ -139,6 +139,23 @@ def test_valid_post_signature_returns_escaped_twiml_once(voice_client):
     assert again.status_code == 404  # single use
 
 
+def test_signature_over_the_url_with_port_443_is_accepted(voice_client):
+    token = alerts.issue_twiml_token("Please call Linda.")
+    path = f"/api/voice/twiml/{token}"
+    form = {"CallSid": "CA1", "From": "+15125550100"}
+    with_port = BASE.replace(".com", ".com:443") + path
+    sig = expected_signature(TOKEN, with_port, form)
+    assert voice_client.post(path, data=form, headers={"X-Twilio-Signature": sig}).status_code == 200
+
+
+def test_tokens_never_reach_the_logs():
+    from app.logs import redact_path
+
+    line = '127.0.0.1 - "POST /api/voice/twiml/AbC_-123xyz HTTP/1.1" 403'
+    assert "AbC_-123xyz" not in redact_path(line)
+    assert "/api/voice/twiml/[redacted]" in redact_path(line)
+
+
 def test_valid_get_signature_returns_twiml(voice_client):
     token = alerts.issue_twiml_token("Please call Linda.")
     path = f"/api/voice/twiml/{token}"

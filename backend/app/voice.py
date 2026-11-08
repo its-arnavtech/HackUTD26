@@ -10,7 +10,7 @@ Unknown, used or expired token → 404. The token and phone numbers are never lo
 from __future__ import annotations
 
 import logging
-from urllib.parse import parse_qsl
+from urllib.parse import parse_qsl, urlsplit, urlunsplit
 
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import Response
@@ -26,6 +26,20 @@ log = logging.getLogger(__name__)
 router = APIRouter(prefix="/api", dependencies=[Depends(authorize)])
 
 
+def _url_variants(url: str) -> list[str]:
+    """The URL as configured, plus the same URL with/without the default port.
+
+    Twilio signs HTTPS URLs with an explicit `:443` in some cases; its own
+    RequestValidator accepts either form, so we do too (same host and path only).
+    """
+    parts = urlsplit(url)
+    default = {"https": 443, "http": 80}.get(parts.scheme)
+    host = parts.hostname or ""
+    with_port = urlunsplit((parts.scheme, f"{host}:{parts.port or default}", parts.path, parts.query, ""))
+    without_port = urlunsplit((parts.scheme, host, parts.path, parts.query, ""))
+    return [url, with_port, without_port]
+
+
 async def _twiml(request: Request, token: str) -> Response:
     settings = request.app.state.settings if hasattr(request.app.state, "settings") else get_settings()
     auth_token = settings.TWILIO_AUTH_TOKEN.get_secret_value() if settings.TWILIO_AUTH_TOKEN else ""
@@ -37,7 +51,8 @@ async def _twiml(request: Request, token: str) -> Response:
     if request.method == "POST":
         raw = (await request.body()).decode("utf-8", errors="replace")
         params = dict(parse_qsl(raw, keep_blank_values=True))
-    if not base or not verify_signature(auth_token, url, params, request.headers.get("x-twilio-signature")):
+    signature = request.headers.get("x-twilio-signature")
+    if not base or not any(verify_signature(auth_token, u, params, signature) for u in _url_variants(url)):
         log.info("voice twiml refused", extra={"fields": {"reason": "bad_signature"}})
         raise ForbiddenError("Invalid webhook signature")
     text = consume_twiml_token(token)
