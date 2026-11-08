@@ -1293,3 +1293,11 @@
     animation: none;
   }
 }
+
+/* L15e demo examples: layout only, existing tokens */
+.sx-examples {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}

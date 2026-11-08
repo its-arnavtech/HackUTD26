@@ -235,3 +235,22 @@ Tests: `tests/test_protection.py`. Backend 839 passed, frontend 82 passed.
 - **Simulated incoming text:** a phone-style notification ("Potential scam detected …") for a random real-company message, run through the same live pipeline. It's labelled as a simulation; "See why and what to do" scrolls to the result.
 
 Tests: backend 840 passed, frontend 87 passed (new `alert.test.tsx`), plus the live browser walk.
+
+## L15e: demo examples and Safety Center
+
+**Try an example** (under "Check any message"): six one-click synthetic examples from the demo plan, each run live through the real pipeline, with the correct answer shown where there is one.
+
+| Example | Live answer |
+| --- | --- |
+| Bank account suspension (Chase) | Likely a scam ✓ |
+| Fake delivery fee (UPS) | Likely a scam ✓ |
+| Guaranteed investment (Wells Fargo) | Likely a scam ✓ |
+| One-time-code theft (Amazon, "reply with the code", no link) | Not sure |
+| Genuine Capital One alert (official short code) | Not sure (not called a scam) |
+| Ambiguous appointment reminder | Not sure ✓ (the honest answer) |
+
+**Known gap.** Texts that ask you to *reply with a code* and contain no link are "not sure", because no tool checks what a message asks for. **Next step:** a small `asks_for_code` content check that turns "share a one-time code" into verified evidence.
+
+**Safety center** (`/safety`): six common scams (bank impersonation, one-time-code theft, fake delivery, investment, job, family emergency). Each has how it works, the warning signs, a synthetic example, how to protect yourself and what to do if you already fell for it. Quizzes are not built.
+
+Tests: frontend 90 passed (new `examples.test.tsx`).

@@ -26,6 +26,7 @@ const links: [string, string][] = [
   ["/waves", "Scam waves"],
   ["/patterns", "Scam patterns"],
   ["/model-accuracy", "Classifier accuracy"],
+  ["/safety", "Safety center"],
   ["/privacy-center", "Privacy center"],
   ["/security", "Security"],
 ];

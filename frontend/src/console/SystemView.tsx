@@ -27,6 +27,7 @@ import { Shell } from "./Shell";
 import { toolTitles } from "./timeline";
 import { ActiveSourceNote, TrustedContactCard, WaveNotice, useActiveSource } from "./features";
 import { IncomingAlert, InterruptionCard, LinkSenderPanel, MemoryCard, NextSteps, RiskSummary } from "./protection";
+import { ExampleButtons } from "./examples";
 
 // ---------------------------------------------------------------------------
 // Agent transcript (GET /api/messages/{id}/agent, local L14 endpoint)
@@ -457,6 +458,16 @@ function CheckAnyMessage({ busy, onCheck }: { busy: boolean; onCheck: (text: str
           {problem && <p className="cx-alert">{problem}</p>}
         </div>
       </div>
+      <ExampleButtons
+        busy={busy}
+        onRun={(e) => {
+          const t = e.truth ? { category: e.truth.category, is_scam: e.truth.is_scam, source: e.id } : undefined;
+          setText(e.text);
+          setSender(e.sender);
+          setTruth(t);
+          onCheck(e.text, e.sender, t);
+        }}
+      />
     </section>
   );
 }

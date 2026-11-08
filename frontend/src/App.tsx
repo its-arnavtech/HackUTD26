@@ -10,6 +10,7 @@ import { PatternsPage, SecurityPage } from "./console/Pages";
 import SystemView from "./console/SystemView";
 import { AgentAccuracyPage, ModelAccuracyPage, WavesPage } from "./console/features";
 import { PrivacyCenterPage } from "./console/protection";
+import { SafetyCenterPage } from "./console/examples";
 import { useHealth } from "./hooks";
 import {
   holdScroll,
@@ -372,6 +373,7 @@ export default function App() {
       <Route path="/model-accuracy" element={<AuthGate><ModelAccuracyPage /></AuthGate>} />
       <Route path="/waves" element={<AuthGate><WavesPage /></AuthGate>} />
       <Route path="/privacy-center" element={<AuthGate><PrivacyCenterPage /></AuthGate>} />
+      <Route path="/safety" element={<AuthGate><SafetyCenterPage /></AuthGate>} />
       <Route path="/security" element={<SecurityPage />} />
       <Route path="*" element={<AuthGate><Desk /></AuthGate>} />
     </Routes>
