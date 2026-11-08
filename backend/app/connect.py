@@ -98,18 +98,72 @@ def _restore_sender(sender: dict[str, Any], scenario_id: str) -> str:
     return f"+1555010{digits}"
 
 
+# Live demo messages only impersonate (or come from) real companies and financial
+# institutions customers deal with: carriers, banks and payment apps, and major
+# consumer companies. Made-up brands, government senders (IRS, USPS, toll
+# agencies) and unbranded "wrong number" texts are left out of the live demo.
+DEMO_BRANDS = frozenset({
+    "T-Mobile", "Verizon",
+    "Capital One", "Chase", "Wells Fargo", "PayPal",
+    "Amazon", "Apple", "Google", "Microsoft", "Netflix", "Walmart", "Target", "UPS", "FedEx", "LinkedIn", "Indeed",
+})
+
+# Arnav's linked scenarios only have legitimate messages from made-up carriers, so the
+# live demo uses these hand-written, synthetic real-style messages instead. Capital One's
+# senders and domain are its official ones from data/brands.json, so the sender check can
+# genuinely confirm them; T-Mobile doesn't publish its sending short codes (brands.json).
+AUTHORED_LEGIT: tuple[dict[str, Any], ...] = (
+    {"scenario_id": "legit_c1_purchase", "sender": "227898", "claimed_brand": "Capital One",
+     "text": "Capital One: A purchase of $42.17 at H-E-B was made on your Venture card. If this wasn't you, call the number on the back of your card. Reply STOP to end texts."},
+    {"scenario_id": "legit_c1_payment", "sender": "227373", "claimed_brand": "Capital One",
+     "text": "Capital One: We received your payment of $250.00. Thank you. You can see your balance in the Capital One app."},
+    {"scenario_id": "legit_c1_otp", "sender": "227898", "claimed_brand": "Capital One",
+     "text": "Capital One: Your one-time code is 481920. It expires in 10 minutes. We will never call or text to ask for this code."},
+    {"scenario_id": "legit_tm_bill", "sender": "T-Mobile", "claimed_brand": "T-Mobile",
+     "text": "Free T-Mobile msg: Your bill of $85.00 is ready. AutoPay will charge your saved card on 11/15. Details in the T-Mobile app or at t-mobile.com."},
+    {"scenario_id": "legit_tm_data", "sender": "T-Mobile", "claimed_brand": "T-Mobile",
+     "text": "Free T-Mobile msg: You have used 80% of your high-speed data for this bill cycle. No action is needed. Visit t-mobile.com to see your usage."},
+)
+
+
+def _authored_legit() -> list[dict[str, Any]]:
+    return [{
+        "scenario_id": m["scenario_id"],
+        "category": "legit",
+        "text": m["text"],
+        "sender": m["sender"],
+        "claimed_brand": m["claimed_brand"],
+        "truth": {"is_scam": False, "account_fraud": False, "fraud_type": None,
+                  "explanation": "A routine message from the company's own channel.", "signals": []},
+    } for m in AUTHORED_LEGIT]
+
+
+def _brand(r: dict[str, Any]) -> str | None:
+    return ((r.get("message") or {}).get("sender") or {}).get("claimed_brand")
+
+
 def categories() -> list[str]:
-    return sorted({r["taxonomy_id"] for r in _scenarios()})
+    scams = {r["taxonomy_id"] for r in _scenarios() if r["taxonomy_id"] != "legit" and _brand(r) in DEMO_BRANDS}
+    return sorted(scams | {"legit"})
 
 
 def sample_messages(category: str | None = None, n: int = 1, seed: int | None = None) -> list[dict[str, Any]]:
-    pool = [r for r in _scenarios() if not category or r["taxonomy_id"] == category]
+    rng = random.Random(seed)
+    scams = [r for r in _scenarios() if r["taxonomy_id"] != "legit" and _brand(r) in DEMO_BRANDS]
+    legit = _authored_legit()
+    if category == "legit":
+        return rng.sample(legit, min(max(1, n), len(legit)))
+    pool: list[dict[str, Any]] = [r for r in scams if not category or r["taxonomy_id"] == category]
+    if not category:
+        pool = pool + legit  # "any type" can also draw a real message
     if not pool:
         return []
-    rng = random.Random(seed)
     picks = rng.sample(pool, min(max(1, n), len(pool)))
     out = []
     for r in picks:
+        if "message" not in r:  # an authored real message, already in output form
+            out.append(r)
+            continue
         message, truth = r.get("message") or {}, r.get("ground_truth") or {}
         out.append({
             "scenario_id": r["scenario_id"],

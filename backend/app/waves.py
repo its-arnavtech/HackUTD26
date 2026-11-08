@@ -176,7 +176,10 @@ def campaigns() -> list[dict[str, Any]]:
     if not CAMPAIGNS.exists():
         return []
     rows = [json.loads(line) for line in CAMPAIGNS.read_text(encoding="utf-8").splitlines() if line.strip()]
-    return [r for r in rows if r.get("template_set") != "B"]
+    from app.connect import DEMO_BRANDS
+
+    # Live demo waves only impersonate real companies and financial institutions.
+    return [r for r in rows if r.get("template_set") != "B" and (r.get("sender") or {}).get("claimed_brand") in DEMO_BRANDS]
 
 
 def simulate(campaign_id: str | None = None, *, spacing_seconds: int = 90, d: WaveDetector | None = None) -> dict[str, Any]:
@@ -187,9 +190,10 @@ def simulate(campaign_id: str | None = None, *, spacing_seconds: int = 90, d: Wa
     if not ids:
         raise KeyError("no campaigns")
     if campaign_id is None:
-        # The biggest campaign makes the clearest demo.
-        sizes = {cid: sum(1 for r in rows if r["campaign_id"] == cid) for cid in ids}
-        campaign_id = max(ids, key=lambda cid: (sizes[cid], cid))
+        # A different company each time, so every judge sees a fresh wave.
+        import random
+
+        campaign_id = random.choice(ids)
     variants = [r for r in rows if r["campaign_id"] == campaign_id]
     if not variants:
         raise KeyError(campaign_id)

@@ -210,3 +210,12 @@ def test_wave_routes_simulate_and_warn(client):
     assert client.post("/api/waves/simulate", json={"campaign_id": "camp_999"}).status_code == 404
     client.post("/api/demo/reset")
     assert client.get("/api/waves").json()["waves"] == []
+
+
+def test_simulated_waves_only_impersonate_real_companies():
+    from app.connect import DEMO_BRANDS
+
+    assert {(r.get("sender") or {}).get("claimed_brand") for r in waves.campaigns()} <= DEMO_BRANDS
+    d = waves.WaveDetector()
+    waves.simulate(d=d)
+    assert d.waves()[0]["brand"] in DEMO_BRANDS

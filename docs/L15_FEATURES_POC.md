@@ -185,3 +185,18 @@ This works live. After the recovery verdict, the customer saved "Maya", the phon
 This works. "Simulate a wave" replays a 15-variant Walmart campaign (rotating wording and look-alike domains, one with a Cyrillic letter), and it shows as one wave: 15 in the last hour. "Warn customers" returns a broadcast with no link. Real checks feed the detector too.
 
 **Fingerprint change from the plan.** Grouping by exact wording missed the wave, because real campaigns rotate wording. A wave is now keyed by brand plus scam type, falling back to the wording skeleton when there's no brand.
+
+## Live demo content: real companies and financial institutions only
+
+**Surprise me and Simulate a wave** only impersonate real companies and financial institutions (`DEMO_BRANDS` in `app/connect.py`):
+- carriers: T-Mobile, Verizon
+- banks and payments: Capital One, Chase, Wells Fargo, PayPal
+- major consumer companies: Amazon, Apple, Google, Microsoft, Netflix, Walmart, Target, UPS, FedEx, LinkedIn, Indeed
+
+**Left out of the live demo:** Arnav's made-up brands (Northline Mobile, Harbor Mutual, Hearthside Hire and others), government senders (IRS, USPS, toll agencies) and unbranded "wrong number" texts. As a result, the scam-type picker no longer offers "conversation lure" or "toll or government".
+
+**Real messages.** The linked scenarios only had legitimate messages from made-up carriers, so "real message" draws come from five hand-written, synthetic Capital One and T-Mobile messages. Capital One's use its official short codes from `data/brands.json`, so the sender check can confirm them. T-Mobile doesn't publish its sending short codes, so a real T-Mobile message can't be confirmed by sender.
+
+**Unchanged:** the agent accuracy run still uses the full held-out test split (all 9 categories, as labelled), because it is a measurement, not demo content.
+
+"Simulate a wave" now picks a random allowed campaign each time, so every judge sees a different company's wave.

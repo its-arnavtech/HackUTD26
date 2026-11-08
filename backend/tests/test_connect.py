@@ -56,3 +56,19 @@ def test_routes(client):
     assert client.post("/api/connect/paysim/preview", json={"records": [{}] * 201}).status_code == 422
     samples = client.get("/api/demo/samples?category=job_offer&n=2").json()
     assert len(samples["samples"]) == 2 and "job_offer" in samples["categories"]
+
+
+def test_live_demo_only_uses_real_companies_and_financial_institutions():
+    samples = connect.sample_messages(n=500, seed=3)
+    assert samples and all(s["claimed_brand"] in connect.DEMO_BRANDS for s in samples)
+    for fake in ("Northline Mobile", "Harbor Mutual", "Hearthside Hire", "Parcel Lane", "IRS", "USPS", "TxTag", None):
+        assert all(s["claimed_brand"] != fake for s in samples)
+    assert "conversation_lure" not in connect.categories() and "toll_government" not in connect.categories()
+
+
+def test_real_messages_come_from_official_channels():
+    legit = connect.sample_messages("legit", n=10, seed=1)
+    assert {s["claimed_brand"] for s in legit} <= {"Capital One", "T-Mobile"}
+    assert all(not s["truth"]["is_scam"] for s in legit)
+    capital_one = [s for s in legit if s["claimed_brand"] == "Capital One"]
+    assert capital_one and all(s["sender"] in {"227898", "227767", "227373", "22767", "61869", "80101"} for s in capital_one)

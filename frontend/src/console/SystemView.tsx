@@ -422,7 +422,7 @@ function CheckAnyMessage({ busy, onCheck }: { busy: boolean; onCheck: (text: str
           className="sx-input sx-textarea"
           value={text}
           maxLength={1600}
-          placeholder="e.g. USPS: your package is on hold, pay the $1.99 redelivery fee at usps-redeliver.com"
+          placeholder="e.g. T-Mobile: your payment of $85 did not go through. Update your card today at tmobile-billing-help.com"
           onChange={(e) => {
             setText(e.target.value);
             setTruth(undefined);
