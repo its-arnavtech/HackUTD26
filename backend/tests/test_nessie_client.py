@@ -10,6 +10,7 @@ from app.integrations.nessie import (
     NessieError,
     NessieReplayMiss,
     client_from_settings,
+    purchase_times_from_seed,
     transfer_details_from_seed,
 )
 from tests.fake_nessie import API_KEY, FakeNessie
@@ -50,8 +51,8 @@ def test_transfer_listing_gets_id_payer_payee_and_time(demo_mode, fake):
     customer = client.create_customer({"first_name": "A", "last_name": "B"})
     payer = client.create_account(customer["_id"], {"type": "Checking", "nickname": "payer"})["_id"]
     payee = client.create_account(customer["_id"], {"type": "Checking", "nickname": "payee"})["_id"]
-    created = client.create_transfer(payer, {"medium": "balance", "payee_id": payee, "amount": 900, "transaction_date": "2026-11-08", "description": "x"})
-    assert created["payer_id"] == payer and created["payee_id"] == payee
+    created = client.create_transfer(payer, {"transaction_date": "2026-11-08", "status": None, "amount": 900, "description": "x"})
+    assert created["payer_id"] == payer and created["payee_id"] is None  # Nessie can't record a payee
 
     raw = fake.handle(httpx.Request("GET", f"https://x/accounts/{payer}/transfers?key={API_KEY}")).json()[0]
     assert "id" in raw and "payee_id" not in raw
@@ -73,6 +74,33 @@ def test_transfer_listing_gets_id_payer_payee_and_time(demo_mode, fake):
 
     unknown = make_client(fake).get_transfers(payer)[0]
     assert unknown["payee_id"] is None and unknown["at"] is None
+
+
+def test_transfer_with_a_payee_field_is_rejected_like_live_nessie(demo_mode, fake):
+    client = make_client(fake)
+    customer = client.create_customer({"first_name": "A", "last_name": "B"})
+    payer = client.create_account(customer["_id"], {"type": "Checking", "nickname": "payer"})["_id"]
+    body = {"transaction_date": "2026-11-08", "status": "completed", "amount": 1, "description": "x"}
+    for extra in ({"payee_id": "someone"}, {"medium": "balance"}):
+        with pytest.raises(NessieError, match="extra fields not permitted"):
+            client.create_transfer(payer, {**body, **extra})
+
+
+def test_purchases_get_their_manifest_time(demo_mode, fake):
+    client = make_client(fake)
+    customer = client.create_customer({"first_name": "A", "last_name": "B"})
+    account = client.create_account(customer["_id"], {"type": "Checking", "nickname": "c"})["_id"]
+    timed = client.create_purchase(account, {"purchase_date": "2026-11-08", "amount": 900, "description": "Online payment"})
+    plain = client.create_purchase(account, {"purchase_date": "2026-11-07", "amount": 5, "description": "Coffee"})
+    seed = {"purchase_times": {timed["_id"]: "2026-11-08T09:31:00-06:00"}}
+    listed = {p["_id"]: p["at"] for p in make_client(fake, purchase_times=purchase_times_from_seed(seed)).get_purchases(account)}
+    assert listed == {timed["_id"]: "2026-11-08T09:31:00-06:00", plain["_id"]: None}
+
+
+def test_there_is_no_purchase_delete(demo_mode, fake):
+    assert not hasattr(NessieClient, "delete_purchase")
+    r = fake.handle(httpx.Request("DELETE", f"https://x/purchases/abc?key={API_KEY}"))
+    assert r.status_code == 403
 
 
 def test_empty_list_404_returns_an_empty_list(demo_mode):

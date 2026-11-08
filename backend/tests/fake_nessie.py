@@ -4,6 +4,11 @@ Like the real service, POSTs answer `{"code", "message", "objectCreated"}`, IDs 
 UUIDs, transfer listings carry `id` but no `payer_id` or `payee_id`, an empty
 transfer list answers 404 "No transfers found for this account", and purchase
 amounts are stored as whole dollars (49.30 reads back as 49).
+
+Also like live Nessie (probed 2026-11-07): creating a transfer requires exactly
+`transaction_date`, `status`, `amount` and `description` and rejects any other
+field with a 400, and `DELETE /purchases/{id}` answers 403 "Missing
+Authentication Token" (no such route).
 """
 
 from __future__ import annotations
@@ -17,6 +22,14 @@ from typing import Any
 import httpx
 
 API_KEY = "test-key-not-real"
+TRANSFER_FIELDS = ("transaction_date", "status", "amount", "description")
+
+
+def _transfer_errors(body: dict[str, Any]) -> list[str]:
+    """Live Nessie's pydantic-style validation for TransferCreate."""
+    errors = [f"{f}\n  field required (type=value_error.missing)" for f in TRANSFER_FIELDS if f not in body]
+    errors += [f"{f}\n  extra fields not permitted (type=value_error.extra)" for f in body if f not in TRANSFER_FIELDS]
+    return errors
 
 
 class FakeNessie:
@@ -74,6 +87,8 @@ class FakeNessie:
                     keep = ("amount", "description", "status", "transaction_date")
                     return httpx.Response(200, json=[{"id": t["_id"], **{k: t.get(k) for k in keep}} for t in items])
                 return httpx.Response(200, json=items)
+            if kind == "transfers" and (errors := _transfer_errors(body)):
+                return httpx.Response(400, json=f"{len(errors)} validation errors for TransferCreate\n" + "\n".join(errors))
             obj = {"_id": str(uuid.uuid4()), **body}
             if kind == "purchases":
                 obj |= {"type": "merchant", "payer_id": account_id}
@@ -86,13 +101,8 @@ class FakeNessie:
             items.append(obj)
             return self._created(kind[:-1], obj)
 
-        if m := re.fullmatch(r"/purchases/([^/]+)", path):
-            for kinds in self.children.values():
-                for purchase in kinds["purchases"]:
-                    if purchase["_id"] == m.group(1) and method == "DELETE":
-                        kinds["purchases"].remove(purchase)
-                        return httpx.Response(202, json={"code": 202, "message": "Purchase deleted."})
-            return httpx.Response(404, json={"code": 404, "message": "Purchase not found"})
+        if re.fullmatch(r"/purchases/([^/]+)", path) and method == "DELETE":
+            return httpx.Response(403, json={"message": "Missing Authentication Token"})
 
         if path == "/merchants":
             if method == "GET":

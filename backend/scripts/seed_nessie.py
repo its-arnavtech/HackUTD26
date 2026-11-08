@@ -2,17 +2,27 @@
 
 Linda has a checking account and a credit card, about 30 days of purchases at a
 few merchants, regular credit card payments, and a recurring T-Mobile bill marked
-completed. "Unknown Payee" has one account, which receives the planted $900
-transfer 17 minutes after scenario 2's message.
+completed. The planted $900 is a **purchase at a new merchant, "Unknown Payee"**,
+17 minutes after scenario 2's message: live Nessie's transfers can't name a
+receiving account (checked 2026-11-07: `POST /accounts/{id}/transfers` accepts only
+`transaction_date`, `status`, `amount` and `description`; every receiver field is
+"extra fields not permitted"), so a transfer can't show who got the money.
 
-Idempotent: every object has a natural key (name, nickname, or description plus
-date plus amount), and anything already in Nessie is reused, so a second run
-creates nothing.
+Linda is the customer named "Linda Sentinel" at **802** Demo Way. An earlier seed
+run left duplicate purchases on the customer at 800 Demo Way, and Nessie has no
+DELETE for purchases, so that customer is abandoned, not cleaned up.
+
+Nessie stores no time of day for purchases or transfers. The planted purchase's
+exact time and the card payments' payee and time live in the manifest, and the
+client fills them in (`integrations/nessie.py`).
+
+Idempotent: every object has a natural key (name plus street number, nickname, or
+description plus date plus amount), and anything already in Nessie is reused, so a
+second run creates nothing.
 
 Run from `backend/` with NESSIE_API_KEY in .env:
     python -m scripts.seed_nessie            # create what's missing, write the manifest
     python -m scripts.seed_nessie --dry-run  # list what would be created
-    python -m scripts.seed_nessie --dedupe   # also delete duplicate purchases left by earlier runs
 """
 
 from __future__ import annotations
@@ -32,29 +42,31 @@ MESSAGE_AT = datetime(2026, 11, 8, 9, 14, tzinfo=CENTRAL)  # scenario 2's receiv
 PLANTED_AT = MESSAGE_AT + timedelta(minutes=17)
 FIRST_DAY = MESSAGE_AT.date() - timedelta(days=30)
 
-ADDRESS = {"street_number": "800", "street_name": "Demo Way", "city": "Richardson", "state": "TX", "zip": "75080"}
+# 802, not 800: the customer at 800 Demo Way holds an earlier run's duplicate purchases.
+ADDRESS = {"street_number": "802", "street_name": "Demo Way", "city": "Richardson", "state": "TX", "zip": "75080"}
 GEOCODE = {"lat": 32.9858, "lng": -96.7501}
 
 CUSTOMERS: dict[str, dict[str, Any]] = {
     "linda": {"first_name": "Linda", "last_name": "Sentinel", "address": ADDRESS},
-    "unknown_payee": {"first_name": "Unknown", "last_name": "Payee", "address": {**ADDRESS, "street_number": "1"}},
 }
 
 ACCOUNTS: dict[str, tuple[str, dict[str, Any]]] = {
     "linda_checking": ("linda", {"type": "Checking", "nickname": "Linda Everyday Checking", "rewards": 0, "balance": 4200}),
     "linda_credit": ("linda", {"type": "Credit Card", "nickname": "Linda Rewards Card", "rewards": 1200, "balance": 640}),
-    "unknown_checking": ("unknown_payee", {"type": "Checking", "nickname": "External Checking", "rewards": 0, "balance": 0}),
 }
 
 MERCHANTS: dict[str, dict[str, Any]] = {
-    key: {"name": f"Sentinel Demo {name}", "category": category, "address": ADDRESS, "geocode": GEOCODE}
-    for key, name, category in [
-        ("grocery", "Grocery", "Grocery"),
-        ("coffee", "Coffee", "Food"),
-        ("fuel", "Fuel", "Gas"),
-        ("pharmacy", "Pharmacy", "Health"),
-        ("streaming", "Streaming", "Entertainment"),
-    ]
+    **{
+        key: {"name": f"Sentinel Demo {name}", "category": category, "address": ADDRESS, "geocode": GEOCODE}
+        for key, name, category in [
+            ("grocery", "Grocery", "Grocery"),
+            ("coffee", "Coffee", "Food"),
+            ("fuel", "Fuel", "Gas"),
+            ("pharmacy", "Pharmacy", "Health"),
+            ("streaming", "Streaming", "Entertainment"),
+        ]
+    },
+    "unknown_payee": {"name": "Unknown Payee", "category": "Money transfer", "address": ADDRESS, "geocode": GEOCODE},
 }
 
 BILLS: dict[str, tuple[str, dict[str, Any]]] = {
@@ -71,6 +83,9 @@ BILLS: dict[str, tuple[str, dict[str, Any]]] = {
     )
 }
 
+# The only fields live Nessie accepts on a transfer (anything else is a 400).
+TRANSFER_FIELDS = ("transaction_date", "status", "amount", "description")
+
 
 @dataclass(frozen=True)
 class PurchasePlan:
@@ -80,6 +95,7 @@ class PurchasePlan:
     day: date
     amount: float
     description: str
+    at: datetime | None = None  # exact time, kept in the manifest (Nessie stores only the date)
 
 
 @dataclass(frozen=True)
@@ -97,8 +113,7 @@ def purchase_plan() -> list[PurchasePlan]:
     """About 30 days of ordinary purchases, ending the day before the message.
 
     Amounts are whole dollars because Nessie drops the cents of a purchase (49.30
-    reads back as 49), and a planned amount must equal the stored one to be found
-    again. They are the values earlier runs already stored, so live data matches.
+    reads back as 49), and a planned amount must equal the stored one to be found again.
     """
     schedule = [
         # merchant, account, every n days, first offset, amounts (cycled), description
@@ -116,24 +131,25 @@ def purchase_plan() -> list[PurchasePlan]:
     return plans
 
 
+def planted_purchase() -> PurchasePlan:
+    """The $900 that scenario 2 finds: first purchase at "Unknown Payee", far above the 30-day median."""
+    return PurchasePlan("planted_purchase", "linda_checking", "unknown_payee", PLANTED_AT.date(), 900, "Online payment", PLANTED_AT)
+
+
 def transfer_plan() -> list[TransferPlan]:
-    """Monthly-ish card payments set the 30-day median; the planted transfer is 6x it, to a new payee."""
+    """Card payments from checking to Linda's own credit card. Nessie can't record the
+    payee, so the manifest keeps it (an own account is never a "new payee")."""
     noon = time(12, 0, tzinfo=CENTRAL)
-    payments = [
+    return [
         TransferPlan(f"card_payment_{d.isoformat()}", "linda_checking", "linda_credit", d, datetime.combine(d, noon), amount, "Credit card payment")
         for d, amount in [(date(2026, 10, 12), 120.0), (date(2026, 10, 24), 150.0), (date(2026, 11, 3), 180.0)]
     ]
-    planted = TransferPlan(
-        "planted_transfer", "linda_checking", "unknown_checking", PLANTED_AT.date(), PLANTED_AT, 900.0, "Online transfer"
-    )
-    return [*payments, planted]
 
 
 @dataclass
 class SeedReport:
     created: list[str] = field(default_factory=list)
     found: list[str] = field(default_factory=list)
-    deleted: list[str] = field(default_factory=list)
     manifest: dict[str, Any] = field(default_factory=dict)
 
 
@@ -147,9 +163,13 @@ def _money(value: Any) -> float:
     return round(float(value), 2)
 
 
-def seed(client: NessieClient, *, dry_run: bool = False, dedupe: bool = False) -> SeedReport:
-    """Create what's missing. With `dedupe`, also delete extra copies of a purchase
-    (same description, date and amount) on Linda's accounts, keeping the first one Nessie lists."""
+def _customer_key(c: dict[str, Any]) -> tuple:
+    address = c.get("address") or {}
+    return (c.get("first_name"), c.get("last_name"), str(address.get("street_number", "")), address.get("street_name"))
+
+
+def seed(client: NessieClient, *, dry_run: bool = False) -> SeedReport:
+    """Create what's missing and return the manifest. Never deletes anything."""
     report = SeedReport()
 
     def ensure(label: str, existing: dict[str, Any] | None, create) -> str | None:
@@ -160,9 +180,9 @@ def seed(client: NessieClient, *, dry_run: bool = False, dedupe: bool = False) -
         return None if dry_run else _id_of(create(), label)
 
     customers: dict[str, str | None] = {}
-    by_name = {(c.get("first_name"), c.get("last_name")): c for c in client.get_customers()}
+    by_key = {_customer_key(c): c for c in client.get_customers()}
     for key, body in CUSTOMERS.items():
-        customers[key] = ensure(f"customer {key}", by_name.get((body["first_name"], body["last_name"])), lambda b=body: client.create_customer(b))
+        customers[key] = ensure(f"customer {key}", by_key.get(_customer_key(body)), lambda b=body: client.create_customer(b))
 
     accounts: dict[str, str | None] = {}
     for key, (owner, body) in ACCOUNTS.items():
@@ -176,19 +196,15 @@ def seed(client: NessieClient, *, dry_run: bool = False, dedupe: bool = False) -
         merchants[key] = ensure(f"merchant {key}", by_merchant.get(body["name"]), lambda b=body: client.create_merchant(b))
 
     purchases: dict[str, str | None] = {}
+    purchase_times: dict[str, str] = {}
     seen_purchases: dict[str, dict[tuple, dict[str, Any]]] = {}
-    for plan in purchase_plan():
+    planted = planted_purchase()
+    for plan in [*purchase_plan(), planted]:
         account_id = accounts[plan.account]
         if account_id and plan.account not in seen_purchases:
-            seen_purchases[plan.account] = {}
-            for p in client.get_purchases(account_id):
-                key = (p.get("description"), p.get("purchase_date"), _money(p.get("amount", 0)))
-                if key not in seen_purchases[plan.account]:
-                    seen_purchases[plan.account][key] = p
-                elif dedupe:
-                    report.deleted.append(f"purchase {p['_id']} ({key[0]}, {key[1]}, {key[2]:g})")
-                    if not dry_run:
-                        client.delete_purchase(p["_id"])
+            seen_purchases[plan.account] = {
+                (p.get("description"), p.get("purchase_date"), _money(p.get("amount", 0))): p for p in client.get_purchases(account_id)
+            }
         existing = seen_purchases.get(plan.account, {}).get((plan.description, plan.day.isoformat(), _money(plan.amount)))
         body = {
             "merchant_id": merchants[plan.merchant],
@@ -199,6 +215,8 @@ def seed(client: NessieClient, *, dry_run: bool = False, dedupe: bool = False) -
             "description": plan.description,
         }
         purchases[plan.key] = ensure(f"purchase {plan.key}", existing, lambda a=account_id, b=body: client.create_purchase(a, b))
+        if plan.at is not None and purchases[plan.key]:
+            purchase_times[purchases[plan.key]] = plan.at.isoformat()
 
     bills: dict[str, str | None] = {}
     for key, (account, body) in BILLS.items():
@@ -215,14 +233,8 @@ def seed(client: NessieClient, *, dry_run: bool = False, dedupe: bool = False) -
                 (t.get("description"), t.get("transaction_date"), _money(t.get("amount", 0))): t for t in client.get_transfers(payer_id)
             }
         existing = seen_transfers.get(plan.payer, {}).get((plan.description, plan.day.isoformat(), _money(plan.amount)))
-        body = {
-            "medium": "balance",
-            "payee_id": payee_id,
-            "amount": plan.amount,
-            "transaction_date": plan.day.isoformat(),
-            "status": "completed",
-            "description": plan.description,
-        }
+        body = {"transaction_date": plan.day.isoformat(), "status": "completed", "amount": plan.amount, "description": plan.description}
+        assert tuple(body) == TRANSFER_FIELDS
         transfer_id = ensure(f"transfer {plan.key}", existing, lambda a=payer_id, b=body: client.create_transfer(a, b))
         transfers[plan.key] = {
             "id": transfer_id,
@@ -234,7 +246,11 @@ def seed(client: NessieClient, *, dry_run: bool = False, dedupe: bool = False) -
         }
 
     report.manifest = {
-        "_note": "Written by scripts/seed_nessie.py. Synthetic demo data. Transfer payer, payee and time live here because Nessie's transfer listings omit them.",
+        "_note": (
+            "Written by scripts/seed_nessie.py. Synthetic demo data. Nessie stores no time of day and transfers can't name "
+            "a payee, so purchase times, transfer payees and transfer times live here. The planted $900 is a purchase "
+            "at merchant 'Unknown Payee'."
+        ),
         "base_url": client.base_url,
         "message_at": MESSAGE_AT.isoformat(),
         "customers": customers,
@@ -242,6 +258,15 @@ def seed(client: NessieClient, *, dry_run: bool = False, dedupe: bool = False) -
         "merchants": merchants,
         "bills": bills,
         "purchases": purchases,
+        "purchase_times": purchase_times,
+        "planted": {
+            "type": "purchase",
+            "id": purchases[planted.key],
+            "account_id": accounts[planted.account],
+            "merchant_id": merchants[planted.merchant],
+            "amount": planted.amount,
+            "at": planted.at.isoformat(),
+        },
         "transfers": transfers,
     }
     return report
@@ -254,15 +279,12 @@ def write_manifest(manifest: dict[str, Any], path: Path = SEED_PATH) -> None:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Seed Nessie for the SentinelAI demo (idempotent).")
     parser.add_argument("--dry-run", action="store_true", help="list what would be created; change nothing")
-    parser.add_argument(
-        "--dedupe", action="store_true", help="also delete duplicate purchases (same description, date and amount), keeping one"
-    )
     parser.add_argument("--out", type=Path, default=SEED_PATH)
     args = parser.parse_args(argv)
 
     try:
         client = client_from_settings(args.out)
-        report = seed(client, dry_run=args.dry_run, dedupe=args.dedupe)
+        report = seed(client, dry_run=args.dry_run)
     except NessieError as exc:
         print(f"Nessie error: {exc}", file=sys.stderr)
         return 1
@@ -271,10 +293,6 @@ def main(argv: list[str] | None = None) -> int:
     print(f"{verb} {len(report.created)}, already present {len(report.found)}.")
     for label in report.created:
         print(f"  + {label}")
-    if args.dedupe:
-        print(f"{'Would delete' if args.dry_run else 'Deleted'} {len(report.deleted)} duplicate purchase(s).")
-        for label in report.deleted:
-            print(f"  - {label}")
     if not args.dry_run:
         write_manifest(report.manifest, args.out)
         print(f"IDs saved to {args.out}")
