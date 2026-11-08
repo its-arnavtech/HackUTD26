@@ -50,7 +50,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A16 | Consent screen, campaign view and accuracy page | Arnav | Claude Code (covering for Codex design) | MVP | A7 | done | #30 · PR #55 |
 | A17 | Frontend on the live API | Arnav | Claude Code (covering for Cursor) | MVP | A14, A15, A16, L9 | in progress (`a17-live-api`) | #31 |
 | A18 | End-to-end scenario tests | Arnav | Codex | MVP | G1 | done | #32 · PR #64 |
-| G2 | Gate: all three scenarios end to end in the app | Both | any | MVP | A17, A18, L10, L11 | todo | #33 |
+| G2 | Gate: all three scenarios end to end in the app | Both | Codex | MVP | A17, A18, L10, L11 | in progress | #33 · codex/g2-app-gate |
 | A19 | Replay fixtures and backup video | Arnav | Codex | Demo | G2 | in progress | #34 · codex/a18-replay (preparation; G2 pending) |
 | A20 | Capital One and Best Design pitch | Arnav | any | Demo | G2 | todo | #35 |
 | L12 | NVIDIA and T-Mobile pitch, Devpost | Lavanya | Claude Code | Demo | G2 | todo | #36 |
@@ -61,6 +61,17 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 ## In progress
 
 <!-- One block per active issue. Copy the template, keep it current at every checkpoint. -->
+
+### G2 App integration gate (#33)
+- Agent: Codex (GPT-6), Arnav; C:/HackUTD26/.worktrees/wrap-up; codex/g2-app-gate.
+- Started / checkpoint: 2026-11-08 00:38.
+- Done: L9 #65 and test-race fix #67 merged on main. Imported A17's published b2ad7f05 into this isolated candidate without changing its owner's branch/checkout. Kept lowercase privacy chips, v2 accuracy labels and A17 loading/error/retry imports. Copied the trusted local v2 classifier artifact (ignored), sha256 824af47739cee1d63e3828b3978a01b946bdf324bf5b9c9046334e34bd747b8e.
+- Next: Seed train-only campaigns; test all three app scenarios with real pipeline in record/live mode, then block network and replay the same UI flows. Record actual results. No pass yet.
+- Files: integration merge, planned app gate server/script/tests and service fixtures.
+- Commands: python -m pytest; npm test; npm run build; app gate command to be added.
+- Gotchas: A17 remains with its owner; no changes pushed to their branch. Latest user steering excludes presentation/video and Gemini-key work. Optional public search will be unavailable. L7 test/public holdouts are not re-scored or tuned.
+
+
 
 ### A19 Replay and backup preparation (#34)
 - Agent: Codex (GPT-6), Arnav; C:/HackUTD26/.worktrees/wrap-up; branch codex/a18-replay.
