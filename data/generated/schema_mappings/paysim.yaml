@@ -1,0 +1,60 @@
+name: paysim
+source_system: paysim
+description: >
+  PaySim mobile-money rows. step is an hour offset from origin.
+  type PAYMENT/TRANSFER/CASH_OUT/DEBIT/CASH_IN maps onto the canonical enum.
+  amount is major units. currency is absent and becomes the configured default.
+origin: "2026-01-01T00:00:00Z"
+fields:
+  event_type:
+    source: [type]
+    transform: enum_map
+    missing: null
+    notes: type
+    enum_map:
+      PAYMENT: purchase
+      TRANSFER: transfer_out
+      CASH_OUT: withdrawal
+      DEBIT: transfer_out
+      CASH_IN: deposit
+  timestamp:
+    source: [step]
+    transform: hour_offset
+    missing: null
+    notes: step (hour offset to timestamp)
+  account_id:
+    source: [nameOrig]
+    transform: identity
+    missing: null
+  counterparty_id:
+    source: [nameDest]
+    transform: identity
+    missing: null
+    notes: nameDest
+  amount_minor:
+    source: [amount]
+    transform: multiply
+    factor: 100
+    missing: null
+    notes: amount times 100
+  currency:
+    source: [currency]
+    transform: null_to_default
+    default: USD
+    missing: null
+    notes: null becomes the config default
+  merchant_category:
+    source: [merchant_category]
+    transform: identity
+    missing: null
+    notes: PaySim has no merchant category
+  balance_after_minor:
+    source: [newbalanceOrig]
+    transform: multiply
+    factor: 100
+    missing: null
+    notes: newbalanceOrig
+  labels.is_fraud:
+    source: [isFraud]
+    transform: truthy
+    missing: null

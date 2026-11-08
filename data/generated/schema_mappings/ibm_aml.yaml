@@ -1,0 +1,71 @@
+name: ibm_aml
+source_system: ibm_aml
+description: >
+  IBM Transactions for AML. Account is the sender and Account.1 is the
+  receiver. Amount Paid is major units. Payment Currency is already ISO-4217.
+  Payment Format maps onto channel. Is Laundering maps onto labels.is_fraud.
+origin: null
+fields:
+  event_type:
+    source: [event_type, "Payment Format"]
+    transform: enum_map
+    missing: null
+    notes: Payment Format, defaulting unknown formats to transfer_out
+    enum_map:
+      ACH: transfer_out
+      Wire: transfer_out
+      Cheque: transfer_out
+      Credit Card: purchase
+      Cash: withdrawal
+      Reinvestment: deposit
+      transfer_out: transfer_out
+      purchase: purchase
+  timestamp:
+    source: [Timestamp]
+    transform: to_utc
+    missing: null
+  account_id:
+    source: [Account]
+    transform: identity
+    missing: null
+    notes: Account (from)
+  counterparty_id:
+    source: ["Account.1"]
+    transform: identity
+    missing: null
+    notes: Account.1 (to)
+  amount_minor:
+    source: ["Amount Paid"]
+    transform: multiply
+    factor: 100
+    missing: null
+    notes: Amount Paid times 100
+  currency:
+    source: ["Payment Currency"]
+    transform: null_to_default
+    default: USD
+    missing: null
+  channel:
+    source: ["Payment Format"]
+    transform: enum_map
+    missing: null
+    enum_map:
+      ACH: ach
+      Wire: wire
+      Cheque: ach
+      Credit Card: card_not_present
+      Cash: atm
+      Reinvestment: ach
+  merchant_category:
+    source: [merchant_category]
+    transform: identity
+    missing: null
+    notes: IBM AML has no merchant category
+  balance_after_minor:
+    source: [balance]
+    transform: identity
+    missing: null
+  labels.is_fraud:
+    source: ["Is Laundering"]
+    transform: truthy
+    missing: null

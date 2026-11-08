@@ -17,7 +17,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 | ID | Issue | Owner | Agent | Milestone | Depends on | Status | Branch / PR |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Design | Cybercore claymorphism refresh | Arnav | Codex design | Demo | A17 | done | #73 · PR #74 (`codex/clay-security-design`) |
+| Design | Cyberwave website overhaul | Arnav | Codex design | Demo | A17 | in progress | #73 · PR #74 (`codex/clay-security-design`) |
 | A21 | Synthetic message dataset generator | Arnav | Claude Code | POC | scaffold | done | #1 · #41 (arnav-shared) |
 | A1 | Dataset loader, stratified split and baseline metrics | Arnav | Claude Code | POC | A21 | done | #2 · #41 (arnav-shared) |
 | A2 | Nessie client and idempotent seed script | Arnav | Cursor | POC | scaffold | done | #3 · PR #44 |
@@ -56,10 +56,18 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A20 | Capital One and Best Design pitch | Arnav | any | Demo | G2 | todo | #35 |
 | L12 | NVIDIA and T-Mobile pitch, Devpost | Lavanya | Claude Code | Demo | G2 | todo | #36 |
 | G3 | Rehearse the 3-minute demo three times | Both | any | Demo | A19, A20, L12 | todo | #37 |
+| SYN | Synthetic linked scenarios, payment schema, multiclass SMS | Arnav | Cursor | Demo | A21 | done | #72 · cursor/synthetic-linked-scenarios-6119 |
 
 ---
 
 ## In progress
+
+### Design #73: complete cyberwave overhaul
+- Agent: Codex · Arnav · Folder: `C:\HackUTD26\.worktrees\clay-design` · Branch: `codex/clay-security-design` · PR #74
+- Started / checkpoint: 2026-11-08 06:53.
+- User rejected the clay direction and requested a full Zero Day-inspired redesign. Verified official palette from zeroday.hackutd.co: black, #0e011f, #7828ff, #ff2ee6, #22e0ff, #f4f2ff.
+- Next: rebuild shell and components with editorial type, top navigation, an original signal-flow illustration, and dark functional screens; test and browser-review all flows.
+- Existing API behavior and safety rules remain. Prior screenshots will be replaced with the new design.
 
 <!-- One block per active issue. Copy the template, keep it current at every checkpoint. -->
 
@@ -151,6 +159,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 ## Done log
 
 - 2026-11-08 06:44 · Design #73 · Codex · PR #74 · Responsive silver/cobalt clay workspace across all nine destinations; context-preserving message navigation, mobile disclosure with keyboard focus, existing phone gallery retained. 68 frontend tests, production build, and 688 backend tests pass; browser reviewed at 1280/390/320px with no observed console errors. Screenshots and rationale in docs/FRONTEND_DESIGN.md. Follow-up: review and merge the design PR.
+- 2026-11-08 04:30 · SYN · Cursor (Grok 4.7) · #72 · Seeded generator (no LLM) writes multiclass SMS (200 per taxonomy id, sets A/B, 70/15/15), 32 campaigns, URL/RDAP rows, 320 linked scenarios (40% benign), telecom events, canonical payment schema, six source mappings, and per-scenario Nessie exports. A21 `messages.jsonl`, splits, and eval files were not changed. Datasheet: `data/generated/SYNTHETIC_LINKED_README.md`. Public-set notes: `docs/PUBLIC_DATASETS.md`. 699 backend tests passed.
 
 - 2026-11-08 01:01 · G2 technical evidence / A19 fixtures / reset safety · Codex (GPT-6) with Cursor reset fix · #69 (includes #68) · All three UI flows pass live, record, and offline replay with frozen L7 v2; actual $900 purchase/confirmation, bill paid/$0 due, privacy/campaigns/accuracy, no browser errors; reset-generation regression integrated; 688 backend and 50 frontend tests/build pass · G2 finished per Arnav explicit request; A17 remains separately with its owner; video/presentation excluded by user.
 
@@ -215,6 +224,7 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 ## Decisions
 
 - 2026-11-08 06:44 · User-requested #73 design refresh replaces the main phone-stage presentation with a responsive website workspace. Phone frames remain in the gallery. Silver/graphite/cobalt clay styling takes color inspiration only from the supplied cybercore references; no reference images are embedded. Customer action gates, API contracts, and verdict semantics are preserved.
+- 2026-11-08 04:30 · Synthetic linked data is a new set beside A21, not a replacement. Train and validation are template set A; test is template set B, and those sets share no template, URL, or sender. Canonical events use UTC. `event_type` adds `esim_transfer`, `plan_change`, and `bill_amount_change` because the telecom file needs them. Nessie exports truncate cents and keep the clock time in a manifest, matching live Nessie. The mapping loader (`app/adapters/mapping_loader.py`) picks a source by YAML file name. Classifier scores in `messages_multiclass.jsonl` are placeholders, not a model. `labels` on an event are supervision and must not be shown to Nemotron.
 
 - 2026-11-08 01:07 · G2 refreshed after A17 #70 merged. Only CHANGELOG conflicts occurred; kept completed G2 evidence and all A17 history. No other open implementation dependency remains for #33. Merge #69 as soon as its refreshed CI is green, per Arnav.
 

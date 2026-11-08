@@ -1,0 +1,71 @@
+name: generic_card_processor
+source_system: generic_card_processor
+description: >
+  A generic card-processor auth feed. The mapping table in the brief has no
+  column for this source; this file is the stand-in so the agent can be pointed
+  at a processor export without a code change. amount_cents is already minor
+  units. entry_mode selects the channel.
+origin: null
+fields:
+  event_type:
+    source: [event_type, txn_type]
+    transform: enum_map
+    missing: null
+    notes: auth and capture are purchases; refunds stay refunds
+    enum_map:
+      auth: purchase
+      capture: purchase
+      purchase: purchase
+      refund: refund
+      reversal: chargeback
+  timestamp:
+    source: [authorization_time, auth_ts]
+    transform: to_utc
+    missing: null
+  account_id:
+    source: [card_token, pan_token]
+    transform: identity
+    missing: null
+  counterparty_id:
+    source: [merchant_id]
+    transform: identity
+    missing: null
+  counterparty_name:
+    source: [merchant_name]
+    transform: identity
+    missing: null
+  amount_minor:
+    source: [amount_cents]
+    transform: multiply
+    factor: 1
+    missing: null
+    notes: already cents
+  currency:
+    source: [currency_code]
+    transform: null_to_default
+    default: USD
+    missing: null
+  channel:
+    source: [entry_mode]
+    transform: enum_map
+    missing: null
+    enum_map:
+      CP: card_present
+      "05": card_present
+      CNP: card_not_present
+      "01": card_not_present
+      ECOM: card_not_present
+      "10": card_not_present
+  merchant_category:
+    source: [mcc]
+    transform: identity
+    missing: null
+    notes: ISO-18245 MCC
+  recurring:
+    source: [recurring_indicator]
+    transform: truthy
+    missing: null
+  labels.is_fraud:
+    source: [is_fraud]
+    transform: truthy
+    missing: null

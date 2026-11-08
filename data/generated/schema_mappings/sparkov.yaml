@@ -1,0 +1,57 @@
+name: sparkov
+source_system: sparkov
+description: >
+  Sparkov synthetic credit-card purchases (kartik2112). One row is a purchase.
+  amt is major units. trans_date_trans_time is the timestamp. category is the
+  merchant category. There is no balance or bill.
+origin: null
+fields:
+  event_type:
+    source: [event_type]
+    transform: null_to_default
+    default: purchase
+    missing: null
+    notes: rows are purchases
+  timestamp:
+    source: [trans_date_trans_time]
+    transform: to_utc
+    missing: null
+  account_id:
+    source: [cc_num]
+    transform: identity
+    missing: null
+    notes: cc_num
+  counterparty_id:
+    source: [merchant]
+    transform: identity
+    missing: null
+    notes: merchant
+  counterparty_name:
+    source: [merchant]
+    transform: identity
+    missing: null
+  amount_minor:
+    source: [amt]
+    transform: multiply
+    factor: 100
+    missing: null
+    notes: amt times 100
+  currency:
+    source: [currency]
+    transform: null_to_default
+    default: USD
+    missing: null
+    notes: USD
+  merchant_category:
+    source: [category]
+    transform: identity
+    missing: null
+  balance_after_minor:
+    source: [balance]
+    transform: identity
+    missing: null
+    notes: Sparkov has no running balance
+  labels.is_fraud:
+    source: [is_fraud]
+    transform: truthy
+    missing: null
