@@ -32,7 +32,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A22 | Initial Devpost draft by 11:00 PM Saturday | Arnav | any | POC | none | todo | #13 |
 | A8 | POC gate report | Arnav | Claude Code | POC | A1, A2, A3, A4, L4 | done | #14 · PR #49 (arnav-shared) |
 | L5 | Tool registry and runtime | Lavanya | Claude Code | MVP | L2 | done | #15 · PR #48 |
-| L6 | Privacy audit log and `/api/privacy` | Arnav | Claude Code | MVP | L3, L5 | in progress | #16 · `l6-privacy` |
+| L6 | Privacy audit log and `/api/privacy` | Arnav | Claude Code | MVP | L3, L5 | done | #16 · `l6-privacy` |
 | A9 | Feature extraction | Arnav | Codex | MVP | A3 | done | #17 · PR #49 (arnav-shared) |
 | A10 | `check_link` and `check_sender` tools | Arnav | Cursor | MVP | L1 | done | #18 · PR #43, #50, #51 |
 | A11 | Nessie tools | Arnav | Cursor | MVP | A2 | done | #19 · PR #45 |
@@ -61,16 +61,6 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 <!-- One block per active issue. Copy the template, keep it current at every checkpoint. -->
 
-### L6 Privacy audit log and `/api/privacy` (#16)
-- Agent: Claude Code (Opus 5.5) · Person: Arnav (taken over from Lavanya) · Folder: `C:\HackUTD26-main` · Branch: `l6-privacy`
-- Started: 2026-11-07 22:42 · Last checkpoint: 2026-11-07 22:42
-- Done so far:
-  - Claimed
-- Next step (exact): read L3's `app/state.py` and L5's `app/agent/registry.py`, then build the per-message privacy log and `GET /api/privacy/{id}`
-- Files touched: `CHANGELOG.md`
-- How to run or test: `cd backend; python -m pytest`
-- Notes and gotchas: don't change L8 (`agent/loop.py`) or L9 (`pipeline.py`) code; hooks they need go in the PR description for Lavanya
-- Resumed by: none
 
 ### G1 Gate: scenario 1 end to end in the CLI (#25), prep
 - Agent: Cursor (Claude Opus 5.5, cloud agent) · Person: Arnav · Folder: Cursor cloud VM (`/workspace`) · Branch: `cursor/g1-run-scenario-55c7`
@@ -147,6 +137,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID · tool · PR · summary · follow-ups`.
 
+- 2026-11-07 22:51 · L6 · Claude Code (Opus 5.5, Arnav; taken over from Lavanya) · `l6-privacy` · `app/privacy_log.py`: per-run `PrivacyLog` that L3's `JobRunner` binds around each job; L5's registry records every tool call into it automatically (validated args plus the agent-input fields the tool `reads`); `record_redaction`, `record_local`, `record_model`, `record_tool_result` for L9/L8/L10 (no-ops outside a run, never raise); store keeps every run's records (superseded runs too) and the latest redaction, cleared on reset; `GET /api/privacy/{id}` serves it when the route isn't mocked; `never_sent` lists only items checked against every payload (name and other hidden words, account digits, phone numbers, original text, sender number, full link), a failed check drops the item and logs the leak without its value; 19 tests (492 pass) · follow-ups: L9 and L8 call the four hooks (PR description); frontend chip regex misses `<PHONE_HASH_…>` (lowercase hex)
 - 2026-11-07 22:38 · merge pass · Claude Code (Opus 5.5) · #49 #44 #45 #46 #50 #51 #52 #53 · Merged all eight in order with merge commits; fixed CHANGELOG-only conflicts on #44, #45, #50, #51 and #52 (both sides kept) and refreshed #53 after retargeting; main: pytest 473 passed / 15 skipped, frontend build OK, vitest 28 passed; `run_scenario` 1 to 3 run with the stand-in agent · follow-ups: G1 needs L8; L7 classifier still the baseline
 - 2026-11-07 22:05 · A14 · Cursor (Claude Opus 5.5) · #53 · Result card, live trail and privacy panel ported from the design lab onto `ResultPoll` and `PrivacyView`: verdict and confidence in words, one primary action after a tap, "I clicked this link", trail steps animate in as polls arrive, privacy shows the redacted message and what each check received; gallery slots filled (unsure and mixed are display specimens); 28 frontend tests · follow-ups: A15 recovery, A16 consent, campaigns and accuracy
 - 2026-11-07 21:55 · A7 · Cursor (Claude Opus 5.5) · #52 · Design lab (`design-lab-snapshot` 813a3c1) ported without redesign: tokens, bundled fonts, all lab components on the contract types, stage shell with react-router, inbox polling the mocks ("Checking…" then a verdict chip), `/gallery` with all 21 states rendered from `backend/app/mocks` (no fetch); Vitest + Testing Library set up and run in CI, 18 tests · follow-ups: A14 fills the result, trail and privacy gallery slots; A15/A16 fill recovery, consent, campaigns and accuracy
@@ -183,6 +174,7 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 
 ## Decisions
 
+- 2026-11-07 22:51 · L6 privacy log: the registry now records a tool's `reads` as bare field names with their values (`received_fields: ["url_id", "urls"]`, `payload.urls = [...]`), not `agent_input.urls` without values, so the panel shows exactly what the tool read and the frontend labels match. Records are kept for every run of a message (an audit log keeps what was really sent, even by a superseded run); the poll still shows only the latest run. Each model gets one entry per run; tool results sent back to it are appended to `payload.tool_results`. `never_sent` only lists checked items, so the panel never claims more than was checked (POC_MVP 4.4).
 - 2026-11-07 22:42 · Arnav takes L6 (#16, privacy audit log and `/api/privacy`) and L10 (#26, `public_scam_reports`) from Lavanya; both run on Arnav's Claude Code. Lavanya keeps L7, L8, L9 and L11.
 - 2026-11-07 22:05 · A14 display rules: the result card shows one primary action (the agent's first action; a billing result leads with "Use the official app", as in the lab). The message bubble uses the privacy log's redacted text only when that text is the redacted form of the inbox message. `unsure` and `mixed` are gallery specimens derived from scenario 1, because the mock files have no poll in those states. Nothing was added to `types.ts`.
 - 2026-11-07 21:55 · Frontend structure after the A7 port: each screen exports a presentational `*View` that takes contract types and a default container that loads data through `src/api.ts` (hooks in `src/hooks.ts`). `/gallery` renders the views from `src/fixtures.ts`, which imports `backend/app/mocks/*.json`, so the gallery never fetches. Lab display fields that the contracts lack (`brand`, `activity_summary`, `next_step`) are derived in the UI; nothing was added to `types.ts`. The inbox shows the real sender, formatted, not the brand the text claims.

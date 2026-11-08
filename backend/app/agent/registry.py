@@ -2,7 +2,8 @@
 
 Each tool registers its name, argument model and result model. The registry
 exports JSON schemas for Nemotron, applies a per-tool timeout, returns errors as
-data, and records every call's inputs for the privacy log (L6).
+data, and records every call's inputs for the privacy log (L6): to the run's
+`privacy_log` automatically while a job runs, and to `on_call` if one is given.
 
 The six tools stay plain functions in their own modules (Arnav's `link`,
 `sender`, `campaign`, `nessie_tools`; Lavanya's `public_reports`), with the
@@ -47,6 +48,7 @@ from typing import Any
 from pydantic import BaseModel, ValidationError
 
 from app import contracts as c
+from app import privacy_log
 from app.contracts import AgentInput, ToolName
 
 log = logging.getLogger(__name__)
@@ -205,8 +207,11 @@ class ToolRegistry:
             return fail("invalid_args", f"Invalid arguments for {tool_name}: {problems}")
 
         call_args = parsed.model_dump(mode="json", exclude_none=True)
-        if on_call is not None:
-            _record(on_call, spec, call_args)
+        # L6: every call that reaches a tool goes into the run's privacy log, plus `on_call` if given.
+        run_log = privacy_log.current()
+        for hook in (on_call, run_log if run_log is not on_call else None):
+            if hook is not None:
+                _record(hook, spec, call_args, agent_input)
 
         ctx = contextvars.copy_context()  # keep message_id on the tool's log lines
         future = self._pool.submit(ctx.run, spec.fn, parsed, agent_input)
@@ -256,14 +261,17 @@ def _short_error(err: dict[str, Any]) -> str:
     return f"{loc}: {err.get('msg', 'invalid')}"
 
 
-def _record(on_call: PrivacyHook, spec: ToolSpec, call_args: dict[str, Any]) -> None:
+def _record(on_call: PrivacyHook, spec: ToolSpec, call_args: dict[str, Any], agent_input: AgentInput) -> None:
+    """What the tool received: its validated arguments plus the agent-input fields it reads (`spec.reads`)."""
     try:
+        read = agent_input.model_dump(mode="json", include=set(spec.reads))
+        payload = {**{k: read[k] for k in spec.reads if k in read and k not in call_args}, **call_args}
         on_call(
             c.PrivacyRecipient(
                 recipient=spec.name.value,
                 kind="tool",
-                received_fields=[*call_args.keys(), *(f"agent_input.{r}" for r in spec.reads)],
-                payload=call_args,
+                received_fields=[*call_args.keys(), *(r for r in spec.reads if r not in call_args)],
+                payload={k: payload[k] for k in [*call_args.keys(), *spec.reads] if k in payload},
                 at=datetime.now(timezone.utc),
             )
         )
