@@ -1,6 +1,8 @@
-"""Local blocklist of scam domains, built from the train split only (POC_MVP.md 7.6, DATA_SPEC.md 2).
+"""Local blocklist of scam domains, built from A1's train split only (POC_MVP.md 7.6, DATA_SPEC.md 2).
 
 Build it with `python -m scripts.build_blocklist`; `check_link` reads `data/blocklist.json`.
+The split comes from `classifier.baseline.load_split()` (`data/generated/splits.json`),
+so the same train set feeds the baseline, L7 and this list.
 """
 
 from __future__ import annotations
@@ -18,33 +20,25 @@ from app.tools.brands import load_brands
 from app.tools.domains import SHORTENERS, domains_in_text
 
 BLOCKLIST_PATH = DATA_DIR / "blocklist.json"
+BUILT_FROM = "data/generated/splits.json (train)"
 
-# TODO(A1): point this at A1's saved train split once it lands, then rebuild the blocklist from it.
-A1_TRAIN_SPLIT = DATA_DIR / "splits" / "train.jsonl"
-PROVISIONAL_TRAIN_SPLIT = DATA_DIR / "provisional" / "train.jsonl"
-
-
-class NotTrainSplitError(ValueError):
-    """Raised when asked to build the blocklist from anything but a train split."""
-
-
-def default_train_split() -> Path:
-    return A1_TRAIN_SPLIT if A1_TRAIN_SPLIT.exists() else PROVISIONAL_TRAIN_SPLIT
+# Reserved example domains (RFC 2606) and free-mail providers: generated messages use
+# them as placeholders or in email addresses, and blocking them would flag legit mail.
+NEVER_BLOCK = frozenset(
+    {"example.com", "example.net", "example.org", "email.com", "gmail.com", "yahoo.com", "outlook.com", "hotmail.com", "icloud.com", "aol.com"}
+)
 
 
-def read_messages(path: Path) -> list[Message]:
-    lines = path.read_text(encoding="utf-8").splitlines()
-    return [Message.model_validate_json(line) for line in lines if line.strip()]
+def train_messages() -> list[Message]:
+    """A1's saved train split. Validation and test are never read here."""
+    from app.classifier.baseline import load_split  # scikit-learn; keep it out of check_link's import
 
-
-def _check_train_only(path: Path) -> None:
-    name = path.name.lower()
-    if "train" not in name or any(word in name for word in ("test", "val")):
-        raise NotTrainSplitError(f"{path.name}: the blocklist is built from the train split only")
+    return load_split().train
 
 
 def build_domains(messages: Iterable[Message]) -> list[str]:
-    """Domains seen in scam-labeled messages, minus official brand domains, shorteners and anything seen in a legit message."""
+    """Domains seen in scam-labeled messages, minus official brand domains, shorteners,
+    reserved and free-mail domains, and anything seen in a legit message."""
     official = {d for brand in load_brands() for d in brand.official_domains}
     scam: set[str] = set()
     legit: set[str] = set()
@@ -52,19 +46,14 @@ def build_domains(messages: Iterable[Message]) -> list[str]:
         if message.is_scam is None:
             continue
         (scam if message.is_scam else legit).update(domains_in_text(message.text))
-    return sorted(scam - legit - official - SHORTENERS)
+    return sorted(scam - legit - official - SHORTENERS - NEVER_BLOCK)
 
 
-def build_blocklist(train_path: Path) -> dict[str, Any]:
-    _check_train_only(train_path)
-    messages = read_messages(train_path)
-    try:
-        built_from = train_path.resolve().relative_to(DATA_DIR.parent).as_posix()
-    except ValueError:
-        built_from = train_path.name
+def build_blocklist(messages: Iterable[Message] | None = None) -> dict[str, Any]:
+    """Build from A1's train split; `messages` is for tests."""
+    messages = list(train_messages() if messages is None else messages)
     return {
-        "built_from": built_from,
-        "provisional": train_path.resolve() != A1_TRAIN_SPLIT.resolve(),
+        "built_from": BUILT_FROM,
         "built_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "messages_read": len(messages),
         "domains": build_domains(messages),

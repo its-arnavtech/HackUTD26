@@ -210,6 +210,18 @@ Confirm field names against the Nessie docs on first call; adjust `integrations/
 | Bill | `_id`, `status`, `payee`, `nickname`, `payment_date`, `recurring_date`, `payment_amount` |
 | Merchant | `_id`, `name`, `category` |
 
+**What live Nessie actually does** (checked 2026-11-07, A2 and P4):
+- **Transfers can't name a receiver.** Creating one accepts exactly `transaction_date`, `status`, `amount` and `description`. `medium`, `payee_id` and every other receiver field are "extra fields not permitted".
+  - Transfer listings carry `id`, not `_id`, and no `payer_id` or `payee_id`.
+  - The seed manifest (`data/nessie_seed.json`) supplies `payer_id`, `payee_id` and the time `at`, and `integrations/nessie.py` fills them in.
+- **Purchases and transfers have a date but no time.** Purchase amounts are stored as whole dollars, so $49.30 reads back as 49.
+- **An empty list answers 404** `"No … found"`, which the client turns into `[]`.
+- **There is no DELETE for purchases**, and no `/transfers` routes.
+- **The planted $900** (scenario 2) is therefore a **purchase at merchant "Unknown Payee"**, not a transfer to an unknown account. It's on Linda's checking, 17 minutes after the message, with its exact time in the manifest's `purchase_times`.
+  - `nessie_recent_activity` flags it as "first purchase at this merchant" and far above the 30-day purchase median (10x).
+  - In a "Was this you?" item it has `type: "purchase"`.
+- **Demo customer:** "Linda Sentinel" at 802 Demo Way. The one at 800 Demo Way holds an earlier run's duplicate purchases and is abandoned.
+
 ## 7. How we measure
 
 | Measure | Compared against | Reported as |
