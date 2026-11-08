@@ -82,3 +82,15 @@ The 57 exact duplicates mostly come from 7 jobs whose seeded choices happened to
 ## Privacy
 
 All synthetic. No real person's data: names are invented, phone numbers are in the fictional 555-01XX range, emails are random tokens, and addresses are generic. DeepSeek was used only offline to write this data. It never saw a customer message.
+
+
+## L7 follow-up: separate public SMS extension
+
+The synthetic files, counts and A1 split above are unchanged. Arnav later
+authorized binary classifier development on a saved 50% half of the cached
+public SMS dataset, with an internal validation slice. The other 50% is held
+out from that follow-up. Public data is not added to these generated files
+and supplies no synthetic scam-category labels. See
+[the public extension datasheet](../PUBLIC_SMS_DATASHEET.md) and
+`data/public_sms_splits.json` for exact IDs, seed, counts, duplicate grouping,
+prior v1 evaluation exposure and the final comparison protocol.

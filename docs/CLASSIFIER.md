@@ -1,4 +1,46 @@
-# L7 local classifier
+# L7 public-data follow-up (v2)
+
+The current pipeline loader expects the local v2 artifact. From `backend/`:
+
+```powershell
+.\.venv\Scripts\python.exe -m scripts.train_public_classifier --prepare-split
+.\.venv\Scripts\python.exe -m scripts.train_public_classifier
+```
+
+The saved split is immutable; `--prepare-split` verifies it instead of choosing
+new IDs. Only synthetic train plus saved public fitting rows fit the binary
+head and TF-IDF. The category head receives synthetic scam labels only;
+public spam never receives fabricated category labels. Synthetic/public
+validation select representation, C and legitimate bias. The report is
+`eval/classifier_validation.json`; the ignored artifact is
+`data/models/classifier-v2.pkl` (trusted local pickle, version checked).
+
+`app.classifier.predict.predict(text_redacted, features)` keeps its existing
+`ClassifierOutput` contract, and `model.predict(messages)` supports A13.
+Restart the process after retraining. G1 explicitly labels its baseline
+fallback when the local artifact is missing. L9 owns API pipeline wiring.
+
+After committing the frozen selection, the explicit final step is
+`python -m scripts.train_public_classifier --evaluate`. It opens the public
+holdout only after writing a freeze marker. V2 scores synthetic test/public
+holdout once; v1 and the baseline score the same public half for comparison.
+The final marker blocks repeated evaluations. No new raw-text scoring pass is
+run, so v2 `redaction_cost` is null; historical v1 cost stays archived.
+
+See [public datasheet](../data/PUBLIC_SMS_DATASHEET.md) for the saved protocol,
+prior exposure, sample sizes and limitations. V1 reports are preserved in
+`eval/classifier_v1/`. The old full-public and new half-public results must be
+labeled separately. Do not tune against the final held-out scores.
+
+---
+
+## Historical v1 documentation and result
+
+The following documents the completed PR #58 experiment. Its evaluation-only
+public-data restriction was superseded for the saved development half by
+Arnav's explicit follow-up request. Its artifact and metrics remain archived.
+
+# L7 local classifier (v1)
 
 Run from `C:\HackUTD26-codex\backend` in PowerShell:
 
