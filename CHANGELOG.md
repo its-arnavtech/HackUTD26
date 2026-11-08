@@ -34,7 +34,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | L5 | Tool registry and runtime | Lavanya | Claude Code | MVP | L2 | todo | #15 |
 | L6 | Privacy audit log and `/api/privacy` | Lavanya | Claude Code | MVP | L3, L5 | todo | #16 |
 | A9 | Feature extraction | Arnav | Codex | MVP | A3 | todo | #17 |
-| A10 | `check_link` and `check_sender` tools | Arnav | Cursor | MVP | L1 | todo | #18 |
+| A10 | `check_link` and `check_sender` tools | Arnav | Cursor | MVP | L1 | in progress | #18 · `cursor/a10-link-sender-55c7` |
 | A11 | Nessie tools | Arnav | Cursor | MVP | A2 | todo | #19 |
 | A12 | Campaign store, seeding and `match_campaign` | Arnav | Codex | MVP | A1, A3 | todo | #20 |
 | A13 | Evaluation harness | Arnav | Claude Code | MVP | A1 | todo | #21 |
@@ -76,6 +76,17 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - Resumed by: <tool> from <tool>, if any
 ```
 
+### A10 `check_link` and `check_sender` tools (#18)
+- Agent: Cursor (Claude Opus 5.5, cloud agent) · Person: Arnav · Folder: Cursor cloud VM (`/workspace`) · Branch: `cursor/a10-link-sender-55c7`
+- Started: 2026-11-07 18:53 · Last checkpoint: 2026-11-07 18:53
+- Done so far:
+  - Claimed (CHANGELOG only: the cloud agent can't comment on issues)
+  - `data/brands.json` sources checked: Capital One short codes are on capitalone.com/digital/sms-terms; T-Mobile's pages don't list its texting numbers, so they stay empty
+- Next step (exact): write `tools/brands.py`, `integrations/rdap.py`, blocklist builder with a provisional train split, then `check_link` and `check_sender`, then tests
+- Files touched: `CHANGELOG.md`
+- How to run or test: `python -m pytest` in `backend/`
+- Notes and gotchas: L1 (`cache.py`) and L5 (registry) are still stubs, and A1's saved split doesn't exist yet. Leave TODOs for all three.
+- Resumed by: none
 
 ---
 
