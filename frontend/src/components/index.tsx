@@ -446,6 +446,14 @@ export function CampaignCard({
 const categoryLabels: Record<string, string> = {
   billing_scam: "Fake billing",
   bank_impersonation: "Bank impersonation",
+  delivery_scam: "Fake delivery",
+  account_security: "Account security",
+  toll_government: "Toll or government",
+  prize_refund: "Prize or refund",
+  job_offer: "Job offer",
+  conversation_lure: "Conversation lure",
+  legit: "Legitimate messages",
+  legitimate: "Legitimate messages",
 };
 export const categoryLabel = (category: string) =>
   categoryLabels[category] ||

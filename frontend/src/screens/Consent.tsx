@@ -1,5 +1,75 @@
-import Placeholder from "../components/Placeholder";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Eye, LockKeyhole, WalletCards } from "lucide-react";
+import { ActionButton, Notice, PageTitle } from "../components";
+import { setLinked } from "../linking";
 
-export default function Consent() {
-  return <Placeholder name="Consent" issue="A16" note="Link your Capital One account so SentinelAI can check messages against your real activity. What we read, what we never store. Approve or skip." />;
+/** One-time consent: link the account (simulated) or skip. Nothing is linked until a tap. */
+export default function Consent({ initiallyLinked = false }: { initiallyLinked?: boolean }) {
+  const navigate = useNavigate();
+  const [linked, setLinkedState] = useState(initiallyLinked);
+  return (
+    <div className="consent-screen screen-pad">
+      <div className="consent-art" aria-hidden="true">
+        <div className="orbit orbit-one" />
+        <div className="orbit orbit-two" />
+        <span className="paper-note">
+          <WalletCards size={34} />
+          <i />
+          <i />
+        </span>
+        <span className="art-lock">
+          <LockKeyhole size={25} />
+        </span>
+        <span className="art-star">✧</span>
+      </div>
+      <PageTitle
+        eyebrow="A little certainty"
+        description="Check the message against your real activity, so you don’t have to guess."
+      >
+        Let’s check
+        <br />
+        it together.
+      </PageTitle>
+      <div className="consent-points">
+        <div>
+          <Eye size={22} />
+          <p>Read recent activity and bill status from your linked account.</p>
+        </div>
+        <div>
+          <LockKeyhole size={22} />
+          <p>Personal details are hidden before AI checks. Bank records stay in this session.</p>
+        </div>
+      </div>
+      {linked ? (
+        <>
+          <Notice>Capital One linked for this demo.</Notice>
+          <ActionButton onClick={() => navigate("/inbox")} arrow>
+            Continue to messages
+          </ActionButton>
+        </>
+      ) : (
+        <ActionButton
+          onClick={() => {
+            setLinkedState(true);
+            setLinked(true);
+          }}
+          icon={<WalletCards size={21} />}
+          arrow
+        >
+          Link Capital One
+        </ActionButton>
+      )}
+      <button
+        className="text-button"
+        onClick={() => {
+          setLinked(false);
+          navigate("/inbox");
+        }}
+      >
+        Continue without linking
+      </button>
+      <p className="quiet-note">You choose every action. We never move money.</p>
+    </div>
+  );
 }
