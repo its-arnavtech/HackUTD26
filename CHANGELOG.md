@@ -36,7 +36,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A9 | Feature extraction | Arnav | Codex | MVP | A3 | done | #17 · #49 (arnav-shared) |
 | A10 | `check_link` and `check_sender` tools | Arnav | Cursor | MVP | L1 | done | #18 · PR #43 |
 | A11 | Nessie tools | Arnav | Cursor | MVP | A2 | todo | #19 |
-| A12 | Campaign store, seeding and `match_campaign` | Arnav | Codex | MVP | A1, A3 | in progress | codex-shared / #20 |
+| A12 | Campaign store, seeding and `match_campaign` | Arnav | Codex | MVP | A1, A3 | done | #20 · #49 (arnav-shared) |
 | A13 | Evaluation harness | Arnav | Claude Code | MVP | A1 | done | #21 · #49 (arnav-shared) |
 | L7 | Improved classifier | Lavanya | Claude Code | MVP | A1, A9, A13 | todo | #22 |
 | L8 | Agent loop with plan, re-plan and guardrails | Lavanya | Claude Code | MVP | A4, L5 | todo | #23 |
@@ -61,14 +61,6 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 <!-- One block per active issue. Copy the template, keep it current at every checkpoint. -->
 
-### A12 Campaign store, seeding and match_campaign (#20)
-- Agent: Codex (GPT-6) · Person: Arnav · Folder: C:\HackUTD26-codex · Branch: codex-shared (origin/arnav-shared)
-- Started: 2026-11-07 20:42 · Last checkpoint: 2026-11-07 21:04
-- Done so far: Fingerprint-only SQLite store, pure match/list hooks, explicit idempotent record hook, guarded train/validation loader and reproducible seed CLI. 25 campaign tests; full backend 337 passed, 1 skipped. Seeded 1127 train scams into 267 clusters; repeat inserts zero. Validation selected semantic weight 0.75 and threshold 0.75 (family-proxy F1 0.759, precision 0.709, recall 0.817). Scenario 3 matches 28 historical observations at similarity 0.924; genuine last-24-hour count is zero.
-- Next step (exact): Resolve shared PR #49 conflicts with main, rerun checks if integration changes require it, finish issue checkboxes/CHANGELOG and update PR to include Closes #20. Do not merge the PR.
-- Files touched: backend/app/tools/campaign.py, backend/app/tools/campaign_store.py, backend/scripts/seed_campaigns.py, backend/tests/test_campaign.py, data/campaign_calibration.json, CHANGELOG.md
-- How to run or test: From backend, .\.venv\Scripts\python.exe -m scripts.seed_campaigns --verify-scenario3; .\.venv\Scripts\python.exe -m pytest -q (clear inherited service credentials only in child shell, per A9 Decisions).
-- Notes and gotchas: Persist only hashes, fixed semantic bits, controlled brand/category/domain patterns and original timestamps; no raw/redacted wording, IDs or URLs. Authored scenarios and test/public data never seed/calibrate; the scenario probe uses an annotated category, not a classifier prediction. Metrics measure brand/category-family agreement, not campaign accuracy. Pattern previews are fixed descriptions, not stored quotes. Campaign lookup excludes self and future observations and never changes counts. Use campaigns-v4.sqlite3; changed fingerprints/calibration require a fresh database. L5/L9 still need to register/wire match_campaign, list_campaigns and record_message; routes/contracts remain owned by Lavanya.
 
 
 
@@ -110,6 +102,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID · tool · PR · summary · follow-ups`.
 
+- 2026-11-07 21:31 · A12 · Codex (GPT-6); resumed by Claude Code (Opus 5.5) from Codex to finish · #49 · Fingerprint-only SQLite campaign store (hashes, semantic bits, brand/category/domain patterns, timestamps; no wording, IDs or URLs), `match_campaign` and list/record hooks, seed CLI from the train split (1,127 train scams → 267 clusters, rerun inserts 0), threshold from validation (semantic weight 0.75, threshold 0.75; family-proxy F1 0.759), scenario 3 matches 28 historical observations at 0.924; 25 campaign tests. Claude Code merged `origin/main` into `arnav-shared` (CHANGELOG both sides; requirements keep `pyarrow==26.0.1` + `numpy==2.4.6`): 411 passed, 1 skipped · follow-ups: L5/L9 register and wire `match_campaign`, `list_campaigns` and `record_message` (routes owned by Lavanya); use `campaigns-v4.sqlite3`, fresh DB after fingerprint/calibration changes
 - 2026-11-07 20:27 · A9 · Codex (GPT-6) · #49 · Local typed URL/message features and first claimed brand; 10/10 hand-written messages, 58 feature checks, full backend 312 passed · follow-ups: L7 consumes features; A12 next after handoff
 
 - 2026-11-07 20:25 · A8 · Claude Code (Opus 5.5) · #49 · `docs/POC_RESULTS.md`: reran the gates. P1 pass (0.807 / 0.127, no pivot), P2 pass (5/5 native, median 2,635 ms), P5 pass (20/20); P3 pending (Gemini key Sunday morning, L4), P4 fail on first live run at 20:25 (two A2 bugs, see Blockers); 254 tests pass · follow-ups: update the P3 row Sunday; rerun P4 after A2's fix
