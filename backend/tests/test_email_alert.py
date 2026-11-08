@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import ipaddress
+import os
 import smtplib
 import socket
 import ssl
+import tempfile
 import threading
 from datetime import datetime, timedelta, timezone
 from email import message_from_string, policy
@@ -60,8 +62,10 @@ class SmtpBox:
         key_pem = key.private_bytes(
             serialization.Encoding.PEM, serialization.PrivateFormat.TraditionalOpenSSL, serialization.NoEncryption()
         )
-        self._cert_path = f"/tmp/sentinel-alert-{id(self)}.crt"
-        self._key_path = f"/tmp/sentinel-alert-{id(self)}.key"
+        # tempfile, not /tmp: the team runs pytest on Windows.
+        tmp = tempfile.gettempdir()
+        self._cert_path = os.path.join(tmp, f"sentinel-alert-{id(self)}.crt")
+        self._key_path = os.path.join(tmp, f"sentinel-alert-{id(self)}.key")
         with open(self._cert_path, "wb") as handle:
             handle.write(self.cert_pem)
         with open(self._key_path, "wb") as handle:
