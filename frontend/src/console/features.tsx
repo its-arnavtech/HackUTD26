@@ -2,10 +2,11 @@
 // agent accuracy, the agent's bank-activity source, trusted-contact alert, scam-wave early warning.
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { AlertTriangle, BarChart3, Database, Phone, Radio, Send, UserRound, Waves } from "lucide-react";
+import { AlertTriangle, BarChart3, Database, Radio, Send, UserRound, Waves } from "lucide-react";
 import { categoryLabel } from "../components";
 import type { InboxItem, ResultPoll } from "../types";
 import { Shell } from "./Shell";
+import { TrustedAlertConsole } from "../trustedAlert";
 import { toolTitles } from "./timeline";
 
 // ---------------------------------------------------------------------------
@@ -197,7 +198,6 @@ export function TrustedContactCard({ message, poll }: { message?: InboxItem; pol
   const [loaded, setLoaded] = useState(false);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [note, setNote] = useState<string>();
   const [problem, setProblem] = useState<string>();
   const result = poll?.status === "done" ? poll.result : undefined;
 
@@ -218,10 +218,6 @@ export function TrustedContactCard({ message, poll }: { message?: InboxItem; pol
       setProblem(e instanceof Error ? e.message : "That didn’t save.");
     }
   };
-  const alert = async () => {
-    const r = await call<{ note: string }>("/api/actions", "POST", { message_id: message.message_id, action: "alert_trusted_contact" });
-    setNote(r.note);
-  };
 
   return (
     <section className="cx-card sx-trusted" aria-label="Trusted contact">
@@ -235,9 +231,7 @@ export function TrustedContactCard({ message, poll }: { message?: InboxItem; pol
           <p>
             {contact.name} <span className="cx-muted">({contact.phone_masked})</span>
           </p>
-          <button className="cx-button cx-button-primary" onClick={() => void alert()}>
-            <Phone size={15} aria-hidden="true" /> Tell {contact.name}
-          </button>
+          <TrustedAlertConsole messageId={message.message_id} label={`Tell ${contact.name}`} />
         </div>
       ) : (
         <div className="sx-trusted-form">
@@ -249,11 +243,6 @@ export function TrustedContactCard({ message, poll }: { message?: InboxItem; pol
         </div>
       )}
       {problem && <p className="cx-alert">{problem}</p>}
-      {note && (
-        <p className="cx-receipt" role="status">
-          <Send size={14} aria-hidden="true" /> {note}
-        </p>
-      )}
     </section>
   );
 }

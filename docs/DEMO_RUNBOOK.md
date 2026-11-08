@@ -41,6 +41,26 @@ The inbox reloads the three messages. A check that was still running is dropped,
 
 Also, before judging: Consent can link or skip, and skip does not start a bank check. Campaigns and Accuracy open from the stage. An unknown id such as `/api/messages/msg_9999/result` is a 404. Accuracy reads `eval/metrics.json`, including the public holdout labels already published. Do not retrain or rescore.
 
+## Trusted contact call (L16)
+
+On the scenario 2 recovery checklist (phone demo and console), "Alert my trusted contact" calls the trusted contact. If the call isn't answered, the backend emails them instead. Nothing happens until the customer taps, and the call and email carry a content-free alert only, never the scam text, links or account data (`DATA_SPEC.md` section 10).
+
+**Setup keys** in the repo `.env` (names in `.env.example`; never print them):
+- `VOICE_ALERTS_ENABLED=true` and `DEMO_MODE=live`.
+- Twilio: `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_FROM_NUMBER` (the SentinelAI number, E.164).
+- Gmail sender: the sending address and its Google app password (not the account password).
+- The trusted contact: Lavanya's phone number (E.164) and email address.
+
+**Once, before the demo:** Lavanya adds the Gmail sender address to her contacts so the fallback email lands in Primary, not Spam or Promotions.
+
+The screen polls every 2 seconds while the call rings, and stops when the alert is done or after 120 seconds. There is a 60-second cooldown between alerts for the same message.
+
+- **Path A, she answers.** Run scenario 2 to the checklist and tap "Alert my trusted contact". The status reads "Calling your trusted contact…", then "They picked up."
+- **Path B, she declines.** Wait out the cooldown and tap again. She declines the call. The status reads "They didn’t pick up. We left a voicemail and emailed them." (or "…We emailed them." when no voicemail was left), and the email arrives in her Primary tab. If it doesn't, mark it "Not spam" or move it to Primary and repeat once.
+- If nothing could be sent, the status reads "We couldn’t reach them. Here’s what to tell them:" followed by the alert text, shown as plain text.
+
+**Replay and flag off are simulated.** With `DEMO_MODE=replay` or `VOICE_ALERTS_ENABLED=false`, no call or email goes out and every status line ends in "(simulated)".
+
 ## Replay fallback
 
 CLI fixtures are already on `main` and were checked with sockets blocked. They do **not** replay the app: cache keys include the message id, the classifier output, the phone-hash salt, and the model.
