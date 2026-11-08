@@ -46,7 +46,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | L11 | Recovery mode re-plan | Lavanya | Claude Code | MVP | L8, A11 | todo | #27 |
 | A14 | Result card, "How we checked" and privacy panel | Arnav | Cursor (covering for Codex design) | MVP | A7 | done | #28 · `cursor/a14-result-trail-privacy-55c7` |
 | A15 | Recovery UI | Arnav | Claude Code (covering for Codex design) | MVP | A14 | done | #29 · PR #54 |
-| A16 | Consent screen, campaign view and accuracy page | Arnav | Codex design (GPT 6 Astra) | MVP | A7 | todo | #30 |
+| A16 | Consent screen, campaign view and accuracy page | Arnav | Claude Code (covering for Codex design) | MVP | A7 | in progress | #30 · `a16-consent-campaign-accuracy` |
 | A17 | Frontend on the live API | Arnav | Cursor | MVP | A14, A15, A16, L9 | todo | #31 |
 | A18 | End-to-end scenario tests | Arnav | Claude Code | MVP | G1 | in progress | #32 · `arnav-shared` |
 | G2 | Gate: all three scenarios end to end in the app | Both | any | MVP | A17, A18, L10, L11 | todo | #33 |
@@ -73,6 +73,16 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - Notes and gotchas: ...
 - Resumed by: <tool> from <tool>, if any
 ```
+
+### A16 Consent screen, campaign view and accuracy page (#30)
+- Agent: Claude Code (Opus 5.5) · Person: Arnav · Folder: C:\HackUTD26 · Branch: a16-consent-campaign-accuracy (stacked on `a15-recovery`, PR #54, for its `linking.ts`)
+- Started: 2026-11-07 22:24 · Last checkpoint: 2026-11-07 22:24
+- Done so far:
+  - Claimed.
+- Next step (exact): port the lab's `Consent.tsx`, `Campaigns.tsx` and `Accuracy.tsx` into `Consent.tsx`, `CampaignView.tsx` and `AccuracyPage.tsx` on the `Campaign` and `Metrics` contracts (the accuracy page reads the real `eval/metrics.json` shape); fill gallery slots 01, 15, 20 and the accuracy section.
+- Files touched: CHANGELOG.md
+- How to run or test: `cd frontend; npm test; npm run build`
+- Notes and gotchas: covering for Codex design (out of usage); port, don't redesign.
 
 ### A18 End-to-end scenario tests (#32)
 - Agent: Claude Code (Opus 5.5) · Person: Arnav · Folder: `C:\HackUTD26-cc` · Branch: `arnav-shared`
