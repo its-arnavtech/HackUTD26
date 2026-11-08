@@ -34,6 +34,10 @@ screenshots and video are available in that workflow's artifacts.
 
 ## App acceptance, after L9 and A17 merge
 
+The repeatable real-API browser gate and recorded app fixtures are documented
+in [APP_GATE.md](APP_GATE.md). Use `npm run test:app` with `GATE_MODE=replay`
+and the pinned local v2 classifier artifact for the authored offline flows.
+
 Set `USE_MOCKS=false` in your own `.env`, use `DEMO_MODE=live`, and launch
 `scripts/dev.ps1`. Check `/api/health`: every required route should be live.
 Use the existing synthetic Nessie seed; no new banking writes are necessary.
