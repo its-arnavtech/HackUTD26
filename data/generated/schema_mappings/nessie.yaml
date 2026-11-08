@@ -1,0 +1,90 @@
+name: nessie
+source_system: nessie
+description: >
+  Capital One Nessie objects (DATA_SPEC section 6) into the canonical event.
+  Live Nessie stores purchase amounts as whole dollars and dates without a
+  time of day. amount_minor is amount times 100 after that truncation.
+  A transfer object has no in/out flag; a bare "transfer" maps to transfer_out.
+  Pass event_type when the export already knows the canonical type.
+origin: null
+fields:
+  event_type:
+    source: [event_type, _object, object_type]
+    transform: enum_map
+    missing: null
+    notes: purchase/transfer/bill/deposit/withdrawal object type
+    enum_map:
+      purchase: purchase
+      transfer: transfer_out
+      transfer_out: transfer_out
+      transfer_in: transfer_in
+      deposit: deposit
+      withdrawal: withdrawal
+      bill: bill_payment
+      bill_payment: bill_payment
+      bill_issued: bill_issued
+      refund: refund
+      chargeback: chargeback
+  timestamp:
+    source: [at, purchase_date, transaction_date, payment_date]
+    transform: to_utc
+    missing: null
+    notes: purchase_date / transaction_date / payment_date, or manifest at
+  account_id:
+    source: [account_id, payer_id]
+    transform: identity
+    missing: null
+    notes: payer_id on transfers; account id is not on the purchase body
+  customer_id:
+    source: [customer_id]
+    transform: identity
+    missing: null
+  counterparty_id:
+    source: [merchant_id, payee_id]
+    transform: identity
+    missing: null
+    notes: merchant_id or payee_id
+  counterparty_name:
+    source: [payee, merchant_name, description]
+    transform: identity
+    missing: null
+  amount_minor:
+    source: [amount, payment_amount]
+    transform: multiply
+    factor: 100
+    missing: null
+    notes: dollars to cents
+  currency:
+    source: [currency]
+    transform: null_to_default
+    default: USD
+    missing: null
+    notes: USD implicit on Nessie
+  merchant_category:
+    source: [category, merchant_category]
+    transform: identity
+    missing: null
+    notes: merchant.category
+  balance_after_minor:
+    source: [balance]
+    transform: multiply
+    factor: 100
+    missing: null
+    notes: account.balance is dollars
+  bill.status:
+    source: [status]
+    transform: enum_map
+    missing: null
+    notes: bill.status
+    enum_map:
+      completed: paid
+      pending: pending
+      cancelled: cancelled
+      recurring: pending
+      paid: paid
+      overdue: overdue
+  labels.is_fraud:
+    source: [is_fraud, isFraud]
+    transform: truthy
+    missing: null
+    notes: seeded, not a live Nessie field

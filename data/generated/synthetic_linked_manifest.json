@@ -1,0 +1,72 @@
+{
+  "benign_share": 0.4,
+  "campaign_variants": 315,
+  "campaigns": 32,
+  "generator": "scripts.gen_linked_scenarios",
+  "legit_subtypes": {
+    "bank_posted": 7,
+    "bank_yes_no": 21,
+    "carrier_autopay": 22,
+    "carrier_bill": 30,
+    "delivery": 28,
+    "delivery_shipped": 21,
+    "otp": 29,
+    "otp_warning": 21,
+    "toll_statement": 21
+  },
+  "messages": 1800,
+  "model": "none (deterministic seeded templates, no LLM API)",
+  "per_category": {
+    "account_security": 200,
+    "bank_impersonation": 200,
+    "billing_scam": 200,
+    "conversation_lure": 200,
+    "delivery_scam": 200,
+    "job_offer": 200,
+    "legit": 200,
+    "prize_refund": 200,
+    "toll_government": 200
+  },
+  "per_split": {
+    "test": 270,
+    "train": 1260,
+    "validation": 270
+  },
+  "per_template_set": {
+    "A": 1530,
+    "B": 270
+  },
+  "scenarios": 320,
+  "scenarios_benign": 128,
+  "scenarios_fraud": 192,
+  "seed": 20261108,
+  "signals": {
+    "amount_far_from_baseline:False": 160,
+    "amount_far_from_baseline:True": 160,
+    "bill_nonmatching_biller:False": 264,
+    "bill_nonmatching_biller:True": 56,
+    "channel_never_used:False": 192,
+    "channel_never_used:True": 128,
+    "new_device_or_sim_near_payment:False": 280,
+    "new_device_or_sim_near_payment:True": 40,
+    "new_payee:False": 140,
+    "new_payee:True": 180,
+    "timing_near_message:False": 78,
+    "timing_near_message:True": 242
+  },
+  "telecom_events": 1032,
+  "telecom_types": {
+    "autopay_change": 160,
+    "bill_amount_change": 320,
+    "device_add": 200,
+    "esim_transfer": 11,
+    "plan_change": 320,
+    "port_out_request": 11,
+    "sim_change": 10
+  },
+  "urls": 422,
+  "variants_per_campaign": {
+    "max": 15,
+    "min": 5
+  }
+}
