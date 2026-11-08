@@ -41,6 +41,13 @@ Never print, log or commit a key. When a key is needed, tell me which variable t
 5. **Optional local Nemotron fallback (time box: 45 minutes).** Get Nemotron 3.5 Bolt E4B from Hugging Face (`nvidia/Nemotron-3.5-Bolt-E4B`, or a quantized GGUF of it that fits in 8 GB VRAM). Serve it with an OpenAI-compatible local server (llama.cpp server or Ollama) on port 8080. Run `scripts/smoke_nemotron.py` against it by changing only `NEMOTRON_BASE_URL` and `NEMOTRON_MODEL`. Write `docs/LOCAL_NEMOTRON.md` with the exact steps and results. If it doesn't pass tool calling, or the time box runs out, write down why and stop.
 6. Finish with a PR.
 
+## After A4 and A5: your next issues
+
+A3, A9 and A12 moved to you (same shared branch, same rules). Work order:
+1. **A3** Redaction module (#4, gate P5): `privacy/redact.py` and the redaction report from DATA_SPEC section 5; 20 unit tests.
+2. **A9** Feature extraction (#17): `features/extract.py` returning the `urls` and `features` objects from DATA_SPEC 3.1; tested on 10 messages. Lavanya's classifier (L7) waits on it.
+3. **A12** Campaign store, seeding and `match_campaign` (#20), once A1's split exists: fingerprints only, seeded from the train split, threshold on validation; you may use `nemotron-3.5-embed-1b` for similarity through the cached client.
+
 ## When you're done
 
 Tell me in three lines what works and what doesn't. Then ask whether to take overflow issues from Cursor (`agent:cursor`); start one only if I say yes, and claim it the same way.
