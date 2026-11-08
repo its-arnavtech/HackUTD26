@@ -38,7 +38,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A11 | Nessie tools | Arnav | Cursor | MVP | A2 | todo | #19 |
 | A12 | Campaign store, seeding and `match_campaign` | Arnav | Codex | MVP | A1, A3 | done | #20 · #49 (arnav-shared) |
 | A13 | Evaluation harness | Arnav | Claude Code | MVP | A1 | done | #21 · #49 (arnav-shared) |
-| L7 | Improved classifier | Arnav | Codex | MVP | A1, A9, A13 | in progress | #22 · codex-shared |
+| L7 | Improved classifier | Arnav | Codex | MVP | A1, A9, A13 | done | #22 · #58 (arnav-shared); public gate failed, pivot documented |
 | L8 | Agent loop with plan, re-plan and guardrails | Lavanya | Claude Code | MVP | A4, L5 | todo | #23 |
 | L9 | API endpoints and pipeline orchestration | Lavanya | Claude Code | MVP | L3, L8 | todo | #24 |
 | G1 | Gate: scenario 1 end to end in the CLI | Both | any | MVP | A3, A9, A10, A11, L8 | todo | #25 |
@@ -58,16 +58,6 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 ---
 
 ## In progress
-
-### L7 Improved classifier (#22)
-- Agent: Codex (GPT-6) · Person: Arnav · Folder: C:\HackUTD26-codex · Branch: codex-shared (origin/arnav-shared)
-- Started: 2026-11-07 23:00 · Last checkpoint: 2026-11-07 23:12
-- Done so far: Local word 1-2/character 3-5 TF-IDF + A9/A1 fixed features, train-only vocabulary/IDF/model fits; exact saved train/val ID guards. 12 logistic regression configurations and 5 legitimate biases selected only on validation. Frozen redacted selection: C=2, character weight=1, feature weight=0.25, legitimate bias=0.75; validation macro F1 0.9650 and FPR 0.0268 vs redacted baseline 0.8707/0.0671. Artifact created locally (ignored), aggregate report committed. Pipeline predict returns ClassifierOutput; batch predict supports A13. 25 new tests; full backend 436 passed, 1 skipped. No held-out L7 scoring yet.
-- Next step (exact): Run python -m scripts.train_classifier --evaluate ONCE. This loads the frozen production artifact, freezes a raw-text cost control before scoring, then runs A13 on synthetic test and public SMS once per predefined text condition. Record final results without any post-test tuning; finish CHANGELOG/issue/PR.
-- Files touched: backend/app/classifier/train.py, backend/app/classifier/predict.py, backend/scripts/train_classifier.py, backend/tests/test_classifier.py, eval/classifier_validation.json, docs/CLASSIFIER.md, .gitignore, CHANGELOG.md
-- How to run or test: From backend, .\.venv\Scripts\python.exe -m scripts.train_classifier; .\.venv\Scripts\python.exe -m pytest tests/test_classifier.py -q; explicit final step above. Full pytest uses credential-free child shell, unchanged .env.
-- Notes and gotchas: Local pickle is trusted/generated only and version checked; regenerate it on each machine, restart loader after retraining. Scores are relative model scores, not calibrated risk. Public set labels are binary; compare binary F1/FPR with public baseline, not synthetic category F1. Test/public never train/tune. Final evaluation marker prevents accidental repeats. Raw-control hyperparameters are fixed to selected production representation/C; only its raw-validation legitimate bias is selected before scoring. Pipeline wiring remains L9-owned. No embeddings/transformer attempted.
-- Resumed by: Codex from Lavanya's Claude Code scaffold, at Arnav's request.
 
 <!-- One block per active issue. Copy the template, keep it current at every checkpoint. -->
 
@@ -112,6 +102,8 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID · tool · PR · summary · follow-ups`.
 
+- 2026-11-07 23:16 · L7 · Codex (GPT-6), Arnav takeover from Lavanya · #58 · Train-only TF-IDF word/character + A9 features with validation-selected logistic regression; pipeline/batch predict and local artifact; one frozen A13 run: synthetic F1 0.8781/FPR 0.1133 (original target 0.807/0.127 met), public binary F1 0.5299 vs 0.5878 baseline (gate failed), public recall 0.0897 vs 0.1767, FPR 0.0292 vs 0.0342; 25 new tests, full backend 436 passed/1 skipped under pinned NumPy 2.4.6 · follow-ups: L9 wires predict; present public failure honestly; further generalization needs separate development and fresh untouched evaluation data
+
 - 2026-11-07 21:31 · A12 · Codex (GPT-6); resumed by Claude Code (Opus 5.5) from Codex to finish · #49 · Fingerprint-only SQLite campaign store (hashes, semantic bits, brand/category/domain patterns, timestamps; no wording, IDs or URLs), `match_campaign` and list/record hooks, seed CLI from the train split (1,127 train scams → 267 clusters, rerun inserts 0), threshold from validation (semantic weight 0.75, threshold 0.75; family-proxy F1 0.759), scenario 3 matches 28 historical observations at 0.924; 25 campaign tests. Claude Code merged `origin/main` into `arnav-shared` (CHANGELOG both sides; requirements keep `pyarrow==26.0.1` + `numpy==2.4.6`): 411 passed, 1 skipped · follow-ups: L5/L9 register and wire `match_campaign`, `list_campaigns` and `record_message` (routes owned by Lavanya); use `campaigns-v4.sqlite3`, fresh DB after fingerprint/calibration changes
 - 2026-11-07 20:27 · A9 · Codex (GPT-6) · #49 · Local typed URL/message features and first claimed brand; 10/10 hand-written messages, 58 feature checks, full backend 312 passed · follow-ups: L7 consumes features; A12 next after handoff
 
@@ -141,6 +133,10 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 ---
 
 ## Decisions
+
+- 2026-11-07 23:16 · **L7 frozen model and split protocol:** exact A1 train/val IDs checked; 1,818 train and 390 validation, source generated/train_v1 only. Word 1-2 and character-within-word 3-5 TF-IDF plus A9 action/threat/requests/deadline/amount and URL-count features plus A1 fixed keyword cues. Train-only vocabulary/IDF/dictionary/classifier fits; validation only selects C=2, character weight=1, feature weight=0.25, legitimate bias=0.75. Validation F1 0.9650/FPR 0.0268, baseline 0.8707/0.0671. IDs/source/sender/labels never become features; phone hash and URL occurrence tags normalized. No external model calls or optional embeddings/transformer.
+- 2026-11-07 23:16 · **L7 final numbers and acceptance pivot:** one A13 run after production and raw-control models froze; no post-test tuning. Synthetic 388 redacted: nine-category macro F1 **0.8781**, FPR **0.1133**, same-condition baseline **0.7915/0.1600**; also beats original raw baseline target **0.807/0.127**, with every synthetic category improved. Raw-cost control F1 **0.8962** vs redacted **0.8781**. Public SMS 5,574: binary macro F1 **0.5299 vs 0.5878**, spam recall **0.0897 vs 0.1767**, FPR **0.0292 vs 0.0342**. **Both-test-sets target FAILED** on public F1/recall despite fewer false alarms. Issue #22 permits a documented pivot: present category gains, false positives, redaction cost and public generalization failure together; classifier is one signal for tool-based verification, not a universal improvement. Do not tune on these test/public results. Next generalization experiment needs separate development data and a fresh untouched holdout.
+- 2026-11-07 23:16 · **L7 inference/handoff:** `app.classifier.predict.predict(text_redacted, features) -> ClassifierOutput` (relative score/top3 and baseline score for chosen category); `model.predict(messages)` and `app.classifier.train:make_model` support A13. L9 owns pipeline wiring. Run `cd backend; .\.venv\Scripts\python.exe -m scripts.train_classifier` to reproduce ignored `data/models/classifier-v1.pkl`; local trusted pickle only, scikit-learn version checked, restart loader after retraining. Aggregate reports: eval/classifier_validation.json, classifier_final.json, metrics.json, metrics_details.json; final marker blocks repeated held-out evaluation. Scoring used existing NumPy 2.5.4/scikit-learn 1.9.1; afterward aligned venv to project NumPy 2.4.6, full tests 436/1 skip and saved-artifact inference checked on train only, no held-out rescore. Details: docs/CLASSIFIER.md.
 
 - 2026-11-07 23:05 · L7 (#22) moves from Lavanya to Arnav, implemented by Codex on arnav-shared at Arnav's request. Train/tune on A1 train/validation only; final test/public scores are a one-time frozen-model evaluation.
 

@@ -53,3 +53,35 @@ the standard API metrics contract; binary F1 is in the detail/final reports.
 The synthetic target is macro F1 > 0.807 with FPR <= 0.127. Compare public
 binary F1 and FPR with the baseline on that same public set. If either gate
 fails, document the failure/pivot and keep these sets held out.
+
+## Frozen result and pivot
+
+The one final A13 run used 388 synthetic test messages and all 5,574 public SMS
+messages. The production model was selected before either was scored.
+
+| Redacted input | L7 | Same-condition baseline |
+| --- | ---: | ---: |
+| Synthetic nine-category macro F1 | 0.8781 | 0.7915 |
+| Synthetic legitimate FPR | 0.1133 | 0.1600 |
+| Public binary macro F1 | 0.5299 | 0.5878 |
+| Public spam recall | 0.0897 | 0.1767 |
+| Public legitimate FPR | 0.0292 | 0.0342 |
+
+The synthetic result also exceeds A1's original raw-text target of 0.807 F1
+and improves on its 0.127 FPR. L7 improves F1 in every synthetic category.
+The raw-text cost control scores 0.8962 macro F1, versus 0.8781 redacted.
+
+**The cross-dataset acceptance target failed.** Fewer public false alarms came
+with worse public spam recall and binary F1. L7 must not be presented as a
+universal improvement over the baseline. The acceptance-criteria pivot is to
+show the synthetic gains, public stress-test failure and redaction cost side
+by side, while keeping the classifier as one signal for the verification
+agent. A new generalization experiment would need separate development data
+and a fresh untouched evaluation set; do not tune on this public/test result.
+No embeddings or transformer were attempted after seeing these final scores.
+
+Reports contain aggregate scores only. The final marker records the model
+artifact hash and selection. Scoring used the pre-existing local NumPy 2.5.4
+venv with scikit-learn 1.9.1; the project pin remains NumPy 2.4.6 for Python
+3.11 support. Post-score compatibility checks use the project pin without
+repeating held-out scoring.
