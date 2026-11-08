@@ -36,7 +36,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A9 | Feature extraction | Arnav | Codex | MVP | A3 | done | #17 · #49 (arnav-shared) |
 | A10 | `check_link` and `check_sender` tools | Arnav | Cursor | MVP | L1 | todo | #18 |
 | A11 | Nessie tools | Arnav | Cursor | MVP | A2 | todo | #19 |
-| A12 | Campaign store, seeding and `match_campaign` | Arnav | Codex | MVP | A1, A3 | todo | #20 |
+| A12 | Campaign store, seeding and `match_campaign` | Arnav | Codex | MVP | A1, A3 | in progress | codex-shared / #20 |
 | A13 | Evaluation harness | Arnav | Claude Code | MVP | A1 | done | #21 · #49 (arnav-shared) |
 | L7 | Improved classifier | Lavanya | Claude Code | MVP | A1, A9, A13 | todo | #22 |
 | L8 | Agent loop with plan, re-plan and guardrails | Lavanya | Claude Code | MVP | A4, L5 | todo | #23 |
@@ -60,6 +60,17 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 ## In progress
 
 <!-- One block per active issue. Copy the template, keep it current at every checkpoint. -->
+
+### A12 Campaign store, seeding and match_campaign (#20)
+- Agent: Codex (GPT-6) · Person: Arnav · Folder: C:\HackUTD26-codex · Branch: codex-shared (origin/arnav-shared)
+- Started: 2026-11-07 20:42 · Last checkpoint: 2026-11-07 20:42
+- Done so far: Read issue, DATA_SPEC 3.2/5, POC_MVP 7.6 and ownership. A1 split exists (1818 train, 390 val, 388 test). A3/A9 complete. No prior A12 implementation checkpoint.
+- Next step (exact): Implement fingerprint-only SQLite store, train-only seed guard, validation-only calibration, pure match/list functions and a reproducible seed CLI; then verify scenario 3 after calibration and add privacy/count/split tests.
+- Files touched: CHANGELOG.md
+- How to run or test: From backend, .\.venv\Scripts\python.exe -m scripts.seed_campaigns --verify-scenario3; .\.venv\Scripts\python.exe -m pytest tests/test_campaign.py -q
+- Notes and gotchas: No raw/redacted message text in persistent storage. UI previews must be controlled patterns, not stored excerpts. Test split and authored scenarios never seed/tune. Counts use unique observations and their real timestamps; repeated lookups never increment them. Keep shared contracts and L9-owned routes unchanged; hand off list/match/record functions for integration.
+
+
 
 
 
