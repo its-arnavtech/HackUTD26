@@ -21,6 +21,7 @@ import {
   X,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { isRedactionTag, splitRedacted } from "../present";
 import type {
   ActivityType,
   AgentResult,
@@ -146,15 +147,9 @@ export function MessageBubble({
       <p className="message-text">
         {small
           ? `“${excerpt(text)}”`
-          : text
-              .split(/(<[A-Z][A-Z0-9_]*>)/g)
-              .map((part, i) =>
-                /^<[A-Z][A-Z0-9_]*>$/.test(part) ? (
-                  <PrivacyChip key={i} token={part} />
-                ) : (
-                  part
-                ),
-              )}
+          : splitRedacted(text).map((part, i) =>
+              isRedactionTag(part) ? <PrivacyChip key={i} token={part} /> : part,
+            )}
       </p>
       {!small && receivedAt && (
         <span className="metadata">
@@ -446,6 +441,14 @@ export function CampaignCard({
 const categoryLabels: Record<string, string> = {
   billing_scam: "Fake billing",
   bank_impersonation: "Bank impersonation",
+  delivery_scam: "Fake delivery",
+  account_security: "Account security",
+  toll_government: "Toll or government",
+  prize_refund: "Prize or refund",
+  job_offer: "Job offer",
+  conversation_lure: "Conversation lure",
+  legit: "Legitimate messages",
+  legitimate: "Legitimate messages",
 };
 export const categoryLabel = (category: string) =>
   categoryLabels[category] ||

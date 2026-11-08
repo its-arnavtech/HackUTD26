@@ -193,11 +193,12 @@ def test_agent_records_what_nemotron_received(monkeypatch):
     from tests.test_loop import GOOD_FINAL, FakeChat, FakeTools, final_turn, tools_turn
 
     fake = FakePrivacyLog()
-    monkeypatch.setattr(loop, "_privacy_log", fake)
+    monkeypatch.setattr(loop, "privacy_log", fake)
     agent_input, _ = make_pipeline().build_input("msg_0001", SCENARIO_1)
     chat = FakeChat(tools_turn(("check_link", {"url_id": "URL_1"})), final_turn({**GOOD_FINAL, "confidence_words": "likely"}))
     loop.run_agent(agent_input, lambda e: None, chat=chat, call_tool=FakeTools(), tool_schemas=[], protocol="native")
-    assert fake.calls[0] == ("record_model", "nemotron", agent_input)
+    [(_, model, sent)] = [call for call in fake.calls if call[0] == "record_model"]  # once, not twice
+    assert model == "nemotron" and c.AgentInput.model_validate(sent) == agent_input
     [tool_result] = [call for call in fake.calls if call[0] == "record_tool_result"]
     assert tool_result[1] == "nemotron" and tool_result[2]["tool"] == "check_link"
 
@@ -397,11 +398,11 @@ def test_reset_reloads_the_demo_inbox(live):
     assert {i["status"] for i in client.get("/api/inbox").json()} == {"queued"}
 
 
-def test_confirm_and_privacy_wait_for_their_issues(live):
+def test_confirm_and_privacy_are_real_too(live):
+    """L11 and L6 merged: with L9 every route is real."""
     client = live()
-    assert client.post("/api/transactions/txn_3/confirm", json={"was_me": False}).json()["error"]["details"] == {"issue": "L11"}
-    privacy = client.get("/api/privacy/msg_0001")
-    assert privacy.status_code == 501 or privacy.status_code == 200  # 200 once L6 (#57) merges
+    assert client.post("/api/transactions/txn_3/confirm", json={"was_me": False}).status_code == 404  # no finished recovery
+    assert client.get("/api/privacy/msg_0001").status_code == 200
 
 
 def test_unknown_message_is_404_everywhere(live):

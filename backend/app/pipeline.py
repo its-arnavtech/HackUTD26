@@ -18,8 +18,7 @@ The baseline takes about 36 s to train, so `Pipeline.warm()` runs at startup.
 **Privacy (L6).** The pipeline records what it sends through L6's
 `app.privacy_log` hooks: the redaction, and what the classifier received. The
 tool registry records tool calls itself and the agent records what Nemotron
-received. The hooks do nothing outside a job and never raise; if `privacy_log`
-isn't merged yet (PR #57), they're skipped.
+received. The hooks do nothing outside a job (L3's runner binds the log).
 
 **Campaigns (A12).** After a check, the message is recorded in the campaign
 store once (`record_message`, fingerprints only, no text), so later messages
@@ -54,10 +53,7 @@ from app.privacy.redact import redact, redact_sender
 if TYPE_CHECKING:
     from app.state import StoredMessage
 
-try:  # L6 (PR #57); optional until it merges
-    from app import privacy_log as _privacy_log
-except ImportError:  # pragma: no cover - depends on merge order
-    _privacy_log = None
+from app import privacy_log as _privacy_log  # L6
 
 log = logging.getLogger(__name__)
 
@@ -218,9 +214,7 @@ class Pipeline:
 
 
 def _privacy(hook: str, *args: Any) -> None:
-    """Call an L6 `privacy_log` hook if L6 is merged. Never breaks a check."""
-    if _privacy_log is None:
-        return
+    """Call an L6 `privacy_log` hook. Never breaks a check."""
     try:
         getattr(_privacy_log, hook)(*args)
     except Exception:

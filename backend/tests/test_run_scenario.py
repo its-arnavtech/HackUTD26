@@ -44,6 +44,15 @@ def phone_salt(monkeypatch):
     get_settings.cache_clear()
 
 
+@pytest.fixture(autouse=True)
+def offline_agent(monkeypatch):
+    """These tests check the runner with canned tools, so they use the rule-based stand-in.
+
+    Since G1, `rs.AGENT` is L8's `run_agent`, which calls Nemotron; tests never call out.
+    """
+    monkeypatch.setattr(rs, "AGENT", rs.stand_in_agent)
+
+
 @pytest.fixture
 def tools(monkeypatch):
     """Replace the tool table with canned results, as A10 and A11 would return them."""
@@ -139,9 +148,10 @@ def test_l8_swap_is_one_assignment(monkeypatch):
     assert next(s for s in run.stages if s.name == "agent loop").source == "real"
 
 
-def test_agent_line_points_at_the_stand_in_and_run_agent_is_imported():
+def test_agent_line_points_at_l8_run_agent():
+    """G1: the CLI runs L8's Nemotron loop."""
     source = Path(rs.__file__).read_text(encoding="utf-8")
-    assert "AGENT: Callable[[AgentInput, Callable[[TrailEntry], None]], AgentResult] = stand_in_agent" in source
+    assert "AGENT: Callable[[AgentInput, Callable[[TrailEntry], None]], AgentResult] = run_agent" in source
     assert rs.run_agent.__module__ == "app.agent.loop"
 
 

@@ -34,23 +34,20 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any
 
-from app.agent import guardrails, prompts, registry
+from app import privacy_log
+from app.agent import guardrails, prompts, recovery, registry
 from app.agent.registry import PrivacyHook, ToolCall
 from app.contracts import (
     AgentInput,
     AgentMode,
     AgentResult,
     ConfidenceWords,
+    NessieRecentActivityResult,
     ToolName,
     TrailEntry,
     TrailKind,
     Verdict,
 )
-
-try:  # L6 privacy log (PR #57); optional until it merges. Its hooks do nothing outside a job.
-    from app import privacy_log as _privacy_log
-except ImportError:  # pragma: no cover - depends on merge order
-    _privacy_log = None
 
 log = logging.getLogger(__name__)
 
@@ -170,6 +167,7 @@ class _Run:
         self.on_call = on_call
 
         self.messages = prompts.build_messages(agent_input)
+        privacy_log.record_model("nemotron", json.loads(self.messages[-1]["content"]))  # L6: exactly what Nemotron gets
         self.step = 0
         self.calls = 0
         self.max_calls = MAX_TOOL_CALLS
@@ -178,6 +176,7 @@ class _Run:
         self.tools_run: list[ToolName] = []  # tools that answered ok
         self.evidence: list[dict[str, str]] = []
         self.replanned = False
+        self.recovery_refs: list[str] = []
         self.final_requested = False
         self.retry_used = False
         self.nudged = False
@@ -202,7 +201,18 @@ class _Run:
     # -- main loop ---------------------------------------------------------------
 
     def execute(self) -> AgentResult:
-        _privacy("record_model", "nemotron", self.input)  # L6: exactly what Nemotron receives
+        # The customer's /clicked tap starts a mandatory read-only activity
+        # check. Show this code-enforced recovery step before Nemotron chooses
+        # further checks; it cannot omit the time window or invent its refs.
+        if self.input.mode == AgentMode.recovery and self.input.customer_context.linked_bank:
+            args = {"since": self.input.received_at.isoformat()}
+            raw = {"id": "recovery_activity", "type": "function", "function": {
+                "name": ToolName.nessie_recent_activity.value, "arguments": json.dumps(args),
+            }}
+            self.run_tools(_Turn(
+                tool_calls=[_Pending(raw["id"], ToolName.nessie_recent_activity.value, args)],
+                raw_tool_calls=[raw],
+            ), "You said you clicked, so we check activity since the text arrived.")
         for _ in range(MAX_TURNS):
             response, ms = self.ask()
             if response is None:
@@ -327,6 +337,10 @@ class _Run:
 
         if self.planned is None:
             self.log_plan(known, why)
+            if self.input.mode == AgentMode.recovery:
+                self.replanned = True
+                self.trail(TrailKind.replan, why="You asked for recovery after clicking the link.",
+                           finding="Check activity since the text arrived; ask you about flagged items.")
             why = None
         else:
             added = [n for n in dict.fromkeys(known) if n not in self.planned and n not in self.attempted]
@@ -343,8 +357,13 @@ class _Run:
                 self.tool_message(pending, _skipped(pending.name, "Skipped: the limit of tool calls was reached."))
                 continue
             self.calls += 1
-            # Non-object args go through as-is; the registry answers them with `invalid_args` as data.
-            call = self.call_tool(pending.name, pending.args, self.input, on_call=self.on_call)
+            if name == ToolName.nessie_recent_activity and self.input.mode == AgentMode.recovery:
+                pending.args = {"since": self.input.received_at.isoformat()}
+            if name in {ToolName.nessie_recent_activity, ToolName.nessie_bill_status} and not self.input.customer_context.linked_bank:
+                call = _skipped(pending.name, "The customer has not linked a bank account.")
+            else:
+                # The registry answers invalid arguments as data.
+                call = self.call_tool(pending.name, pending.args, self.input, on_call=self.on_call)
             if call.ms > SLOW_STEP_MS:
                 self.slow_down(call.ms)
             self.tool_message(pending, call)
@@ -358,10 +377,13 @@ class _Run:
             if call.ok:
                 self.tools_run.append(name)
                 self.evidence.append({"tool": name.value, "finding": finding})
+                if name == ToolName.nessie_recent_activity and self.input.mode == AgentMode.recovery:
+                    activity = NessieRecentActivityResult.model_validate(call.result)
+                    self.recovery_refs.extend(item.ref for item in activity.flagged)
 
     def tool_message(self, pending: _Pending, call: ToolCall) -> None:
-        _privacy("record_tool_result", "nemotron", call.to_tool_message())  # L6: each result sent back
         payload = json.dumps(call.to_tool_message(), ensure_ascii=False, default=str)
+        privacy_log.record_tool_result("nemotron", json.loads(payload))  # L6: every result sent back, skipped ones too
         if self.protocol == "json_action" and pending.id.startswith("json_"):
             self.messages.append({"role": "user", "content": json.dumps({"tool": pending.name, "result": json.loads(payload)}, ensure_ascii=False)})
         else:
@@ -410,11 +432,12 @@ class _Run:
     # -- endings ---------------------------------------------------------------------
 
     def finish(self, result: AgentResult, reasoning: str | None) -> AgentResult:
+        if self.input.mode == AgentMode.recovery:
+            result = result.model_copy(update={"plan": list(dict.fromkeys(self.attempted))})
         result, notes = guardrails.apply_guardrails(result, self.input.classifier, self.tools_run, self.attempted)
         update: dict[str, Any] = {"replan": self.replanned}
-        if self.input.mode == AgentMode.check:
-            update["was_this_you"] = []  # refs come only from recovery (L11)
         result = result.model_copy(update=update)
+        result = recovery.finish_recovery(result, self.input, self.recovery_refs)
         why = " ".join(notes) if notes else (reasoning or self.verdict_reasoning)
         self.trail(TrailKind.verdict, why=why, finding=_verdict_words(result), ms=_ms(self.started))
         log.info(
@@ -427,6 +450,7 @@ class _Run:
         if self.planned is None:
             self.log_plan([], None)
         result = guardrails.unsure_fallback(self.evidence, self.attempted)
+        result = recovery.finish_recovery(result, self.input, self.recovery_refs)
         self.trail(TrailKind.verdict, why=why, finding=_verdict_words(result), ms=_ms(self.started))
         log.info("agent gave up", extra={"fields": {"calls": self.calls}})
         return result
@@ -439,16 +463,6 @@ class _Run:
 
 def _ms(started: float) -> int:
     return max(0, round((time.perf_counter() - started) * 1000))
-
-
-def _privacy(hook: str, *args: Any) -> None:
-    """Call an L6 `privacy_log` hook if L6 is merged. Never breaks a check."""
-    if _privacy_log is None:
-        return
-    try:
-        getattr(_privacy_log, hook)(*args)
-    except Exception:
-        log.exception("privacy hook failed", extra={"fields": {"hook": hook}})
 
 
 def _first_choice(response: dict[str, Any]) -> tuple[dict[str, Any], str | None]:

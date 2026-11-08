@@ -22,6 +22,10 @@ error is logged (never shown to the customer).
     mid = store.add_message(MessageIn(...), source=MessageSource.authored)
     runner.submit(mid, lambda message_id, msg, on_trail: run_pipeline(message_id, msg, on_trail))
     store.poll(mid)  # -> ResultPoll
+
+**Privacy log (L6).** Each run also gets a `privacy_log.PrivacyLog`, bound
+while the job runs, so tool calls and the pipeline record what every model
+and tool received. Those records are kept for all runs (see `add_privacy`).
 """
 
 from __future__ import annotations
@@ -38,6 +42,7 @@ from datetime import datetime, timezone
 from typing import Any, Optional
 
 from app import contracts as c
+from app import privacy_log
 from app.errors import ConflictError, NotFoundError
 from app.logs import bind_message_id
 
@@ -68,6 +73,27 @@ CREATE TABLE trail (
     entry       TEXT    NOT NULL
 );
 CREATE INDEX trail_by_run ON trail (message_id, run, id);
+CREATE TABLE privacy (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    message_id  TEXT    NOT NULL REFERENCES messages(message_id) ON DELETE CASCADE,
+    run         INTEGER NOT NULL,
+    recipient   TEXT    NOT NULL,
+    entry       TEXT    NOT NULL
+);
+CREATE INDEX privacy_by_message ON privacy (message_id, id);
+CREATE TABLE redaction (
+    message_id  TEXT    NOT NULL REFERENCES messages(message_id) ON DELETE CASCADE,
+    run         INTEGER NOT NULL,
+    redacted    TEXT    NOT NULL,
+    PRIMARY KEY (message_id, run)
+);
+CREATE TABLE confirmations (
+    message_id TEXT NOT NULL REFERENCES messages(message_id) ON DELETE CASCADE,
+    run        INTEGER NOT NULL,
+    ref        TEXT NOT NULL,
+    was_me     INTEGER NOT NULL,
+    PRIMARY KEY (message_id, run, ref)
+);
 """
 
 # Shown when a run crashes. Honest wording (POC_MVP 4.4): say what happened, don't reassure.
@@ -290,6 +316,75 @@ class StateStore:
             was_this_you_items=[c.WasThisYouItem.model_validate(i) for i in json.loads(row["was_this_you"])],
         )
 
+    # -- customer confirmations (L11) -----------------------------------------
+    def confirm_transaction(self, ref: str, was_me: bool) -> c.ConfirmResponse:
+        """Record a tap only for an item shown in a completed, current recovery run."""
+        with self._tx():
+            rows = self._db.execute(
+                "SELECT message_id, run, was_this_you FROM messages WHERE mode = ? AND status = ? ORDER BY seq DESC",
+                (c.AgentMode.recovery.value, c.JobStatus.done.value),
+            ).fetchall()
+            for row in rows:
+                if any(item["ref"] == ref for item in json.loads(row["was_this_you"])):
+                    self._db.execute(
+                        "INSERT OR REPLACE INTO confirmations (message_id, run, ref, was_me) VALUES (?, ?, ?, ?)",
+                        (row["message_id"], row["run"], ref, int(was_me)),
+                    )
+                    return c.ConfirmResponse(ref=ref, was_me=was_me, recorded=True)
+        raise NotFoundError("This activity is not part of a completed recovery check")
+
+    # -- privacy log (L6) ------------------------------------------------------
+    #
+    # Unlike the trail, privacy records are kept for every run, including a run
+    # that a newer one superseded: the data really was sent, so the audit log
+    # shows it. `app.privacy_log` writes these and builds the API view.
+
+    def add_privacy(self, message_id: str, run: int, recipient: c.PrivacyRecipient) -> int:
+        with self._tx():
+            self._one(message_id)
+            cur = self._db.execute(
+                "INSERT INTO privacy (message_id, run, recipient, entry) VALUES (?, ?, ?, ?)",
+                (message_id, run, recipient.recipient, recipient.model_dump_json()),
+            )
+        return int(cur.lastrowid)
+
+    def update_privacy(self, entry_id: int, recipient: c.PrivacyRecipient) -> None:
+        with self._tx():
+            self._db.execute("UPDATE privacy SET entry = ? WHERE id = ?", (recipient.model_dump_json(), entry_id))
+
+    def last_privacy(self, message_id: str, run: int, recipient: str) -> tuple[int, Optional[c.PrivacyRecipient]]:
+        """The latest record for `recipient` in `run`, as (id, record), or (0, None)."""
+        with self._lock:
+            row = self._db.execute(
+                "SELECT id, entry FROM privacy WHERE message_id = ? AND run = ? AND recipient = ? ORDER BY id DESC LIMIT 1",
+                (message_id, run, recipient),
+            ).fetchone()
+        return (row["id"], c.PrivacyRecipient.model_validate_json(row["entry"])) if row else (0, None)
+
+    def privacy(self, message_id: str) -> list[c.PrivacyRecipient]:
+        """Every recipient record for the message, all runs, in the order they were recorded."""
+        with self._lock:
+            self._one(message_id)
+            rows = self._db.execute("SELECT entry FROM privacy WHERE message_id = ? ORDER BY id", (message_id,)).fetchall()
+        return [c.PrivacyRecipient.model_validate_json(r["entry"]) for r in rows]
+
+    def set_redaction(self, message_id: str, run: int, redacted: c.RedactedMessage) -> None:
+        """The redaction step's output for `run`. Kept in memory only; the API shows just its report."""
+        with self._tx():
+            self._one(message_id)
+            self._db.execute(
+                "INSERT OR REPLACE INTO redaction (message_id, run, redacted) VALUES (?, ?, ?)",
+                (message_id, run, redacted.model_dump_json()),
+            )
+
+    def redaction(self, message_id: str) -> Optional[c.RedactedMessage]:
+        """The latest run's redaction output, if the pipeline recorded one."""
+        with self._lock:
+            row = self._db.execute(
+                "SELECT redacted FROM redaction WHERE message_id = ? ORDER BY run DESC LIMIT 1", (message_id,)
+            ).fetchone()
+        return c.RedactedMessage.model_validate_json(row["redacted"]) if row else None
+
     def error(self, message_id: str) -> Optional[str]:
         """The last run's internal error, for logs and tests only (never sent to the UI)."""
         with self._lock:
@@ -298,6 +393,8 @@ class StateStore:
     def reset(self) -> None:
         with self._tx():
             self._db.execute("DELETE FROM trail")
+            self._db.execute("DELETE FROM privacy")
+            self._db.execute("DELETE FROM redaction")
             self._db.execute("DELETE FROM messages")
             self._db.execute("DELETE FROM sqlite_sequence")
 
@@ -376,9 +473,18 @@ class JobRunner:
         log.info("job running", extra={"fields": {"run": run}})
         try:
             message = self.store.get_message(message_id)
-            result = job(message_id, message, TrailWriter(self.store, message_id, run))
+            # The run's privacy log (L6): the registry and pipeline record into it while the job runs.
+            with privacy_log.bind(privacy_log.PrivacyLog(self.store, message_id, run)):
+                result = job(message_id, message, TrailWriter(self.store, message_id, run))
             if not isinstance(result, c.AgentResult):
                 raise TypeError(f"job returned {type(result).__name__}, expected AgentResult")
+            if message.mode == c.AgentMode.recovery and result.was_this_you:
+                # Resolve locally after the agent ends. Names and exact banking
+                # details never enter a Nemotron message or its privacy record.
+                from app.tools.nessie_tools import resolve_ref
+
+                items = [resolve_ref(ref) for ref in result.was_this_you]
+                self.store.set_was_this_you(message_id, run, items)
             self.store.finish(message_id, run, result)
             log.info("job done", extra={"fields": {"run": run, "verdict": result.verdict.value}})
         except NotFoundError:

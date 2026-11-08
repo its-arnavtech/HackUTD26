@@ -5,18 +5,19 @@ JSON error handlers and mounts the routes. The module-level `app` is what
 `uvicorn app.main:app` serves.
 
 Each route serves its mock from `app/mocks/` while `Settings.route_is_mocked()`
-says so (`USE_MOCKS`, `MOCK_ROUTES`, `LIVE_ROUTES`). Otherwise (L9):
+says so (`USE_MOCKS`, `MOCK_ROUTES`, `LIVE_ROUTES`). Otherwise every route runs
+real code:
 
 - inbox, messages, result, clicked and reset run on L3's state store and job
-  runner, with `Pipeline.job` (redact, features, classify, Nemotron agent) as
-  the job. The demo inbox (`data/scenarios/inbox.json`) is loaded at startup and
-  on reset. A preloaded message starts its check when its result is first
+  runner, with `Pipeline.job` (redact, features, classify, Nemotron agent; L9)
+  as the job. The demo inbox (`data/scenarios/inbox.json`) is loaded at startup
+  and on reset. A preloaded message starts its check when its result is first
   polled, so the trail fills in live when it's opened. A posted message starts
   at once.
+- confirm records the "Was this you?" answer (L11); privacy is L6's
+  `privacy_log.view`.
 - actions are simulated (nothing is sent) and logged; campaigns come from A12's
   store; metrics come from `eval/metrics.json` (A13, L7).
-- confirm (L11) and privacy (L6) raise `NotImplementedYetError` until their
-  issue lands.
 """
 
 from __future__ import annotations
@@ -33,11 +34,12 @@ from fastapi import APIRouter, Depends, FastAPI, Request
 from pydantic import BaseModel
 
 from app import contracts as c
-from app import mocks
+from app import mocks, privacy_log
 from app.config import DATA_DIR, REPO_ROOT, ROUTES, Settings, get_settings, integration_modes, validate_settings
-from app.errors import ErrorResponse, NotFoundError, NotImplementedYetError, install_error_handlers
+from app.errors import ErrorResponse, NotFoundError, install_error_handlers
 from app.logs import RequestContextMiddleware, bind_message_id, configure_logging
-from app.pipeline import Pipeline
+from app import pipeline as _pipeline_module
+from app.pipeline import Pipeline, pipeline_job
 from app.state import JobRunner, StateStore
 
 INBOX_SEED = DATA_DIR / "scenarios" / "inbox.json"
@@ -72,6 +74,15 @@ RunnerDep = Annotated[JobRunner, Depends(current_runner)]
 PipelineDep = Annotated[Pipeline, Depends(current_pipeline)]
 
 
+def current_job(request: Request) -> Callable[..., c.AgentResult]:
+    """The job the runner runs: the app's `Pipeline.job`, or a job set by replacing
+    `app.main.pipeline_job` before `create_app()` (how the L6 and L11 tests inject one)."""
+    return request.app.state.job_override or request.app.state.pipeline.job
+
+
+JobDep = Annotated[Callable[..., c.AgentResult], Depends(current_job)]
+
+
 # ---------------------------------------------------------------------------
 # Demo inbox (L9)
 # ---------------------------------------------------------------------------
@@ -100,7 +111,7 @@ def start_if_new(request: Request, message_id: str) -> None:
     store: StateStore = request.app.state.store
     with request.app.state.start_lock:
         if store.get_message(message_id).run == 0:  # never checked; submit() starts run 1 before we let go
-            request.app.state.runner.submit(message_id, request.app.state.pipeline.job)
+            request.app.state.runner.submit(message_id, current_job(request))
             log.info("check started on first open")
 
 
@@ -129,12 +140,6 @@ def _reset_state() -> None:
 
 
 _reset_state()
-
-
-def _require_mock(settings: Settings, route: str, issue: str = "L9") -> None:
-    """Serve the mock for `route`, or say which issue wires the real version."""
-    if not settings.route_is_mocked(route):
-        raise NotImplementedYetError(issue, f"the real {route} route")
 
 
 def _inbox_items() -> list[c.InboxItem]:
@@ -225,12 +230,12 @@ def get_inbox(settings: SettingsDep, store: StoreDep) -> list[c.InboxItem]:
 
 @router.post("/messages", response_model=c.PostMessageResponse)
 def post_message(
-    body: c.MessageIn, settings: SettingsDep, store: StoreDep, runner: RunnerDep, pipeline: PipelineDep
+    body: c.MessageIn, settings: SettingsDep, store: StoreDep, runner: RunnerDep, job: JobDep
 ) -> c.PostMessageResponse:
     """Simulate a message arriving and start the pipeline in the background."""
     if not settings.route_is_mocked("post_message"):
         message_id = store.add_message(body, source=c.MessageSource.authored)
-        runner.submit(message_id, pipeline.job)
+        runner.submit(message_id, job)
         return c.PostMessageResponse(message_id=message_id)
     with _lock:
         message_id = f"msg_{1000 + len(_posted)}"
@@ -271,13 +276,13 @@ def get_result(message_id: str, request: Request, settings: SettingsDep, store: 
 
 @router.post("/messages/{message_id}/clicked", response_model=c.ClickedResponse)
 def post_clicked(
-    message_id: str, settings: SettingsDep, store: StoreDep, runner: RunnerDep, pipeline: PipelineDep
+    message_id: str, settings: SettingsDep, store: StoreDep, runner: RunnerDep, job: JobDep
 ) -> c.ClickedResponse:
     """Customer says they clicked. Starts the recovery re-plan (the pipeline handles recovery mode, L11)."""
     if not settings.route_is_mocked("clicked"):
         if not store.has_message(message_id):
             raise NotFoundError("Unknown message_id")
-        runner.submit(message_id, pipeline.job, mode=c.AgentMode.recovery)
+        runner.submit(message_id, job, mode=c.AgentMode.recovery)
         return c.ClickedResponse(message_id=message_id, status=c.JobStatus.queued)
     _known(message_id)
     with _lock:
@@ -287,9 +292,10 @@ def post_clicked(
 
 
 @router.post("/transactions/{ref}/confirm", response_model=c.ConfirmResponse)
-def post_confirm(ref: str, body: c.ConfirmRequest, settings: SettingsDep) -> c.ConfirmResponse:
+def post_confirm(ref: str, body: c.ConfirmRequest, settings: SettingsDep, store: StoreDep) -> c.ConfirmResponse:
     """Answer to "Was this you?"."""
-    _require_mock(settings, "confirm", "L11")
+    if not settings.route_is_mocked("confirm"):
+        return store.confirm_transaction(ref, body.was_me)
     return c.ConfirmResponse(ref=ref, was_me=body.was_me, recorded=True)
 
 
@@ -309,9 +315,10 @@ def post_action(body: c.ActionRequest, settings: SettingsDep, store: StoreDep) -
 
 
 @router.get("/privacy/{message_id}", response_model=c.PrivacyView)
-def get_privacy(message_id: str, settings: SettingsDep) -> c.PrivacyView:
+def get_privacy(message_id: str, settings: SettingsDep, store: StoreDep) -> c.PrivacyView:
     """What was redacted and exactly what each tool and model received (L6)."""
-    _require_mock(settings, "privacy", "L6")
+    if not settings.route_is_mocked("privacy"):
+        return privacy_log.view(store, message_id)
     _known(message_id)
     return mocks.load("privacy.json").model_copy(update={"message_id": message_id})
 
@@ -391,6 +398,8 @@ def create_app(
     app.state.store = store
     app.state.runner = runner
     app.state.pipeline = pipeline
+    # A replaced module-level `pipeline_job` (tests) wins over the pipeline's own job.
+    app.state.job_override = pipeline_job if pipeline_job is not _pipeline_module.pipeline_job else None
     app.state.start_lock = threading.Lock()
     app.state.list_campaigns = list_campaigns or _list_campaigns
     app.state.metrics_path = metrics_path or METRICS_PATH

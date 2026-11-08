@@ -71,20 +71,29 @@ def test_health_in_live_mode_never_shows_keys(make_client):
 # --- per-route mocks and JSON errors ----------------------------------------
 
 
-def test_route_without_mock_returns_json_501(make_client):
-    client = make_client(USE_MOCKS=False, DEMO_MODE="replay", MOCK_ROUTES="campaigns", PHONE_HASH_SALT="test-salt")
-    assert client.get("/api/campaigns").status_code == 200
-    r = client.get("/api/privacy/msg_0001")
-    assert r.status_code == 501
-    body = r.json()
-    _assert_error_shape(body, "not_implemented")
-    assert body["error"]["details"] == {"issue": "L6"}
+def test_every_route_runs_real_code_when_unmocked(make_client):
+    """L9: with mocks off, no route in POC_MVP 7.1 answers 501 any more; unknown ids get JSON 404s."""
+    client = make_client(USE_MOCKS=False, DEMO_MODE="replay", PHONE_HASH_SALT="test-salt")
+    client.app.state.list_campaigns = lambda: []  # don't open the local campaign DB in a test
+    calls = [
+        client.get("/api/inbox"),
+        client.get("/api/messages/msg_nope/result"),
+        client.post("/api/messages/msg_nope/clicked"),
+        client.post("/api/transactions/txn_nope/confirm", json={"was_me": False}),
+        client.post("/api/actions", json={"message_id": "msg_nope", "action": "block_sender"}),
+        client.get("/api/privacy/msg_nope"),
+        client.get("/api/campaigns"),
+        client.get("/api/metrics"),
+    ]
+    assert all(r.status_code != 501 for r in calls), [r.status_code for r in calls]
+    _assert_error_shape(calls[4].json(), "not_found")
 
 
 def test_live_route_override_with_mocks_on(make_client):
     client = make_client(USE_MOCKS=True, DEMO_MODE="replay", LIVE_ROUTES="confirm")
-    assert client.get("/api/inbox").status_code == 200
-    assert client.post("/api/transactions/txn_3/confirm", json={"was_me": False}).json()["error"]["details"] == {"issue": "L11"}
+    assert client.get("/api/inbox").status_code == 200  # still the mock
+    # The real confirm route only accepts refs from a finished recovery; the mock would answer `recorded: true`.
+    assert client.post("/api/transactions/txn_3/confirm", json={"was_me": False}).status_code == 404
 
 
 def test_404_is_json_and_carries_message_id(client):

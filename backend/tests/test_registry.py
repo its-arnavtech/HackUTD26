@@ -238,8 +238,9 @@ def test_privacy_record_has_exactly_what_the_tool_received(reg):
     reg.call("check_link", {"url_id": "URL_1"}, AGENT_INPUT, on_call=records.append)
     [r] = records
     assert r.recipient == "check_link" and r.kind == "tool"
-    assert r.payload == {"url_id": "URL_1"}
-    assert r.received_fields == ["url_id", "agent_input.urls"] and r.at is not None
+    # L6: the agent-input fields the tool reads are part of what it received.
+    assert r.payload == {"url_id": "URL_1", "urls": AGENT_INPUT.model_dump(mode="json")["urls"]}
+    assert r.received_fields == ["url_id", "urls"] and r.at is not None
 
 
 def test_privacy_recorded_even_when_the_tool_fails(reg):

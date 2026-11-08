@@ -13,10 +13,21 @@ export function activitySummary(result: AgentResult): string {
   return "Your bank activity wasn’t checked for this message.";
 }
 
+/**
+ * A3's redaction tags: `<PERSON>`, `<URL_1>`, `<ACCOUNT_DIGITS>`, and `<PHONE_HASH_2ae6…>`, whose digest is
+ * lowercase hex (a display may shorten it with an ellipsis). The name is uppercase; segments after it may not be.
+ */
+const TAG = "<[A-Z][A-Z0-9]*(?:_[A-Za-z0-9…]+)*>";
+
+export const isRedactionTag = (part: string) => new RegExp(`^${TAG}$`).test(part);
+
+/** Splits redacted text into plain runs and tags, in order, so each tag can render as a chip. */
+export const splitRedacted = (text: string) => text.split(new RegExp(`(${TAG})`, "g")).filter((part) => part !== "");
+
 /** True when `redacted` is the redacted form of this message, not another fixture's text. */
 export function redactionMatches(raw: string, redacted: string): boolean {
   const pieces = redacted
-    .split(/<[A-Z][A-Z0-9_]*>/)
+    .split(new RegExp(TAG))
     .map((part) => part.replace(/\s+/g, " ").trim())
     .filter((part) => part.length >= 12);
   return pieces.length > 0 && pieces.every((part) => raw.includes(part));
@@ -56,6 +67,45 @@ export const actionReceipts: Record<Action, string> = {
   alert_trusted_contact: "Ask someone you trust to sit with you.",
   ignore: "Message dismissed in this demo.",
 };
+
+/**
+ * Recovery checklist copy, keyed by the agent's actions (lab `recoveryItems`).
+ * Ticking a box records progress only; SentinelAI never freezes, changes or calls anything.
+ */
+export const recoverySteps: Partial<Record<Action, { label: string; detail: string }>> = {
+  freeze_card: {
+    label: "Review your card controls",
+    detail: "Use the official Capital One app to freeze your card if needed.",
+  },
+  change_password: {
+    label: "Change your bank password",
+    detail: "Open the official app yourself. Use a password you haven’t used before.",
+  },
+  call_number_on_card: {
+    label: "Contact your bank",
+    detail: "Call the number on the back of your card and tell them what happened.",
+  },
+  alert_trusted_contact: {
+    label: "Tell someone you trust",
+    detail: "Ask a family member or friend to sit with you while you take these steps.",
+  },
+};
+
+/** The lab's three steps, used before the recovery check has returned its actions. */
+export const defaultRecoverySteps: Action[] = ["freeze_card", "change_password", "call_number_on_card"];
+
+/** The checklist for a recovery result: its actions that have a step, or the default three. */
+export function recoveryChecklist(result?: AgentResult | null): Action[] {
+  const steps = (result?.actions ?? []).filter((action) => recoverySteps[action]);
+  return steps.length > 0 ? steps : defaultRecoverySteps;
+}
+
+/** Whole minutes from the message to the activity, or undefined when it came before or can't be read. */
+export function minutesAfter(messageAt?: string | null, activityAt?: string | null): number | undefined {
+  if (!messageAt || !activityAt) return undefined;
+  const minutes = Math.round((Date.parse(activityAt) - Date.parse(messageAt)) / 60000);
+  return Number.isFinite(minutes) && minutes >= 0 ? minutes : undefined;
+}
 
 /** Shown on the primary button once its receipt is in. */
 export const actionDone: Partial<Record<Action, string>> = {
