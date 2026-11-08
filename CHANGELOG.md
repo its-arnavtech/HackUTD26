@@ -20,7 +20,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A21 | Synthetic message dataset generator | Arnav | Claude Code | POC | scaffold | done | #1 · #41 (arnav-shared) |
 | A1 | Dataset loader, stratified split and baseline metrics | Arnav | Claude Code | POC | A21 | in progress | #2 · `arnav-shared` |
 | A2 | Nessie client and idempotent seed script | Arnav | Cursor | POC | scaffold | todo | #3 |
-| A3 | Redaction module | Arnav | Codex | POC | scaffold | todo | #4 |
+| A3 | Redaction module | Arnav | Codex | POC | scaffold | in progress | codex-shared / #4 |
 | A4 | Nemotron connection and tool-calling smoke test | Arnav | Codex | POC | scaffold | done | #41 (arnav-shared) |
 | A5 | Hugging Face connection | Arnav | Codex | POC | scaffold | done | #41 (arnav-shared) |
 | A6 | Dev infrastructure: CI, dev scripts, worktrees | Arnav | Cursor | POC | scaffold | todo | #7 |
@@ -60,6 +60,17 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 ## In progress
 
 <!-- One block per active issue. Copy the template, keep it current at every checkpoint. -->
+
+### A3 Redaction module (#4)
+- Agent: Codex (GPT-6) · Person: Arnav · Folder: C:\HackUTD26-codex · Branch: codex-shared (origin/arnav-shared)
+- Started: 2026-11-07 19:17 · Last checkpoint: 2026-11-07 19:17
+- Done so far: Read reassignment, ownership, DATA_SPEC 5, P5, contracts and issue comments; no implementation checkpoint to resume. Synced main instructions and concurrent A1 changes, preserving all handoffs.
+- Next step (exact): Implement regex redaction, salted phone hashing, sender handling, and at least 20 hand-written synthetic cases. Run backend pytest; finish #4 and update shared PR.
+- Files touched: CHANGELOG.md
+- How to run or test: From backend, .\.venv\Scripts\python.exe -m pytest -q
+- Notes and gotchas: Keep contracts.py unchanged. Preserve brands, short codes, amounts and deadlines; full URLs stay in memory only for A9. No external model or test-set data used. A9 follows A3; A12 needs A1 split.
+
+
 
 ```
 ### <ID> <title> (#<issue>)
