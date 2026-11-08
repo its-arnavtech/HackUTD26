@@ -1,0 +1,27 @@
+{
+  "key": "6073a91791ff399185aa4b92d8294e66",
+  "recorded_at": "2026-11-08T06:01:04+00:00",
+  "request": {
+    "body": null,
+    "method": "GET",
+    "path": "/merchants/04588b80-cdd6-4143-a049-7c33cb8b1df7"
+  },
+  "response": {
+    "_id": "04588b80-cdd6-4143-a049-7c33cb8b1df7",
+    "address": {
+      "city": "Richardson",
+      "state": "TX",
+      "street_name": "Demo Way",
+      "street_number": "800",
+      "zip": "75080"
+    },
+    "category": "Gas",
+    "geocode": {
+      "lat": 32.9858,
+      "lng": -96.7501
+    },
+    "name": "Sentinel Demo Fuel"
+  },
+  "service": "nessie",
+  "version": 1
+}

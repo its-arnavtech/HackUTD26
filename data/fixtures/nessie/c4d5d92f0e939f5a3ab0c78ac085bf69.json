@@ -1,0 +1,12 @@
+{
+  "key": "c4d5d92f0e939f5a3ab0c78ac085bf69",
+  "recorded_at": "2026-11-08T06:01:03+00:00",
+  "request": {
+    "body": null,
+    "method": "GET",
+    "path": "/accounts/83dce5c6-2962-4a67-9281-0b2e4c0f7fde/transfers"
+  },
+  "response": [],
+  "service": "nessie",
+  "version": 1
+}
