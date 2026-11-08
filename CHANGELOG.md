@@ -37,7 +37,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A10 | `check_link` and `check_sender` tools | Arnav | Cursor | MVP | L1 | todo | #18 |
 | A11 | Nessie tools | Arnav | Cursor | MVP | A2 | todo | #19 |
 | A12 | Campaign store, seeding and `match_campaign` | Arnav | Codex | MVP | A1, A3 | todo | #20 |
-| A13 | Evaluation harness | Arnav | Claude Code | MVP | A1 | in progress | #21 · `arnav-shared` |
+| A13 | Evaluation harness | Arnav | Claude Code | MVP | A1 | done | #21 · #41 (arnav-shared) |
 | L7 | Improved classifier | Lavanya | Claude Code | MVP | A1, A9, A13 | todo | #22 |
 | L8 | Agent loop with plan, re-plan and guardrails | Lavanya | Claude Code | MVP | A4, L5 | todo | #23 |
 | L9 | API endpoints and pipeline orchestration | Lavanya | Claude Code | MVP | L3, L8 | todo | #24 |
@@ -87,15 +87,6 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - Resumed by: <tool> from <tool>, if any
 ```
 
-### A13 Evaluation harness (#21)
-- Agent: Claude Code (Opus 5.5) · Person: Arnav · Folder: `C:\HackUTD26-cc` · Branch: `arnav-shared`
-- Started: 2026-11-07 20:15 · Last checkpoint: 2026-11-07 20:15
-- Done so far:
-  - Claimed. Copied A5's public SMS parquet from `C:\HackUTD26-codex\data\raw\public_sms\` (sha256 matches A5's manifest; gitignored). Installed `pyarrow==26.0.1` to read it.
-- Next step (exact): write `backend/scripts/evaluate.py`: model factory interface `make(train, val) -> predict(messages)`, scores on A1's `load_split()` test and the public set, baseline row, redaction-cost row via `app.privacy.redact`, optional agent sample; write `eval/metrics.json`.
-- Files touched: `CHANGELOG.md`
-- How to run or test: `cd backend; ..\.venv\Scripts\python -m scripts.evaluate`
-- Notes and gotchas: L7 isn't built, so until it lands the "ours" row is a stand-in (see Decisions when written). The public set is external evaluation only.
 
 
 ---
@@ -104,6 +95,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID · tool · PR · summary · follow-ups`.
 
+- 2026-11-07 20:20 · A13 · Claude Code (Opus 5.5) · #41 · `scripts/evaluate.py`: any model via a `(train, val)` factory, scored against the baseline on A1's saved test split and the public SMS set, on redacted text, plus a redaction-cost row and an agent sample mode; writes `eval/metrics.json` + `metrics_details.json`; ours = baseline stand-in until L7; 251 tests pass · follow-ups: L7 exposes a factory and reruns; agent sample once L8/L9 land; A3 brand over-redaction (Decisions)
 - 2026-11-07 19:32 · A3 · Codex (GPT-6) · #41 · Local redactor, HMAC phone/sender handling, private URL ordering and report; P5 20/20, 50 redaction tests; full merged backend 219 passed in credential-free child process; real L1 adapters synced · follow-ups: A9, A13 redaction-cost evaluation; regex name/address limits documented
 
 - 2026-11-07 19:18 · A1 · Claude Code (Opus 5.5) · #41 · Loader into `Message`, saved 70/15/15 split (`data/generated/splits.json`: train 1,818 / val 390 / test 388, test = `test_v1` + hand-written), baseline keyword rules + TF-IDF + LR; `eval/baseline_metrics.json` test macro F1 0.807, FPR 0.127; `eval/baseline_details.json` adds val, per-subset scores and confusion; 121 tests pass · follow-ups: rescore on redacted text once A3 lands (A13 redaction cost)
@@ -125,6 +117,11 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 ---
 
 ## Decisions
+
+- 2026-11-07 20:20 · **A13 harness interface (for L7):** `cd backend; python -m scripts.evaluate --model <module>:<factory>`. The factory is called as `factory(train, val)` with A1's saved split (train 1,818, val 390) and returns an object whose `predict(messages: list[Message]) -> list[str]` gives one taxonomy id per message. It never receives test or the public set. Main rows score both models on **redacted** text (`app.privacy.redact`, phone hash tags collapsed to `<PHONE_HASH>` so scores don't depend on the salt); the redaction-cost row is ours on raw vs. redacted. Until L7 ships a factory, `eval/metrics.json` uses the baseline as a stand-in for "ours", so ours = baseline on every row.
+- 2026-11-07 20:20 · **A13 numbers (baseline, redacted text):** test macro F1 **0.791**, FPR **0.160** (raw: 0.807 / 0.127, same as A1). Redaction cost 0.807 → 0.791. Public `ucirvine/sms_spam` (5,574): spam recall **0.177**, FPR **0.034** (raw text: 0.253 / 0.041). The public spam is mostly 2012-era UK premium-rate prize and ringtone spam, largely outside our US smishing taxonomy, so low recall is expected from a model trained on our synthetic data. L7 must not train on it (external evaluation only); the pitch should present it honestly as a real-world stress test.
+- 2026-11-07 20:20 · **A13 finding for A3 (Codex):** redaction tags many brand and place names as `<PERSON>` (for example "Wells Fargo", "Best Buy", "ATL") and flight numbers as `<ACCOUNT_DIGITS>`; `data/brands.json` lists only Capital One and T-Mobile. This is most of the 0.016 macro F1 / +3.3-point FPR redaction cost. Not changed by Claude Code (Codex owns `privacy/redact.py`).
+- 2026-11-07 20:20 · `pyarrow==26.0.1` added to `backend/requirements.txt` (A13 reads A5's parquet). Running pytest locally: Arnav's Windows user environment sets `GEMINI_API_KEY`, which fails 4 config/runtime tests that expect no inherited keys; run `Remove-Item Env:GEMINI_API_KEY` in that shell first (251 pass).
 
 - 2026-11-07 19:32 · A4/A5 integration after L1 merge: removed scaffold bypasses from Nemotron and HF bootstrap; cached_call now receives the selected DEMO_MODE explicitly. Offline tests verify recording, credential-free replay and strict misses with no network. Local-fallback doc updated; production scenarios still need A19 fixtures. Full merged backend suite: 219 passed; test process clears inherited service credentials because L2 make_settings ignores .env but still reads environment variables (no global or .env changes).
 
