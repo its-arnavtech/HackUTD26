@@ -5,16 +5,15 @@ import { mockInbox, mockResult, recoverySpecimen } from "../fixtures";
 import type { ResultPoll } from "../types";
 import Recovery, { RecoveryView } from "./Recovery";
 
-vi.mock("../api", () => {
-  class ApiError extends Error {
-    status: number;
-    constructor(status: number, message: string) {
-      super(message);
-      this.status = status;
-    }
-  }
-  return { getInbox: vi.fn(), postClicked: vi.fn(), confirmTransaction: vi.fn(), pollResult: vi.fn(), ApiError };
-});
+vi.mock("../api", async (importOriginal) => ({
+  // Real ApiError and failureOf; only the network calls are mocked.
+  ...(await importOriginal<typeof import("../api")>()),
+  getInbox: vi.fn(),
+  postClicked: vi.fn(),
+  confirmTransaction: vi.fn(),
+  pollResult: vi.fn(),
+  getHealth: vi.fn(() => Promise.reject(new Error("no health in tests"))),
+}));
 const api = vi.mocked(await import("../api"));
 
 function renderRecovery() {
