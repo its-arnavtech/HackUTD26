@@ -41,14 +41,14 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | L7 | Improved classifier | Arnav | Codex | MVP | A1, A9, A13 | done | #22 · #58 (arnav-shared); public gate failed, pivot documented |
 | L7b | Public SMS generalization follow-up | Arnav | Codex | MVP | L7 | done | #59 · #62 (arnav-shared) |
 | L8 | Agent loop with plan, re-plan and guardrails | Lavanya | Claude Code | MVP | A4, L5 | done | #23 · PR #56 |
-| L9 | API endpoints and pipeline orchestration | Lavanya | Claude Code | MVP | L3, L8 | in progress | #24 · l9-pipeline |
+| L9 | API endpoints and pipeline orchestration | Lavanya | Claude Code | MVP | L3, L8 | done | #24 · PR #65 |
 | G1 | Gate: scenario 1 end to end in the CLI | Both | any | MVP | A3, A9, A10, A11, L8 | done | #25 · PR #46 (prep), PR #61 |
 | L10 | `public_scam_reports` tool | Arnav | Codex | MVP | L4, L5 | done | #26 · PR #66 (P3 live gate blocked) |
 | L11 | Recovery mode re-plan | Arnav | Codex | MVP | L8, A11 | done | #27 · PR #63 |
 | A14 | Result card, "How we checked" and privacy panel | Arnav | Cursor (covering for Codex design) | MVP | A7 | done | #28 · PR #53 |
 | A15 | Recovery UI | Arnav | Claude Code (covering for Codex design) | MVP | A14 | done | #29 · PR #55 (#54 closed as superseded) |
 | A16 | Consent screen, campaign view and accuracy page | Arnav | Claude Code (covering for Codex design) | MVP | A7 | done | #30 · PR #55 |
-| A17 | Frontend on the live API | Arnav | Cursor | MVP | A14, A15, A16, L9 | todo | #31 |
+| A17 | Frontend on the live API | Arnav | Cursor | MVP | A14, A15, A16, L9 | in progress | #31 · a17-live-api (no PR yet; left with Claude Code) |
 | A18 | End-to-end scenario tests | Arnav | Codex | MVP | G1 | done | #32 · PR #64 |
 | G2 | Gate: all three scenarios end to end in the app | Both | Codex | MVP | A17, A18, L10, L11 | in review | #33 · codex/g2-replay-only (all flows passed) |
 | A19 | Replay fixtures and backup video | Arnav | Codex | Demo | G2 | in progress | #34 · CLI + app fixtures verified; video excluded by user |
@@ -66,7 +66,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - Agent: Codex (GPT-6), Arnav; C:/HackUTD26/.worktrees/wrap-up; codex/g2-replay-only.
 - Started / checkpoint: 2026-11-08 00:53; prior isolated A17 candidate on codex/g2-app-gate.
 - Done: All three actual app flows passed record/live using hosted Nemotron, synthetic Nessie and frozen L7 v2, then passed with outbound DNS/sockets blocked. Same gate passed on main-based frontend; no A17 implementation commits in this PR. Bank/bill plans differ, $900 txn_28 at Unknown Payee/17 min, confirm only after tap, bill paid Nov 1/$0 due; privacy, real campaigns/accuracy and browser console checks pass. 673 backend tests and main/A17 candidate 50/65 frontend tests/build passed.
-- Next: PR/CI/merge; reviewed reset-generation fix #68 needs integration. A17 stays with its owner. Presentation/video and Gemini access excluded by latest user steering.
+- Next: CI/merge #69, which integrates Cursor reset-generation fix #68 while retaining already-merged test fix #67. Core flows are verified; G2 issue completion awaits the A17 owner PR/merge. A17 stays with its owner. Presentation/video and Gemini access excluded by latest user steering.
 - Files: scripts/serve_app_gate.py, frontend/gates/app.pw.ts, gate config/package script, data/fixtures/app_gate, eval/app_gate_*.json, docs/APP_GATE.md, docs/TESTING.md, CHANGELOG.md.
 - Commands: GATE_MODE=record or replay; npm run test:app; E2E_PYTHON is local 3.12 venv. Ports 8022/5189.
 - Gotchas: Ignored local v2 artifact hash 824af47739cee1d63e3828b3978a01b946bdf324bf5b9c9046334e34bd747b8e required for replay. Optional public search unavailable. No held-out evaluation/training changes. Fixture secret scan passed.
@@ -90,6 +90,23 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - Files touched: planned replay script, fixtures, tests, docs; browser smoke in separate workflow.
 - How to test: python -m pytest tests/test_scenarios_e2e.py; npm run test:e2e.
 - Gotchas: replay cache keys include message IDs, classifier outputs, phone hash, model and prompts. Never claim arbitrary new messages replay.
+- Resumed by: Cursor (Grok 4.7, cloud) from Codex, for the runbook and offline CLI check only. Video and live app replay are not done. No live keys in this environment.
+
+### G2 Gate: all three scenarios in the app (#33), prior Cursor checkpoint
+- Integration update: PR #69 now supplies the missing real app recordings and observed live/offline gate. This prior checkpoint is preserved as history. A17 remains with its owner; full gate issue completion awaits their PR/merge. PR #67 already supplies the retained recovery-test synchronization fix.
+- Agent: Cursor (Grok 4.7, cloud) · Person: Arnav · Folder: `/agent/repos/HackUTD26-cleanup` · Branch: `cursor/demo-readiness-f47e`
+- Started: 2026-11-08 00:42 · Last checkpoint: 2026-11-08 00:50
+- Done so far:
+  - Merged L9 #65 with a merge commit (`21fbea5`). Head was still `d039b223`, the reviewed SHA.
+  - Reset now bumps a demo generation so an in-flight job cannot write a result, trail, or privacy row onto a reseeded message that reused the same id and run number. Superseded runs in the same generation still keep their privacy records.
+  - Recovery test "notes a recognized transfer" delivers the mocked poll to whichever subscriber is installed, including one that attaches after the checking screen is shown.
+  - A17 (`a17-live-api`) has no pull request. Its loading/error/retry work was not copied. PR #66 (Gemini public reports) was left with its owner. On main, `public_scam_reports` still raises `NotImplementedError`.
+  - Browser, `USE_MOCKS=false`, `DEMO_MODE=replay`, no API keys: inbox loads the three messages. Scenario 1 and scenario 3 end "We're not sure" because Nemotron has no app-shaped fixture (`FixtureMissingError`). Recovery still runs the recorded Nessie check: $900 purchase at Unknown Payee, 17 minutes after the text, ref `txn_28`. Answering "No" posts confirm only after the tap and shows the checklist. Campaign cards say 0 similar texts today (no last-24-hour count is above 0; the historical 28 is `count_total`, not shown as today). Accuracy reads `eval/metrics.json`. Unknown message id is 404. Block sender returns simulated and "Nothing was sent."
+- Next step (exact): Arnav records the three app walks with `DEMO_MODE=record` (see `docs/DEMO_RUNBOOK.md`), then replays them with the network off. Do not mark G2 done before that and before A17's PR is in. Do not mark the backup video done until Arnav records it.
+- Files touched: `backend/app/state.py`, `backend/tests/test_state.py`, `frontend/src/screens/Recovery.test.tsx`, `CHANGELOG.md`, `docs/DEMO_RUNBOOK.md`
+- How to run or test: `cd backend; python -m pytest`; `cd frontend; npm test; npm run build; npm run test:e2e`
+- Notes and gotchas: campaign counts are historical. Scenario 3's cluster is 28 on record and 0 in the last 24 hours. Do not narrate that as recent activity. The planted $900 is a purchase at Unknown Payee, not a transfer.
+- Resumed by: none
 
 
 
@@ -127,8 +144,10 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 ## Done log
 
-- 2026-11-08 00:34 · A18 follow-up / L9 CI unblock · Codex (GPT-6) · PR pending · Recovery tests clear the prior callback and wait for the current poller before sending a fake result; fixes CI race seen in #65 while preserving A17 application code; 50 frontend tests and build pass.
+- 2026-11-08 00:34 · A18 follow-up / L9 CI unblock · Codex (GPT-6) · #67 · Recovery tests clear the prior callback and wait for the current poller before sending a fake result; fixes CI race seen in #65 while preserving A17 application code; 50 frontend tests and build pass.
 - 2026-11-08 00:34 · L10 (L4 client ready, live P3 blocked) · Codex (GPT-6) · #66 · Fixed four-field Gemini lookup, cached Google grounding, support/chunk-only facts, ranking/stale/contact rules, model-argument isolation, safe smoke script; 14 new tests, combined backend 650 passed/no skips · follow-up: #12 needs usable generation quota (3.5/3.5 Lite 429, listed 2.5 404); no Gemini-backed demo claim until a cited live pass.
+
+- 2026-11-08 00:42 · L9 · Claude Code (Opus 5.5, Lavanya); merged by Cursor (Grok 4.7) · #65 · Real pipeline behind every 7.1 route: redact, features, classify (L7 or baseline), Nemotron on L3's runner; trail fills in on poll; demo inbox loads at startup and reset. Merge commit `21fbea5`, not a squash. · follow-ups: changelog status finished here; the demo-generation fix and the recovery-test flake are separate
 
 - 2026-11-08 00:06 · A18 · Codex (GPT-6), resumed Claude Code · #64 · All three real-agent authored scenarios now required in socket-blocked replay; 31 service recordings; Playwright inbox/result/trail/privacy smoke and browser CI; 617 backend passed with no skips, 49 frontend tests/build, Chromium pass · follow-ups: G2 app recordings and A19 backup video still pending L9/A17; CLI profile deliberately uses real A1 baseline, public search unavailable.
 
@@ -179,6 +198,8 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 ---
 
 ## Decisions
+
+- 2026-11-08 00:42 · Demo reset bumps a generation on the in-memory store. A job may write its result and trail only while its run is still current in that generation. Privacy records from a superseded run in the same generation stay (the data was sent). After reset, a reseeded message can reuse the id and run number; the old job's generation no longer matches, so its result, trail, redaction and privacy writes are dropped. Public reports stay unavailable until PR #66 merges: `public_scam_reports` on main is still `NotImplementedError`, and the A18 replay profile reports that search as unavailable on purpose.
 
 - 2026-11-07 23:55 · L11 recovery: after the customer taps /clicked, code requires a read-only Nessie check since received_at before further model-directed checks. Only refs from successful, schema-valid Nessie flags can become Was this you items, including when Nemotron later fails. Full payee details resolve locally in JobRunner after the loop; confirmation records only a customer tap for a completed current recovery run. Suggestions never call banking writes. L9 and A17 stay with their active owners per Arnav.
 
