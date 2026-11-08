@@ -30,7 +30,7 @@ Each agent works in its own folder (a git worktree for Arnav's tools, section 12
 
 ## 4. Workflow for each issue
 
-1. `git fetch`, then `git switch -c <id>-<short-name> origin/main` (for example `a3-redaction`). If the branch already exists because you are resuming, `git switch <branch>` and `git pull`.
+1. `git fetch`, then `git switch -c <id>-<short-name> --no-track origin/main` (for example `a3-redaction`), then `git push -u origin <id>-<short-name>` so the branch tracks itself, not `main`. If the branch already exists because you are resuming, `git switch <branch>` and `git pull`.
 2. **Claim** (section 5).
 3. Restate the acceptance criteria in two or three lines, then implement.
 4. Run `pytest` from `backend/` (and `npm run build` in `frontend/` for frontend work). Add tests for what you built.
@@ -41,10 +41,11 @@ Each agent works in its own folder (a git worktree for Arnav's tools, section 12
 
 Arnav's Claude Code (`C:\HackUTD26-cc`) and his Codex connections session (`C:\HackUTD26-codex`) commit to one shared remote branch, `arnav-shared`, instead of a branch per issue. Cursor and the Codex design session keep a branch per issue. Git won't check out the same local branch in two folders, so:
 
-- **Claude Code** (`C:\HackUTD26-cc`): `git fetch`, then `git switch -c arnav-shared origin/main` and `git push -u origin arnav-shared` if the branch doesn't exist yet, otherwise `git switch -c arnav-shared --track origin/arnav-shared`.
+- **Claude Code** (`C:\HackUTD26-cc`): `git fetch`, then `git switch -c arnav-shared --no-track origin/main` and `git push -u origin arnav-shared` if the branch doesn't exist yet, otherwise `git switch -c arnav-shared --track origin/arnav-shared`.
 - **Codex** (`C:\HackUTD26-codex`): `git fetch`, then `git switch -c codex-shared --track origin/arnav-shared`. Push with `git push origin HEAD:arnav-shared`.
 - **Before every commit:** `git pull --rebase`. Stage only your own files with `git add <paths>`; never `git add -A` or `git add .`, because the other agent's work lives on the same branch. Commit small and push right away.
-- **Who owns which files:** Codex owns `backend/app/integrations/nemotron.py`, `backend/scripts/smoke_nemotron.py`, the Hugging Face download code, `docs/LOCAL_NEMOTRON.md` and their tests. Claude Code owns everything else in its issues. Don't edit the other agent's files; ask Arnav.
+- **Who owns which files:** Codex owns `backend/app/integrations/nemotron.py`, `backend/scripts/smoke_nemotron.py`, the Hugging Face download code, `docs/LOCAL_NEMOTRON.md`, and the files of A3 (`backend/app/privacy/`), A9 (`backend/app/features/`) and A12 (`backend/app/tools/campaign.py` and its store and seed script), plus their tests. Claude Code owns everything else in its issues.
+- **Not everyone can comment on issues.** If your GitHub access can't write issue comments (Cursor's cloud agent can't), put the claim and checkpoints in `CHANGELOG.md` only and tell Arnav; `Closes #<n>` in the PR still closes the issue. Don't edit the other agent's files; ask Arnav.
 - **CHANGELOG:** each agent keeps its own In progress block. On rebase conflicts, keep both sides.
 - **PRs:** when one or more issues are done, open a PR from `arnav-shared` to `main` whose body lists every finished issue (`Closes #2`, `Closes #5`). Merge it with a **merge commit, not a squash**, so both agents keep working on the same branch afterward. Never open a PR that includes an unfinished issue's half-done work without saying so in the PR body.
 
