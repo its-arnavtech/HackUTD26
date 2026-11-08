@@ -95,12 +95,20 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 ### G1 Gate: scenario 1 end to end in the CLI (#25), prep
 - Agent: Cursor (Claude Opus 5.5, cloud agent) · Person: Arnav · Folder: Cursor cloud VM (`/workspace`) · Branch: `cursor/g1-run-scenario-55c7`
 - Started: 2026-11-07 19:17 · Last checkpoint: 2026-11-07 19:17
+- Started: 2026-11-07 19:17 · Last checkpoint: 2026-11-07 19:19
+- Done so far:
   - Claimed (CHANGELOG only)
-- Next step (exact): write `scripts/run_scenario.py`. Each stage uses the real module when it's implemented and a marked stand-in when it raises `NotImplementedError`. The agent call is a single `AGENT = ...` line to swap for L8's `run_agent`. Then add tests.
-- Files touched: `CHANGELOG.md`
+  - `scripts/run_scenario.py`: redaction, sender redaction, URL features, message features, claimed brand and classifier each use the real module (or, for the classifier, A1's baseline) once it stops raising `NotImplementedError`, and a marked stand-in until then. The stages table prints which one ran. Tools run through a `TOOLS` table, with errors returned as data. The stand-in agent (rule-based plan and verdict, no model) is the single line `AGENT = stand_in_agent`. Supports scenarios 1 to 3 (2 runs in recovery mode) and `--json`.
+  - 9 tests (`tests/test_run_scenario.py`). The suite passes on 3.11 and 3.12 and in replay mode.
+  - Verified in a scratch merge with A10 and A11 (not committed) against the seeded fake Nessie: scenario 1 gives plan `check_link, check_sender, nessie_recent_activity` (the expected plan) and `likely_scam / very likely`; scenario 2 flags the planted transfer; scenario 3 finds the paid bill
+  - PR #46 open
+- Next step (exact): when L8 merges, change `AGENT = stand_in_agent` to `AGENT = run_agent` in `scripts/run_scenario.py`. Register the tools with L5 (TODOs in `tools/link.py`, `tools/sender.py`, `tools/nessie_tools.py`). Run `python -m scripts.run_scenario 1` with the real seed (A2) and check the trail and verdict. Then finish G1.
+- Files touched: `backend/scripts/run_scenario.py`, `backend/tests/test_run_scenario.py`, `CHANGELOG.md`
 - How to run or test: from `backend/`: `python -m scripts.run_scenario 1`, then `python -m pytest`
 - Notes and gotchas: base is `main`, where A3, A9, A10, A11, L7 and L8 are all stubs. Verify with A10 and A11 merged locally too, without committing that merge.
 
+- Notes and gotchas: on `main` alone, every stage is a stand-in and the tools say "not available yet", so the verdict is `unsure`. That's expected. `match_campaign` (A12) and `public_scam_reports` (L10) aren't in the stand-in's `TOOLS` table, so scenario 3's plan differs from its expected plan until L8 drives the tools through L5's registry.
+- Resumed by: none
 ---
 
 ## Done log
