@@ -4,6 +4,7 @@ import httpx
 import pytest
 
 from app.config import get_settings
+from app.integrations import cache
 from app.integrations.nessie import (
     NessieClient,
     NessieError,
@@ -15,7 +16,9 @@ from tests.fake_nessie import API_KEY, FakeNessie
 
 
 @pytest.fixture
-def demo_mode(monkeypatch):
+def demo_mode(monkeypatch, tmp_path):
+    monkeypatch.setattr(cache, "FIXTURES_DIR", tmp_path / "fixtures")
+
     def set_mode(mode: str) -> None:
         monkeypatch.setenv("DEMO_MODE", mode)
         get_settings.cache_clear()
@@ -97,6 +100,20 @@ def test_replay_mode_never_calls_out(demo_mode, fake):
     with pytest.raises(NessieReplayMiss):
         make_client(fake).get_customers()
     assert fake.requests == []
+
+
+def test_record_then_replay_without_the_key(demo_mode, fake):
+    recorder = make_client(fake, mode="record")
+    linda = recorder.create_customer({"first_name": "Linda", "last_name": "Sentinel"})
+    assert recorder.get_customers() == [linda]
+    files = cache.list_fixtures("nessie")
+    assert len(files) == 2
+    assert all(API_KEY not in f.read_text(encoding="utf-8") for f in files)
+
+    calls = len(fake.requests)
+    replayer = NessieClient("", "https://api.nessieisreal.com", http=fake.client(), mode="replay")
+    assert replayer.get_customers() == [linda]
+    assert len(fake.requests) == calls
 
 
 def test_client_from_settings_needs_a_key_outside_replay(demo_mode, monkeypatch, tmp_path):

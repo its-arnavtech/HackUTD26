@@ -17,7 +17,6 @@ from __future__ import annotations
 
 import json
 import logging
-from collections.abc import Callable
 from pathlib import Path
 from typing import Any, Optional
 
@@ -25,7 +24,7 @@ import httpx
 
 from app.config import DATA_DIR, get_settings
 from app.contracts import DemoMode
-from app.integrations.cache import cached_call
+from app.integrations.cache import FixtureMissingError, cached_call
 
 log = logging.getLogger(__name__)
 
@@ -64,8 +63,11 @@ class NessieClient:
         *,
         http: httpx.Client | None = None,
         transfer_details: dict[str, dict[str, Any]] | None = None,
+        mode: DemoMode | str | None = None,
     ) -> None:
+        """`mode` overrides `DEMO_MODE` for this client's calls (tests, scripts)."""
         self._api_key = api_key
+        self.mode = mode
         if base_url.startswith(_INSECURE_HOST):
             base_url = "https://" + base_url[len("http://") :]
         self.base_url = base_url.rstrip("/")
@@ -85,14 +87,10 @@ class NessieClient:
 
     def _request(self, method: str, path: str, body: dict[str, Any] | None = None) -> Any:
         request = {"method": method, "path": path, "body": body}
-        call: Callable[[], Any] = lambda: self._send(method, path, body)
         try:
-            return cached_call("nessie", request, call)
-        except NotImplementedError:
-            # TODO(L1): delete this fallback once cache.py merges; cached_call handles DEMO_MODE itself.
-            if get_settings().DEMO_MODE == DemoMode.replay:
-                raise NessieReplayMiss(f"no recorded Nessie response for {method} {path}") from None
-            return call()
+            return cached_call("nessie", request, lambda: self._send(method, path, body), mode=self.mode)
+        except FixtureMissingError:
+            raise NessieReplayMiss(f"no recorded Nessie response for {method} {path}") from None
 
     def _get_list(self, path: str) -> list[dict[str, Any]]:
         data = self._request("GET", path)
