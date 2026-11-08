@@ -63,12 +63,12 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 ### A12 Campaign store, seeding and match_campaign (#20)
 - Agent: Codex (GPT-6) · Person: Arnav · Folder: C:\HackUTD26-codex · Branch: codex-shared (origin/arnav-shared)
-- Started: 2026-11-07 20:42 · Last checkpoint: 2026-11-07 20:42
-- Done so far: Read issue, DATA_SPEC 3.2/5, POC_MVP 7.6 and ownership. A1 split exists (1818 train, 390 val, 388 test). A3/A9 complete. No prior A12 implementation checkpoint.
-- Next step (exact): Implement fingerprint-only SQLite store, train-only seed guard, validation-only calibration, pure match/list functions and a reproducible seed CLI; then verify scenario 3 after calibration and add privacy/count/split tests.
-- Files touched: CHANGELOG.md
+- Started: 2026-11-07 20:42 · Last checkpoint: 2026-11-07 20:53
+- Done so far: Fingerprint-only SQLite store, train/validation guards, read-only matching/listing, explicit observation hook and seed CLI implemented. 21 campaign tests pass; full suite 333 passed, 1 skipped. First real run stored 1127 training-scam fingerprints; lexical family-proxy F1 0.726 at validation threshold 0.75, but scenario 3 did not match. No scenario observations were inserted.
+- Next step (exact): Improve paraphrase distance with hashed A9 semantic signals and select blend plus threshold using validation only; rerun unit/full tests, rebuild the generated campaign cache, then probe scenario 3 after calibration.
+- Files touched: backend/app/tools/campaign.py, backend/app/tools/campaign_store.py, backend/scripts/seed_campaigns.py, backend/tests/test_campaign.py, data/campaign_calibration.json, CHANGELOG.md
 - How to run or test: From backend, .\.venv\Scripts\python.exe -m scripts.seed_campaigns --verify-scenario3; .\.venv\Scripts\python.exe -m pytest tests/test_campaign.py -q
-- Notes and gotchas: No raw/redacted message text in persistent storage. UI previews must be controlled patterns, not stored excerpts. Test split and authored scenarios never seed/tune. Counts use unique observations and their real timestamps; repeated lookups never increment them. Keep shared contracts and L9-owned routes unchanged; hand off list/match/record functions for integration.
+- Notes and gotchas: No raw/redacted message text in persistent storage. UI previews must be controlled patterns, not stored excerpts. Test split and authored scenarios never seed/tune. Counts use unique observations and original timestamps; repeated lookups never increment them. Training ends Nov 6, scenario 3 is Nov 8: genuine 24-hour support is zero, so verify historical support separately. Calibration metric is labeled brand/category-family agreement, not campaign ground truth. Keep shared contracts and L9-owned routes unchanged; hand off list/match/record functions for integration.
 
 
 
