@@ -5,14 +5,16 @@ import {
   checkedInbox,
   galleryMessage,
   galleryVerdict,
+  mockCampaigns,
+  mockMetrics,
   mockPrivacy,
   mockResult,
   recoverySpecimen,
   runningPoll,
 } from "../fixtures";
 import { newestFirst, withProgress } from "../hooks";
-import AccuracyPage from "./AccuracyPage";
-import CampaignView from "./CampaignView";
+import { AccuracyView } from "./AccuracyPage";
+import { CampaignListView } from "./CampaignView";
 import Consent from "./Consent";
 import { TrailView } from "./HowWeChecked";
 import { InboxView } from "./Inbox";
@@ -145,8 +147,14 @@ export const galleryItems: GalleryItem[] = [
     id: "campaign",
     group: "campaign",
     label: "15 · Campaign pattern",
-    detail: "Anonymous counts, templates, and guidance",
-    screen: <CampaignView />,
+    detail: "Anonymous counts, templates, and linked messages",
+    screen: (
+      <CampaignListView
+        campaigns={mockCampaigns()}
+        inbox={checkedInbox()}
+        expanded={mockCampaigns().slice(0, 1).map((c) => c.campaign_id)}
+      />
+    ),
   },
   {
     id: "replan",
@@ -181,7 +189,7 @@ export const galleryItems: GalleryItem[] = [
     group: "edge",
     label: "20 · No campaigns",
     detail: "No patterns available yet",
-    screen: <CampaignView />,
+    screen: <CampaignListView campaigns={[]} />,
   },
   {
     id: "inbox-error",
@@ -248,7 +256,7 @@ export default function Gallery() {
       </div>
       {(group === "all" || group === "accuracy") && (
         <section className="gallery-accuracy" aria-label="Judge-facing accuracy screen">
-          <AccuracyPage />
+          <AccuracyView metrics={mockMetrics()} illustrative />
         </section>
       )}
       <footer className="gallery-footer">

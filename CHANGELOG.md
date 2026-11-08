@@ -46,7 +46,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | L11 | Recovery mode re-plan | Lavanya | Claude Code | MVP | L8, A11 | todo | #27 |
 | A14 | Result card, "How we checked" and privacy panel | Arnav | Cursor (covering for Codex design) | MVP | A7 | done | #28 · `cursor/a14-result-trail-privacy-55c7` |
 | A15 | Recovery UI | Arnav | Claude Code (covering for Codex design) | MVP | A14 | done | #29 · PR #54 |
-| A16 | Consent screen, campaign view and accuracy page | Arnav | Claude Code (covering for Codex design) | MVP | A7 | in progress | #30 · `a16-consent-campaign-accuracy` |
+| A16 | Consent screen, campaign view and accuracy page | Arnav | Claude Code (covering for Codex design) | MVP | A7 | done | #30 · PR (a16) |
 | A17 | Frontend on the live API | Arnav | Cursor | MVP | A14, A15, A16, L9 | todo | #31 |
 | A18 | End-to-end scenario tests | Arnav | Claude Code | MVP | G1 | in progress | #32 · `arnav-shared` |
 | G2 | Gate: all three scenarios end to end in the app | Both | any | MVP | A17, A18, L10, L11 | todo | #33 |
@@ -74,16 +74,6 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - Resumed by: <tool> from <tool>, if any
 ```
 
-### A16 Consent screen, campaign view and accuracy page (#30)
-- Agent: Claude Code (Opus 5.5) · Person: Arnav · Folder: C:\HackUTD26 · Branch: a16-consent-campaign-accuracy (stacked on `a15-recovery`, PR #54, for its `linking.ts`)
-- Started: 2026-11-07 22:24 · Last checkpoint: 2026-11-07 22:24
-- Done so far:
-  - Claimed.
-- Next step (exact): port the lab's `Consent.tsx`, `Campaigns.tsx` and `Accuracy.tsx` into `Consent.tsx`, `CampaignView.tsx` and `AccuracyPage.tsx` on the `Campaign` and `Metrics` contracts (the accuracy page reads the real `eval/metrics.json` shape); fill gallery slots 01, 15, 20 and the accuracy section.
-- Files touched: CHANGELOG.md
-- How to run or test: `cd frontend; npm test; npm run build`
-- Notes and gotchas: covering for Codex design (out of usage); port, don't redesign.
-
 ### A18 End-to-end scenario tests (#32)
 - Agent: Claude Code (Opus 5.5) · Person: Arnav · Folder: `C:\HackUTD26-cc` · Branch: `arnav-shared`
 - Started: 2026-11-07 20:41 · Last checkpoint: 2026-11-07 20:41
@@ -105,6 +95,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID · tool · PR · summary · follow-ups`.
 
+- 2026-11-07 22:33 · A16 · Claude Code (Opus 5.5) · PR (a16) · Consent, campaign view and accuracy page ported from the design lab without redesign. Consent links or skips only on a tap and writes A15's `sentinel-linked` flag. Campaign cards show the count today and first seen; a tap opens the redacted template as chips plus the linked inbox messages, which open their checks. The lab's "supporting public guidance" block is dropped because `Campaign` carries no reports, and `domain_pattern` isn't shown. The accuracy page reads the `Metrics` shape A13 writes to `eval/metrics.json`: per-category table with readable labels for the taxonomy (`legit` too), macro F1, false positive rate, redaction cost, the public SMS set as one row of spam recall and false positives, and the agent sample when present. A banner says when SentinelAI's column is still the baseline stand-in. Gallery slots 01, 15 and 20 and the accuracy section render from mocks; 47 frontend tests (10 new, one on the real `eval/metrics.json`) · follow-ups: the mock backend's `/api/metrics` still returns `mocks/metrics.json`, so in mock mode the page shows the mock numbers; the live route needs to serve `eval/metrics.json` (`_require_mock(..., "A13")` in `main.py`)
 - 2026-11-07 22:16 · A15 · Claude Code (Opus 5.5) · #54 · Recovery ported from the design lab without redesign: "I clicked and entered my info" posts `/clicked` only after the tap, then polls the recovery run (a stale check-mode poll still shows "Checking…"); one "Was this you?" card per `was_this_you_items` entry (amount, payee, time, minutes after the text computed from the inbox `received_at`), answered through `confirmTransaction` only on a tap; checklist with tick boxes built from the recovery actions (the lab's three steps as the default), progress recorded in React state only; "I only opened the link" goes straight to the checklist; skipped linking sends the button to `/consent`; the banner names the flagged activity (live Nessie plants a purchase); four gallery slots filled; 37 frontend tests (9 new) · follow-ups: A16 consent writes the same `sentinel-linked` flag; A17 decides whether linking moves to the API
 - 2026-11-07 22:05 · A14 · Cursor (Claude Opus 5.5) · #53 · Result card, live trail and privacy panel ported from the design lab onto `ResultPoll` and `PrivacyView`: verdict and confidence in words, one primary action after a tap, "I clicked this link", trail steps animate in as polls arrive, privacy shows the redacted message and what each check received; gallery slots filled (unsure and mixed are display specimens); 28 frontend tests · follow-ups: A15 recovery, A16 consent, campaigns and accuracy
 - 2026-11-07 21:55 · A7 · Cursor (Claude Opus 5.5) · #52 · Design lab (`design-lab-snapshot` 813a3c1) ported without redesign: tokens, bundled fonts, all lab components on the contract types, stage shell with react-router, inbox polling the mocks ("Checking…" then a verdict chip), `/gallery` with all 21 states rendered from `backend/app/mocks` (no fetch); Vitest + Testing Library set up and run in CI, 18 tests · follow-ups: A14 fills the result, trail and privacy gallery slots; A15/A16 fill recovery, consent, campaigns and accuracy
