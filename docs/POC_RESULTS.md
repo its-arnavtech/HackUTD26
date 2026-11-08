@@ -7,10 +7,10 @@ Issue A8 (#14). Gates and pivots are defined in [POC_MVP.md](POC_MVP.md) section
 | P1 | Usable dataset and a baseline score? | **Pass** | Dataset QC passes; baseline test macro F1 **0.807**, FPR **0.127** | None (macro F1 < 0.97) |
 | P2 | Does Nemotron call our tools reliably? | **Pass** | **5/5** native tool calls with schema-valid answers; median step 2,635 ms, worst 4,161 ms | None (native protocol) |
 | P3 | Does Gemini grounded search return cited sources? | **Pending** | Not run: the Gemini key arrives Sunday morning (L4, Lavanya) | If it fails: Gemini becomes cut item 2 |
-| P4 | Can we seed and read Nessie? | **Fail** | Live run at 20:25 with the key: customers, accounts, merchants and the bill read back, but the seed stops at transfers, and purchases aren't idempotent (24 planned, 48 in Nessie). Two small bugs in A2 ([PR #44](https://github.com/its-arnavtech/HackUTD26/pull/44)) | Not taken yet: fix A2 and rerun. If it can't be fixed: local fixture mirroring Nessie's schema, served through the replay cache |
+| P4 | Can we seed and read Nessie? | **Fail** | 2nd live run at 20:43 (A2 fixes `f07cf08`): reads and the dry run now work (35 objects found, 24 duplicates and 4 missing transfers identified), but Nessie rejects both writes. `DELETE /purchases/{id}` returns 403 and `POST …/transfers` returns 400 on `medium` and `payee_id`. Nothing was changed | Not taken yet: Cursor finds the live transfer and delete API, then rerun. If it can't: local fixture mirroring Nessie's schema, served through the replay cache |
 | P5 | Does redaction work? | **Pass** | **20/20** hand-written gate strings; 50/50 redaction tests | None |
 
-**POC exit:** three of five gates pass (P1, P2, P5). P3 is pending on the Gemini key. P4 failed its first live run on two small, fixable bugs in A2. Its pivot (a local fixture) is ready but not taken, because fixing A2 is quicker. No pivot has been taken.
+**POC exit:** three of five gates pass (P1, P2, P5). P3 is pending on the Gemini key. P4 has failed two live runs. The first hit two client bugs, which are now fixed. The second (20:43) shows Nessie rejecting A2's transfer and delete calls. Reads work. Its pivot (a local fixture, possibly for transfers only) is ready but not taken yet. No pivot has been taken.
 
 ## P1: dataset and baseline (A21, A1)
 
@@ -69,6 +69,15 @@ Cursor built the client and the idempotent seed in [PR #44](https://github.com/i
 **The two bugs, both in A2's code:**
 1. **Empty lists come back as 404.** Nessie answers `GET /accounts/{id}/transfers` with HTTP 404 `"No transfers found for this account"` when there are none. `NessieClient._get_list` raises on it, so the seed (and the dry run) stops at the first transfer lookup. Fix: treat a 404 whose body says "No … found" on a list GET as `[]`.
 2. **Nessie stores purchase amounts as whole dollars.** For example, $49.30 is stored as `49`. The seed matches existing purchases on `(description, date, amount)` with cents, so it never finds them and creates them again on every run. Fix: use whole-dollar amounts in `purchase_plan()` (the transfers already are), or match on `int(amount)`. Then delete the 24 duplicate purchases (`DELETE /purchases/{id}`).
+
+**Second live run, 2026-11-07 at about 20:43**, on PR #44 at `f07cf08`, which fixes both bugs above and adds `--dedupe`. Steps:
+- **Preview** (`--dry-run --dedupe`): works now. It found 35 objects already present (2 customers, 3 accounts, 5 merchants, 24 purchases, 1 bill), 24 duplicate purchases to delete, and only the 4 transfers to create. That's exactly as expected.
+- **Live run** (`--dedupe`): stopped at the first write. `DELETE /purchases/{id}` answered **HTTP 403 `{"message":"Missing Authentication Token"}`**. That's Amazon's API gateway reply for a route that doesn't exist, so purchases probably can't be deleted at that path.
+- **Plain seed:** stopped at the first transfer. `POST /accounts/{id}/transfers` answered **HTTP 400**: `medium` and `payee_id` are "extra fields not permitted". The live transfer schema isn't the one A2 sends, and without a payee field the planted $900 transfer can't name the unknown account.
+
+A final `--dry-run --dedupe` listed exactly the same 24 and 4, so **nothing in Nessie changed**, and no `data/nessie_seed.json` was written. Nessie's API description isn't public (`/openapi.json` returns 403), so the right transfer fields need Nessie's docs or a careful probe. That's handed back to Cursor on PR #44.
+
+**What it means for the demo:** reads work, so `nessie_bill_status` (scenario 3) and the 30 days of purchases are fine. Scenario 2's "Was this you?" needs the planted transfer. If the transfer API can't take a payee, take the P4 pivot for transfers only: serve the planted transfer from a local fixture through the replay cache.
 
 **To rerun after the fix**, with the key in `.env`, on PR #44's branch:
 
