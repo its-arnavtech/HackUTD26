@@ -28,7 +28,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | L1 | Record and replay cache | Lavanya | Claude Code | POC | scaffold | done | #9 · PR #42 |
 | L2 | Core runtime: app factory, settings, logging, errors | Lavanya | Claude Code | POC | scaffold | done | #10 · PR #39 |
 | L3 | State store and background job runner | Lavanya | Claude Code | POC | L2 | done | #11 · PR #47 |
-| L4 | Gemini grounded search smoke test (Sunday morning, when the Gemini key is set) | Lavanya | Claude Code | POC | scaffold | todo | #12 |
+| L4 | Gemini grounded search smoke test | Arnav | Codex | POC | scaffold | in progress | #12 · codex/l4-l10-gemini |
 | A22 | Initial Devpost draft by 11:00 PM Saturday | Arnav | any | POC | none | todo | #13 |
 | A8 | POC gate report | Arnav | Claude Code | POC | A1, A2, A3, A4, L4 | done | #14 · PR #49 (arnav-shared) |
 | L5 | Tool registry and runtime | Lavanya | Claude Code | MVP | L2 | done | #15 · PR #48 |
@@ -43,7 +43,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | L8 | Agent loop with plan, re-plan and guardrails | Lavanya | Claude Code | MVP | A4, L5 | done | #23 · PR #56 |
 | L9 | API endpoints and pipeline orchestration | Lavanya | Claude Code | MVP | L3, L8 | todo | #24 |
 | G1 | Gate: scenario 1 end to end in the CLI | Both | any | MVP | A3, A9, A10, A11, L8 | done | #25 · PR #46 (prep), PR #61 |
-| L10 | `public_scam_reports` tool | Arnav | Claude Code | MVP | L4, L5 | todo | #26 |
+| L10 | `public_scam_reports` tool | Arnav | Codex | MVP | L4, L5 | in progress | #26 · codex/l4-l10-gemini |
 | L11 | Recovery mode re-plan | Arnav | Codex | MVP | L8, A11 | done | #27 · PR #63 |
 | A14 | Result card, "How we checked" and privacy panel | Arnav | Cursor (covering for Codex design) | MVP | A7 | done | #28 · PR #53 |
 | A15 | Recovery UI | Arnav | Claude Code (covering for Codex design) | MVP | A14 | done | #29 · PR #55 (#54 closed as superseded) |
@@ -61,6 +61,17 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 ## In progress
 
 <!-- One block per active issue. Copy the template, keep it current at every checkpoint. -->
+
+### L4/L10 Gemini grounded lookup (#12, #26)
+- Agent: Codex (GPT-6), Arnav; C:/HackUTD26/.worktrees/wrap-up; codex/l4-l10-gemini.
+- Started / checkpoint: 2026-11-08 00:13.
+- Done so far: Key present without printing it; provider model listing succeeds. Implemented cache-backed Search grounding, support-segment/chunk citations, fixed four-field input, source ranking, dates/stale handling, contact stripping, official guidance and recovery references. 14 synthetic tests pass.
+- Next: Live smoke on available Gemini model; first 3.5 Flash calls returned HTTP 429, so check whether 2.5 Flash quota works. Do not claim P3 without a live cited result. Full suite and PR next.
+- Files touched: integrations/gemini.py, tools/public_reports.py, scripts/smoke_gemini.py, tests/test_gemini.py, .env.example, CHANGELOG.md.
+- Commands: python -m scripts.smoke_gemini --list-models; python -m scripts.smoke_gemini; python -m pytest tests/test_gemini.py.
+- Gotchas: No provider bodies/keys printed. Only four DATA_SPEC 4.1 fields are sent; model tool args cannot smuggle personal text. Community-only results are dropped. L9/A17 remain with their owners. No changes to model evaluation or held-out data.
+
+
 
 
 ### <ID> <title> (#<issue>)
