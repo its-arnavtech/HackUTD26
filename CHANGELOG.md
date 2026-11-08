@@ -21,7 +21,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | A1 | Dataset loader, stratified split and baseline metrics | Arnav | Claude Code | POC | A21 | todo | #2 |
 | A2 | Nessie client and idempotent seed script | Arnav | Claude Code | POC | scaffold | todo | #3 |
 | A3 | Redaction module | Arnav | Claude Code | POC | scaffold | todo | #4 |
-| A4 | Nemotron connection and tool-calling smoke test | Arnav | Codex | POC | scaffold | in progress | codex-shared / #5 |
+| A4 | Nemotron connection and tool-calling smoke test | Arnav | Codex | POC | scaffold | done | #41 (arnav-shared) |
 | A5 | Hugging Face connection | Arnav | Codex | POC | scaffold | todo | #6 |
 | A6 | Dev infrastructure: CI, dev scripts, worktrees | Arnav | Cursor | POC | scaffold | todo | #7 |
 | A7 | Phone shell and inbox on the mock API | Arnav | Codex design (GPT 6 Astra) | POC | scaffold | todo | #8 |
@@ -74,15 +74,6 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - Resumed by: <tool> from <tool>, if any
 ```
 
-### A4 Nemotron connection and tool-calling smoke test (#5)
-- Agent: Codex (GPT-6) · Person: Arnav · Folder: C:\HackUTD26-codex · Branch: codex-shared (origin/arnav-shared)
-- Started: 2026-11-07 18:40 · Last checkpoint: 2026-11-07 18:49
-- Done so far: Managed Python 3.12.13 venv installed; verified NVIDIA models and 2048-dimensional embedding; client implements bounded timeouts, exactly one 429/5xx retry, sanitized latency logging, native and JSON action protocols. Five synthetic cases and HTTP-mocked tests added; 65 tests pass.
-- Next step (exact): Open A4 PR and finish changelog/issue checkboxes. Then A5 HF downloads (human completed login).
-- Files touched: CHANGELOG.md, .env.example, backend/app/integrations/nemotron.py, backend/scripts/smoke_nemotron.py, backend/tests/test_nemotron.py, backend/tests/test_smoke_nemotron.py
-- How to run or test: From backend, .\.venv\Scripts\python.exe -m pytest -q; .\.venv\Scripts\python.exe -m scripts.smoke_nemotron --protocol json_action
-- Notes and gotchas: Native initial run 0/5 (model skipped tools); median 1987ms, worst 2340ms. JSON fallback now 5/5; median 1104ms, worst 2708ms; four cases used the single final-format retry. cache.py remains L1 stub: TODO live-only fallback; record/replay fails closed. Do not mark P2 passed until 5/5. HF login ItsArca verified; token never printed.
-
 ### A21 Synthetic message dataset generator (#1)
 - Agent: Claude Code (Opus 5.5) · Person: Arnav · Folder: `C:\HackUTD26-cc` · Branch: `arnav-shared`
 - Started: 2026-11-07 18:40 · Last checkpoint: 2026-11-07 18:40
@@ -98,6 +89,8 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 ## Done log
 
 Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID · tool · PR · summary · follow-ups`.
+
+- 2026-11-07 18:51 · A4 · Codex (GPT-6) · #41 · Hosted Bolt verified, embedding 2048D, JSON fallback 5/5 (median 1104ms, worst 2708ms), 65 tests pass · follow-ups: L1 cache and L8 production loop; native initially 0/5
 
 - 2026-11-07 18:14 · setup (issues) · Claude Code (Opus 5.5) · direct to main · Labels, milestones (POC, MVP, Demo) and all 37 issues #1 to #37 from POC_MVP section 13 (A* and G* assigned to its-arnavtech, L* unassigned), dependencies linked by number, pinned tracker #38 · follow-ups: add Lavanya as a collaborator
 - 2026-11-07 18:11 · setup (folders) · Claude Code (Opus 5.5) · local only · Worktrees `C:\HackUTD26-cc` (8001/5174), `C:\HackUTD26-codex` (8002/5176), `C:\HackUTD26-design` (8003/5175) detached at origin/main, each with its own `.env`; main stays on 8000/5173 · follow-ups: keys were skipped, so paste them into each folder's `.env`
@@ -127,7 +120,6 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 
 ## Blockers and open questions
 
-- Exact Nemotron model ID string: confirm with `GET /v1/models` (A4).
 - Gemini key arrives Sunday morning; L4 and L10 wait for it.
 - Official short codes and sender IDs for the demo brands: fill `data/brands.json` from the brands' own pages (A10).
 - Taxonomy: use T-Mobile's if a mentor shares one, otherwise ours in `data/taxonomy.json` (A21).
