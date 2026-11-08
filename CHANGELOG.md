@@ -19,7 +19,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | A21 | Synthetic message dataset generator | Arnav | Claude Code | POC | scaffold | done | #1 · #41 (arnav-shared) |
 | A1 | Dataset loader, stratified split and baseline metrics | Arnav | Claude Code | POC | A21 | done | #2 · #41 (arnav-shared) |
-| A2 | Nessie client and idempotent seed script | Arnav | Cursor | POC | scaffold | in progress | #3 · `cursor/a2-nessie-client-55c7` |
+| A2 | Nessie client and idempotent seed script | Arnav | Cursor | POC | scaffold | in review | #3 · PR #44 (live seed waits for `NESSIE_API_KEY`) |
 | A3 | Redaction module | Arnav | Codex | POC | scaffold | done | #4 · #41 (arnav-shared) |
 | A4 | Nemotron connection and tool-calling smoke test | Arnav | Codex | POC | scaffold | done | #41 (arnav-shared) |
 | A5 | Hugging Face connection | Arnav | Codex | POC | scaffold | done | #41 (arnav-shared) |
@@ -78,14 +78,18 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 ### A2 Nessie client and idempotent seed script (#3)
 - Agent: Cursor (Claude Opus 5.5, cloud agent) · Person: Arnav · Folder: Cursor cloud VM (`/workspace`) · Branch: `cursor/a2-nessie-client-55c7`
-- Started: 2026-11-07 19:02 · Last checkpoint: 2026-11-07 19:02
+- Started: 2026-11-07 19:02 · Last checkpoint: 2026-11-07 19:12
 - Done so far:
   - Claimed (CHANGELOG only: the cloud agent can't comment on issues)
-  - Checked real field names with read-only calls (no `NESSIE_API_KEY` here; GETs answer with any key). The `http://` base URL returns 502 and `https://` works. Account listings of transfers return `id`, amount, date, status and description only, with no `payer_id` or `payee_id`.
-- Next step (exact): write `integrations/nessie.py` (normalizes `id` to `_id`, fills payer and payee from the seed manifest), then `scripts/seed_nessie.py` (idempotent by natural keys), then tests against an in-memory fake Nessie
-- Files touched: `CHANGELOG.md`
+  - Checked real field names with read-only calls (no `NESSIE_API_KEY` here; GETs answer with any key). Differences from DATA_SPEC 6 are in Decisions.
+  - `integrations/nessie.py`: every call goes through `cached_call` (with a TODO(L1) fallback that never calls out in replay), `id` is normalized to `_id`, transfers get `payer_id`, `payee_id` and `at` from `data/nessie_seed.json`, http is upgraded to https, and the key never appears in errors or cache keys
+  - `scripts/seed_nessie.py`: everything in POC_MVP 7.7, idempotent by natural keys, `--dry-run`, writes `data/nessie_seed.json`
+  - 13 tests against an in-memory fake Nessie shaped like the live API (`tests/fake_nessie.py`); suite passes on 3.11 and 3.12 and in replay
+  - PR #44 open
+- Next step (exact): Arnav puts `NESSIE_API_KEY` in `.env` (or in Cursor secrets so the cloud agent can do it), then from `backend/` runs `python -m scripts.seed_nessie --dry-run`, `python -m scripts.seed_nessie` twice (the second run must print `Created 0`), and commits `data/nessie_seed.json`. If a POST is rejected, fix the body in `scripts/seed_nessie.py`.
+- Files touched: `backend/app/integrations/nessie.py`, `backend/scripts/seed_nessie.py`, `backend/tests/fake_nessie.py`, `backend/tests/test_nessie_client.py`, `backend/tests/test_seed_nessie.py`, `.env.example`, `CHANGELOG.md`
 - How to run or test: `python -m pytest` in `backend/`; the seed needs `NESSIE_API_KEY` in `.env`: `python -m scripts.seed_nessie`
-- Notes and gotchas: never write to Nessie with a made-up key. Arnav runs the first real seed.
+- Notes and gotchas: never write to Nessie with a made-up key. Nessie dates have no time, so the planted transfer's 09:31 time lives in the manifest. A11 should limit check mode to activity before `received_at`, so scenario 1 (check) doesn't see the transfer that scenario 2 (recovery) finds.
 - Resumed by: none
 
 ---
@@ -142,6 +146,15 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 - 2026-11-07 19:15 · A3 (#4), A9 (#17) and A12 (#20) move from Claude Code to Codex (connections session), on the shared `arnav-shared` branch. Claude Code keeps A1, A13, A8, A18 and A19. A12 may use `nemotron-3.5-embed-1b` for similarity. Local Nemotron fallback scored 3/5 and is not used; replay mode is the fallback.
 - 2026-11-07 18:56 · L1 cache rules: call `cache.cached_call("<service>", request, fn)` for every outside call. `request` holds everything that changes the response and nothing secret (fixtures are committed); leave timestamps out or list them in `volatile=`. Replay is strict: an unrecorded request raises `FixtureMissingError`, so record each scenario with `DEMO_MODE=record` before switching to replay.
 - 2026-11-07 18:38 · L2 runtime conventions for every backend module: raise `app.errors` exceptions (`NotFoundError`, `IntegrationError(service, msg)`, `NotImplementedYetError(issue)`, ...) instead of `HTTPException`; every error response is `{"detail", "error": {code, message, details, message_id}}`. Log with `logging.getLogger(__name__)` and `extra={"fields": {...}}`; wrap per-message work in `app.logs.bind_message_id(id)`. Routes read settings through the `SettingsDep` dependency. Route mocks: `USE_MOCKS` is the default, `MOCK_ROUTES` / `LIVE_ROUTES` override per route (names in `app.config.ROUTES`).
+- 2026-11-07 19:12 · A2: Nessie field names checked against the live API with read-only calls (DATA_SPEC 6). Differences, all handled in `integrations/nessie.py`:
+  - Use `https://api.nessieisreal.com`, because plain http answers 502.
+  - IDs are UUIDs.
+  - Accounts also carry `rewards` and `account_number` (never passed on).
+  - Purchases add `type`, `payer_id` and `medium`.
+  - Bills add `creation_date`, `upcoming_payment_date` and `account_id`, and `recurring_date` is a day-of-month integer.
+  - Dates are `YYYY-MM-DD` with no time.
+  - Transfer listings return `id` (not `_id`) and **no `payer_id` or `payee_id`**. The seed manifest supplies payer, payee and time.
+  - GETs answer with any key, so the enterprise endpoints expose other teams' data. Never read or show it.
 - 2026-11-07 18:55 · A2 (Nessie client and seed, #3) moves from Claude Code to Cursor: Cursor was idle and A11 needs A2, while Claude Code's queue is long. Branch commands now use `--no-track` plus `git push -u` (AGENTS.md section 4).
 - 2026-11-07 18:46 · `numpy` stays on 2.4.x while Python 3.11 is supported: 2.5.x has no 3.11 wheels. CI tests 3.11 and 3.12, so a dependency bump that drops 3.11 fails CI.
 - 2026-11-07 18:46 · Per-issue branches use `git switch --no-track -c <branch> origin/main`, then `git push -u origin <branch>`. Plain `-c <branch> origin/main` tracks `origin/main`, so `git push` fails and `git pull` pulls `main` (`docs/WORKTREES.md`).
@@ -160,6 +173,8 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 
 ## Blockers and open questions
 
+- `NESSIE_API_KEY` isn't available to the Cursor cloud agent. A2's live seed (gate P4) waits for Arnav to run `python -m scripts.seed_nessie` with his key, or to add the key in Cursor secrets.
+- Exact Nemotron model ID string: confirm with `GET /v1/models` (A4).
 - Gemini key arrives Sunday morning; L4 and L10 wait for it.
 - T-Mobile's official texting short codes: not published on T-Mobile's pages (checked 2026-11-07). Ask a T-Mobile mentor, then fill `data/brands.json` (A10 follow-up).
 - Taxonomy: ours (v1) is in `data/taxonomy.json` (A21). If a mentor shares T-Mobile's, map it and regenerate.
