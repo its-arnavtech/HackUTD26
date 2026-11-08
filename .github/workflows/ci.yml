@@ -101,6 +101,7 @@ jobs:
               }
             }
           } finally {
-            if (-not $dev.HasExited) { taskkill.exe /PID $dev.Id /T /F | Out-Null }
+            # taskkill exits nonzero when part of the tree has already exited; that isn't a test failure.
+            if (-not $dev.HasExited) { taskkill.exe /PID $dev.Id /T /F | Out-Null; $global:LASTEXITCODE = 0 }
             Get-Content dev.log, dev.err.log -ErrorAction SilentlyContinue
           }
