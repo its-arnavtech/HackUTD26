@@ -134,7 +134,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 ## Done log
 
-- 2026-11-08 01:02 · A17 · Claude Code (Opus 5.5) implementation, published by Cursor (Grok 4.7) · PR pending · Loading, error, retry and stop-at-done polling from `a17-live-api` `b2ad7f05`, merged onto main after #68. Kept #60 privacy chips, #62 public-holdout accuracy labels, #67 recovery poller wait, and #68's reset generation. `a17-live-api` itself was not moved. · follow-ups: rebase #69 onto this merge; do not close #33 or #34; live Gemini citation stays blocked
+- 2026-11-08 01:02 · A17 · Claude Code (Opus 5.5) implementation, published by Cursor (Grok 4.7) · #70 · Loading, error, retry and stop-at-done polling from `a17-live-api` `b2ad7f05`, merged onto main after #68. Kept #60 privacy chips, #62 public-holdout accuracy labels, #67 recovery poller wait, and #68's reset generation. `a17-live-api` itself was not moved. · follow-ups: rebase #69 onto this merge; do not close #33 or #34; live Gemini citation stays blocked
 
 - 2026-11-08 00:42 · L9 · Claude Code (Opus 5.5, Lavanya); merged by Cursor (Grok 4.7) · #65 · Real pipeline behind every 7.1 route: redact, features, classify (L7 or baseline), Nemotron on L3's runner; trail fills in on poll; demo inbox loads at startup and reset. Merge commit `21fbea5`, not a squash. · follow-ups: changelog status finished here; recovery poller race landed separately in #67; demo-generation fix is PR #68
 - 2026-11-08 00:37 · Recovery test · Codex (GPT-6) · #67 · Recovery tests clear the prior callback and wait for the current poller before sending a fake result; fixes the CI race seen in #65 while preserving A17 application code; 50 frontend tests and build pass.
