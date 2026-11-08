@@ -41,7 +41,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | L7 | Improved classifier | Arnav | Codex | MVP | A1, A9, A13 | done | #22 · #58 (arnav-shared); public gate failed, pivot documented |
 | L7b | Public SMS generalization follow-up | Arnav | Codex | MVP | L7 | done | #59 · #62 (arnav-shared) |
 | L8 | Agent loop with plan, re-plan and guardrails | Lavanya | Claude Code | MVP | A4, L5 | done | #23 · PR #56 |
-| L9 | API endpoints and pipeline orchestration | Lavanya | Claude Code | MVP | L3, L8 | todo | #24 |
+| L9 | API endpoints and pipeline orchestration | Lavanya | Claude Code | MVP | L3, L8 | in progress | #24 · l9-pipeline |
 | G1 | Gate: scenario 1 end to end in the CLI | Both | any | MVP | A3, A9, A10, A11, L8 | done | #25 · PR #46 (prep), PR #61 |
 | L10 | `public_scam_reports` tool | Arnav | Codex | MVP | L4, L5 | done | #26 · PR #66 (P3 live gate blocked) |
 | L11 | Recovery mode re-plan | Arnav | Codex | MVP | L8, A11 | done | #27 · PR #63 |
@@ -117,6 +117,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 ## Done log
 
+- 2026-11-08 00:34 · A18 follow-up / L9 CI unblock · Codex (GPT-6) · PR pending · Recovery tests clear the prior callback and wait for the current poller before sending a fake result; fixes CI race seen in #65 while preserving A17 application code; 50 frontend tests and build pass.
 - 2026-11-08 00:34 · L10 (L4 client ready, live P3 blocked) · Codex (GPT-6) · #66 · Fixed four-field Gemini lookup, cached Google grounding, support/chunk-only facts, ranking/stale/contact rules, model-argument isolation, safe smoke script; 14 new tests, combined backend 650 passed/no skips · follow-up: #12 needs usable generation quota (3.5/3.5 Lite 429, listed 2.5 404); no Gemini-backed demo claim until a cited live pass.
 
 - 2026-11-08 00:06 · A18 · Codex (GPT-6), resumed Claude Code · #64 · All three real-agent authored scenarios now required in socket-blocked replay; 31 service recordings; Playwright inbox/result/trail/privacy smoke and browser CI; 617 backend passed with no skips, 49 frontend tests/build, Chromium pass · follow-ups: G2 app recordings and A19 backup video still pending L9/A17; CLI profile deliberately uses real A1 baseline, public search unavailable.

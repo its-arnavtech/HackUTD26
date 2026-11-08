@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { mockInbox, mockResult, recoverySpecimen } from "../fixtures";
@@ -81,9 +81,10 @@ describe("RecoveryView with a flagged purchase (the live Nessie seed plants the 
 });
 
 describe("Recovery on the mock API", () => {
-  let update: (poll: ResultPoll) => void;
+  let update: ((poll: ResultPoll) => void) | undefined;
 
   beforeEach(() => {
+    update = undefined;
     sessionStorage.clear();
     api.getInbox.mockResolvedValue(mockInbox());
     api.postClicked.mockResolvedValue({ message_id: "msg_0001", status: "queued", mode: "recovery" });
@@ -103,13 +104,14 @@ describe("Recovery on the mock API", () => {
 
     fireEvent.click(start);
     expect(await screen.findByText("Checking activity since the text…")).toBeInTheDocument();
+    await waitFor(() => expect(api.pollResult).toHaveBeenCalled());
     expect(api.postClicked).toHaveBeenCalledWith("msg_0001");
 
     // A stale check-mode result is not the recovery answer.
-    act(() => update(mockResult("scenario1")));
+    act(() => update!(mockResult("scenario1")));
     expect(screen.getByText("Checking activity since the text…")).toBeInTheDocument();
 
-    act(() => update(mockResult("scenario2")));
+    act(() => update!(mockResult("scenario2")));
     expect(await screen.findByText("$900")).toBeInTheDocument();
     expect(await screen.findByText("17 minutes after the text")).toBeInTheDocument();
     expect(api.confirmTransaction).not.toHaveBeenCalled();
@@ -132,7 +134,8 @@ describe("Recovery on the mock API", () => {
     renderRecovery();
     fireEvent.click(await screen.findByRole("button", { name: /I clicked and entered my info/ }));
     await screen.findByText("Checking activity since the text…");
-    act(() => update(mockResult("scenario2")));
+    await waitFor(() => expect(api.pollResult).toHaveBeenCalled());
+    act(() => update!(mockResult("scenario2")));
     fireEvent.click(await screen.findByRole("button", { name: /Yes, I made this transfer/ }));
     expect(await screen.findByText("Activity marked as recognized in this demo.")).toBeInTheDocument();
     expect(api.confirmTransaction).toHaveBeenCalledWith("txn_3", true);
