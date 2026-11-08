@@ -228,6 +228,14 @@ def _baseline_model() -> BaselineModel:
     return train_baseline(load_split().train)
 
 
+def trained_classifier(text_redacted: str, features: Features) -> ClassifierOutput:
+    """Use L7 when trained locally; retain the explicitly labeled G1 fallback."""
+    try:
+        return predict(text_redacted, features)
+    except FileNotFoundError as exc:
+        raise NotImplementedError("L7 local artifact missing; run python -m scripts.train_classifier") from exc
+
+
 def baseline_classifier(text_redacted: str) -> ClassifierOutput:
     """A1's baseline, used while L7's `predict` isn't merged. It returns labels only, so the score is a placeholder."""
     message = Message(message_id="scenario", text=text_redacted, sender="<redacted>")
@@ -447,7 +455,7 @@ def build_agent_input(run: Run) -> AgentInput:
         run,
         "classifier",
         [
-            ("real", lambda: predict(text, features)),
+            ("real", lambda: trained_classifier(text, features)),
             ("baseline", lambda: baseline_classifier(text)),
             ("stand-in", lambda: stand_in_classifier(text)),
         ],
