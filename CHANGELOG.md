@@ -76,12 +76,12 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 ### A4 Nemotron connection and tool-calling smoke test (#5)
 - Agent: Codex (GPT-6) · Person: Arnav · Folder: C:\HackUTD26-codex · Branch: codex-shared (origin/arnav-shared)
-- Started: 2026-11-07 18:40 · Last checkpoint: 2026-11-07 18:40
-- Done so far: Read required docs and issues; no existing checkpoints. Confirmed GPU and tools; created shared branch; posted claim.
-- Next step (exact): Create backend venv using installed Python 3.13; verify NVIDIA models; implement client and five-case smoke test, then mocked tests.
-- Files touched: CHANGELOG.md
-- How to run or test: From backend, .\.venv\Scripts\python.exe -m pytest
-- Notes and gotchas: cache.py is the L1 stub; use prompt-authorized TODO(L1) until merged. Main venv points at missing uv Python 3.12; installed Python 3.13 available. Never print secrets. API_PORT=8002, WEB_PORT=5176.
+- Started: 2026-11-07 18:40 · Last checkpoint: 2026-11-07 18:49
+- Done so far: Managed Python 3.12.13 venv installed; verified NVIDIA models and 2048-dimensional embedding; client implements bounded timeouts, exactly one 429/5xx retry, sanitized latency logging, native and JSON action protocols. Five synthetic cases and HTTP-mocked tests added; 65 tests pass.
+- Next step (exact): Open A4 PR and finish changelog/issue checkboxes. Then A5 HF downloads (human completed login).
+- Files touched: CHANGELOG.md, .env.example, backend/app/integrations/nemotron.py, backend/scripts/smoke_nemotron.py, backend/tests/test_nemotron.py, backend/tests/test_smoke_nemotron.py
+- How to run or test: From backend, .\.venv\Scripts\python.exe -m pytest -q; .\.venv\Scripts\python.exe -m scripts.smoke_nemotron --protocol json_action
+- Notes and gotchas: Native initial run 0/5 (model skipped tools); median 1987ms, worst 2340ms. JSON fallback now 5/5; median 1104ms, worst 2708ms; four cases used the single final-format retry. cache.py remains L1 stub: TODO live-only fallback; record/replay fails closed. Do not mark P2 passed until 5/5. HF login ItsArca verified; token never printed.
 
 ### A21 Synthetic message dataset generator (#1)
 - Agent: Claude Code (Opus 5.5) · Person: Arnav · Folder: `C:\HackUTD26-cc` · Branch: `arnav-shared`
@@ -109,6 +109,8 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 ---
 
 ## Decisions
+
+- 2026-11-07 18:49 · A4 verified hosted model `nvidia/nemotron-3.5-bolt-e4b` via authenticated GET /v1/models; `nvidia/nemotron-3.5-embed-1b` returns 2048 dimensions. Native tool calling initially failed 0/5; verified JSON action fallback 5/5, median model step 1104ms, worst 2708ms (four cases required one format retry). Set NEMOTRON_PROTOCOL=json_action; L8 should preserve one invalid-output retry and unsure on repeated failure.
 
 - 2026-11-07 18:20 · Arnav's Claude Code and Codex (connections) share the remote branch `arnav-shared` (AGENTS.md section 4, exception). Cursor and the Codex design session keep a branch per issue.
 - 2026-11-07 18:06 · Scaffold was run by Claude Code instead of Cursor.
