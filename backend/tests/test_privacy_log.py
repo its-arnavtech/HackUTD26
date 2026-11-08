@@ -329,3 +329,32 @@ def test_deleting_a_message_deletes_its_privacy_records(store):
     with store._lock:
         left = [store._db.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0] for t in ("privacy", "redaction")]
     assert left == [0, 0]
+
+
+# --- L8 hooks ----------------------------------------------------------------------------
+
+
+def test_l8_loop_records_nemotron_input_and_every_tool_result(store, reg):
+    """The two one-line hooks in `agent/loop.py`, with L8's real loop and a scripted Nemotron."""
+    from app.agent import loop
+    from tests.test_loop import GOOD_FINAL, FakeChat, final_turn, tools_turn
+
+    mid = store.add_message(MSG)
+    chat = FakeChat(
+        tools_turn(("check_link", {"url_id": "URL_1"}), ("check_sender", {"claimed_brand": "Capital One"})),
+        final_turn("I have what I need."),
+        final_turn(GOOD_FINAL),
+    )
+    ai = agent_input()
+    with privacy_log.bind(PrivacyLog(store, mid, store.start_run(mid))):
+        loop.run_agent(ai, lambda e: None, chat=chat, call_tool=reg.call, tool_schemas=[], protocol="native")
+
+    records = store.privacy(mid)
+    assert [r.recipient for r in records] == ["nemotron", "check_link", "check_sender"]
+    nemo = records[0]
+    # Exactly the user message Nemotron got (check mode drops `since`), plus the results sent back.
+    assert {k: v for k, v in nemo.payload.items() if k != "tool_results"} == json.loads(chat.requests[0][1]["content"])
+    assert [m["tool"] for m in nemo.payload["tool_results"]] == ["check_link", "check_sender"]
+    assert nemo.payload["tool_results"][0]["result"]["lookalike_of"] == "capitalone.com"
+    view = privacy_log.view(store, mid)
+    assert FULL_LINK in view.never_sent and SENDER_NUMBER in view.never_sent
