@@ -47,6 +47,8 @@ DATA_SPEC section 2 calls for 70/15/15, stratified by category, fixed seed, with
 - **Train + validation** = `prompt_set == "train_v1"`. A1 splits it about 82/18 stratified by category, which is 70/15 of the whole.
 - **Test** = `prompt_set == "test_v1"` plus `handwritten.jsonl`. Never used for training, tuning, blocklists, campaign seeds or prompts.
 
+A1 saved the split as message ids in `splits.json` (train 1,818, val 390, test 388; seed 42). Load it with `app.classifier.baseline.load_split()` so everyone scores on the same test set.
+
 ## Counts
 
 Full numbers are in `quality_report.json`. Summary:

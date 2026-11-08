@@ -18,7 +18,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 | ID | Issue | Owner | Agent | Milestone | Depends on | Status | Branch / PR |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | A21 | Synthetic message dataset generator | Arnav | Claude Code | POC | scaffold | done | #1 · #41 (arnav-shared) |
-| A1 | Dataset loader, stratified split and baseline metrics | Arnav | Claude Code | POC | A21 | in progress | #2 · `arnav-shared` |
+| A1 | Dataset loader, stratified split and baseline metrics | Arnav | Claude Code | POC | A21 | done | #2 · #41 (arnav-shared) |
 | A2 | Nessie client and idempotent seed script | Arnav | Cursor | POC | scaffold | todo | #3 |
 | A3 | Redaction module | Arnav | Codex | POC | scaffold | in progress | codex-shared / #4 |
 | A4 | Nemotron connection and tool-calling smoke test | Arnav | Codex | POC | scaffold | done | #41 (arnav-shared) |
@@ -85,15 +85,6 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - Resumed by: <tool> from <tool>, if any
 ```
 
-### A1 Dataset loader, stratified split and baseline metrics (#2)
-- Agent: Claude Code (Opus 5.5) · Person: Arnav · Folder: `C:\HackUTD26-cc` · Branch: `arnav-shared`
-- Started: 2026-11-07 19:14 · Last checkpoint: 2026-11-07 19:14
-- Done so far:
-  - Claimed.
-- Next step (exact): implement `load_messages` and `stratified_split` in `backend/app/classifier/baseline.py` (train/val from `train_v1`, test = `test_v1` + hand-written), save split ids, then the baseline and `scripts/run_baseline.py`.
-- Files touched: `CHANGELOG.md`
-- How to run or test: `cd backend; ..\.venv\Scripts\python -m scripts.run_baseline`
-- Notes and gotchas: A3 redaction isn't built, so the baseline scores raw text for now.
 
 ---
 
@@ -101,6 +92,7 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID · tool · PR · summary · follow-ups`.
 
+- 2026-11-07 19:18 · A1 · Claude Code (Opus 5.5) · #41 · Loader into `Message`, saved 70/15/15 split (`data/generated/splits.json`: train 1,818 / val 390 / test 388, test = `test_v1` + hand-written), baseline keyword rules + TF-IDF + LR; `eval/baseline_metrics.json` test macro F1 0.807, FPR 0.127; `eval/baseline_details.json` adds val, per-subset scores and confusion; 121 tests pass · follow-ups: rescore on redacted text once A3 lands (A13 redaction cost)
 - 2026-11-07 19:07 · A5 · Codex (GPT-6) · #41 · HF login and .env token verified; public SMS 5574 rows downloaded; DistilBERT cached; pinned revisions/checksums; local Bolt 3/5, stopped and documented; full shared backend suite 108 passed · follow-ups: A13/L7 use handoff; local fallback not selected
 
 - 2026-11-07 19:00 · A21 · Claude Code (Opus 5.5) · #41 · Taxonomy v1 (8 scam categories + `legit`); DeepSeek generator with separate `train_v1`/`test_v1` prompt sets, cached calls, quality filter, dedupe incl. test-vs-train; 2,596 messages (train_v1 2,208, test_v1 338, hand-written 50), 38% legit; datasheet `data/generated/README.md`; 100 tests pass incl. offline rebuild · follow-ups: hand-written set approved by Arnav; A1 splits per the Decisions entry; mock `metrics.json` says `legitimate`, real id is `legit` (A13)
@@ -117,7 +109,7 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 
 ## Decisions
 
-- 2026-11-07 19:25 · **Gate P1 baseline (A1):** keyword rules + TF-IDF + logistic regression, fit on train only (1,818), no tuning. Test (388 = `test_v1` 338 + hand-written 50): **macro F1 0.807, FPR 0.127** (legit messages flagged as scam), scam recall 0.882. Validation: macro F1 0.898, FPR 0.054. Macro F1 is well under 0.97, so no P1 pivot: the accuracy story is "beat the baseline per category and cut false alarms". Weakest categories on test: `bank_impersonation` 0.64, `conversation_lure` 0.70, `account_security` 0.75. Raw text (A3 redaction not built yet). Split saved in `data/generated/splits.json`; L7 and A13 must use it.
+- 2026-11-07 19:16 · **Gate P1 baseline (A1):** keyword rules + TF-IDF + logistic regression, fit on train only (1,818), no tuning. Test (388 = `test_v1` 338 + hand-written 50): **macro F1 0.807, FPR 0.127** (legit messages flagged as scam), scam recall 0.882. Validation: macro F1 0.898, FPR 0.054. Macro F1 is well under 0.97, so no P1 pivot: the accuracy story is "beat the baseline per category and cut false alarms". Weakest categories on test: `bank_impersonation` 0.64, `conversation_lure` 0.70, `account_security` 0.75. Raw text (A3 redaction not built yet). Split saved in `data/generated/splits.json`; L7 and A13 must use it.
 
 - 2026-11-07 19:07 · A5 public evaluation: `ucirvine/sms_spam` revision `cae486f927c250fe1d4a5b55f11357964ed1646c`; parquet `data/raw/public_sms/plain_text/train-00000-of-00001.parquet` = 358869 bytes (363852 including README). Verified 5574 rows: 0=ham 4827, 1=spam 747. HF card license unknown; [upstream UCI](https://archive.ics.uci.edu/dataset/228/sms+spam+collection) specifies CC BY 4.0. Every row is external evaluation ONLY, even though upstream split is named train; never train/tune/prompts/blocklists/campaign seeds. pyarrow 26.0.1 installed in project venv for aggregate verification only. Raw data and manifest are ignored.
 - 2026-11-07 19:07 · A5 L7 optional base: `distilbert/distilbert-base-uncased` revision `12040accade4e8a0f71eabdb258fecc2e7e948be`, approximately 67M parameters, Apache-2.0; 268672802 bytes cached (safetensors/config/tokenizer/card/license). Small English encoder without SMS fine-tuning; add a classification head using only allowed synthetic train data. `python -m scripts.setup_huggingface` reproduces artifacts and writes local paths/checksums to ignored `data/raw/public_sms/manifest.json`.

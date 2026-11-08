@@ -1,0 +1,72 @@
+{
+  "generated_at": "2026-11-08T01:17:28.677800Z",
+  "split": "test",
+  "n_test": 388,
+  "categories": [
+    {
+      "category": "bank_impersonation",
+      "support": 30,
+      "precision": 0.6923,
+      "recall": 0.6,
+      "f1": 0.6429
+    },
+    {
+      "category": "billing_scam",
+      "support": 30,
+      "precision": 0.8148,
+      "recall": 0.7333,
+      "f1": 0.7719
+    },
+    {
+      "category": "delivery_scam",
+      "support": 30,
+      "precision": 0.9091,
+      "recall": 1.0,
+      "f1": 0.9524
+    },
+    {
+      "category": "account_security",
+      "support": 30,
+      "precision": 0.7586,
+      "recall": 0.7333,
+      "f1": 0.7458
+    },
+    {
+      "category": "toll_government",
+      "support": 30,
+      "precision": 0.9,
+      "recall": 0.9,
+      "f1": 0.9
+    },
+    {
+      "category": "prize_refund",
+      "support": 30,
+      "precision": 0.8235,
+      "recall": 0.9333,
+      "f1": 0.875
+    },
+    {
+      "category": "job_offer",
+      "support": 29,
+      "precision": 0.9545,
+      "recall": 0.7241,
+      "f1": 0.8235
+    },
+    {
+      "category": "conversation_lure",
+      "support": 29,
+      "precision": 0.7143,
+      "recall": 0.6897,
+      "f1": 0.7018
+    },
+    {
+      "category": "legit",
+      "support": 150,
+      "precision": 0.8239,
+      "recall": 0.8733,
+      "f1": 0.8479
+    }
+  ],
+  "macro_f1": 0.8068,
+  "false_positive_rate": 0.1267
+}
