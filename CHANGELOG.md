@@ -17,43 +17,43 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 
 | ID | Issue | Owner | Agent | Milestone | Depends on | Status | Branch / PR |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| A21 | Synthetic message dataset generator | Arnav | Claude Code | POC | scaffold | todo | |
-| A1 | Dataset loader, stratified split and baseline metrics | Arnav | Claude Code | POC | A21 | todo | |
-| A2 | Nessie client and idempotent seed script | Arnav | Claude Code | POC | scaffold | todo | |
-| A3 | Redaction module | Arnav | Claude Code | POC | scaffold | todo | |
-| A4 | Nemotron connection and tool-calling smoke test | Arnav | Codex | POC | scaffold | todo | |
-| A5 | Hugging Face connection | Arnav | Codex | POC | scaffold | todo | |
-| A6 | Dev infrastructure: CI, dev scripts, worktrees | Arnav | Cursor | POC | scaffold | todo | |
-| A7 | Phone shell and inbox on the mock API | Arnav | Codex design (GPT 6 Astra) | POC | scaffold | todo | |
-| L1 | Record and replay cache | Lavanya | Claude Code | POC | scaffold | todo | |
-| L2 | Core runtime: app factory, settings, logging, errors | Lavanya | Claude Code | POC | scaffold | todo | |
-| L3 | State store and background job runner | Lavanya | Claude Code | POC | L2 | todo | |
-| L4 | Gemini grounded search smoke test (Sunday morning, when the Gemini key is set) | Lavanya | Claude Code | POC | scaffold | todo | |
-| A22 | Initial Devpost draft by 11:00 PM Saturday | Arnav | any | POC | none | todo | |
-| A8 | POC gate report | Arnav | Claude Code | POC | A1, A2, A3, A4, L4 | todo | |
-| L5 | Tool registry and runtime | Lavanya | Claude Code | MVP | L2 | todo | |
-| L6 | Privacy audit log and `/api/privacy` | Lavanya | Claude Code | MVP | L3, L5 | todo | |
-| A9 | Feature extraction | Arnav | Claude Code | MVP | A3 | todo | |
-| A10 | `check_link` and `check_sender` tools | Arnav | Cursor | MVP | L1 | todo | |
-| A11 | Nessie tools | Arnav | Cursor | MVP | A2 | todo | |
-| A12 | Campaign store, seeding and `match_campaign` | Arnav | Claude Code | MVP | A1, A3 | todo | |
-| A13 | Evaluation harness | Arnav | Claude Code | MVP | A1 | todo | |
-| L7 | Improved classifier | Lavanya | Claude Code | MVP | A1, A9, A13 | todo | |
-| L8 | Agent loop with plan, re-plan and guardrails | Lavanya | Claude Code | MVP | A4, L5 | todo | |
-| L9 | API endpoints and pipeline orchestration | Lavanya | Claude Code | MVP | L3, L8 | todo | |
-| G1 | Gate: scenario 1 end to end in the CLI | Both | any | MVP | A3, A9, A10, A11, L8 | todo | |
-| L10 | `public_scam_reports` tool | Lavanya | Claude Code | MVP | L4, L5 | todo | |
-| L11 | Recovery mode re-plan | Lavanya | Claude Code | MVP | L8, A11 | todo | |
-| A14 | Result card, "How we checked" and privacy panel | Arnav | Codex design (GPT 6 Astra) | MVP | A7 | todo | |
-| A15 | Recovery UI | Arnav | Codex design (GPT 6 Astra) | MVP | A14 | todo | |
-| A16 | Consent screen, campaign view and accuracy page | Arnav | Codex design (GPT 6 Astra) | MVP | A7 | todo | |
-| A17 | Frontend on the live API | Arnav | Cursor | MVP | A14, A15, A16, L9 | todo | |
-| A18 | End-to-end scenario tests | Arnav | Claude Code | MVP | G1 | todo | |
-| G2 | Gate: all three scenarios end to end in the app | Both | any | MVP | A17, A18, L10, L11 | todo | |
-| A19 | Replay fixtures and backup video | Arnav | Claude Code | Demo | G2 | todo | |
-| A20 | Capital One and Best Design pitch | Arnav | any | Demo | G2 | todo | |
-| L12 | NVIDIA and T-Mobile pitch, Devpost | Lavanya | Claude Code | Demo | G2 | todo | |
-| G3 | Rehearse the 3-minute demo three times | Both | any | Demo | A19, A20, L12 | todo | |
+| A21 | Synthetic message dataset generator | Arnav | Claude Code | POC | scaffold | todo | #1 |
+| A1 | Dataset loader, stratified split and baseline metrics | Arnav | Claude Code | POC | A21 | todo | #2 |
+| A2 | Nessie client and idempotent seed script | Arnav | Claude Code | POC | scaffold | todo | #3 |
+| A3 | Redaction module | Arnav | Claude Code | POC | scaffold | todo | #4 |
+| A4 | Nemotron connection and tool-calling smoke test | Arnav | Codex | POC | scaffold | todo | #5 |
+| A5 | Hugging Face connection | Arnav | Codex | POC | scaffold | todo | #6 |
+| A6 | Dev infrastructure: CI, dev scripts, worktrees | Arnav | Cursor | POC | scaffold | todo | #7 |
+| A7 | Phone shell and inbox on the mock API | Arnav | Codex design (GPT 6 Astra) | POC | scaffold | todo | #8 |
+| L1 | Record and replay cache | Lavanya | Claude Code | POC | scaffold | todo | #9 |
+| L2 | Core runtime: app factory, settings, logging, errors | Lavanya | Claude Code | POC | scaffold | todo | #10 |
+| L3 | State store and background job runner | Lavanya | Claude Code | POC | L2 | todo | #11 |
+| L4 | Gemini grounded search smoke test (Sunday morning, when the Gemini key is set) | Lavanya | Claude Code | POC | scaffold | todo | #12 |
+| A22 | Initial Devpost draft by 11:00 PM Saturday | Arnav | any | POC | none | todo | #13 |
+| A8 | POC gate report | Arnav | Claude Code | POC | A1, A2, A3, A4, L4 | todo | #14 |
+| L5 | Tool registry and runtime | Lavanya | Claude Code | MVP | L2 | todo | #15 |
+| L6 | Privacy audit log and `/api/privacy` | Lavanya | Claude Code | MVP | L3, L5 | todo | #16 |
+| A9 | Feature extraction | Arnav | Claude Code | MVP | A3 | todo | #17 |
+| A10 | `check_link` and `check_sender` tools | Arnav | Cursor | MVP | L1 | todo | #18 |
+| A11 | Nessie tools | Arnav | Cursor | MVP | A2 | todo | #19 |
+| A12 | Campaign store, seeding and `match_campaign` | Arnav | Claude Code | MVP | A1, A3 | todo | #20 |
+| A13 | Evaluation harness | Arnav | Claude Code | MVP | A1 | todo | #21 |
+| L7 | Improved classifier | Lavanya | Claude Code | MVP | A1, A9, A13 | todo | #22 |
+| L8 | Agent loop with plan, re-plan and guardrails | Lavanya | Claude Code | MVP | A4, L5 | todo | #23 |
+| L9 | API endpoints and pipeline orchestration | Lavanya | Claude Code | MVP | L3, L8 | todo | #24 |
+| G1 | Gate: scenario 1 end to end in the CLI | Both | any | MVP | A3, A9, A10, A11, L8 | todo | #25 |
+| L10 | `public_scam_reports` tool | Lavanya | Claude Code | MVP | L4, L5 | todo | #26 |
+| L11 | Recovery mode re-plan | Lavanya | Claude Code | MVP | L8, A11 | todo | #27 |
+| A14 | Result card, "How we checked" and privacy panel | Arnav | Codex design (GPT 6 Astra) | MVP | A7 | todo | #28 |
+| A15 | Recovery UI | Arnav | Codex design (GPT 6 Astra) | MVP | A14 | todo | #29 |
+| A16 | Consent screen, campaign view and accuracy page | Arnav | Codex design (GPT 6 Astra) | MVP | A7 | todo | #30 |
+| A17 | Frontend on the live API | Arnav | Cursor | MVP | A14, A15, A16, L9 | todo | #31 |
+| A18 | End-to-end scenario tests | Arnav | Claude Code | MVP | G1 | todo | #32 |
+| G2 | Gate: all three scenarios end to end in the app | Both | any | MVP | A17, A18, L10, L11 | todo | #33 |
+| A19 | Replay fixtures and backup video | Arnav | Claude Code | Demo | G2 | todo | #34 |
+| A20 | Capital One and Best Design pitch | Arnav | any | Demo | G2 | todo | #35 |
+| L12 | NVIDIA and T-Mobile pitch, Devpost | Lavanya | Claude Code | Demo | G2 | todo | #36 |
+| G3 | Rehearse the 3-minute demo three times | Both | any | Demo | A19, A20, L12 | todo | #37 |
 
 ---
 
@@ -74,27 +74,17 @@ Statuses: `todo`, `in progress`, `blocked`, `in review`, `done`. Issue numbers a
 - Resumed by: <tool> from <tool>, if any
 ```
 
-### SETUP: scaffold, folders, issues (no issue)
-- Agent: Claude Code (Opus 5.5) · Person: Arnav · Folder: C:\HackUTD26 · Branch: main
-- Started: 2026-11-07 17:47 · Last checkpoint: 2026-11-07 18:15
-- Done so far:
-  - Checked tooling: `python` on PATH is 3.10, so the backend venv uses Python 3.12 (uv's CPython 3.12.13 via `py -V:Astral/CPython3.12.13`); Node 24, gh logged in as its-arnavtech
-  - Read AGENTS.md, CHANGELOG.md, POC_MVP.md, DATA_SPEC.md, prompts/README.md; rebased onto the plan update (cff46b6)
-  - Backend scaffold done locally (not yet pushed): contracts, config (incl. DeepSeek and NEMOTRON_EMBED_MODEL), mocks, mock routes, stubs naming their issue, scripts (incl. A21 `generate_dataset.py`), tests; `pytest` 36 passed; uvicorn serves `/api/inbox`
-  - data/ (brands, taxonomy placeholder, scenarios, .gitkeeps), .env.example, .gitignore
-  - Frontend scaffold done: Vite 8 + React 19 + TypeScript 7 + Tailwind 4, `types.ts` mirrors contracts, `api.ts` with `pollResult`, PhoneFrame and placeholder screens; `npm run build` passes; dev server proxies `/api` to the mock API
-  - README Setup section; scaffold committed and pushed to main
-- Next step (exact): STEP 3: create `.env`, wait for Arnav's keys, then the worktrees `C:\HackUTD26-cc`, `-codex`, `-design` with ports from POC_MVP 12.1
-- Files touched: CHANGELOG.md, README.md, .gitignore, .env.example, backend/**, frontend/**, data/**, eval/.gitkeep
-- How to run or test: `cd backend; .\.venv\Scripts\python.exe -m pytest`
-- Notes and gotchas: scaffold is run by Claude Code instead of Cursor; worktrees and issues follow after the scaffold push. An unrelated stash ("README line-ending change before syncing docs") exists in C:\HackUTD26; left untouched.
-- Resumed by: 
+_None yet._
 
 ---
 
 ## Done log
 
 Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID · tool · PR · summary · follow-ups`.
+
+- 2026-11-07 18:14 · setup (issues) · Claude Code (Opus 5.5) · direct to main · Labels, milestones (POC, MVP, Demo) and all 37 issues #1 to #37 from POC_MVP section 13 (A* and G* assigned to its-arnavtech, L* unassigned), dependencies linked by number, pinned tracker #38 · follow-ups: add Lavanya as a collaborator
+- 2026-11-07 18:11 · setup (folders) · Claude Code (Opus 5.5) · local only · Worktrees `C:\HackUTD26-cc` (8001/5174), `C:\HackUTD26-codex` (8002/5176), `C:\HackUTD26-design` (8003/5175) detached at origin/main, each with its own `.env`; main stays on 8000/5173 · follow-ups: keys were skipped, so paste them into each folder's `.env`
+- 2026-11-07 18:06 · setup (scaffold) · Claude Code (Opus 5.5) · direct to main (0772b5d, a35986e) · Backend contracts, config, mock API with simulated progress, stubs naming their issue, tests (36 pass); Vite + React + TS + Tailwind shell with `types.ts`, `api.ts` and placeholder screens (build passes); data files, `.env.example`, README setup. Includes the cff46b6 plan changes (DeepSeek vars, Bolt E4B default, taxonomy placeholder, `data/generated/`, A21 script stub) · follow-ups: none
 
 - 2026-11-07 17:50 · setup · Claude (chat) · direct to main · Re-split work across Arnav's four agents and Lavanya's Claude Code; added AGENTS.md, CHANGELOG.md, Cursor rule and per-tool prompts · next: Cursor runs `prompts/cursor-01-scaffold.md`
 - 2026-11-07 17:30 · setup · Claude (chat) · direct to main (2d4f228) · Added POC/MVP plan, data spec and first prompts
@@ -103,7 +93,7 @@ Newest first. One line per finished issue or setup step: `YYYY-MM-DD HH:MM · ID
 
 ## Decisions
 
-- 2026-11-07 18:15 · Scaffold was run by Claude Code instead of Cursor.
+- 2026-11-07 18:06 · Scaffold was run by Claude Code instead of Cursor.
 - 2026-11-07 18:05 · Frontend design moves from 6.1 Sol to a second Codex session running GPT 6 Astra (`agent:design`). It starts now in a design lab outside the repo (`prompts/codex-00-design-lab.md`) and ports the prototype into `frontend/` for A7 and A14 to A16.
 - 2026-11-07 18:00 · Deadlines from the opening ceremony: initial Devpost draft by 11:00 PM Saturday, final Devpost by 12:00 PM Sunday, judging 1:00 to 4:00 PM Sunday.
 - 2026-11-07 18:00 · T-Mobile doesn't provide a message set. We generate one with DeepSeek (A21), with a separate prompt set and hand-written messages for test, and validate on a public real SMS spam set from Hugging Face (A5). Our baseline is keyword rules plus TF-IDF and logistic regression (A1).
