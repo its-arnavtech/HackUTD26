@@ -26,6 +26,7 @@ import type {
   AgentResult,
   Campaign,
   CategoryMetrics,
+  ConfidenceWords,
   TrailEntry,
   Verdict,
   WasThisYouItem,
@@ -168,11 +169,18 @@ const verdictLabels: Record<Verdict, string> = {
   unsure: "We’re not sure",
   likely_safe: "Likely safe",
 };
+/** POC_MVP 4.4 wording, with the confidence in words. Never stronger than "Likely safe". */
+export function verdictLabel(verdict: Verdict, confidence?: ConfidenceWords | null) {
+  if (verdict === "likely_scam" && confidence === "likely") return "Likely a scam";
+  return verdictLabels[verdict];
+}
 export function VerdictBadge({
   verdict,
+  confidence,
   large = false,
 }: {
   verdict: Verdict;
+  confidence?: ConfidenceWords | null;
   large?: boolean;
 }) {
   const Icon =
@@ -184,7 +192,7 @@ export function VerdictBadge({
   return (
     <span className={`verdict-badge ${verdict} ${large ? "large-badge" : ""}`}>
       <Icon size={large ? 23 : 17} />
-      <span>{verdictLabels[verdict]}</span>
+      <span>{verdictLabel(verdict, confidence)}</span>
     </span>
   );
 }
@@ -234,9 +242,9 @@ export function ResultCard({
     <article className={`result-card verdict-${result.verdict}`}>
       <div className="result-topline">
         <span className="status-dot" />
-        {result.evidence.length} checks complete
+        {result.evidence.length} {result.evidence.length === 1 ? "check" : "checks"} complete
       </div>
-      <VerdictBadge verdict={result.verdict} large />
+      <VerdictBadge verdict={result.verdict} confidence={result.confidence_words} large />
       <p className="result-reason">{result.reason}</p>
       <div className="evidence-summary">
         <WalletCards size={22} />
@@ -535,9 +543,9 @@ export function EmptyState({
     </div>
   );
 }
-export function PrivacyFootnote() {
+export function PrivacyFootnote({ messageId }: { messageId?: string }) {
   return (
-    <Link to="/privacy" className="privacy-footnote">
+    <Link to={messageId ? `/privacy/${encodeURIComponent(messageId)}` : "/privacy"} className="privacy-footnote">
       <LockKeyhole size={14} />
       Personal details hidden before checks
     </Link>

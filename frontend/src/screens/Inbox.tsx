@@ -90,7 +90,7 @@ export function InboxView({
                   Checking…
                 </span>
               ) : (
-                item.verdict && <VerdictBadge verdict={item.verdict} />
+                item.verdict && <VerdictBadge verdict={item.verdict} confidence={item.confidence_words} />
               )}
               <ArrowUpRight className="inbox-arrow" size={19} />
             </button>
