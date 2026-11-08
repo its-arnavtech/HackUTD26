@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Bank impersonation (scam).\nWhat this category covers: Pretends to be a bank or card issuer: fraud alert, locked or suspended account, card declined, verify your identity, confirm a charge by link or callback.\nAngle for this batch: Zelle or wire payment reversal.\nClaimed sender or brand: Bank of America.\nWho writes it: a careful scammer who avoids obvious red-flag words.\nStyle: includes a reference or case number.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"BofA: A Zelle transfer of $486.20 to a new payee is set to reverse. Case #ZR-58214. If this isn’t yours, call 704-555-0182.\",\"Bank of America notice: case 4471-2098. We received a reversal request for a $1,250.00 wire from your account ending 8814. To review or stop it, reply N if you did not authorize.\",\"BofA: Zelle payment to JAMIE R. (ref 5519-3307) was flagged for reversal. Confirm details within 24 hrs: https://bofa-review-case.com/r/5519-3307\",\"This is a service notice from Bank of America. A $780 Zelle credit posted to your account in error and will be reversed under case 09-2214. Questions? 888-555-0167.\",\"BofA case 3320-1186: we’re processing a wire recall for $3,400 from acct ending 2047. Did you request this? Reply Y or N. For details call 302-555-0195.\",\"Bank of America: For your Zelle reversal case #ZR-77310, we need to verify the one-time code sent to your phone. Reply with the 6-digit code to release the hold.\",\"Bank of America payment review: wire of $9,850.00 (case 88-41027) was returned by the receiving bank and is pending reversal. Please call 415-555-0139 and reference the case so we can confirm the account. No action needed if expected.\",\"BofA: Zelle reversal pending $62.19 (case ZR-9045). If u didn’t send it reply NO or call 213-555-0148.\"]}"
+}

@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: delivery update from a carrier or retailer.\nClaimed sender or brand: UPS.\nWho writes it: an office scheduler or coordinator.\nStyle: all caps for key words.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"UPS ALERT: 2 packages for Suite 210 are at the FRONT DESK. Delivery window was 10:15–11:00 AM. Pick up by 4 PM TODAY or they go back on the truck. Details: ups.com\",\"Mailroom update: UPS dropped off 3 boxes for Receiving. One needs a SIGNATURE from the office manager. Driver will wait until 3:30 PM. No online action needed. ups.com\",\"UPS delivery update: 1 package is being held at the UPS Access Point on 5th. Bring your PHOTO ID and the notice slip. Hours TODAY are 9–6. ups.com\",\"UPS tried to deliver at 8:42 AM but our loading dock was LOCKED. They will retry TOMORROW between 9–11 AM. Nothing you need to do. Track: ups.com\",\"UPS says the 2 roll-up banners are OUT FOR DELIVERY. Expected by 2 PM. If you are at the front desk, please SIGN for them. Label lists Suite 210. ups.com\",\"Reminder: UPS pickup is scheduled for TODAY at 4:30 PM at the mailroom. Have the 6 outgoing boxes labeled and ready. Driver cannot wait past 4:45. Call 214-555-0187 with questions.\",\"UPS ALERT: Package 1Z999AA10123456784 is at the FRONT DESK. It was left at 11:08 AM. Please pick it up by 5 PM. If not, it goes to the UPS Store. ups.com\",\"Delivery update: UPS delivered 4 boxes to Receiving at 9:12 AM. One box is DAMAGED and the driver noted it. Please inspect it and keep the packaging. No forms needed. ups.com\"]}"
+}

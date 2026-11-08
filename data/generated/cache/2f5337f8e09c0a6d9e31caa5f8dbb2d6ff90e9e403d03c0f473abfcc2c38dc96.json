@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake bill or payment demand (scam).\nWhat this category covers: Fake bill, overdue balance or failed payment from a phone carrier, utility, or subscription, with a threat of shut-off and a link to pay.\nAngle for this batch: overpayment refund on your bill.\nClaimed sender or brand: Verizon.\nWho writes it: a scammer using a friendly, casual tone to lower suspicion.\nStyle: includes a reference or case number.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Hey! Verizon here. Good news—you overpaid your bill, refund case #VZ-4472. Claim it at verizon-refund.co/claim4472 before it expires. - Jess\", \"Hi, it's Mike from Verizon billing. Looks like you got double-charged last month, we owe you $47.83. Case #VZ-9031. Just reply YES and I'll send the refund link. Thanks!\", \"Verizon notice: Your account has a credit balance of $62.15 from an overpayment. Refund case #VZ-2288. To process, call 800-555-0143 or visit verizon-credit.net/r/2288. Must claim within 48 hrs.\", \"VZ: overpayment refund $23.50. Case #VZ-7712. Reply REFUND to claim.\", \"Hey there! Verizon here. We overcharged you $18.99 on your last bill, case #VZ-5503. To get your refund, just text back the 6-digit code we sent to your phone. Easy!\", \"Verizon: Your bill was overpaid by $34.20. Case #VZ-1198. Refund expires tonight. Claim at vz-refund.info/1198. Don't miss out!\", \"Hi, this is Sarah from Verizon. Good news—you have a $51.75 credit from an overpayment (case #VZ-8845). Call me back at 214-555-0176 to get it refunded. Thanks!\", \"Verizon billing alert: Our records show you paid $89.99 but your plan was $59.99, so you're owed a $30 refund. Case #VZ-6620. Please reply with your account PIN so we can process it. Thanks!\"]}"
+}

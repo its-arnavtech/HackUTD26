@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: school, work or community notice.\nClaimed sender or brand: a city alert service.\nWho writes it: a friend or family member texting casually.\nStyle: includes a reference or case number.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Hey city alert says no parking on Elm St Thurs 6a-4p for tree trimming. Ref #PW-4471. Move ur car or they'll tow.\", \"My sister just got a city alert about a boil water advisory for our zip. Case #BW-1190. Says it's just precautionary, boil for 2 mins. Not a scam, I checked the city site.\", \"So I signed up for those city alerts n got one: trash pickup delayed to Sat cuz of the storm. Ref #SW-5542. No extra fee, just put it out by 7am. Thought u'd want to know since u always forget.\", \"City alert: parking ticket amnesty if u pay by Fri, late fee waived. Ref #PK-3391. I verified on cityofharborview.gov, it's legit. U have any tickets?\", \"Heads up, city alert says water shutoff on Maple Ave 2moro 10-2 for repairs. Case #W-7720. Not a scam, they said no need to call, just prep. Fill a pitcher tonight.\", \"My neighbor forwarded a city alert: street sweeping starts Mon, they'll ticket $35 if u don't move. Ref #SS-4410. I'm moving mine tonight.\", \"City alert just texted me: community meeting about the new park Tues 7pm. Ref #CM-2287. Details at cityofharborview.gov. Want to go?\", \"Got a weird text from the city alert service saying I owe $12 for a permit? Checked the ref #PM-8834 on the city website, it's real, just the annual block party permit. Not a scam, but annoying. U paid yours?\"]}"
+}

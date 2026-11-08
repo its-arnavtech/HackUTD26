@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Legitimate message. The correct answer for these cards is: legitimate, not a scam.\nBackground: Real messages people get, including hard look-alikes of every scam category above.\nScenario for these cards: carrier data usage or plan notice, sent as Cricket Wireless.\nThe person receiving the text: a college student with a part-time job.\nTone of the text: slightly sloppy with a typo.\nDraft 8 cards, each a different realistic text. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Cricket: You've used 90% of your 5GB high-speed data. Speed slows at 100%. Add 1GB for $10 at cricketwireless.com or ignore this msg. Ur plan resets on the 12th.\",\"Cricket Wireless: Your $40 plan payment is due Sept 14. Pay at cricketwireless.com or call 214-555-0187. If you already paid, disregaurd. Thanks!\",\"Cricket: AutoPay of $35.00 will be charged on 10/03. You can update your card at cricketwireless.com. No action requried.\",\"Cricket: You added 2GB for $10. It's ready to use now. Your new balance is 3.2GB. Manage at cricketwireless.com. Quesions? Reply HELP.\",\"Cricket: Your plan incldues 15GB hotspot. You've used 14.1GB. Slowdowns may occur after 15GB. See usage at cricketwireless.com. This is a free alert.\",\"Cricket: Reminder - your bill of $45 is past due. Pay by 8/22 to avoid service interuption. Go to cricketwireless.com or call 1-800-555-0119. Thx.\",\"Cricket: We recieved your payment of $40.00. Your next due date is 11/15. View your account at cricketwireless.com. Thank you.\",\"Cricket: Your plan will renw on 7/30 for $40. If you want to change it, visit cricketwireless.com before then. No action needed if you keep it.\"]}"
+}

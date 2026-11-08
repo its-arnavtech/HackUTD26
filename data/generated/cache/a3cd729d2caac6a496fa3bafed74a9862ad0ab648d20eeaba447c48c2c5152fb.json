@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: personal message from a friend or family member.\nClaimed sender or brand: a family member.\nWho writes it: the company's automated notification system.\nStyle: chatty with one emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\n  \"messages\": [\n    \"Hey it's mom, I sent u $50 for groceries. Check ur account. 😊\",\n    \"Dad here. Ur package is at the front desk, pickup code 7392. They close at 6pm. 📦\",\n    \"Your sister's flight lands 3:45 terminal B. Can u pick her up? She has lots of luggage. ✈️\",\n    \"Reminder: Grandma's appt moved to Thurs 10am. I'll take her, just letting u know. 🏥\",\n    \"I paid the electric bill, $142.50, so don't worry bout it this month. 💡\",\n    \"Your brother is running late, he'll be there around 7:30. Save him a plate. 🍽️\",\n    \"Don't forget your niece's bday is Sat at 2pm at the park. I got the cake. 🎂\",\n    \"I transferred u $75 for the concert tickets. Let me know if it doesn't show up by tomorrow. 🎟️\"\n  ]\n}"
+}

@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Legitimate message. The correct answer for these cards is: legitimate, not a scam.\nBackground: Real messages people get, including hard look-alikes of every scam category above.\nScenario for these cards: carrier bill ready or autopay confirmation, sent as Spectrum Mobile.\nThe person receiving the text: a nurse working night shifts.\nTone of the text: formal and polite.\nDraft 8 cards, each a different realistic text. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Spectrum Mobile: Your monthly bill of $85.00 is ready. Payment is due by June 14. View and pay securely at https://www.spectrum.com/bill. Thank you for your business.\",\"Spectrum Mobile autopay confirmation: $85.00 will be charged to your saved payment method on June 10. No action needed. Review details at https://www.spectrum.com/autopay.\",\"Spectrum Mobile alert: We were unable to process your June payment of $85.00. Please update your payment method by June 12 to avoid service interruption. Visit https://www.spectrum.com/pay.\",\"Spectrum Mobile: A payment of $85.00 has been received for your account. Confirmation code SM-4821. Thank you. View your statement at https://www.spectrum.com/account.\",\"Reminder from Spectrum Mobile: Your bill of $85.00 is due June 14. Pay online at https://www.spectrum.com/bill or call 214-555-0143. We appreciate your prompt payment.\",\"Spectrum Mobile: Your autopay is scheduled for June 10 in the amount of $85.00. If you need to make changes, please visit https://www.spectrum.com/autopay before June 9. Thank you.\",\"Spectrum Mobile: Your June bill is now available. Amount due: $85.00. Due date: June 14. To view or pay, go to https://www.spectrum.com. No action is required if autopay is active.\",\"Spectrum Mobile: Thank you for your payment of $85.00 on June 5. Your next bill will be available around July 1. For details, visit https://www.spectrum.com/account. We appreciate your continued service.\"]}"
+}

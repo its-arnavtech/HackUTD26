@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake bill or payment demand (scam).\nWhat this category covers: Fake bill, overdue balance or failed payment from a phone carrier, utility, or subscription, with a threat of shut-off and a link to pay.\nAngle for this batch: failed autopay, update payment method.\nClaimed sender or brand: Netflix.\nWho writes it: a careful scammer who avoids obvious red-flag words.\nStyle: brand prefix like 'BRAND:' at the start.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Netflix: Your autopay didn't go through. Update your card here: nflx-pay.co/u/7f2\",\"Netflix: We tried charging your card on file today and it was declined. To avoid interruption, update your payment info at netflix-billing.co/update\",\"Netflix: Hi, this is a notice that your monthly payment of $15.49 was not processed because your card on file expired. Please update your payment method at https://nflxaccount.co/pay or call 888-555-0142.\",\"Netflix: Your autopay for this month failed. We don't want you to miss new episodes—just reply YES and we'll send a secure link to update your card.\",\"Netflix: We were unable to charge your payment method on file for your current billing period. Your account will continue for now, but please take a moment to update your card at netflix-payments.co/r/9k2 before your next renewal date.\",\"Netflix: Card declined for autopay. Fix it: nflxbill.co/c/3\",\"Netflix: Just a heads up—your last payment didn't go through. It looks like the card ending 3388 needs updating. You can do that here: https://netflix-update.co/pay. Thanks!\",\"Netflix: We noticed your autopay didn't process this month, likely due to a card update. To keep your plan active without a lapse, please update your payment method at netflix-billing.co/account or call our billing team at 214-555-0177. If you've already updated, please disregard.\"]}"
+}

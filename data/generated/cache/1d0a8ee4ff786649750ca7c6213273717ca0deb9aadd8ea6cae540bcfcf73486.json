@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: retail promotion or loyalty points update.\nClaimed sender or brand: Best Buy.\nWho writes it: an office scheduler or coordinator.\nStyle: includes a reference or case number.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Best Buy: Your My Best Buy points balance is 1,240. Case #BB-4471920. View details at bestbuy.com/rewards. Reply STOP to opt out.\",\"Best Buy scheduling: Your pickup for order BBY-88213-55 is ready. Ref #SC-20931. Questions? bestbuy.com/orders. No code needed.\",\"My Best Buy: 500 points ($10) expire 9/30. Use them: bestbuy.com/points. Ref #MB-771204. We never ask for your password or card.\",\"Best Buy: Members-only early access starts Fri 8am. Save 15% on select small appliances with your My Best Buy account. Promo ID BB-PROMO-4417. Details bestbuy.com/memberdeals.\",\"Order update: Your Best Buy order #BBY-1192-004 is delayed to Tue. New delivery window 2-5pm. Ref #DL-88302. Track: bestbuy.com/orders. Sorry for the inconvenience.\",\"Best Buy appointment reminder: Geek Squad consult on 10/12 at 3:15pm, case #GS-558210. Reply C to confirm or R to reschedule. No payment needed today.\",\"Your Best Buy receipt is ready for pickup order #BBY-77021. Total $64.19. Ref #RCPT-9920. View at bestbuy.com/receipts. Thanks for shopping.\",\"Best Buy: 500 pts exp 9/30. Ref #MB-771204. bestbuy.com/points\"]}"
+}

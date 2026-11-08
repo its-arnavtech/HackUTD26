@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake bill or payment demand (scam).\nWhat this category covers: Fake bill, overdue balance or failed payment from a phone carrier, utility, or subscription, with a threat of shut-off and a link to pay.\nAngle for this batch: failed autopay, update payment method.\nClaimed sender or brand: AT&T.\nWho writes it: an organized fraud ring copying the brand's official alert template closely.\nStyle: terse, like an automated system.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"AT&T: Autopay failed. Update payment at att-billpay.net to avoid shutoff.\",\"AT&T Free Msg: Payment declined for wireless account ending 0143. Update card now: attpay-secure.com or call 800-555-0199. Service may be suspended.\",\"We couldn't process your AT&T autopay. Update your payment method here: att-update.info/pay. Failure to do so will result in disconnection.\",\"AT&T Alert: Your $87.43 payment was declined. Reply YES and we'll send a secure link to update your card.\",\"AT&T: Autopay failed on 03/15. Update your card at att-payments.net within 24 hrs to avoid shutoff. Call 214-555-0143.\",\"Your AT&T wireless bill autopay didn't go through. Update payment method: attbill.co/update. Service will be interrupted if not fixed.\",\"AT&T: We were unable to charge your card ending 0143. Please call 800-555-0177 to update your payment info and prevent suspension.\",\"AT&T Notification: Automatic payment for account ending 0143 failed on 04/02. To avoid a $5 late fee and service interruption, update your payment method at att-billing-support.com/update. Reply STOP to opt out.\"]}"
+}

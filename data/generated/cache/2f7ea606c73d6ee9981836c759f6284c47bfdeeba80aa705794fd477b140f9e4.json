@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake toll or government notice (scam).\nWhat this category covers: Pretends to be a toll agency, the IRS, DMV, court, or another government office: unpaid toll, tax refund or debt, license suspension, fines.\nAngle for this batch: tax debt or warrant threat.\nClaimed sender or brand: SunPass.\nWho writes it: a careful scammer who avoids obvious red-flag words.\nStyle: all caps for key words.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"SUNPASS: Unpaid tolls have been sent to collections. CALL 855-555-0123 now to avoid a TAX LIEN.\", \"SunPass: Your account shows $187.50 in unpaid tolls. If not resolved, we will file a WARRANT with the county. Pay at sunpass-pay.com or call 888-555-0199.\", \"SUNPASS ALERT: Your toll debt is past due. Reply YES to avoid a WARRANT.\", \"SunPass: Outstanding balance $45.00. A WARRANT may be issued if not paid within 48 hrs. Visit sunpass-tolls.net to resolve.\", \"SUNPASS: To verify identity for toll debt resolution, reply with the 6-digit code sent to your phone. Failure may result in a TAX WARRANT.\", \"URGENT: SunPass has been notified by the state that your unpaid tolls have been escalated to a TAX DEBT. You must pay $212.75 by 5pm today or a WARRANT will be issued. Call 877-555-0142 now.\", \"SUNPASS: Your toll violation is now a TAX DEBT. Pay immediately at sunpass-resolve.com to avoid a WARRANT.\", \"FINAL NOTICE from SunPass. Your account is flagged for unpaid tolls totaling $89.00. If you do not pay by midnight, we will forward your case to the county for a WARRANT. Call 800-555-0167.\"]}"
+}

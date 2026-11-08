@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake prize, reward or refund (scam).\nWhat this category covers: Promises money or a gift: prize or giveaway winner, expiring reward points, gift card, unclaimed refund, survey reward.\nAngle for this batch: you won a giveaway.\nClaimed sender or brand: Walmart.\nWho writes it: a hurried scammer sending thousands of texts with minimal effort.\nStyle: brand prefix like 'BRAND:' at the start.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Walmart: You won our $1,000 giveaway! Claim here before it expires: walmart-reward.example/claim?id=4471\",\"Walmart: Congrats! Your entry won a $500 Walmart gift card. Reply YES with your email to get it\",\"Walmart: You are our weekly giveaway winner! Call 214-555-0147 to arrange delivery of your $250 e-gift card\",\"Walmart: Your giveaway prize is reserved. Confirm your shipping address here: walmart-prize.example/confirm/8892\",\"Walmart: You won a $100 Walmart gift card in our customer giveaway! Just pay $4.95 shipping: walmart-gift.example/ship\",\"Walmart: Winner! You have 24 hrs to claim your $750 Walmart shopping spree. Text CLAIM to 55501 now\",\"Walmart: Congrats on winning our survey giveaway! Reply with the 6-digit code from your email so we can verify your prize\",\"Walmart: You have been selected as a winner in the Walmart $1,500 giveaway. To release your funds, send a $25 gift card code to this number. Need it today before 5pm\"]}"
+}

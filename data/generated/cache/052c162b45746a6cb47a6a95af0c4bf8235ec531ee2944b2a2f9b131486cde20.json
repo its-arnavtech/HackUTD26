@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Bank impersonation (scam).\nWhat this category covers: Pretends to be a bank or card issuer: fraud alert, locked or suspended account, card declined, verify your identity, confirm a charge by link or callback.\nAngle for this batch: account locked or suspended.\nClaimed sender or brand: Navy Federal.\nWho writes it: a scammer whose first language isn't English, with slightly odd grammar.\nStyle: all caps for key words.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"NAVY FEDERAL: Your account is LOCKED due to unusual activity. Reply YES to verify now.\",\"URGENT! Navy Federal account SUSPENDED. We cannot verify your identity. Call 888-555-0142 immediately or visit nfcu-verify-help.com to UNLOCK.\",\"Dear customer, Navy Federal detect suspicious login on your account. For safety it is SUSPENDED. Reply with the 6-digit code we send to your phone to RESTORE access. Thank you.\",\"NAVY FEDERAL FRAUD ALERT: We are noticed many failed login attempt on your account. For protect your money, account is now LOCKED. You must verify identity within 24 hour or account will be permanently closed. Click here: navyfederal-unlock-secure.com/verify or call 877-555-0198. Do not ignore this message.\",\"NAVY FED: Account SUSPENDED. Call 800-555-0167 NOW.\",\"Your Navy Federal debit card is BLOCKED because account LOCKED. To reactivate, reply CARD and we send verification code. Need your quick response.\",\"ATTENTION NAVY FEDERAL MEMBER: Your online banking access is SUSPENDED. We see unauthorized attempt from unknown device. Please verify now by clicking link nfcu-secure-login.com or reply with the code you receive. If no action, account stay locked. Thank you.\",\"Navy Federal: We are temporary holding your account because of security check. To release, send payment of $49.99 verification fee at nfcu-verification-pay.com. This is REFUNDABLE. Act fast.\"]}"
+}

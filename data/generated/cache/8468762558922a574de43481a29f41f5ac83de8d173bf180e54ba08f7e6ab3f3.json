@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: school, work or community notice.\nClaimed sender or brand: an employer.\nWho writes it: a company's customer-care team writing a short service text.\nStyle: chatty with one emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Morning! Payroll's a day early this week — your direct deposit should hit Thu 3/14 instead of Fri. No action needed, just a heads-up 😊 Questions? Call HR Service Center at 312-555-0187.\",\"Heads up: the south parking garage is closed Fri 4/5 for resealing. Use Lot C or the shuttle from 7am–6pm. Badge access still works. Details at harborpointmfg.com/parking 🚧\",\"Reminder: open enrollment closes 11:59pm Fri 11/8. If you've already submitted your elections, you're all set — no need to re-enter anything. Need help? 800-555-0129 🍂\",\"Hi team — fridge cleanout Thu 6/13 at 3pm. Anything left after that goes to donations 🧼\",\"Quick one: your $25 wellness reimbursement for March posted to your paycheck on 4/12. You don't need to do anything. If it's missing, reply here or call 614-555-0110 😊\",\"New hire orientation moved to Room 214 at 9:30am Mon 8/19. Bring a photo ID for your badge; we'll handle the rest. Coffee and pastries provided ☕ Questions? 415-555-0162\",\"Your annual training link is live through 5/31: harborpointmfg.com/learn. It takes about 20 min, and you can pause anytime. No passwords needed — just your work email 😊\",\"Friendly nudge: W-2s are available in the payroll portal at harborpointmfg.com/payroll. We'll never text you asking for your SSN or login. Questions? 646-555-0134 📄\"]}"
+}

@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake prize, reward or refund (scam).\nWhat this category covers: Promises money or a gift: prize or giveaway winner, expiring reward points, gift card, unclaimed refund, survey reward.\nAngle for this batch: reward points expiring today.\nClaimed sender or brand: Amazon.\nWho writes it: a hurried scammer sending thousands of texts with minimal effort.\nStyle: chatty with one emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Amazon: your 1,450 reward points expire tonight at 11:59pm. Claim here before they vanish: https://amzn-rewards.co/claim 😮\",\"Hey it's Amazon rewards dept - you still have $85 in points expiring TODAY. Tap amzn-points.net/grab85 to keep them 😬\",\"URGENT: your Amazon reward balance ($62.17) expires in a few hours. Reply YES and I'll hold it for you 😅\",\"amazon rewards: 2300 pts exp today. dont lose em!! call 888-555-0142 now and we can cash out 😊\",\"Your Amazon survey reward of $120 is still unclaimed and expires today. Verify at https://amz-gift.org/verify 😮 hurry!\",\"Amazon here - quick heads up your $50 gift card reward expires at midnight. Text back the 6-digit code from your email to confirm 😁\",\"You've got 975 Amazon points expiring today! Don't waste them. Go to reward-amazon.shop/975 and enter your info before 11:59pm 😮\",\"Final notice: Amazon reward points expiring tonight. Reply STOP? No - reply CLAIM to keep $43.80 in rewards 😅\"]}"
+}

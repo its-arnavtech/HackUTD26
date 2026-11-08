@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: carrier bill ready or autopay confirmation.\nClaimed sender or brand: AT&T.\nWho writes it: an office scheduler or coordinator.\nStyle: includes a reference or case number.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"AT&T: Bill ready. $87.42 due 11/05. Autopay scheduled. Ref AT-5521-08. View at att.com. No reply needed.\",\"Hi, this is the AT&T account coordination desk. Your November bill of $214.09 is ready and autopay is set for 11/12. Case #AT-7710-42. If you need a copy, visit att.com. No action required.\",\"AT&T autopay confirmation: $156.33 will draft from your saved method on 10/28. Reference 8842-AT-01. No action needed. Details at att.com.\",\"Office scheduler notice: AT&T bill for the 4 lines is $301.77, due 11/18. Autopay is active. Case #AT-1934-77. You can review the statement at att.com. Questions? Call 800-555-0147.\",\"AT&T: Your bill is ready. $62.10 due 12/01. Autopay confirmed. Case AT-4408-15. See att.com. This is a service message.\",\"This is a billing coordination message from AT&T. Your October statement of $478.92 is available. Autopay will run on 10/30. Reference #AT-6205-33. No passwords or codes are needed. View at att.com. For help, call 214-555-0182.\",\"AT&T autopay done: $99.99 paid 11/02. Ref AT-8120-64. Receipt at att.com.\",\"Coordinator note: AT&T bill $143.25 is ready, due 11/25. Autopay scheduled. Case #AT-3391-06. Need to update? Manage at att.com—never share codes.\"]}"
+}

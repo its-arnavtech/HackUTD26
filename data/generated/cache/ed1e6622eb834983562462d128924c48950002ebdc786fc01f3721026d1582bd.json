@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Bank impersonation. The correct answer for these cards is: scam.\nBackground: Pretends to be a bank or card issuer: fraud alert, locked or suspended account, card declined, verify your identity, confirm a charge by link or callback.\nScenario for these cards: unusual sign-in on online banking, sent as Truist.\nThe person receiving the text: a retiree in Florida who banks online.\nTone of the text: neutral, matter-of-fact.\nDraft 8 cards, each a different realistic text. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Truist: We detected an unusual sign-in to your online banking from a new device in Tampa, FL on 03/12 at 9:42 AM. If this was not you, secure your account now: https://truist-verify.help/secure\",\"Truist Fraud Alert: A sign-in attempt to your online banking was blocked from an unrecognized device. To review and confirm your identity, call 813-555-0198.\",\"Truist: Unusual sign-in on your account from a browser in Miami, FL. Reply YES if this was you or NO to lock the account and receive a verification call.\",\"Truist Online Banking: We noticed a login from a new IP address. For your security, please confirm the 6-digit code we just sent to your phone by replying with it here.\",\"Truist: Your online banking profile was accessed from an unrecognized computer. To prevent suspension, verify your identity at https://truist-secure-login.com/verify within 24 hours.\",\"Truist: A sign-in to your account was attempted from Orlando, FL. If you did not authorize this, call our fraud team at 407-555-0132 and reference case FL-58214.\",\"Truist: We blocked an unusual sign-in to your online banking. To restore access, reply with the one-time passcode sent to your mobile number.\",\"Truist: Unrecognized sign-in detected. Please confirm whether you are traveling by replying YES or NO. If no, we will transfer you to a fraud specialist at 954-555-0176.\"]}"
+}

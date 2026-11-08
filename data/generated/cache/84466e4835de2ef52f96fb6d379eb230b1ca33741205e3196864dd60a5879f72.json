@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake prize, reward or refund (scam).\nWhat this category covers: Promises money or a gift: prize or giveaway winner, expiring reward points, gift card, unclaimed refund, survey reward.\nAngle for this batch: free gift card for a survey.\nClaimed sender or brand: Walmart.\nWho writes it: a careful scammer who avoids obvious red-flag words.\nStyle: chatty with one emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Hey! Walmart here 😊 You've got a $50 gift card waiting after a quick 2-min survey. Tap walmartgift.co/claim to grab it.\", \"Hi! It's the Walmart feedback team. We're doing a small survey this week and everyone who finishes gets a $25 gift card. No catch 😊 Reply YES and I'll send the link.\", \"Congrats! You were picked for our $100 Walmart gift card survey reward 😊 Just call 214-555-0143 to confirm your details and we'll get it sent out.\", \"Walmart survey = free $20 gift card 😊 Take it here: wmt-survey.net/survey\", \"Hey! We noticed you shopped with us recently. Want a $15 gift card for a 3-question survey? Just text back the word SURVEY and we'll send it over 😊\", \"Good news! Your Walmart receipt entered you into our monthly survey draw. You've won a $75 gift card 😊 To claim, just reply with your email and we'll send the details. Takes less than a minute.\", \"Hey it's Walmart 😊 We're giving away $50 gift cards to folks who complete our quick survey. Claim yours at walmartfeedback.co/50 before Friday!\", \"Free $10 Walmart gift card for a 1-min survey 😊 Call 310-555-0178 now to get yours.\"]}"
+}

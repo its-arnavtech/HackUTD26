@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Wrong-number or family impersonation (scam).\nWhat this category covers: Starts a personal conversation to build trust: a fake wrong-number text, a relative or friend writing from a 'new number' who needs money, or a romance opener.\nAngle for this batch: old acquaintance reconnecting.\nClaimed sender or brand: no brand.\nWho writes it: an organized fraud ring copying the brand's official alert template closely.\nStyle: chatty with one emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"hey is this Wes? it's Marla from the old Ridgeway days 😊 lost ur number when i switched phones—can u text me back at 312-555-0187 so we can catch up?\",\"Omg I think I have the wrong number but u sound familiar—did u used to work at the Cedar Point cafe? It's Dena. If that's u, hit me up on my new line 646-555-0122 😊\",\"Hey stranger! It's Rob from the Tuesday league. New phone, lost all contacts. U still at the same place? Reply here and I'll send the reunion info 😊\",\"Hi, it's Jess—we met at Dana's BBQ last summer. My old phone died & I'm trying to reconnect w/ everyone. Can u send me a quick text at 415-555-0169 so I have ur number saved? 😊\",\"Hey it’s Nina from the old apartment crew! I’m organizing a lil get-together & missing a few ppl. Can u check the invite here and lmk if ur coming? catchup-crew.info/rsvp 😊\",\"Long time no talk! It's Eli from the gym—remember? I’m in a bind, wallet got stolen. Could u send me $40 for a cab? I’ll pay u back Friday 😊\",\"Hey, it's Dana! I know this is random but I lost my contacts & I'm trying to find my old friend from the lake house. Is this still ur number? Reply YES and I'll send u the details 😊\",\"Hi it’s Chris from the old crew—my new number is 503-555-0144. I need a favor: can u forward me the code u just got from my phone company? It’s for acct recovery 😊\"]}"
+}

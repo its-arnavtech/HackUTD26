@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Fake prize, reward or refund. The correct answer for these cards is: scam.\nBackground: Promises money or a gift: prize or giveaway winner, expiring reward points, gift card, unclaimed refund, survey reward.\nScenario for these cards: you won a giveaway, sent as Kroger.\nThe person receiving the text: a college student with a part-time job.\nTone of the text: warm and reassuring.\nDraft 8 cards, each a different realistic text. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Hi! You're one of our Kroger Summer Refresh giveaway winners — a $250 Kroger gift card is reserved under your entry. To confirm delivery, reply YES and we'll send the claim details. Warmly, Kroger Rewards Team\",\"Good news! Your Kroger giveaway prize is ready. There's a small $4.95 delivery fee to release your $500 gift card. Call 866-555-0147 and we'll walk you through it. — Kroger Customer Care\",\"Congrats, your Kroger receipt survey reward is still unclaimed: a $100 digital gift card. Claim it here before it expires tonight: kroger-reward-center.com/claim?id=K7F2Q. Thanks for being a loyal shopper!\",\"Hi there, this is the Kroger Giveaway Team. Your name came up for our $300 grocery card. Just text back the 6-digit code we sent to your phone so I can verify your entry. No rush — we're holding it for you.\",\"You won! Your Kroger gift card from our spring giveaway is confirmed. To arrange pickup, reply with your ZIP code and preferred pickup time. We'll make it easy. — Kroger Rewards\",\"Final notice: your Kroger reward points expire at midnight. You have $75 in unused rewards. Redeem at kroger-points-alert.com/redeem and enter code KR-4821. We'd hate for you to lose it.\",\"Congratulations! Your entry was selected in the Kroger Gift Card Giveaway. Please call 214-555-0182 to verify your mailing address and we'll send your $200 card. Friendly reminder: keep your card number private.\",\"Hi there! Your Kroger giveaway win is still pending because we need a $25 activation gift card to release the $250 reward. Text us back and we'll guide you. This is standard for first-time winners.\"]}"
+}

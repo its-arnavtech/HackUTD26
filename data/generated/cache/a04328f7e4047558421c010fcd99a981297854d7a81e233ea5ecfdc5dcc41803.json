@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Fake toll or government notice. The correct answer for these cards is: scam.\nBackground: Pretends to be a toll agency, the IRS, DMV, court, or another government office: unpaid toll, tax refund or debt, license suspension, fines.\nScenario for these cards: tax debt or warrant threat, sent as Illinois Tollway.\nThe person receiving the text: a retiree in Florida who banks online.\nTone of the text: neutral, matter-of-fact.\nDraft 8 cards, each a different realistic text. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Illinois Tollway: Our records show unpaid tolls on a FL-registered vehicle. This balance has been moved to tax debt collection. Review and pay at iltollway-balance.com or call 312-555-0164.\",\"IL Tollway Notice: A warrant may be issued for the registered owner of a vehicle with unpaid tolls. To resolve before referral, reply YES and a case agent will contact you. Case IL-48271.\",\"Illinois Tollway: Final notice for unpaid toll debt. Pay the amount due at il-toll-resolution.com using your online banking. Reference case 2284-5591.\",\"IL Tollway: Your unpaid toll balance is eligible for tax offset. Call 855-555-0192 to confirm your account details and payment method.\",\"Illinois Tollway: A citation has been filed for toll evasion. To avoid a court summons, reply with your ZIP code and the last 4 digits of your payment card.\",\"IL Tollway: Tax debt referral pending for unpaid tolls. Confirm receipt by replying CONFIRM. Do not ignore this notice.\",\"Illinois Tollway: Verify your vehicle registration and settle the outstanding toll amount at iltollwaygov-pay.net. A warrant review is scheduled for 06/18.\",\"IL Tollway: Your toll account has a delinquent balance of $184.50. Pay by calling 217-555-0138. A tax warrant will be filed if unresolved.\"]}"
+}

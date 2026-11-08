@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: delivery update from a carrier or retailer.\nClaimed sender or brand: Amazon.\nWho writes it: a friend or family member texting casually.\nStyle: includes a reference or case number.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Your Amazon package is at my place. Case #A1B2C3. I'll drop it off tomorrow.\", \"Amazon delivery update: your order 123-4567890-1234567 is out for delivery. I'm home so I'll grab it. Ref #AMZ-555-0143.\", \"Just got a text from Amazon saying my package was delayed due to weather. Case #D-987654. If you need the stuff inside before the weekend, you can come grab it from my place. It's the one with the blue tape.\", \"Amazon says your package is at the locker. Code 4829. Case #L-555-0123. I can pick it up for you. More info at amazon.com/help.\", \"Dude, Amazon left your package on my porch again. Tracking 1Z999AA10123456784. Case #P-4432. Come get it before it rains.\", \"Amazon charged me $0.00 for redelivery? Weird. Case #R-555-0199. Your package is coming to my address now. I'll let you know when it's here.\", \"Amazon says your package will be delivered by 8pm tonight. Case #T-555-0177. I'm home so I'll sign for it. No worries.\", \"Got an Amazon notification about your order. Case #AMZ-555-0102. It says it's delayed but still coming. Check amazon.com for updates.\"]}"
+}

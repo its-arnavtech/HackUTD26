@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Wrong-number or family impersonation (scam).\nWhat this category covers: Starts a personal conversation to build trust: a fake wrong-number text, a relative or friend writing from a 'new number' who needs money, or a romance opener.\nAngle for this batch: friendly wrong-number opener.\nClaimed sender or brand: no brand.\nWho writes it: a careful scammer who avoids obvious red-flag words.\nStyle: terse, like an automated system.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Hi is this Jen? We met at the gym Tues. New phone, lost contacts. Reply with your name so I know I got the right person. 214-555-0183\",\"Wrong number sorry! But you seem nice. I'm new to town. Text me back at 312-555-0147 if you want to grab coffee.\",\"Hey it's Alex. Did you get my package by mistake? Tracking says delivered to your apt. Check here: pkgtrack.info/9f3k2\",\"Oops wrong number. Since I have you, can you do me a quick favor? I'm trying to log into my account but my phone died. Send me the 6-digit code that just came to your phone.\",\"Hi, this is Sam. We chatted on the train last week. My texts aren't sending. Can you reply with a quick hi so I know it's you? 415-555-0128\",\"Sorry wrong number! But you have a friendly vibe. I'm Rachel, new in town. Want to see a pic? Reply YES and I'll send.\",\"Hey is this Mike? I think I left my keys at your place. Can you call me at 646-555-0195? It's urgent.\",\"Wrong number. But maybe you can help. I'm trying to send money to my sister but her account is locked. Can you receive a $200 transfer and forward it? I'll give you $20. Text me at 305-555-0163.\"]}"
+}

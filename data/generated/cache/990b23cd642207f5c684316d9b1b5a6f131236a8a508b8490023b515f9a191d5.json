@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake prize, reward or refund (scam).\nWhat this category covers: Promises money or a gift: prize or giveaway winner, expiring reward points, gift card, unclaimed refund, survey reward.\nAngle for this batch: reward points expiring today.\nClaimed sender or brand: Target.\nWho writes it: a careful scammer who avoids obvious red-flag words.\nStyle: chatty with one emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Hey it’s Target Circle 🎯 your $12.40 in rewards expires tonight. See balance here: tgt-rewards.info/c/8f2\",\"Hi! Target here 🙂 quick heads up—your Circle rewards (about $18.75) are set to reset at midnight. If you want to keep them, just reply YES and I’ll send the redemption step.\",\"Morning! This is the Target rewards desk. We noticed 4,280 points on your account are due to expire today. Nothing wrong with the account—just don’t want you to lose them. You can check at circle-rewards.shop/keep or call 214-555-0198 🙂\",\"Target Circle: 3,100 pts expire today 🎁 claim at tgtperks.net/claim\",\"Hey it's me again from Target—your rewards balance is $23.10 and it’s set to drop off at 11:59pm. A lot of folks miss this one. If you'd rather do it by phone, ring 877-555-0164 and mention code 4471. Otherwise tap targetpoints-now.co/r/23 😊\",\"Target rewards update: your $9.60 in Circle earnings is scheduled to expire today. Reply with the 6-digit code from your account and I can hold it for you 🎯\",\"Hi there! Target Circle reminder—your reward certificate is still unclaimed and today is the last day. No purchase needed. Check it at reward-tgt.com/status or text BACK and we'll resend the details 🙂\",\"Hey, it’s Target Circle support 🙂 We’re doing a quick cleanup of expiring rewards and your account showed $15.25 that’s due to reset tonight. I can send a secure link to your phone if you reply with the email on the account, or you can view it yourself at targetcircle-offer.com/redeem. Either way, want to make sure it doesn’t just disappear.\"]}"
+}

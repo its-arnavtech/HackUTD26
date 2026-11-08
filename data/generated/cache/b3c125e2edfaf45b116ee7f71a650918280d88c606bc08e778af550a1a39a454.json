@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake bill or payment demand (scam).\nWhat this category covers: Fake bill, overdue balance or failed payment from a phone carrier, utility, or subscription, with a threat of shut-off and a link to pay.\nAngle for this batch: overdue phone bill with suspension threat.\nClaimed sender or brand: Xfinity.\nWho writes it: a hurried scammer sending thousands of texts with minimal effort.\nStyle: includes a reference or case number.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Xfinity: Your phone bill is overdue. Case #XF-88421. Service will be suspended in 24 hrs. Pay now: xfinity-billing-support.com/pay\", \"URGENT: Xfinity acct flagged for non-payment. Ref: 555-0192-7734. Your mobile line will be cut off today. Call 888-555-0147 to resolve or pay at xfinitypayments.net/recover\", \"Xfinity: Payment failed for your phone bill. Case #XMB-4412. Reply YES to confirm card or your service stops in 2 hrs.\", \"This is a final notice from Xfinity regarding your overdue balance of $147.82. Case ID: 555-0188-9901. Your phone service will be disconnected unless you pay immediately at xfinity-billcenter.org/secure or call 877-555-0163.\", \"Xfinity alert: Your phone bill payment didn't go through. Ref #XF-99201. To avoid suspension, reply with the 6-digit code we just sent to verify your payment method.\", \"Xfinity: Your line is past due. Case 555-0134-2288. Pay now to avoid shutoff: xfinity-pay-now.com/p\", \"Xfinity billing: Your phone account is 15 days overdue. Reference #: 555-0177-6655. Service suspension scheduled. Call 800-555-0198 immediately to make payment.\", \"Xfinity: We couldn't process your phone bill. Case #XF-77821. Reply with 'PAY' to get a secure payment link or your service will be suspended within 12 hours.\"]}"
+}

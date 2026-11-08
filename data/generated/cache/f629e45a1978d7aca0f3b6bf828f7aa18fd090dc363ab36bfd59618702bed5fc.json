@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: appointment or pharmacy reminder.\nClaimed sender or brand: a dental office.\nWho writes it: a friend or family member texting casually.\nStyle: all caps for key words.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Hey! Dentist just texted me to remind YOU about your appt TOMORROW at 3:15. Call 555-0123 if you can't make it. Don't forget!\", \"Your dental office called—said you have a BALANCE of $45 due at your visit on FRI 10AM. They said pay at front desk, no card needed over phone. Just a heads up!\", \"Dentist reminder: your appointment is CONFIRMED for MON 9AM. Confirmation #A7B2. If you need to cancel call 555-0199. They said no need to reply.\", \"Hey, got this from the dental office: 'Reminder: your cleaning is scheduled for THURSDAY at 4PM. Please arrive 10 min early. To reschedule, visit brightsmile.com or call 555-0144.' Just passing it along!\", \"URGENT: Your dental appointment is TOMORROW at 8:30AM. If you miss it, there's a $25 NO-SHOW fee. Call 555-0177 to confirm. They said don't text back.\", \"My mom works at the dental office and said your appointment is TUE at 11. She said they have you down for a filling. Call 555-0166 if that's wrong.\", \"Dentist reminder: you have until 5PM TODAY to confirm your appointment for WED at 2PM. Reply YES or call 555-0188. They said if no answer they'll give your slot away.\", \"Dentist says your appt is FRI 9AM. Bring your insurance card. No need to call unless you can't make it. 555-0111.\"]}"
+}

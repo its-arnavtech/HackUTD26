@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: carrier bill ready or autopay confirmation.\nClaimed sender or brand: AT&T.\nWho writes it: a company's customer-care team writing a short service text.\nStyle: chatty with one emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Heads up! Your AT&T bill for July is ready — $84.32, due Aug 12. Pop over to att.com/my to check it out 😊\", \"Good news — your AT&T autopay of $67.89 went through today. You're all set for this month! 🎉\", \"Hey there! Just a friendly nudge that your AT&T wireless bill is ready. It's $142.50, due on the 18th. No action needed if autopay is on. View details at att.com/bill 🙂\", \"ALERT: Your AT&T bill is now available. Amount: $59.99. Due date: 08/05. Manage your account at att.com. 📱\", \"Your AT&T autopay will run on Aug 3 for $91.20. Make sure funds are available. Questions? Visit att.com/autopay 😀\", \"Payment received! $45.00 paid toward your AT&T bill. Thanks! 🙌\", \"Your AT&T bill is ready. Confirmation #: 7843-2210. Amount due: $120.75 by Aug 20. Details at att.com/my. 😎\", \"Hi! Your AT&T bill just dropped. $76.40 due Aug 15. If autopay is on, you're golden. Check it out at att.com 😊\"]}"
+}

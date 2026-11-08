@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Fake job or easy money offer. The correct answer for these cards is: scam.\nBackground: Unsolicited job or income offer: remote task jobs with daily pay, recruiter who wants to move to a chat app, reshipping, crypto or investment opportunities.\nScenario for these cards: crypto or investment opportunity, sent as a marketing agency.\nThe person receiving the text: a college student with a part-time job.\nTone of the text: short and urgent.\nDraft 8 cards, each a different realistic text. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Last call: our agency reserved 3 spots in the BTC pilot pool closing at 6pm. Deposit from $50 to activate. Reply YES and I'll send the wallet link.\",\"Hi, this is NovaReach Media. Your campus survey entry won a $750 crypto bonus. Claim within 30 min at novareach-rewards.co/claim or it expires.\",\"Urgent: your marketing agency onboarding is pending. To verify income for the crypto task, text the 6-digit code we just sent. Reply CODE now.\",\"Earn $200/day testing crypto ads for our agency. No experience. Start tonight. Call 415-555-0182 now, spots close at 8.\",\"Final reminder: your $1,200 investment match is approved but needs a $99 activation fee by 5pm. Send to $ClearPathMedia on CashApp. Reply DONE.\",\"Your agency profile got shortlisted for the USDC yield pilot. Confirm wallet ownership by replying with your 12-word phrase. Deadline 15 min.\",\"We're hiring student brand ambassadors for crypto campaigns. $150 sign-on paid today. Text START to 312-555-0198. First 10 only.\",\"Heads up: your crypto marketing payout of 0.045 BTC is held. Release it with a $25 gas fee at bitpay-release.net before midnight or it returns to sender.\"]}"
+}

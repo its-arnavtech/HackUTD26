@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Legitimate message. The correct answer for these cards is: legitimate, not a scam.\nBackground: Real messages people get, including hard look-alikes of every scam category above.\nScenario for these cards: carrier data usage or plan notice, sent as Spectrum Mobile.\nThe person receiving the text: a parent who shops online often.\nTone of the text: slightly sloppy with a typo.\nDraft 8 cards, each a different realistic text. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Spectrum Mobile: You've used 90% of your 5GB data this cycle. Add more data anytime at spectrum.com or call 833-555-0142. No action needed if you dont need more.\",\"Spectrum Mobile alert: Your auto-pay for the $45.00 plan failed. Update your paymnet by 6/18 to avoid interruption. Go to spectrum.com.\",\"Spectrum Mobile: Your data add-on of 1GB was succesful. $10.00 charged to your acount. New balance: 2.3GB. View at spectrum.com. No reply needed.\",\"Spectrum Mobile: Your plan will renew on 07/02 for $45.00. If you want to change it, go to spectrum.com before 07/01. We recieved your autopay setup. Thanks.\",\"Spectrum Mobile: Free 1GB data boost added to your line. Expiers 06/30. No action needed. See details at spectrum.com.\",\"Spectrum Mobile: Your acount has a past due balance of $45.00. Pay by 06/20 to avoid late fee. Visit spectrum.com or call 214-555-0177. We sent this to your email too.\",\"Spectrum Mobile: Your 5GB plan is now 100% used. Data is paused until 06/25. Add 1GB for $10 at spectrum.com. Sorry for the confuson in our last text.\",\"Spectrum Mobile: Thanks for you're payment of $45.00. Your next bill is due 07/05. Confirmation code: SM-9K4T2. No need to share this code. Manage at spectrum.com.\"]}"
+}

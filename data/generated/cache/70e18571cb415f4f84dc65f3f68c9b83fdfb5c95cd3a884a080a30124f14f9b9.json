@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: one-time passcode with a do-not-share warning.\nClaimed sender or brand: Capital One.\nWho writes it: a company's customer-care team writing a short service text.\nStyle: brand prefix like 'BRAND:' at the start.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Capital One: Your one-time passcode is 482913. It expires in 10 min. Never share this code—Capital One won't ask for it. Didn't request? Visit capitalone.com\",\"Capital One: Use code 736204 to finish signing in. Do not share this code with anyone, even if they say they're from Capital One. If this wasn't you, go to capitalone.com or call 800-555-0199.\",\"Capital One: code 905118. Expires in 5 min. Don't share this code with anyone. capitalone.com\",\"Capital One: We received a request to reset your password. Your code is 221047. Never give this code away—our reps won't ask for it. Not you? Go to capitalone.com\",\"Capital One: Your verification code is 664390 for a $1.00 temporary hold. It expires in 15 minutes. Do not share this code. Questions? capitalone.com\",\"Capital One: 118275 is your one-time code. Capital One will never text or call you asking for this code. If you didn't try to log in, visit capitalone.com.\",\"Capital One: Your one-time passcode is 553801. It's good for 10 minutes and can only be used once. Please don't share it—anyone who asks for it is not us. If you didn't request this, go to capitalone.com or call 800-555-0177.\",\"Capital One: Security code 407962. Expires 8 min. Do not share. We won't ask you for it by phone, text or email. Didn't request? capitalone.com\"]}"
+}

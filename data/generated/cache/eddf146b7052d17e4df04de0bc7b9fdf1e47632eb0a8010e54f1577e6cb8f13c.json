@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Fake account security alert. The correct answer for these cards is: scam.\nBackground: Pretends to protect a non-bank account (carrier, Apple, Amazon, email, social media): login alert, password reset, SIM change, or asks the person to send back a one-time code.\nScenario for these cards: password reset they didn't request, sent as Verizon.\nThe person receiving the text: a new immigrant still learning English.\nTone of the text: slightly sloppy with a typo.\nDraft 8 cards, each a different realistic text. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Verizon: We detected a password reset request for your acount. If this was not you, verify now at http://vz-secure-check.com/reset or call 800-555-0147. Ignore if you made this request.\",\"VZ Alert: You have recieved a password reset request. If you did not ask, reply with the 6-digit code we just sent to cancel it. Do this in 10 min or account stays locked.\",\"Verizon Wireless: A password reset was requested on your account. To block it, visit https://verizon-helpdesk.info/block and enter your info. If you didnt ask, act now.\",\"Security alert: Someone tryed to reset your Verizon password. Call our fraud team at 888-555-0199 immedietly. Have your account PIN ready. Do not share this code with anyone.\",\"Verizon: Password reset request for your email on file. If not you, reply 'NO' and we will send a verifcation code. Then text the code back here to lock account.\",\"Your Verizon account password reset is pending. Click http://vzaccount-verify.net to cancel. You must confirm within 24 hours or your service will be stoped.\",\"VZ Security: We see unusualy login after password reset. Please call 855-555-0138 and tell us the one-time code from your text to verify identity. Thank you.\",\"Verizon: Did you requst a pasword reset? If no, reply with the 6 digit code sent to your phone so we can cancel. This is urgent.\"]}"
+}

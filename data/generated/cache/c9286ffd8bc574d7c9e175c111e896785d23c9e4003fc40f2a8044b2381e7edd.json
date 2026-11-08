@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Bank impersonation (scam).\nWhat this category covers: Pretends to be a bank or card issuer: fraud alert, locked or suspended account, card declined, verify your identity, confirm a charge by link or callback.\nAngle for this batch: unusual sign-in on online banking.\nClaimed sender or brand: Bank of America.\nWho writes it: a scammer creating panic with deadlines and threats.\nStyle: terse, like an automated system.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Bank of America: We detected an unusual sign-in to your online banking from a new device. If this wasn't you, secure your account now: https://bofa-secure-check.com/verify\",\"BofA Alert: A sign-in to your online banking was blocked due to an unusual location. Confirm it was you within 15 min or access will be suspended: https://bankofamerica-alerts.net/confirm\",\"Bank of America Fraud: Unusual online banking sign-in from IP 172.16.55.201. Call 855-555-0182 immediately. Your account will be locked in 30 minutes. Ref ID BOA-4471\",\"BofA: We noticed a login to your account from a device we don't recognize. Was this you? Reply YES or NO. If no reply in 10 min, we'll restrict online access.\",\"Bank of America security notice: Someone tried to access your online banking 3 times. To verify your identity, reply with the 6-digit code we just sent to your phone. Do not share with anyone.\",\"BOA ONLINE BANKING: Sign-in attempt from Chrome, Dallas TX. Not you? Lock access and reset your password here: https://boa-login-help.co/secure. Ignore if you did this.\",\"Bank of America: Your online banking has been temporarily suspended after an unusual sign-in. Reopen it now: https://bofa-account-restore.com/unlock. Failure to verify within 24 hrs may close your account.\",\"BofA fraud dept: We blocked a $1,850 transfer after an unrecognized sign-in. If unauthorized, call 214-555-0143 now and provide case #88213. If not, no action needed.\"]}"
+}

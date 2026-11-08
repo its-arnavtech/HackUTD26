@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: carrier data usage or plan notice.\nClaimed sender or brand: AT&T.\nWho writes it: an office scheduler or coordinator.\nStyle: terse, like an automated system.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"AT&T: 1.2GB left on your plan this cycle. See att.com/usage.\",\"AT&T Free Msg: Your office line ending 0143 used 85% of its 25GB plan. Manage at att.com/businessdata.\",\"AT&T Free Msg: Office account ending 0143 exceeded its shared data plan by 2.3GB. Additional usage is $15/GB, capped at $60. Change plan at att.com/businessplans or call 800-555-0143.\",\"AT&T: Payment of $142.67 for acct 0143 is due 06/14. Pay at att.com/myatt. Ignore if paid.\",\"AT&T Business: Plan change to 50GB shared data is complete, effective 06/01. Details at att.com/plans.\",\"AT&T alert: Overage charges of $15.00 applied to acct 0143. Add data at att.com/addon to avoid more.\",\"AT&T Free Msg: AutoPay card expiring soon for acct 0143. Update at att.com/autopay by 06/20 to avoid interruption.\",\"AT&T notice: A new user was added to your business plan. If unauthorized, call 800-555-0143 or visit att.com/account.\"]}"
+}

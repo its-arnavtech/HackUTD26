@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake prize, reward or refund (scam).\nWhat this category covers: Promises money or a gift: prize or giveaway winner, expiring reward points, gift card, unclaimed refund, survey reward.\nAngle for this batch: unclaimed refund or rebate.\nClaimed sender or brand: Walmart.\nWho writes it: a scammer whose first language isn't English, with slightly odd grammar.\nStyle: chatty with one emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Hi dear, you have unclaimed refund from Walmart $84.50. Claim now before expire 😊 walmart-refund.xyz/claim\", \"Hello friend! Walmart give you cash back refund of $127.39 from last year purchase. You not claim yet. Reply YES and I send form 😃\", \"Good day. This is Walmart customer service. Our system show you have unclaimed rebate $56.20. To get it please call 214-555-0187 and give code 8842 😊 Thank you.\", \"Hey! You forget your Walmart refund? $200 waiting for you since March. Don't let it go! Just click here wmtbonus.top/refund 😊\", \"To release your $95.80 refund, we need small processing fee $3.99. Send to Walmart refund dept. Call 555-0134 for help 😊\", \"Walmart refund notification: Your rebate $43.15 is expired soon. Please reply with your zip code to verify 😊\", \"Dear customer, we try to contact you about unclaimed refund $310. No answer. Please visit walmart-refund.xyz/status and enter your card number for deposit 😊\", \"Surprise! You are selected for Walmart loyalty refund $75. Just text back REFUND to 555-0142 and we process 😊\"]}"
+}

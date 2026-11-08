@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake job or easy money offer (scam).\nWhat this category covers: Unsolicited job or income offer: remote task jobs with daily pay, recruiter who wants to move to a chat app, reshipping, crypto or investment opportunities.\nAngle for this batch: remote part-time task job with daily pay.\nClaimed sender or brand: a LinkedIn recruiter.\nWho writes it: a scammer whose first language isn't English, with slightly odd grammar.\nStyle: plain sentences, no emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Hello, I am recruiter from LinkedIn. We have remote part time task job, pay daily 150 to 300 usd. Reply YES for detail.\", \"Hi, your profile match our remote task team. Simple online jobs, daily payout. Register here: worktask-remote.com/join. Any question text me.\", \"Good day. I represent hiring team on LinkedIn. We need part time workers for product testing tasks. Daily pay 200 usd. Call or WhatsApp +1 214-555-0143 for start.\", \"Hello, this is Linda from LinkedIn recruitment. To verify your account for daily task job, please send the 6 digit code you receive. Pay is 120 usd per day. Thank you.\", \"Dear candidate, I found your profile on LinkedIn and think you are good fit for remote task position. You can work 1-2 hours per day from home, get paid 100-250 usd daily. No experience needed. For more info visit fastcash-tasks.net or reply to this message.\", \"Part time task job, daily pay 180 usd. Reply START. From LinkedIn recruiter.\", \"Hi, I am hiring manager from LinkedIn. We offer simple remote tasks with daily payment 200 usd. To activate your account you need pay small registration 20 usd. Contact me for details.\", \"Hello friend, I see your LinkedIn. We have easy online job, just click links and get paid every day. 150 usd daily. Join now at daily-task-work.com/start. Don't miss this chance.\"]}"
+}

@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: retail promotion or loyalty points update.\nClaimed sender or brand: CVS.\nWho writes it: a friend or family member texting casually.\nStyle: brand prefix like 'BRAND:' at the start.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"CVS: mom says ur $4 ExtraBucks expire Sunday lol she's been talking about it all week\", \"CVS: got 30% off one item in the app thru Sat, used mine on detergent. ExtraCare only, no code, just scan ur card\", \"CVS: heads up, $10 ExtraBucks if you spend $40 on vitamins this week. Dad's weirdly excited. Scan your card at the register, that's it\", \"CVS: ALERT — your $12.50 in ExtraBucks expire in 3 days (6/14). My coworker lost hers last month lol. Check the app or cvs.com. We'll never text asking for your card number or password\", \"CVS: yo did you see the 20% off pickup deal? code SAVE20 on cvs.com, ends Friday. Also I'm not driving you again\", \"CVS: 40% off photo prints thru Sunday. Mom already ordered like 200\", \"CVS: your quarterly ExtraCare rewards are ready, $6.00 loaded on your card. Log in at cvs.com to see. Also grandma says call her\", \"CVS: reminder that the $5 off $25 beauty coupon in the app expires tonight at midnight. Nothing to click, it's already on your card — I checked mine this morning. Don't answer those weird texts asking for codes btw\"]}"
+}

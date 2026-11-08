@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Legitimate message. The correct answer for these cards is: legitimate, not a scam.\nBackground: Real messages people get, including hard look-alikes of every scam category above.\nScenario for these cards: real-style bank transaction or balance alert, sent as American Express.\nThe person receiving the text: a retiree in Florida who banks online.\nTone of the text: warm and reassuring.\nDraft 8 cards, each a different realistic text. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"American Express: A $42.18 purchase at Publix #1284 in Sarasota, FL was approved on your card ending 1007. If this was you, there's nothing you need to do. If not, call us at 800-555-0143 or visit americanexpress.com. We're here 24/7.\",\"American Express: Your current balance is $1,284.56 on the card ending 1007. Your next payment of $85.00 is due on March 15. No action is needed if you've already scheduled it. View details at americanexpress.com. Thanks for being a valued Card Member.\",\"Amex Alert: A $9.99 charge from Kindle Unlimited posted to your card ending 1007 on Feb 28. If you recognize it, you're all set. If not, please call 800-555-0143 so we can help. You can also review activity at americanexpress.com.\",\"American Express: We received your payment of $250.00 on March 3. Your remaining balance is $734.21 on the card ending 1007. Thank you - we'll send another update if anything changes. Questions? Visit americanexpress.com or call 800-555-0143.\",\"American Express: A $118.40 charge at Walgreens in Naples, FL was approved on your card ending 1007. If you made this purchase, no action is needed. If it doesn't look familiar, call 800-555-0143 or go to americanexpress.com. We can review it with you.\",\"American Express: Your available credit is $3,215.44 on the card ending 1007 as of 9:12 AM ET. This is just a balance update - nothing is wrong. For details, visit americanexpress.com. You can reach us anytime at 800-555-0143.\",\"American Express: Just a reminder that your payment of $125.00 is due on March 20. If you've already paid, please disregard this note. You can check your balance or schedule a payment at americanexpress.com. We're happy to help at 800-555-0143.\",\"American Express: A $64.75 charge at Shell in Fort Myers, FL was approved on your card ending 1007. Confirmation A7K2Q9. If this was you, you're all set. If not, call 800-555-0143 or visit americanexpress.com and we'll help right away.\"]}"
+}

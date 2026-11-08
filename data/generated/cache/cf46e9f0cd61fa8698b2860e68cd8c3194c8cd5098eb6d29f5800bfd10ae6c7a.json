@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Fake delivery notice. The correct answer for these cards is: scam.\nBackground: Fake package or postal notice: missed delivery, address problem, customs or redelivery fee, package held.\nScenario for these cards: delivery attempt failed, reschedule, sent as USPS.\nThe person receiving the text: a small-business owner who gets many texts a day.\nTone of the text: neutral, matter-of-fact.\nDraft 8 cards, each a different realistic text. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"USPS: We attempted to deliver your package on 03/14 but no one was available. Please reschedule your delivery within 48 hours at https://usps-redelivery.com/track or call 1-800-555-0143 to avoid return to sender.\",\"USPS notification: Your package is being held at our facility due to an incomplete address. Confirm your address and pay the $1.99 redelivery fee at https://usps-addresscheck.com/confirm to release your item.\",\"USPS: A delivery attempt was made for your package. To reschedule, reply YES to this message. A $0.50 redelivery fee will apply. Reply STOP to opt out.\",\"USPS Alert: Your package requires a customs clearance fee of $3.75 before delivery. Pay now at https://usps-customs-pay.com/clearance to avoid delays. Reference tracking #9400111899223856720000.\",\"USPS: We missed you today. Your package is at the local post office. Call 1-800-555-0198 to arrange pickup or reschedule. Please have your tracking number ready.\",\"USPS: Your package could not be delivered because the address was incomplete. Please update your address at https://usps-update-address.com/secure to schedule redelivery.\",\"USPS: Final notice - your package will be returned to sender unless you reschedule by 03/20. Reschedule at https://usps-reschedule-delivery.com or call 1-800-555-0177. A $2.00 fee applies.\",\"USPS: To confirm your delivery address for package #9400111899223856720000, reply with your full name and ZIP code. A confirmation code will be sent to you.\"]}"
+}

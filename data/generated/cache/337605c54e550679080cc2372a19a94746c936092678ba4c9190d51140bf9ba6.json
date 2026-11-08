@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake toll or government notice (scam).\nWhat this category covers: Pretends to be a toll agency, the IRS, DMV, court, or another government office: unpaid toll, tax refund or debt, license suspension, fines.\nAngle for this batch: benefits or stimulus payment.\nClaimed sender or brand: SunPass.\nWho writes it: a careful scammer who avoids obvious red-flag words.\nStyle: plain sentences, no emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"SunPass: Your $47.50 toll relief credit is ready. Claim at sunpass-refund.com/claim\", \"SunPass benefits office: you have an unclaimed stimulus toll credit of $112. Call 407-555-0192 to verify your account.\", \"SunPass: A $75 toll rebate was issued to your plate. Reply YES to confirm receipt and we'll release the funds.\", \"This is SunPass customer relief. Our records show you qualify for a one-time $150 toll stimulus payment because of recent rate changes. To receive it, confirm your mailing address and debit card at sunpass-benefits.net/verify within 48 hours or the credit expires.\", \"SunPass: Your $60 toll credit is on hold. A $1.25 processing fee is required. Text the 6-digit code from your bank alert to 305-555-0147.\", \"You have an unclaimed SunPass stimulus payment of $89.30. Go to fl-tollrelief.com and enter your plate number to claim it today.\", \"SunPass: stimulus toll credit pending. Call 813-555-0168 to claim $95.\", \"SunPass relief program: reply with the last 4 of your SSN to confirm your $120 stimulus toll credit.\"]}"
+}

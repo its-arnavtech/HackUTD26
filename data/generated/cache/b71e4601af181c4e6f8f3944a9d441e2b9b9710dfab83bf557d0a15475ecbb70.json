@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: toll account statement or auto-replenish notice.\nClaimed sender or brand: E-ZPass.\nWho writes it: the company's automated notification system.\nStyle: brand prefix like 'BRAND:' at the start.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"E-ZPass: Your monthly statement is ready. View it at ezpass.com. Balance: $24.50.\",\"E-ZPass: Auto-replenish completed. $35.00 added to your account ending 8842 on 06/12. New balance: $52.75. Details at ezpass.com.\",\"E-ZPass: Low balance alert. Your account ending 5521 is at $8.20. Auto-replenish will add $30 when it hits $10. No action needed. ezpass.com\",\"E-ZPass: Your June statement is available. Total tolls: $47.80. Review at ezpass.com or call 1-800-555-0143.\",\"E-ZPass: Reminder: auto-replenish is set for 07/01. $40 will be charged to your saved payment method ending 3321. Update settings at ezpass.com.\",\"E-ZPass: Payment received. $30.00 auto-replenish on 06/15. Balance: $61.20. Thanks.\",\"E-ZPass: Your statement for account ending 9903 is ready. Billing period: 05/01–05/31. Total tolls: $62.15. Payments received: $60.00. Current balance: $18.40. View or download your statement anytime at ezpass.com.\",\"E-ZPass: Balance is $6.75, below your $15 threshold. Auto-replenish of $25 will process within 24 hrs. No action needed. Questions? ezpass.com\"]}"
+}

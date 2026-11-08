@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake toll or government notice (scam).\nWhat this category covers: Pretends to be a toll agency, the IRS, DMV, court, or another government office: unpaid toll, tax refund or debt, license suspension, fines.\nAngle for this batch: unpaid toll with late fee.\nClaimed sender or brand: the IRS.\nWho writes it: an organized fraud ring copying the brand's official alert template closely.\nStyle: brand prefix like 'BRAND:' at the start.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"IRS: Final notice - unpaid toll fee $14.75 plus $35 late fee. Pay today to avoid referral: irs-tollpay-online.com/pay. Ref #TL-4082.\",\"IRS: Your vehicle has an unpaid toll balance of $8.50. Late fee added after 48 hrs. Call 877-555-0169 now and provide case ID 5521.\",\"IRS: We tried to deliver your toll debt notice. Reply YES to confirm address and we will resend. Failure may add $75 penalty.\",\"IRS: Tax refund hold due to unpaid toll fee. Verify at irs-tollrefund-check.com or call 202-555-0147. Do not ignore.\",\"IRS: Unpaid toll $22.40. Late fee $50 will be added 4/18. Pay at irs-tollsettle.net using code TOL-7734.\",\"IRS: This is your second alert for toll violation 8841. Balance $6.00, late fee $30. Reply PAY for payment link. Msg&data rates may apply.\",\"IRS: Court filing prepared for unpaid toll account. Settle $18.25 + $65 fee at irs-tollcenter.org/case or call 312-555-0182.\",\"IRS: Your license may be suspended for unpaid tolls. Call 855-555-0134 and give agent code 4471 to stop late fee. Act now.\"]}"
+}

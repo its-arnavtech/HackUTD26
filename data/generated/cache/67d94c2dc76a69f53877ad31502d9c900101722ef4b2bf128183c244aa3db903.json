@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Fake bill or payment demand. The correct answer for these cards is: scam.\nBackground: Fake bill, overdue balance or failed payment from a phone carrier, utility, or subscription, with a threat of shut-off and a link to pay.\nScenario for these cards: overpayment refund on your bill, sent as Hulu.\nThe person receiving the text: a college student with a part-time job.\nTone of the text: formal and polite.\nDraft 8 cards, each a different realistic text. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Dear Hulu subscriber, our records indicate you overpaid $23.47 on your last bill. Please visit https://hulu-refund.net/verify to confirm your refund details. Thank you.\",\"Hello, this is Hulu Billing. We identified a credit of $18.92 on your account from an overpayment. Kindly call 855-555-0142 to arrange your refund. We appreciate your prompt attention.\",\"Dear Customer, a refund of $31.50 is pending for your Hulu subscription due to a billing error. Please reply YES to confirm you are the account holder so we can process it. Thank you.\",\"Dear Hulu member, you are owed a refund of $42.75. A small processing fee of $2.99 is required to release it. Please send payment via https://hulu-refund-pay.com/processing. We apologize for the inconvenience.\",\"Hello, Hulu Support here. We have a $27.18 overpayment refund ready for you. To verify your identity, please reply with the 6-digit code sent to your phone. Thank you for being a valued subscriber.\",\"Dear Subscriber, your Hulu account shows a credit balance of $15.60 from an overpayment. To avoid account interruption, please update your refund preference at https://hulu-billing-refund.org/claim within 24 hours. Thank you.\",\"This message is from Hulu Accounts Receivable. An overpayment of $36.14 has been credited to your account. Please contact our refund department at 888-555-0167 to complete the return. We appreciate your cooperation.\",\"Dear Customer, we are processing a refund of $22.89 for your Hulu subscription. Kindly reply with your full name and mailing address so we can send your check. Thank you for your patience.\"]}"
+}

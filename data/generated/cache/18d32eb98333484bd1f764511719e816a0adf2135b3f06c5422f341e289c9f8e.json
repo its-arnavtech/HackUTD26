@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Bank impersonation. The correct answer for these cards is: scam.\nBackground: Pretends to be a bank or card issuer: fraud alert, locked or suspended account, card declined, verify your identity, confirm a charge by link or callback.\nScenario for these cards: fraud alert asking to verify a charge, sent as American Express.\nThe person receiving the text: a nurse working night shifts.\nTone of the text: warm and reassuring.\nDraft 8 cards, each a different realistic text. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"American Express: Hi, this is the fraud team. We noticed a possible $84.27 charge at a pharmacy while you were on shift. No need to worry—just reply YES if it was yours or NO if not, and we’ll take care of the rest.\",\"Amex Fraud Alert: Good evening—we’re reviewing a $219.99 charge at a late-night diner. Your account is fine right now. To confirm you recognize it, tap securely: amexverify-support.com/confirm. If not, call 214-555-0178 and we’ll help 24/7.\",\"American Express: We hope your shift is going smoothly. A $1,050.00 purchase at an electronics store was flagged. We can hold it for you—just call our fraud line at 312-555-0129. We’re here anytime, and we’ll walk you through it.\",\"Amex: Hi, this is the Account Security Team. We saw a $36.50 ride-share charge near your home area. If this wasn’t you, reply NO and we’ll block the card. If it was you, reply YES—thanks for helping us keep your account safe.\",\"American Express: Good morning! We’re checking a $76.12 grocery delivery charge made overnight. To verify it’s yours, please reply with the 6-digit code we just sent to your phone. We’ll keep your account protected while you rest.\",\"Amex Fraud: We noticed a $499.00 attempt at a hotel. Your card is still active—no need to panic. For a quick review, visit amex-securitycheck.net/review and confirm the activity. Takes less than a minute.\",\"American Express: Hi, it’s the Card Safety team. A $12.99 streaming charge posted while you were working. If that sounds right, just reply OK. If not, call 646-555-0164 and we’ll sort it out together.\",\"Amex Alert: We’re seeing a $310.45 charge at a medical supply store. To keep things simple, reply Y to approve or N to dispute, and we’ll handle the rest. Thanks for helping us protect your account.\"]}"
+}

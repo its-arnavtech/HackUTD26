@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Fake delivery notice. The correct answer for these cards is: scam.\nBackground: Fake package or postal notice: missed delivery, address problem, customs or redelivery fee, package held.\nScenario for these cards: incomplete address, update to deliver, sent as OnTrac.\nThe person receiving the text: a college student with a part-time job.\nTone of the text: warm and reassuring.\nDraft 8 cards, each a different realistic text. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Hi there, this is OnTrac with a quick heads-up: your package is on hold because the address we have is missing the apartment number. No worries—just update it here within 24 hours so we can get it to you: ontrac-update.shop/apt. Thanks for your patience!\",\"Hey, OnTrac here. Your delivery was attempted today but the unit number didn’t come through on the label. We can redeliver as soon as you confirm the address. Please reply with your apartment or unit number and we’ll take care of the rest.\",\"Good morning! OnTrac has your parcel and we just need a corrected street address to complete delivery. You can update it securely at ontrac-address.info/update — it only takes a minute, and we’ll keep it safe until you do.\",\"Hi, this is OnTrac. Your package is being held at our local facility because the address is incomplete. To arrange redelivery, please call our support line at 206-555-0148 and have your tracking number ready. We’re happy to help get this sorted.\",\"Hey there, OnTrac delivery update: we couldn’t complete your drop-off because the address needs a suite number. There’s a small $2.75 redelivery fee to reschedule, and you can pay it here: ontrac-redeliver.online/pay. We’ll get it moving again right away.\",\"Hi! This is OnTrac. A package for you is on hold due to an incomplete address. To release it for delivery, just reply YES and our driver will text you for the missing details. No need to call—we’ll make it easy.\",\"Hello, OnTrac here. Your parcel is waiting at our hub because the address we received is missing a street number. Please update it at ontrac-help.center/address so we can get it out on the next truck. We appreciate your patience!\",\"Hi, OnTrac again—your delivery is still pending because the address needs a quick fix. For security, we texted a 6-digit code to confirm the update. Please reply with the code and we’ll release your package for delivery today.\"]}"
+}

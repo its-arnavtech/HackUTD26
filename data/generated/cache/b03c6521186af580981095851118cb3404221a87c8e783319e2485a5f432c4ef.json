@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: school, work or community notice.\nClaimed sender or brand: a church group.\nWho writes it: a friend or family member texting casually.\nStyle: chatty with one emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Hey! Reminder: church cleanup day is Sat 9am. Bring gloves if you have 'em 😊\", \"Pastor Dave just texted me the potluck signup link: gracefellowship.org/potluck. We're at 18 people, need 6 more sides. You in? 😊\", \"Hey, the youth group fundraiser total is $1,240! We're $260 short of the $1,500 goal for camp. If you can chip in, the church's giving page is cornerstonechurch.org/give. No pressure at all 😄\", \"Don't forget to RSVP for the women's brunch by Thursday 5pm. The church office number is 704-555-0182 if you need to call. It's at the fellowship hall 😊\", \"The side door code for the church kitchen is 4412 this month, in case you're dropping off food early. See you Sunday! 🙏\", \"Choir practice moved to 7:15 tonight, not 7. Church van still picking up at 6:45 🎶\", \"Heads up: the church's online directory was updated, and your new small group leader is Jen. She'll text you. If you want to check, go to stmarkscommunity.org/directory 😊\", \"Hey, we're collecting $15 per family for the Easter breakfast. Can you drop it in the offering box by Sunday? The church's main site is hillviewchurch.org if you need details. Thanks! 😊\"]}"
+}

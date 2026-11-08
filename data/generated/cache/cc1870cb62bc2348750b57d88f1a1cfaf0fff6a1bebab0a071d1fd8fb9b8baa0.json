@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake job or easy money offer (scam).\nWhat this category covers: Unsolicited job or income offer: remote task jobs with daily pay, recruiter who wants to move to a chat app, reshipping, crypto or investment opportunities.\nAngle for this batch: crypto or investment opportunity.\nClaimed sender or brand: a staffing agency.\nWho writes it: a scammer whose first language isn't English, with slightly odd grammar.\nStyle: brand prefix like 'BRAND:' at the start.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"TalentBridge: Dear candidate, we have client who offer crypto investment plan with 15% daily return. No experience needed. Reply YES for details.\",\"Apex Staffing: You are selected for remote job in crypto department. Salary $450 daily. To activate account send $50 USDT to wallet address. Contact 646-555-0127.\",\"HirePro: Urgent! Our partner need investor for new blockchain project. Guaranteed profit 200% in 7 days. Visit https://hirepro-crypto.xyz/invest\",\"Global Talent: Hello, we see your profile. We offer easy money task: buy bitcoin and we pay you commission. Only need small deposit. Reply START.\",\"StaffingSolutions: Congratulations! You qualify for exclusive crypto job. No interview. Just share your wallet seed phrase to verify. Call 312-555-0199 now.\",\"RecruitNow: We are staffing agency for top crypto exchange. Need remote workers to process transactions. Earn $300 per task. For info text INFO to 415-555-0162.\",\"EliteHire: Dear friend, our client wants invest in your future. Send $100 for starter kit and get $1000 in bitcoin. This is limited offer. Reply INVEST.\",\"PrimeStaffing: You have been chosen for investment opportunity with our partner. Earn passive income from crypto mining. No risk. Click http://primestaff-crypto.info/join to start.\"]}"
+}

@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: recruiter or interview scheduling message.\nClaimed sender or brand: a recruiter from a mid-size company.\nWho writes it: an office scheduler or coordinator.\nStyle: includes a reference or case number.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Hi, this is Dana from Crestline Logistics. Your interview with our ops team is set for Thu 3/14 at 2pm. Ref #CL-4821. Details: crestlinelogistics.com/interview. Reply Y to confirm.\",\"Hi, it's Marcus in Talent Acquisition at Blue Harbor Financial. We've scheduled your phone screen for Mon 4/1 at 11:15am ET. Case ref BH-77302. Join info at blueharborfinancial.com/careers. No need to bring anything.\",\"Good morning! This is Priya from Summit Ridge Technologies recruiting. Following up on your application for the Data Analyst role (req SR-2291). We'd like to set up a 30-min interview. Available slots: Tue 5/7 10am or Wed 5/8 1pm. Confirm at summitridgetech.com/schedule or call 312-555-0187. Ref #SR-2291-INT. Parking validated.\",\"Interview confirmation: Your 1:1 with Northgate Partners is confirmed for Fri 6/14, 9:30am. Ref #NP-55893. Location: 400 W Madison, Suite 300. Check-in at northgatepartners.com/checkin. Please arrive 10 min early.\",\"Reminder: Crestline Logistics interview tomorrow 10am. Ref CL-4821. Confirm by 5pm today at crestlinelogistics.com/confirm. Reply STOP to opt out.\",\"Hi, it's Alex from Vantage Point Staffing. Your interview for the warehouse lead role is set for 7/22 at 8am. Case #VP-9012. We'll reimburse up to $20 for parking—bring receipt. Details at vantagepointstaffing.com/interview.\",\"Blue Harbor Financial: phone interview Wed 8/7 3pm. Ref BH-77302. Dial 214-555-0143 at time. Questions? blueharborfinancial.com/contact\",\"Hi, this is Jordan from Meridian Health recruiting. We received your application for the RN position (case MH-33418). We'd like to schedule a brief call. Please pick a time at meridianhealth.com/interview by Thu 9/5. The call is 20 min, no prep needed. If you need accommodations, reply here. Ref #MH-33418.\"]}"
+}

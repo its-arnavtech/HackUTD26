@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Wrong-number or family impersonation (scam).\nWhat this category covers: Starts a personal conversation to build trust: a fake wrong-number text, a relative or friend writing from a 'new number' who needs money, or a romance opener.\nAngle for this batch: old acquaintance reconnecting.\nClaimed sender or brand: no brand.\nWho writes it: a scammer using a friendly, casual tone to lower suspicion.\nStyle: chatty with one emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Hey is this Jen? It's Dave from the old Maple St crew 😊 Lost your number when I switched phones. A few of us are getting together Sat—you still at the same place? Text me back when you can.\", \"Hi it's Mike, we used to work out at the same gym? Not sure if I got the right number lol 🙃 My phone died and I lost all contacts. Can you text me your name so I know? I'm also trying to track down Lisa's new number.\", \"hey stranger! it's Amanda from that lake trip a few summers ago 🌞 new phone and your number was the one I couldn't find. still doing the camping thing? hit me back at 312-555-0198 if this is you.\", \"Hey, random but is this Chris? This is Sarah from the old neighborhood 🙂 I'm in town next week and wanted to see if you're free for coffee. My cell is 404-555-0117 if you still have mine saved.\", \"Long time no talk! It's Rachel from the Tuesday class. I think I saved your number wrong 😅 We're grabbing drinks Friday—want to come? Just reply YES and I'll send the address.\", \"Hey it's Dan! We met at the ballgame last year, you gave me your number? My phone broke so I'm texting from a new one. Can you send me a quick text so I have yours? Trying to get the group together again 🍻\", \"Hey!! It's Tom from the old crew 😎 Found your number in an old phone. I'm making a shared album from the beach trip—can you add your pics? https://photos-555.com/beach — need your email too if you want access.\", \"Hey it's Matt from the old soccer team, new number 😬 I'm stuck at the airport and my wallet got swiped. Can you send $40? I'll pay you back Friday, need it for the shuttle.\"]}"
+}

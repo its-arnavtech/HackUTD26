@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake job or easy money offer (scam).\nWhat this category covers: Unsolicited job or income offer: remote task jobs with daily pay, recruiter who wants to move to a chat app, reshipping, crypto or investment opportunities.\nAngle for this batch: product review or app rating job.\nClaimed sender or brand: a staffing agency.\nWho writes it: a scammer whose first language isn't English, with slightly odd grammar.\nStyle: chatty with one emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Hi! We are hiring product reviewer for apps. $150 daily. No experience. Reply YES and I send details 😊\",\"Hello dear, you are selected for app rating job from our staffing agency. Work 1 hour daily and earn $300. Contact me on WhatsApp 646-555-0123 for start. 😊\",\"Good day! We need people to test and review our new app. Payment is $25 per review. To activate your account, send the 6-digit code you receive on your phone. 😊\",\"Dear candidate, our staffing agency is looking for product reviewers to rate apps and write short feedback. You can do this from home, only 30 minutes per day, earn up to $800 weekly. No interview needed. Kindly reply with your full name and phone number to proceed. 😊\",\"Urgent hiring! Product review job. You just need to rate our partner apps and get paid daily. $50 per task. WhatsApp me at 305-555-0199 for more info. 😊\",\"Hello, I am from Bright Staffing Agency. Easy app rating job. $200 daily. Click here to register: apprating-jobs.xyz/start 😊\",\"You are invited to join our app rating team. Simple work, good money. $10 for each review you complete. No fees. Reply START and I will send you the link. 😊\",\"Hi, we found your profile and want to offer you remote product review job. Daily pay $120. Must have smartphone. Contact us on WhatsApp 818-555-0166 for details. 😊\"]}"
+}

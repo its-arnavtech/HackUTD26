@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake account security alert (scam).\nWhat this category covers: Pretends to protect a non-bank account (carrier, Apple, Amazon, email, social media): login alert, password reset, SIM change, or asks the person to send back a one-time code.\nAngle for this batch: password reset they didn't request.\nClaimed sender or brand: PayPal.\nWho writes it: a scammer creating panic with deadlines and threats.\nStyle: all caps for key words.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"PayPal: PASSWORD RESET requested from a device we don't recognize. If this was NOT you, SECURE your account NOW: paypal-secure-help.com/reset or your account will be LOCKED in 24 hrs.\",\"Did you just try to CHANGE your PayPal password? Reply YES to confirm or NO to LOCK the account. URGENT: no reply in 10 min and we assume fraud and restrict funds.\",\"PAYPAL ALERT: password reset on your account. NOT YOU? Call 855-555-0192 IMMEDIATELY. Case #PP-4471.\",\"We STOPPED a password reset on your PayPal because it looked suspicious. To keep your account ACTIVE, reply with the 6-digit code we just texted you. DO NOT DELAY.\",\"PayPal Security Notice: On 04/12 a password reset was attempted from IP 172.58.xx. If you did NOT request this, your account may be COMPROMISED. Verify now at paypal-account-verify.net and enter your login to CANCEL the reset. Failure to act within 12 HOURS will result in PERMANENT limitation.\",\"Your PayPal password was CHANGED. If this wasn't you, text BACK 'STOP' and we will call you. THIS IS YOUR FINAL WARNING before account closure.\",\"PAYPAL: Someone requested a password reset for your account. NOT YOU? Don't click anything—just reply with the ONE-TIME CODE sent to your phone so we can cancel it. Code expires in 5 min.\",\"PAYPAL: PASSWORD RESET requested. If this was NOT you, reply CANCEL within 30 min. If it was you, ignore this text. Your account will be LIMITED until confirmed.\"]}"
+}

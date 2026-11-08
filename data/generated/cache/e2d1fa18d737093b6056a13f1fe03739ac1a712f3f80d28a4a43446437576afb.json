@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: delivery update from a carrier or retailer.\nClaimed sender or brand: UPS.\nWho writes it: a small local business owner.\nStyle: all caps for key words.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"UPS: Your package is OUT FOR DELIVERY TODAY by 3 PM. No signature needed. Track at ups.com\", \"UPS ALERT: Delivery attempt failed for your shipment to the shop. We'll try again TOMORROW between 9-11 AM. Reschedule at ups.com or call 214-555-0178.\", \"Your UPS package from Acme Supply is scheduled for DELIVERY TODAY between 1-5 PM. Shipping charges of $18.75 were billed to your account. No action needed. Details: ups.com\", \"URGENT: Your UPS package is being held at the local facility due to an incomplete address. Please call 214-555-0199 or visit ups.com to confirm your business address. Reference #: 1Z999AA10123456784\", \"UPS: Your pickup code is 4729. Package ready at the UPS Access Point downtown. Open until 7 PM. ups.com\", \"UPS: DELIVERED to front desk 2:14 PM. ups.com\", \"Reminder: Your UPS package requires a signature. LAST ATTEMPT will be TOMORROW by 5 PM. To authorize release, visit ups.com or call 214-555-0122.\", \"UPS: Your shipment of 3 boxes from Harbor Tools is OUT FOR DELIVERY. Expected by 4 PM. If you're not there, we'll leave at the back door as instructed. Tracking: ups.com/track?num=1Z888BB20234567890\"]}"
+}

@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: one-time passcode with a do-not-share warning.\nClaimed sender or brand: Google.\nWho writes it: the company's automated notification system.\nStyle: plain sentences, no emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"905512 is your Google code. Do not share it.\",\"G-482913 is your Google verification code. Don't share it with anyone, not even someone who says they're from Google support.\",\"Your Google code is 771204. If you didn't try to sign in just now, someone else might have your password. Either way, keep this code to yourself. Google will never text or call asking for it.\",\"Google: use 640-118 to verify your phone number. This code expires in 5 minutes. Do not share it, our support team will never ask you for it.\",\"5520917 is your Google security code for account recovery. If you didn't request this, ignore the message and consider changing your password at https://myaccount.google.com/security. Never give this code to a caller.\",\"New sign-in to your Google Account from a Windows device in Ohio. If that was you, enter 338447 to confirm. If it wasn't, secure your account at https://myaccount.google.com/security and don't share this code with anyone who contacts you.\",\"Your Google Voice verification code is 447102. Don't share this code with anyone, even if they say they're from Google support.\",\"We blocked a sign-in attempt to your Google Account because it came from a new location. If this was you, use code 812-337 to continue within 15 minutes. No one from Google will ever ask you to read a code back to them over the phone, so keep it private.\"]}"
+}

@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Legitimate message. The correct answer for these cards is: legitimate, not a scam.\nBackground: Real messages people get, including hard look-alikes of every scam category above.\nScenario for these cards: toll account statement or auto-replenish notice, sent as FasTrak.\nThe person receiving the text: a college student with a part-time job.\nTone of the text: warm and reassuring.\nDraft 8 cards, each a different realistic text. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"FasTrak: Hi there! Your $25.00 auto-replenish went through on 03/14, and your balance is now $36.50. You're all set—nothing else needed. Thanks for keeping your account current. Details: bayareafastrak.org\",\"FasTrak: Good news—your February toll statement is ready. Total tolls: $18.75. No payment is due right now. You can view it anytime at bayareafastrak.org. Hope your week is going smoothly!\",\"FasTrak: Friendly heads-up—your balance is low at $8.25. Auto-replenish will add $25.00 tomorrow, 04/02, so no action is needed. If you'd like to change the amount, visit bayareafastrak.org.\",\"FasTrak: We received your $25.00 auto-replenish payment on 05/09. Your new balance is $31.40. You're all set—no need to reply. If you have questions, call 415-555-0142.\",\"FasTrak: We noticed a missed toll of $6.00 on 06/18 for the vehicle with plate ending 7Q2. You have until 07/03 to pay, but your auto-replenish will cover it—no late fee. See bayareafastrak.org for details.\",\"FasTrak: Your one-time sign-in code is 529184. If you didn't request this, call 510-555-0178. We'll never ask you to text a code back—keeping your account safe is important to us.\",\"FasTrak: Just a friendly reminder—your saved payment method ending 0143 will be charged $25.00 for auto-replenish on 08/12. No action needed. You can manage it at bayareafastrak.org.\",\"FasTrak: Your balance reached $0.00, so we added $25.00 through auto-replenish to keep you moving. New balance: $25.00. No need to do anything—just wanted to let you know. bayareafastrak.org\"]}"
+}

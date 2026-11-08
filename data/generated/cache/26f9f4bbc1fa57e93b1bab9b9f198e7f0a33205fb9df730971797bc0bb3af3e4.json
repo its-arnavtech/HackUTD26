@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Legitimate message. The correct answer for these cards is: legitimate, not a scam.\nBackground: Real messages people get, including hard look-alikes of every scam category above.\nScenario for these cards: appointment or pharmacy reminder, sent as a hair salon.\nThe person receiving the text: a retiree in Florida who banks online.\nTone of the text: neutral, matter-of-fact.\nDraft 8 cards, each a different realistic text. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Hi, this is Sunshine Hair Salon. Your appointment is tomorrow at 2 PM. Reply C to confirm or call 555-0143 to reschedule. A $25 fee applies for no-shows.\",\"Reminder: Your hair color appointment is on 3/15 at 10 AM. Please arrive 10 minutes early. Cancellations within 24 hours incur a $30 fee. Call 555-0143.\",\"Your order of shampoo and conditioner is ready for pickup at Sunshine Hair Salon. Total: $42.50. Please pick up by 3/20. Call 555-0143 with questions.\",\"We have a cancellation for tomorrow at 1 PM. If you'd like to take it, reply YES or call 555-0143. First come, first served.\",\"Your loyalty reward: $10 off your next service. Expires 3/31. No code needed, just mention this text. Book at sunshinehairsalon.com.\",\"Reminder: You have a standing appointment every 4 weeks. Your next visit is 3/22 at 11 AM. To skip, call 555-0143 by 3/20.\",\"Your stylist is running 15 minutes late today. Your 2 PM appointment will start at 2:15. Sorry for the inconvenience. Call 555-0143 if you need to reschedule.\",\"Due to a scheduling error, your appointment on 3/18 is double-booked. Please call 555-0143 to confirm or reschedule. We apologize.\"]}"
+}

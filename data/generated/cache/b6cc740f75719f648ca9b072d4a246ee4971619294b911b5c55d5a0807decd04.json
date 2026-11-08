@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake toll or government notice (scam).\nWhat this category covers: Pretends to be a toll agency, the IRS, DMV, court, or another government office: unpaid toll, tax refund or debt, license suspension, fines.\nAngle for this batch: license or registration suspension.\nClaimed sender or brand: TxTag.\nWho writes it: a hurried scammer sending thousands of texts with minimal effort.\nStyle: all caps for key words.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"TxTag: Registration SUSPENDED. Pay now: txtag-pay.net\", \"FINAL WARNING: TxTag unpaid tolls. Your driver license will be SUSPENDED in 24 hrs. Call 512-555-0198 NOW to resolve. Ignoring this notice will result in immediate suspension.\", \"TxTag ALERT: Your vehicle registration is flagged for SUSPENSION. Reply YES to confirm your details and avoid suspension.\", \"We have flagged your vehicle for toll evasion. Registration will be SUSPENDED. Pay $47.50 at txtag-resolve.com immediately to avoid legal action and additional fines. Failure to respond may result in license suspension.\", \"TxTag: Unpaid toll balance $89.23. License suspension scheduled. Text PAY to 214-555-0142 to receive payment link.\", \"URGENT: TxTag registration hold. Your license plate is marked for SUSPENSION. Call 214-555-0177 to clear your record.\", \"TxTag: Your registration is SUSPENDED. Reply with the 6-digit code we sent to your phone to verify and reinstate.\", \"Last chance: TxTag toll debt. License SUSPENSION in 12 hours. Pay at tx-tag-settlement.net or call 877-555-0163.\"]}"
+}

@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Bank impersonation (scam).\nWhat this category covers: Pretends to be a bank or card issuer: fraud alert, locked or suspended account, card declined, verify your identity, confirm a charge by link or callback.\nAngle for this batch: callback number for the fraud team.\nClaimed sender or brand: U.S. Bank.\nWho writes it: a scammer whose first language isn't English, with slightly odd grammar.\nStyle: terse, like an automated system.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"U.S. Bank Fraud Alert: unusual debit $462.19 on card ending 2198. If not you, call Fraud Team now at 877-555-0164. Do not reply.\",\"Your U.S. Bank account is temporary locked. We need verify identity for security. Call 800-555-0172 and say code 7F3K. If no call, account suspend in 24 hour.\",\"ALERT: U.S. Bank card ending 0841 declined at gas station in another state, 02:47. Confirm by reply YES or NO. Fraud team callback 888-555-0199.\",\"U.S. Bank: A charge $1,249.00 is pending on your account. If you not make this, verify at usbank-secure-check.com/verify or call 866-555-0107. Case #A47-2291.\",\"U.S. Bank fraud: call 855-555-0136 now. Card block.\",\"U.S. Bank security: new device login detected. Reply with 6-digit code we just sent to stop access. Or call 877-555-0153.\",\"U.S. Bank: Your online banking access is suspended due to suspicious activity. To restore, call Fraud Team at 800-555-0181. Have your card and ID ready. Ref: USB-55820.\",\"U.S. Bank Fraud Monitoring: We observed multiple attempt to use your debit card ending 7402 at online merchant. For your protection we place temporary hold. Please call our Fraud Team at 844-555-0148 immediately. If you do not call, card will remain blocked and dispute may be open. Thank you.\"]}"
+}

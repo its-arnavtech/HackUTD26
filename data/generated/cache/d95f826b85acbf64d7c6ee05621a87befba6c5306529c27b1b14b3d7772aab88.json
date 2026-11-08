@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: appointment or pharmacy reminder.\nClaimed sender or brand: a dental office.\nWho writes it: a small local business owner.\nStyle: brand prefix like 'BRAND:' at the start.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Pinecrest Dental: Reminder—you have a cleaning Thu 6/13 at 9:15am with our hygienist. Reply C to confirm or call 512-555-0177. Please give 24 hrs notice to cancel.\",\"Pinecrest Dental: We have a 2:40pm opening today after a cancellation. If you want it, call us at 512-555-0177 before 1:00pm. No need to reply to this text.\",\"Pinecrest Dental: Your crown delivery arrived early. We moved your seat to Fri 6/14 at 11:30am. Reply R to reschedule or call 512-555-0177. Estimated insurance copay is $95, due at visit—no card needed now.\",\"Pinecrest Dental: Prescription ready for pickup at our front desk—amoxicillin 500mg, 21 caps. Please pick up by Sat 5pm. Bring photo ID. Questions? 512-555-0177.\",\"Pinecrest Dental: Our records show your fluoride treatment is due. Book online at https://pinecrestfamilydental.example or call 512-555-0177. We have Tue 6/18 4:10pm and Wed 6/19 8:00am open.\",\"Pinecrest Dental: Your appointment tomorrow at 8:00am is still on. If you're running late, call 512-555-0177 and we'll hold your chair for 10 min. See you then.\",\"Pinecrest Dental: Statement ready—$0 patient balance after insurance for your 5/28 visit. No payment due. View summary at https://pinecrestfamilydental.example. Reply STOP to opt out.\",\"Pinecrest Dental: New patient forms for your first visit are due before Thu 6/20. Fill them out at https://pinecrestfamilydental.example to save 15 min at check-in. Call 512-555-0177 if you need help.\"]}"
+}

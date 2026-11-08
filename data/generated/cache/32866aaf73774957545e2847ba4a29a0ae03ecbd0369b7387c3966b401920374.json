@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: toll account statement or auto-replenish notice.\nClaimed sender or brand: TxTag.\nWho writes it: a company's customer-care team writing a short service text.\nStyle: terse, like an automated system.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"TxTag: Auto-replenish added $30.00. New balance $47.63. View at txtag.org\", \"Your TxTag statement for May is ready. Total tolls $18.45. Auto-pay drafts 06/20 from your saved card. See txtag.org.\", \"TxTag: Account ending 4417. Amount due $9.80 by 06/25. Pay at txtag.org. Ref TX-4420. Reply STOP to opt out.\", \"TxTag: Auto-replenish declined 06/14. Update payment method at txtag.org to avoid violations. Help: 512-555-0177.\", \"Your TxTag statement 05/01–05/31: opening $12.00, tolls $22.35, payments $30.00, closing $19.65. View at txtag.org. Reply HELP for help; STOP to cancel. Msg&data rates may apply.\", \"TxTag: Payment of $25.00 posted 06/10. Next auto-replenish 07/01. Questions? Call 512-555-0142. View balance at txtag.org.\", \"TxTag alert: Balance $4.10 is below $10. Auto-replenish of $30 will process 06/15. Update settings at txtag.org or call 512-555-0188.\", \"TxTag: Auto-replenish updated. We'll add $50 when balance falls below $20. Manage at txtag.org. Reply STOP to opt out.\"]}"
+}

@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake account security alert (scam).\nWhat this category covers: Pretends to protect a non-bank account (carrier, Apple, Amazon, email, social media): login alert, password reset, SIM change, or asks the person to send back a one-time code.\nAngle for this batch: asks the person to reply with a verification code.\nClaimed sender or brand: Microsoft.\nWho writes it: an organized fraud ring copying the brand's official alert template closely.\nStyle: includes a reference or case number.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Microsoft Security: Case #MS-4471. A sign-in to your account from Ohio was blocked. Reply with the 6-digit code we just sent to verify it was you.\", \"MS account alert: Ref 88213-AC. We detected a password reset request from an unknown device. If this wasn't you, reply STOP then send the verification code from your text to secure your account. Details: ms-verify-help.com/case88213\", \"Microsoft account team: Case #55902. Someone tried to change your security info. To cancel, call 1-800-555-0167 and provide the 6-digit code sent to your phone. Do not ignore.\", \"This is a security notice from Microsoft. Reference: MS-2024-88371. We blocked a login from an unrecognized browser. If you did not request this, reply with the one-time code we sent to your mobile to confirm ownership. Failure to respond may lock your account.\", \"MSFT Security: Incident #A7721. Unusual sign-in. Verify now: account-ms-check.net/r/A7721 or reply with the code you received.\", \"Microsoft: Case #MS-33019. Your password was reset from a new device. If this wasn't you, reply CODE followed by the 6-digit number from our text to restore access.\", \"Security alert (Microsoft). Ref: 55108-XZ. A SIM change was requested on your account. Call 214-555-0143 immediately and provide the verification code sent to your phone.\", \"Microsoft account: Case #MS-99204. We detected a login from a new location. To confirm it was you, reply with the 6-digit code from our text. If not, secure your account at ms-secure-portal.com/99204\"]}"
+}

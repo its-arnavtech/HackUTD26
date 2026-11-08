@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: carrier data usage or plan notice.\nClaimed sender or brand: Xfinity Mobile.\nWho writes it: a company's customer-care team writing a short service text.\nStyle: plain sentences, no emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Xfinity Mobile: You've used 4.6GB of your 5GB this cycle. Once you hit the cap, data speeds slow until your cycle resets on the 21st. Details at xfinity.com/mobile\", \"Hi, this is Xfinity Mobile. Your bill of $45.00 is due on Aug 12. Autopay is set up, so no action needed on your end. You can view the statement anytime at xfinity.com\", \"Xfinity Mobile: Data add-on confirmed. Your line is back to full speeds.\", \"We're doing maintenance in your area tonight from 1 to 4 AM ET. You may see brief interruptions to mobile data. Calls and texts will still go through. - Xfinity Mobile\", \"Xfinity Mobile: Your new line ending in 4821 is active and ready to use. Sign in at xfinity.com to see the assigned number and plan details.\", \"Reminder: your Xfinity Mobile cycle resets in 3 days and you're at 8.2GB of 10GB. If you need more before then, you can add data at xfinity.com/mobile\", \"Xfinity Mobile: Traveling outside the US? Roaming in Canada and Mexico is included in your plan at no extra cost. Rates for other countries are listed at xfinity.com\", \"Your device payment of $16.67 posted to your Xfinity Mobile account on Mar 3. The next one is scheduled for Apr 3. Questions? Call 1-888-555-0129.\"]}"
+}

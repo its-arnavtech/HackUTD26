@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake account security alert (scam).\nWhat this category covers: Pretends to protect a non-bank account (carrier, Apple, Amazon, email, social media): login alert, password reset, SIM change, or asks the person to send back a one-time code.\nAngle for this batch: account will be deleted or disabled.\nClaimed sender or brand: Microsoft.\nWho writes it: an organized fraud ring copying the brand's official alert template closely.\nStyle: chatty with one emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Microsoft: account deletion in 1h. Verify: https://msft-verify.co 😱\", \"Hey, it's Microsoft security. We noticed a login from Russia. To keep your account, reply YES and we'll send a code. If no reply, account deleted. 😬\", \"Urgent: Your Microsoft account is scheduled for deletion. Call 214-555-0143 to confirm your identity. 😨\", \"Microsoft alert: Someone tried to reset your password. If this wasn't you, click https://msft-support.net/confirm to stop deletion. 😟\", \"Your Microsoft account will be permanently deleted in 48 hours unless you verify. Reply with the 6-digit code we just sent to your phone. 😮\", \"Final warning: Microsoft account closure imminent. Go to https://account-microsoft.net/verify and enter your password to keep it. 😧\", \"Microsoft: We're deleting inactive accounts. Yours is flagged. Text BACK to 214-555-0147 to reactivate. 😕\", \"Microsoft Security Notice: Your account is flagged for deletion due to a recent policy violation. To prevent permanent closure, please verify your identity by replying to this message with the one-time code sent to your phone. If we don't hear from you within 24 hours, your account and all associated data will be erased. This is your final warning. 😟\"]}"
+}

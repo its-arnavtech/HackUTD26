@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake prize, reward or refund (scam).\nWhat this category covers: Promises money or a gift: prize or giveaway winner, expiring reward points, gift card, unclaimed refund, survey reward.\nAngle for this batch: reward points expiring today.\nClaimed sender or brand: Walmart.\nWho writes it: a hurried scammer sending thousands of texts with minimal effort.\nStyle: all caps for key words.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"WALMART: Your 750 reward points EXPIRE TODAY. Claim now: walmart-rewards.co/claim\", \"FINAL NOTICE: Walmart Rewards points EXPIRING at midnight. Verify account to keep $50 gift card: wm-rewards.net/verify\", \"Walmart Rewards: 1200 points about to EXPIRE! Call 877-555-0192 NOW to redeem before they're gone.\", \"WALMART: You have 500 points expiring TONIGHT. Reply YES to claim your $25 reward card. Msg&data rates may apply.\", \"Hey, this is Walmart Rewards. Your points are EXPIRING TODAY at 11:59 PM. Don't lose your $100 gift card! Click here to claim: walmart-points-now.com/claim?id=8842\", \"Walmart: To release your EXPIRING reward points, reply with the 6-digit code we just sent to your phone. Act NOW!\", \"WALMART REWARDS: Your 2000 points expire TODAY. Pay small $1.99 processing fee to unlock $200 gift card: wm-reward-center.org/pay\", \"Walmart: 300 points EXPIRING TODAY. Claim at walmartgift.top/now\"]}"
+}

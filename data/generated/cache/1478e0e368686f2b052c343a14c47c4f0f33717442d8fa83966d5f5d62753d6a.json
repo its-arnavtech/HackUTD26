@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: real-style bank fraud check that asks only for a YES or NO reply.\nClaimed sender or brand: Bank of America.\nWho writes it: a company's customer-care team writing a short service text.\nStyle: includes a reference or case number.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Bank of America Fraud Alert: Did you attempt a $47.82 purchase at QUICKSTOP #214 on 04/12? Reply YES or NO. Ref# 8842-1173.\", \"BofA: We blocked a $219.99 charge at TECH DEPOT on your card ending 7742 on 04/12 at 3:14 PM ET. If this was you, reply YES. If not, reply NO and we'll call you. Case ID 5520-8891. No need to call us.\", \"Bank of America: A $12.50 charge at SUNRISE CAFE was just attempted. Reply YES if you made it, NO if not. We'll never ask for your password or card number. Details: https://www.bankofamerica.com/fraud. Ref: 3317-2045\", \"BofA Fraud: $89.00 at GAS N GO on 04/12? Reply YES or NO. Ref 7710-4432.\", \"Bank of America fraud check: We noticed a $1,250.00 transfer request from your savings on 04/12. Reply YES to approve or NO to decline. If NO, we'll lock the transfer and contact you. Case# 9902-6671.\", \"FreeMsg Bank of America: Did you authorize a $5.99 charge at PARKING METER CO? Reply YES or NO. Ref 2108-5543.\", \"BofA Alert: A purchase of $64.37 at URBAN STYLE was made with your debit card on 04/12 at 8:02 AM PT. Reply YES if you recognize it. Reply NO if you don't. Your case number is 4432-1098. We'll follow up if needed.\", \"Bank of America: $300 ATM withdrawal in MIAMI, FL on 04/12? Reply YES or NO. Ref 6651-3320.\"]}"
+}

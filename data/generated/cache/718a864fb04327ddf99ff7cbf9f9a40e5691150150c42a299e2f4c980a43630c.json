@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake bill or payment demand (scam).\nWhat this category covers: Fake bill, overdue balance or failed payment from a phone carrier, utility, or subscription, with a threat of shut-off and a link to pay.\nAngle for this batch: utility shut-off notice.\nClaimed sender or brand: T-Mobile.\nWho writes it: a careful scammer who avoids obvious red-flag words.\nStyle: chatty with one emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Hey, just got a notice that your T-Mobile bill didn't go through 😕 We can keep your service on if you update payment today at tmobile-billpaynow.com/secure\",\"T-Mobile here! Your payment failed and service is scheduled for shutoff tonight. Reply YES to get a secure payment link or call 855-555-0127 😊\",\"Quick heads up – your autopay didn't process this month 😟 To avoid interruption, pay the $82.14 balance at mytmobile-payments.net/quick. Takes 30 sec.\",\"Hi, it's T-Mobile billing. We tried charging your card but it was declined. You have until 5pm to avoid shutoff. Call 877-555-0192 or visit tmobpayhelp.co/pay 😊\",\"Your T-Mobile account is past due and will be disconnected today unless we hear from you. Reply PAY to receive a secure link 😊\",\"Just a friendly reminder that your T-Mobile payment didn't clear 😕 Please update your card at t-mobile-billing-support.com/update to keep your service active. Thanks!\",\"T-Mobile: Your bill is 7 days overdue. To avoid service interruption, please call 800-555-0144 and have your payment info ready 😊\",\"T-Mobile: payment failed. Service off today unless you pay at tmobpay.co/now 😕\"]}"
+}

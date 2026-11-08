@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Bank impersonation (scam).\nWhat this category covers: Pretends to be a bank or card issuer: fraud alert, locked or suspended account, card declined, verify your identity, confirm a charge by link or callback.\nAngle for this batch: card declined or frozen.\nClaimed sender or brand: Capital One.\nWho writes it: a scammer creating panic with deadlines and threats.\nStyle: brand prefix like 'BRAND:' at the start.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Capital One: Your card ending 4471 was declined for $83.92 at WALMART. If this wasn't you, verify at cap1-secure-verify.com/decl\",\"CAPITAL ONE ALERT: We froze your card ending 9920 due to suspicious activity. Confirm your identity within 24 hrs or account will be suspended: https://capitalone.verify-account-now.net\",\"CapitalOne: Card ending 3312 has been locked. Call 888-555-0147 immediately to unlock. Reference ID CO-4471.\",\"Capital One: Did you just try to charge $249.99 at Best Buy? Card is on hold. Reply YES if you did not authorize this and we'll send a secure link.\",\"CAPITAL ONE FRAUD: A $512.33 purchase at Target was declined on card ending 7742. To verify you still have your card, reply with the 6-digit code we just texted you.\",\"Capital One: We noticed a $1,208.00 charge at Apple Store on your card ending 1123 and placed a temporary freeze. If this is fraud, confirm now at https://capone-fraud-alert.com/confirm or your card will remain frozen for 7 days.\",\"C1: Card ending 5567 declined. Verify identity: capone-verify.co/555-0198\",\"Capital One: Your card ending 8844 is frozen. Call 877-555-0162 to verify recent transactions and avoid permanent closure. Reference #: 9941.\"]}"
+}

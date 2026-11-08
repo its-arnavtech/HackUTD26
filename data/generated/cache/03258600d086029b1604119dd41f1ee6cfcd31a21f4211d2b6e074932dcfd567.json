@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake toll or government notice (scam).\nWhat this category covers: Pretends to be a toll agency, the IRS, DMV, court, or another government office: unpaid toll, tax refund or debt, license suspension, fines.\nAngle for this batch: tax debt or warrant threat.\nClaimed sender or brand: E-ZPass.\nWho writes it: a scammer using a friendly, casual tone to lower suspicion.\nStyle: brand prefix like 'BRAND:' at the start.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"E-ZPass: tax debt warrant. Call 214-555-0143.\", \"E-ZPass: hey, final notice—unpaid toll tax debt $47.82. Warrant may issue. Call 305-555-0198 now.\", \"E-ZPass: Hi! We tried reaching you about an overdue balance that's been flagged as tax debt. To avoid a warrant, settle at ezpass-billing-help.com/pay today.\", \"E-ZPass: Urgent: your toll account has a tax lien attached. Reply YES to confirm your case number and we'll send the payment link.\", \"E-ZPass: Good morning! This is a courtesy reminder that your unpaid tolls were forwarded to the tax office. A warrant for your arrest can be avoided if you pay $129.50 by 5pm. Call 702-555-0177 to resolve. Thanks!\", \"E-ZPass: We hate to bug you, but your toll tax debt is now past due. Please reply with the 6-digit code we texted to verify your account.\", \"E-ZPass: Notice: failure to pay toll tax debt may result in license suspension and a bench warrant. Pay now: ezpass-debt-relief.net/pay\", \"E-ZPass: Final warning—your unpaid toll balance of $86.40 is being reported as tax debt. Avoid warrant by sending payment to CashApp $EZPassTaxDept or call 646-555-0122.\"]}"
+}

@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Wrong-number or family impersonation (scam).\nWhat this category covers: Starts a personal conversation to build trust: a fake wrong-number text, a relative or friend writing from a 'new number' who needs money, or a romance opener.\nAngle for this batch: friend stuck abroad needs help.\nClaimed sender or brand: no brand.\nWho writes it: a scammer using a friendly, casual tone to lower suspicion.\nStyle: terse, like an automated system.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Hey it's Chris, new number. Stuck in London, wallet gone. Can you wire $600? Call 312-555-0187\", \"Hi! Is this Amanda? Sorry wrong number but I'm stuck at Barcelona airport, lost my bag. My friend Jake said you could help? Text me back.\", \"It's me, Dave. I'm in Tokyo, phone stolen. Need $450 for hotel. Use this link to send: tokyo-help.net/pay\", \"It's Mike, stuck in Berlin. I'm trying to transfer money but my phone is dead. Can you send me the code you get on your phone? Reply with it.\", \"Hey, wrong number but you seem nice. I'm traveling in Peru and my wallet was stolen. Could you lend me $200? I'll pay back. Call 415-555-0123\", \"Hi it's Jess. New number. I'm in Sydney, lost my passport. Need $800 for emergency flight. Please send via this link: syd-helpline.co/urgent\", \"It's Alex. Stuck in Madrid, need $300. Call 646-555-0199\", \"Hey, is this Tom? I'm a friend of Lisa's. She's stuck in Thailand and asked me to reach out. She needs $700 for a ticket. Can you help? Reply here.\"]}"
+}

@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Wrong-number or family impersonation (scam).\nWhat this category covers: Starts a personal conversation to build trust: a fake wrong-number text, a relative or friend writing from a 'new number' who needs money, or a romance opener.\nAngle for this batch: romance or dating opener.\nClaimed sender or brand: no brand.\nWho writes it: a scammer creating panic with deadlines and threats.\nStyle: includes a reference or case number.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Hey! We matched on that dating app. I'm in trouble, case #D-4471. Send $200 by 9pm or I'm done. Call 305-555-0182.\",\"Hi, it's Jess from the dating site. I know we haven't met but I'm stuck at the airport, they flagged my visa case #V-8823. I need $450 for the fee by 7pm tonight or I'll be detained. Please text me back at 702-555-0164.\",\"Hey cutie, remember me from that dating app? I'm in a bind, case #R-2094. My wallet got stolen. Can you send $300 via secure-dating-help.com/pay by midnight? Or I'm in deep trouble.\",\"This is Mark from the dating site. We chatted last week. I'm being held by immigration, case #M-7712. They want $600 by 5pm or they deport me. Please reply YES and I'll send instructions. 214-555-0143.\",\"Real talk: we matched online, case #A-3310. I need $150 by 10pm or I lose my room. Call 415-555-0199.\",\"Hi, we matched last night. I'm in trouble, case #T-5581. My ex is threatening me. Can you send a $50 gift card code by 11pm? I'll explain later. Reply to 646-555-0177.\",\"Hey, it's Alex from that dating app. I know this is sudden but I need help. Police gave me case #P-9910 and a deadline of 6pm to pay a fine or they arrest me. Please send $250 to my payment app? Text 312-555-0134 for details.\",\"Hello love, we've been texting for weeks. I'm stuck overseas, case #L-2245. I need $800 for a flight home by tomorrow or I'll be stranded. Please click secure-travel-help.com/urgent and enter your card. I promise to repay.\"]}"
+}

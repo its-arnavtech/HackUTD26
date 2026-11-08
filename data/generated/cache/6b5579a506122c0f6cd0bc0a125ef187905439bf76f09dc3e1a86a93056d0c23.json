@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake prize, reward or refund (scam).\nWhat this category covers: Promises money or a gift: prize or giveaway winner, expiring reward points, gift card, unclaimed refund, survey reward.\nAngle for this batch: you won a giveaway.\nClaimed sender or brand: Walmart.\nWho writes it: a scammer whose first language isn't English, with slightly odd grammar.\nStyle: includes a reference or case number.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Congratulation! You are winner of Walmart $500 gift card giveaway. Case No: WM-48291. Claim now at walmart-prize-claim.com before expire. Need verify info.\",\"Walmart giveaway winner! Ref# 77-2103. Reply YES to claim $250 reward. Limited time.\",\"Dear customer, our system select you as lucky winner for Walmart $1000 shopping spree. Your case ID is 5582-WM. To release prize call 214-555-0192 and give code 7781. Thank you.\",\"You win Walmart giveaway! Case 9930. We need small shipping fee $3.99 for gift card delivery. Pay at walmart-gift-delivery.net. Hurry.\",\"Hello winner! This is Walmart Reward Department. Your entry from survey win $750 gift card. Reference number: WM-SUR-55021. Please reply with your full name and address to process. If no reply in 24 hr prize forfeit.\",\"Walmart prize waiting! Case # 88213. Verify by calling 214-555-0147 now. Ask for agent and say code WIN. Don't miss.\",\"Congratulations! Your phone number selected in Walmart giveaway. Claim $200 e-gift card. Visit walmart-reward-center.org and enter case 33109. Offer expire today.\",\"Walmart giveaway winner! Case 4491. Reply WIN to get $50 gift card. No cost.\"]}"
+}

@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: real-style bank transaction or balance alert.\nClaimed sender or brand: Citi.\nWho writes it: a company's customer-care team writing a short service text.\nStyle: includes a reference or case number.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Citi: $5.00 fee refunded to account ending 3301. Ref 2201-558. See citi.com.\",\"Citi: Your card ending 3097 was used for $87.42 at COFFEE HUT on 06/12. Ref CT-558201. Not you? Call 1-800-555-0143.\",\"Citi Alert: Checking balance is $2,145.87 as of 7:00 AM ET. View details at citi.com/alert. Case # 7741-2093. Reply STOP to opt out.\",\"Citi Fraud Alert: We blocked a $1,299.00 purchase on your card ending 7712 at ELECTRONICS CITY on 06/13 at 8:42 PM ET. Reference 4482-1093. If you recognize this charge, no action is needed. If not, call us at 1-800-555-0177.\",\"Citi: A direct deposit of $1,845.22 from ACME PAYROLL posted to account ending 5520 on 06/14. Ref 90210-334. Questions? Visit citi.com or call 1-800-555-0188.\",\"Citi: Available balance is $34.12, below your $100 alert. Ref AL-77812. No action needed; manage alerts at citi.com. 1-800-555-0166.\",\"Citi: $200.00 ATM withdrawal at 5TH AVE & MAIN on 06/15 14:32. Card ending 8834. Case 5501-2276. Not you? 1-800-555-0121.\",\"Citi: Statement for account ending 6612 is ready. Balance $4,332.10. Ref STMT-448201. View at citi.com. Reply PAPER OFF to stop paper statements.\"]}"
+}

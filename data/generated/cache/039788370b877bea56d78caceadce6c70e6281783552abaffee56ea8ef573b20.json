@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: real-style bank fraud check that asks only for a YES or NO reply.\nClaimed sender or brand: Citi.\nWho writes it: an office scheduler or coordinator.\nStyle: chatty with one emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Citi: $5.99 at a coffee shop. You? Reply YES or NO 😊\", \"Hey, it's Citi fraud team. We flagged a $150.00 charge at a hardware store on your card. Did you make it? Just reply YES or NO. Thanks! 😊\", \"Hi! I'm the scheduler for Citi's fraud alerts. We saw a $34.50 charge at a pizza place on your card ending 1234. Can you confirm if this was you? Reply YES or NO only, no need to call. 😊\", \"Citi alert: $999.99 at an online store. Did you authorize? Reply YES or NO. 😊\", \"Quick fraud check from Citi: we noticed a $12.34 charge at a convenience store on your card ending 5678. This is just a confirmation - please reply YES if you made the purchase or NO if you didn't. We'll take it from there. Thanks! 😊\", \"Citi: did you just spend $75.00 at a gas station? Reply YES or NO. I'm coordinating these checks today. 😊\", \"Hey there! Citi fraud team here. We blocked a $220.00 charge at a furniture store on your card. Was this you? Reply YES or NO. No links, no codes needed. 😊\", \"Citi: $8.99 at a bookstore. You? YES/NO 😊\"]}"
+}

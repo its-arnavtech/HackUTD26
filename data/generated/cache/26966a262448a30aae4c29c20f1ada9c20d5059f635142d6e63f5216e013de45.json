@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake delivery notice (scam).\nWhat this category covers: Fake package or postal notice: missed delivery, address problem, customs or redelivery fee, package held.\nAngle for this batch: package held at warehouse.\nClaimed sender or brand: FedEx.\nWho writes it: a scammer creating panic with deadlines and threats.\nStyle: brand prefix like 'BRAND:' at the start.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"FedEx: Your package is on hold at our warehouse due to a delivery issue. Call 214-555-0173 to arrange pickup.\",\"FedEx: We attempted delivery but your package is now held at our local warehouse. Please confirm your address at fedex-hold.example or it will be returned in 48 hrs.\",\"FedEx: Package held at warehouse. Reply YES to reschedule delivery or NO to have it returned. A $1.99 redelivery fee applies.\",\"FedEx: FINAL NOTICE - your parcel is held at our warehouse and will be disposed of in 24 hours unless you pay the $3.50 storage fee. Pay at fedexfee.example\",\"FedEx: Your package is at our warehouse. Verify with code 4821 at fedex-verify.example to release it.\",\"FedEx: We're holding your package because the address was incomplete. Call 855-555-0128 or visit fedex-address.example to update it within 2 days.\",\"FedEx: Notification: Your shipment is currently held at our warehouse pending payment of a $2.75 holding fee. To release, go to fedex-holding.example and enter your tracking number. Failure to respond in 48 hours will result in return to sender.\",\"FedEx: Your package is held at our warehouse. Reply with your tracking number to schedule delivery.\"]}"
+}

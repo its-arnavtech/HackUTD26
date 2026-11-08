@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: real-style bank fraud check that asks only for a YES or NO reply.\nClaimed sender or brand: Chase.\nWho writes it: a small local business owner.\nStyle: all caps for key words.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"CHASE FRAUD ALERT: Did you approve a $47.82 purchase at PINE ST MARKET on card ending 4421? Reply YES or NO. If NO, we'll call you. Msg&data rates may apply.\", \"A $1,250.00 transaction at NORTHSIDE SUPPLY was attempted on your Chase debit card ending 8890. REPLY YES if you made this purchase. REPLY NO if you did NOT. Do not reply with any other info.\", \"We noticed a $12.99 charge at QUICKSTOP FUEL on your Chase card ending 3312. Was this you? Reply YES or NO. For help call 800-555-0177.\", \"Chase: Your card ending 7765 was used for $389.45 at HOMETOWN HARDWARE. If this is FRAUD, reply NO. If you made it, reply YES. No need to call unless you reply NO.\", \"FRAUD CHECK: $6.50 at COFFEE CORNER on card 1129? Reply YES to confirm, NO to flag. This is an automated message from Chase.\", \"Chase fraud dept: We blocked a $2,100.00 charge at TECH DEPOT on your business card ending 5540. Did you authorize? Reply YES or NO. If NO, a specialist will contact you within 24 hrs.\", \"ALERT: $89.99 at OFFICE SUPPLY CO on card ending 9034. Reply YES if legit, NO if not. Chase will never ask for your password or PIN by text.\", \"Did you just spend $34.76 at PIZZA PALACE on your Chase debit card ending 2278? Reply YES or NO. If NO, we'll lock the card. Questions? 800-555-0199.\"]}"
+}

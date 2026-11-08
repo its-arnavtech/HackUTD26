@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Bank impersonation (scam).\nWhat this category covers: Pretends to be a bank or card issuer: fraud alert, locked or suspended account, card declined, verify your identity, confirm a charge by link or callback.\nAngle for this batch: card declined or frozen.\nClaimed sender or brand: Navy Federal.\nWho writes it: a scammer creating panic with deadlines and threats.\nStyle: terse, like an automated system.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Navy Federal: Your debit card ending 4471 was frozen due to unusual activity. Verify now: navfed-secure-verify.com or call 888-555-0164.\",\"NAVY FED ALERT: A $612.38 charge at WALMART was declined. Did you authorize? Reply Y or N within 30 min or card stays locked.\",\"Your Navy Federal card is temporarily suspended. Confirm your identity to restore access: nfcu-account-check.net/verify\",\"Navy Federal Fraud: card ending 8820 declined 3x in Tampa FL. Call 877-555-0192 immediately to avoid permanent closure.\",\"We froze your Navy Federal Visa after a $1,204.55 attempt. If this wasn't you, verify at navyfederal-alerts.org now. Case #NF-55913.\",\"NFCU: card declined at pump. Confirm recent transactions here: https://secure-nfcu-review.com/tx — respond in 15 min.\",\"Navy Federal: Unusual login + card freeze detected. Reply with the 6-digit code we just texted to unlock your account.\",\"ALERT: Your Navy Federal card was frozen for suspected fraud. Call 800-555-0177 in the next 24 hrs or the account will be closed.\"]}"
+}

@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: carrier data usage or plan notice.\nClaimed sender or brand: AT&T.\nWho writes it: a company's customer-care team writing a short service text.\nStyle: includes a reference or case number.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"AT&T: You've used 90% of your 50GB plan. Ref #A4829173. Manage at att.com/data or call 800-555-0112.\",\"Hi, this is AT&T. Your plan was changed to Unlimited Starter on 3/14. Case 7721-55903. Questions? att.com/plans or 214-555-0143.\",\"AT&T alert: $10 overage applied for 2GB extra data on line ending 4471. Case #C-883021. See details at att.com/bill.\",\"AT&T: 5GB add-on active through 4/30. Case 1902-44781. View usage at att.com/usage.\",\"AT&T: Your International Day Pass is on for your trip. $10/day only when used. Ref #IDP-55201. Details att.com/travel.\",\"AT&T notice: You've reached 22GB on Unlimited Elite; speeds may slow during congestion. Case 60417-2. Info at att.com/network.\",\"AT&T: AutoPay will charge $65.00 on 5/2 for plan ending 8832. Case #AP-774109. No action needed. att.com/autopay.\",\"AT&T: Your data reset today. 50GB available. Case 3301-7782. Check att.com/data.\"]}"
+}

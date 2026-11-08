@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake prize, reward or refund (scam).\nWhat this category covers: Promises money or a gift: prize or giveaway winner, expiring reward points, gift card, unclaimed refund, survey reward.\nAngle for this batch: you won a giveaway.\nClaimed sender or brand: Amazon.\nWho writes it: a careful scammer who avoids obvious red-flag words.\nStyle: includes a reference or case number.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Amazon giveaway case #G-58291. Your entry was drawn. Confirm shipping at amz-giveaway.co/c/58291\",\"Hi, this is the Amazon Giveaway team about case A-2749-1183. Your entry in our recent promotion was selected. Please reply YES to confirm your mailing details so we can send the item.\",\"Amazon Rewards: case #R-90217-6. Your giveaway entry was chosen. To arrange delivery, call 877-555-0143 and mention the case number. No cost to you.\",\"Amazon Giveaway — Ref: AMZ-4417-8823. Your entry in the June giveaway was selected. We need to verify the delivery address before the item ships. Please visit amzn-gift.co/verify/44178823 and enter your details. If you didn't enter, reply STOP.\",\"Amazon case 77-1054: your giveaway entry was picked. Call 888-555-0167 to claim.\",\"Amazon Promotions: ref #GIV-88291-04. Your giveaway submission was selected for a reward. Reply with your ZIP code to confirm eligibility and we'll send the item.\",\"Hello, this is a follow-up from Amazon Giveaways, case #A-3920-7751. Your entry in the recent Amazon giveaway was selected. We tried to deliver but need a confirmation. Please go to amazon-giveaway.info/confirm/39207751 within 48 hours to provide your shipping info. There is no charge.\",\"Amazon giveaway dept: case AMZ-5582-19. Your entry was selected. To claim, text the code 4471 to 214-555-0148 or visit amz-prize.co/5582. Msg&data rates may apply.\"]}"
+}

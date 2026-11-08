@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Fake account security alert (scam).\nWhat this category covers: Pretends to protect a non-bank account (carrier, Apple, Amazon, email, social media): login alert, password reset, SIM change, or asks the person to send back a one-time code.\nAngle for this batch: SIM or eSIM transfer warning.\nClaimed sender or brand: PayPal.\nWho writes it: a scammer creating panic with deadlines and threats.\nStyle: brand prefix like 'BRAND:' at the start.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"PAYPAL: We detected a SIM transfer request on your account. If this wasn't you, secure your account now: paypal-secure-verify.com/sim\",\"PayPal Alert: A new eSIM was activated on your number. Reply YES to confirm or NO to block. Ref: PP-8842\",\"PAYPAL: Your SIM card was changed. Call 214-555-0143 immediately to prevent account suspension. Case #SIM-7712\",\"PayPal security: Someone requested an eSIM transfer for your account. If not you, verify at pp-account-check.net/esim within 24hrs or account will be locked.\",\"PAYPAL: SIM swap detected. To cancel transfer, reply with the 6-digit code we just sent to your phone. Do not share with anyone else.\",\"PayPal: We blocked an eSIM transfer attempt on your account. Confirm you still have your physical SIM by replying YES. If no, call 214-555-0178.\",\"PAYPAL ALERT: Unauthorized SIM change on your account. A $49.99 transfer fee will be charged unless you verify at paypal-sim-protect.org/verify now.\",\"PayPal: Your account is at risk. A SIM transfer was initiated. Send a text to 214-555-0193 with the word HELP to stop it. Urgent.\"]}"
+}

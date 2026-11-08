@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Fake delivery notice. The correct answer for these cards is: scam.\nBackground: Fake package or postal notice: missed delivery, address problem, customs or redelivery fee, package held.\nScenario for these cards: package held at warehouse, sent as USPS.\nThe person receiving the text: a new immigrant still learning English.\nTone of the text: slightly sloppy with a typo.\nDraft 8 cards, each a different realistic text. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"USPS: Your packge is held at our warehous because the address could not be verified. A $1.99 redelivery fee is required. Pay at http://usps-hold-notice.info/H7391\",\"USPS notice: We miss your delivery. Packge 9400111234567890123456 is at the warehouse. Call 702-555-0186 to arrange redelivery. Office open 9am-6pm.\",\"Your USPS parcel has a custom hold. Please reply with your full adress and ZIP code so we can release it. If no reply in 24h it will return to sender.\",\"USPS: Package held at warehouse due to incomplete address. Small redelivry fee $2.50 needed. Send payment at http://usps-secure-pay.top/P2048\",\"USPS ALERT: Your package is at our warehouse and will be sent back if you dont confirm. Reply YES to confirm or NO to cancel. Do not ignore.\",\"USPS customs: Your packge needs a clearance fee of $3.75. Call 415-555-0127 and give code 4821 to release. Have payment ready.\",\"USPS: We try to deliver your package but no one home. It is now at warehouse. Please call 214-555-0143 and press 1 for redelivery. Tracking 9400111234567890123456 ready.\",\"USPS: To release your held packge, reply with the 6-digit code sent to your phone by your bank. This is for delivery verification only. Thank you.\"]}"
+}

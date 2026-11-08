@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Bank impersonation (scam).\nWhat this category covers: Pretends to be a bank or card issuer: fraud alert, locked or suspended account, card declined, verify your identity, confirm a charge by link or callback.\nAngle for this batch: card declined or frozen.\nClaimed sender or brand: Bank of America.\nWho writes it: an organized fraud ring copying the brand's official alert template closely.\nStyle: chatty with one emoji.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"BofA: Your card ending 4821 was declined at Target for $87.43. Reply YES to confirm or NO to freeze. 😳\", \"Bank of America Alert: We noticed a $212.99 charge at Walmart on your debit card. If this wasn't you, your card is now frozen. Verify at bofa-secure-verify.com/act 🔒\", \"URGENT: Your BofA card was frozen due to suspicious activity. Call 888-555-0142 immediately to unlock. Don't ignore, fees apply 😟\", \"BofA fraud alert: Did you just try $1,200 at Best Buy? Your card is declined until you confirm. Reply 1 if yes, 2 if no. 🚨\", \"We froze your Bank of America card ending 7733 after a $45.67 charge at Shell. To reactivate, verify your identity here: https://bofa-verify-alert.net/confirm. This is your final notice before permanent closure. 😬\", \"Hey, it's BofA fraud team. Your card is locked. We need you to confirm a $389.50 purchase at Apple. Text back the 6-digit code we just sent to your phone to unlock it. 🔐\", \"BofA: Card declined at Amazon $56.12. Suspicious? Call 214-555-0188 now. 😕\", \"Bank of America: Your account has been temporarily frozen. A $900 charge at Target was flagged. Please reply with your zip code and last 4 of SSN to verify. 😨\"]}"
+}

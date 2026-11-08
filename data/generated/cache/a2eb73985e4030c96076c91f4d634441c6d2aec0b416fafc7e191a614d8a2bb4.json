@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Fake bill or payment demand. The correct answer for these cards is: scam.\nBackground: Fake bill, overdue balance or failed payment from a phone carrier, utility, or subscription, with a threat of shut-off and a link to pay.\nScenario for these cards: utility shut-off notice, sent as PG&E.\nThe person receiving the text: a new immigrant still learning English.\nTone of the text: warm and reassuring.\nDraft 8 cards, each a different realistic text. Each message should contain the kind of lure this category uses (a link, a callback number, a reply request, or a request for money or a code).\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Hi, this is PG&E. We know bills can be confusing, so please don’t worry. Your service is scheduled for shut-off today because $184.27 is past due. You can keep your power on by paying safely at https://pge-billingcare.com/pay now. Thank you for being with us.\",\"Hello, PG&E customer service here. We see your account ending 4821 has an overdue balance of $96.50, and service may be disconnected tomorrow. Please don’t worry—we can help. Call 415-555-0182 before 8 PM to set up a simple payment plan.\",\"Hi from PG&E. Your payment of $127.40 did not go through, so your electricity may be shut off on Friday. We can fix this together. Please reply YES and a friendly agent will call you back with options.\",\"PG&E notice: To keep your service active, we need to confirm your account. Your balance is $73.18 past due. Please reply with the 6-digit code we just sent to your phone so we can help you avoid shut-off.\",\"Good afternoon, this is PG&E. We are here to help you stay connected. Your account shows $212.09 overdue, and a shut-off is planned for 5 PM today. You can make it right at https://pge-payhelp.net/secure. Thank you.\",\"Hi, PG&E billing support. We understand English may not be your first language, and we want to make this easy. Your $158.30 bill is late, and power may stop tonight. Please send payment by Zelle to billing@pge-payhelp.org to keep service on.\",\"Hello, this is PG&E. Your account has a past-due amount of $64.75, and service could be turned off soon. We do not want that for you. Please call our care line at 619-555-0177 and we will explain everything slowly.\",\"PG&E warm reminder: your payment did not process, so your gas service may be disconnected in 24 hours. No need to worry—just visit https://pge-accountcare.com/help and enter your account info to keep everything on. Thank you.\"]}"
+}

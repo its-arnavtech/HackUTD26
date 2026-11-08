@@ -712,7 +712,7 @@ def main(argv: list[str] | None = None) -> int:
     write_jsonl(META_PATH, (meta for _, meta in all_records))
     REPORT_PATH.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
 
-    print(f"\nWrote {len(all_messages)} generated messages to {MESSAGES_PATH.relative_to(DATA_DIR.parent)}")
+    print(f"\nWrote {len(all_messages)} generated messages to {MESSAGES_PATH}")
     for s in sets:
         r = report["sets"][s]
         print(f"  {s}: {r['messages']} messages, legit share {r['legit_share']}, shortfall {r['shortfall'] or 'none'}")

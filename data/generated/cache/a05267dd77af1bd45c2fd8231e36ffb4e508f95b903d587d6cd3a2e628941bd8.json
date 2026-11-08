@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: carrier bill ready or autopay confirmation.\nClaimed sender or brand: Xfinity Mobile.\nWho writes it: a small local business owner.\nStyle: includes a reference or case number.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"Xfinity Mobile: Your bill for acct ending 4821 is ready. $84.32 due 6/12. Ref #XM-77401. View at xfinity.com\", \"Autopay confirmed: $127.50 will be charged to your card ending 3391 on 6/05 for Xfinity Mobile acct 7730. Case 228-4410. Details xfinity.com\", \"Hi, this is a reminder from Xfinity Mobile that your business account bill (ref 55-90218) is due 6/15. Amount: $210.44. Pay at xfinity.com. No action needed if autopay.\", \"Xfinity Mobile alert: Payment of $64.99 received 5/28 for acct 1182. Thank you. Confirmation #XM-9923. Questions? xfinity.com\", \"Your Xfinity Mobile bill for the month is now available. Account 4471-2, total $98.76, due 6/20. Autopay is set for 6/18. Reference # 773-201-55. View your statement at xfinity.com\", \"Xfinity Mobile: autopay scheduled 6/10 for $45.00 on acct 8832. Case# 019-2287. No action needed. xfinity.com\", \"Xfinity Mobile bill ready: $156.20 due 6/25 for acct ending 0091. Ref XM-55201. Autopay off. Pay at xfinity.com. Do not reply.\", \"As a small business, we know every dollar counts. Your Xfinity Mobile business bill (ref 442-8810) is $112.75, due 6/18. Autopay confirmed. See xfinity.com\"]}"
+}

@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: delivery update from a carrier or retailer.\nClaimed sender or brand: UPS.\nWho writes it: a friend or family member texting casually.\nStyle: all caps for key words.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"UPS says my package is OUT FOR DELIVERY today between 2-4. Can you grab it if you're home? Tracking: 1Z5555555555555555\", \"My UPS alert says DELIVERY ATTEMPT FAILED. I rescheduled for tomorrow at ups.com. Not a scam, I called 1-800-555-0143 to confirm.\", \"Hey, got a UPS text saying my package is ON HOLD and needs a $1.99 fee. I checked ups.com and it's real - weird but legit. Can you spot me $2?\", \"UPS left a note with a SIGNATURE REQUIRED and a pickup CODE: 8842 at the access point on 5th. I can't get there before 7. Can you pick it up for me? Tracking 1Z5555555555555555. I already confirmed on ups.com that it's legit.\", \"My UPS tracking says DELIVERED but I'm not home. Can you check my porch? If it's not there, I'll file a claim on ups.com. 1Z5555555555555555\", \"UPS ALERT: Your package arrives TODAY by 8PM. That's my text, not a scam. Can you let me know if it shows up? I'm at work.\", \"Just got a UPS message: 'Your package is at the UPS Access Point, bring ID and CODE 7731.' I verified on ups.com. Can you grab it for me? It's the one on Main St.\", \"UPS says my package is OUT FOR DELIVERY and needs a SIGNATURE. I'm stuck in a meeting. Can you be at my place by 3? Tracking 1Z5555555555555555. I checked ups.com, it's real.\"]}"
+}

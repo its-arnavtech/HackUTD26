@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: appointment or pharmacy reminder.\nClaimed sender or brand: a car service center.\nWho writes it: a small local business owner.\nStyle: includes a reference or case number.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"Hi, this is Dave at Riverside Auto. Reminder: your service appt is Tues 3/18 at 9am. Case #A-1042. Reply C to confirm or call 555-0143.\",\"Riverside Auto Service: Your 2016 Civic is due for oil change & tire rotation. Appt Thu 3/20 8:30am. Est $89.95. Ref #RA-55821. Call 555-0177 to reschedule. www.riversideauto.example\",\"riverside auto: appt reminder 2moro 10am. case 7741. reply y to confirm.\",\"Hi it's Mike from Mike's Garage. Your appt for brake inspection is Fri 3/21 at 1pm. Case #MG-30219. If you need to move it, call us at 555-0198 before Thu. Thanks!\",\"Your part for case #A-8821 has arrived at Riverside Auto. You can pick up your car anytime after 2pm today. Call 555-0164 with questions. No payment needed until pickup.\",\"Riverside Auto: Confirming your appt Wed 3/19 11:30am for state inspection. Case #RA-9910. Your key drop code is 4471. Reply H if you need help.\",\"Riverside Auto Service: We had to move your appt from 3/18 to 3/19 at 2pm due to tech shortage. Case #RA-4402. Sorry! Call 555-0121 to confirm or pick another time.\",\"Riverside Auto: Your estimate for case #RA-7723 is ready. Total $412.60 for brakes. Appt available Fri 3/21 9am. Reply OK to book or call 555-0155. www.riversideauto.example/estimate\"]}"
+}

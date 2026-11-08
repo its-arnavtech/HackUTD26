@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are helping a fraud-awareness instructor build quiz cards. Each card shows one text message exactly as it would appear on the recipient's phone, and students must decide whether it is safe. Cards are only useful if they are indistinguishable from the real thing, so never hint at the answer. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Quiz topic: Legitimate message. The correct answer for these cards is: legitimate, not a scam.\nBackground: Real messages people get, including hard look-alikes of every scam category above.\nScenario for these cards: toll account statement or auto-replenish notice, sent as E-ZPass.\nThe person receiving the text: a retiree in Florida who banks online.\nTone of the text: formal and polite.\nDraft 8 cards, each a different realistic text. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\":[\"E-ZPass: Your monthly statement for account ending 0143 is now available. Amount due: $0.00. View it at e-zpassiag.com. Thank you.\",\"E-ZPass: Auto-replenish completed. $35.00 was added to account ending 0143 on 04/02. Your new balance is $42.75. No action is needed.\",\"E-ZPass: Your account ending 0143 balance is $8.40, below the $10.00 threshold. Auto-replenish will add $35.00 within 24 hours. Questions? Call 1-800-555-0162.\",\"E-ZPass: Statement ready for 03/01/2025 through 03/31/2025. Account ending 0143. Total tolls: $18.60. Review at e-zpassiag.com. This is a service message.\",\"E-ZPass: Payment received. $35.00 auto-replenish posted to account ending 0143 on 05/12. Reference 5550143. Thank you.\",\"E-ZPass: Please note your auto-replenish amount will remain $35.00. No changes were made. Account ending 0143. Questions? Call 1-800-555-0117.\",\"E-ZPass: Your statement is available. Account ending 0143. Balance: $27.15. To review, visit e-zpassiag.com. For help, call 1-800-555-0188.\",\"E-ZPass: A toll transaction of $2.50 posted on 06/08 to account ending 0143. Current balance: $31.20. No response needed.\"]}"
+}

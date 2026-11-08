@@ -1,0 +1,194 @@
+{
+  "generator_version": 1,
+  "model": "deepseek-flash",
+  "seed": 2026,
+  "batch_size": 8,
+  "temperature": 1.2,
+  "targets": {
+    "train_v1": {
+      "legit": 840,
+      "scam_each": 171
+    },
+    "test_v1": {
+      "legit": 130,
+      "scam_each": 26
+    }
+  },
+  "thresholds": {
+    "near_duplicate": 90,
+    "cross_set": 85,
+    "min_chars": 20,
+    "max_chars": 480
+  },
+  "sets": {
+    "train_v1": {
+      "jobs": 361,
+      "pipeline": {
+        "cross_set_duplicate": 0,
+        "exact_duplicate": 57,
+        "near_duplicate": 2,
+        "passed_quality": 2885,
+        "phones_rewritten": 0,
+        "raw": 2889,
+        "rejected_label_leak": 1,
+        "rejected_placeholder": 3,
+        "trimmed": 618
+      },
+      "shortfall": {},
+      "messages": 2208,
+      "per_category": {
+        "account_security": 171,
+        "bank_impersonation": 171,
+        "billing_scam": 171,
+        "conversation_lure": 171,
+        "delivery_scam": 171,
+        "job_offer": 171,
+        "legit": 840,
+        "prize_refund": 171,
+        "toll_government": 171
+      },
+      "legit_share": 0.38,
+      "length_chars": {
+        "min": 41,
+        "median": 139,
+        "max": 352
+      },
+      "url_rate_per_category": {
+        "account_security": 0.351,
+        "bank_impersonation": 0.363,
+        "billing_scam": 0.614,
+        "conversation_lure": 0.164,
+        "delivery_scam": 0.567,
+        "job_offer": 0.292,
+        "legit": 0.496,
+        "prize_refund": 0.427,
+        "toll_government": 0.48
+      },
+      "sender_types": {
+        "email": 207,
+        "long_code": 1251,
+        "short_code": 750
+      },
+      "hard_negatives": 705
+    },
+    "test_v1": {
+      "jobs": 62,
+      "pipeline": {
+        "cross_set_duplicate": 0,
+        "passed_quality": 496,
+        "phones_rewritten": 0,
+        "raw": 496,
+        "trimmed": 158
+      },
+      "shortfall": {},
+      "messages": 338,
+      "per_category": {
+        "account_security": 26,
+        "bank_impersonation": 26,
+        "billing_scam": 26,
+        "conversation_lure": 26,
+        "delivery_scam": 26,
+        "job_offer": 26,
+        "legit": 130,
+        "prize_refund": 26,
+        "toll_government": 26
+      },
+      "legit_share": 0.385,
+      "length_chars": {
+        "min": 77,
+        "median": 163,
+        "max": 406
+      },
+      "url_rate_per_category": {
+        "account_security": 0.346,
+        "bank_impersonation": 0.192,
+        "billing_scam": 0.423,
+        "conversation_lure": 0.192,
+        "delivery_scam": 0.385,
+        "job_offer": 0.269,
+        "legit": 0.623,
+        "prize_refund": 0.462,
+        "toll_government": 0.385
+      },
+      "sender_types": {
+        "email": 31,
+        "long_code": 196,
+        "short_code": 111
+      },
+      "hard_negatives": 111
+    }
+  },
+  "handwritten": {
+    "messages": 50,
+    "per_category": {
+      "account_security": 4,
+      "bank_impersonation": 4,
+      "billing_scam": 4,
+      "conversation_lure": 3,
+      "delivery_scam": 4,
+      "job_offer": 3,
+      "legit": 20,
+      "prize_refund": 4,
+      "toll_government": 4
+    },
+    "legit_share": 0.4,
+    "length_chars": {
+      "min": 53,
+      "median": 119,
+      "max": 191
+    },
+    "url_rate_per_category": {
+      "account_security": 0.5,
+      "bank_impersonation": 0.5,
+      "billing_scam": 0.75,
+      "conversation_lure": 0.0,
+      "delivery_scam": 0.75,
+      "job_offer": 0.0,
+      "legit": 0.15,
+      "prize_refund": 1.0,
+      "toll_government": 0.75
+    },
+    "sender_types": {
+      "email": 3,
+      "long_code": 31,
+      "short_code": 16
+    },
+    "problems": []
+  },
+  "total": {
+    "messages": 2596,
+    "per_category": {
+      "account_security": 201,
+      "bank_impersonation": 201,
+      "billing_scam": 201,
+      "conversation_lure": 200,
+      "delivery_scam": 201,
+      "job_offer": 200,
+      "legit": 990,
+      "prize_refund": 201,
+      "toll_government": 201
+    },
+    "legit_share": 0.381,
+    "length_chars": {
+      "min": 41,
+      "median": 141,
+      "max": 406
+    },
+    "url_rate_per_category": {
+      "account_security": 0.353,
+      "bank_impersonation": 0.343,
+      "billing_scam": 0.592,
+      "conversation_lure": 0.165,
+      "delivery_scam": 0.547,
+      "job_offer": 0.285,
+      "legit": 0.506,
+      "prize_refund": 0.443,
+      "toll_government": 0.473
+    },
+    "sender_types": {
+      "email": 241,
+      "long_code": 1478,
+      "short_code": 877
+    }
+  }
+}

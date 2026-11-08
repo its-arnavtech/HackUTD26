@@ -1,0 +1,21 @@
+{
+ "request": {
+  "model": "deepseek-flash",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You generate realistic synthetic SMS text messages for training a scam-detection classifier at a phone carrier. The messages must read exactly like texts people in the United States really receive, including the typos, abbreviations and formatting quirks of real senders. All content is fictional. Never use a real person's name, address or account number. Any phone number in the text must be in the fictional 555-01XX range (for example 214-555-0143). Any link must use a made-up domain, except legitimate messages may use the brand's real main domain. Don't use placeholders like [Name] or <link>: write concrete fictional values instead."
+   },
+   {
+    "role": "user",
+    "content": "Category: Legitimate message (legitimate, not a scam).\nWhat this category covers: Real messages people get, including hard look-alikes of every scam category above.\nAngle for this batch: carrier data usage or plan notice.\nClaimed sender or brand: T-Mobile.\nWho writes it: a small local business owner.\nStyle: terse, like an automated system.\nWrite 8 different messages. Vary the wording, structure, length (from about 40 to 300 characters) and details so no two read like the same template. These are genuinely legitimate: they don't ask for passwords, card numbers or codes, and any link goes to the brand's real main domain. Many should look a lot like scam texts on the surface (alerts, amounts, deadlines, codes), because that's what makes them hard.\nReturn only JSON: {\"messages\": [\"<text 1>\", \"<text 2>\", ...]} with exactly 8 strings. Each string is the SMS body only, without the sender."
+   }
+  ],
+  "temperature": 1.2,
+  "max_tokens": 6000,
+  "response_format": {
+   "type": "json_object"
+  }
+ },
+ "response": "{\"messages\": [\"T-Mobile: Your business plan has used 9.2 GB of 10 GB this cycle. See usage at t-mobile.com\", \"T-Mobile alert: 95% of your 50 GB business data used. Overage starts 11/15. Manage at t-mobile.com\", \"Your T-Mobile plan renews Nov 18. Amount due $145.00 for 5 lines. No action needed if autopay is on. Details: t-mobile.com\", \"T-Mobile: Line (214) 555-0143 hit 80% data. Add 5GB for $10 or switch plan at t-mobile.com\", \"T-Mobile notice: Your Business Unlimited plan data cap changed from 50GB to 100GB effective 12/01. No reply needed. t-mobile.com\", \"T-Mobile: Payment of $89.50 received for account ending 8842. Next bill Dec 3. View t-mobile.com\", \"T-Mobile data summary: 2.1 GB left this cycle. Reset 11/22. Turn on alerts at t-mobile.com\", \"T-Mobile: Your plan includes 25 GB hotspot. You used 24.3 GB. Speeds slow after 25. See t-mobile.com\"]}"
+}
