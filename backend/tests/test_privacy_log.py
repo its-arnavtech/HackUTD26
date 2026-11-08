@@ -316,3 +316,16 @@ def test_phone_numbers_and_addresses_in_the_text_are_checked():
     for leak, dropped in [("2145550101", PHONE_NUMBERS), ("(214) 555-0101", PHONE_NUMBERS), ("Oak Street", NAME), ("MARIA.LOPEZ@EXAMPLE.COM", NAME)]:
         out = privacy_log.never_sent(text, "TMOBILE", red, [_recipient(text_redacted=red.text_redacted, x=leak)])
         assert dropped not in out, leak
+
+
+def test_deleting_a_message_deletes_its_privacy_records(store):
+    """SECURITY_PLAN 1: L3's retention cleanup and DELETE route must take L6's records with the message."""
+    mid = store.add_message(MSG)
+    p = PrivacyLog(store, mid, store.start_run(mid))
+    p.redaction(redact(TEXT))
+    p.record("nemotron", "model", {"a": 1})
+    with store._tx():
+        store._db.execute("DELETE FROM messages WHERE message_id = ?", (mid,))
+    with store._lock:
+        left = [store._db.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0] for t in ("privacy", "redaction")]
+    assert left == [0, 0]

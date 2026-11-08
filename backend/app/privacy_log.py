@@ -1,4 +1,10 @@
-"""Privacy audit log (L6): what each model and tool received for a message.
+"""Privacy-preserving audit log (L6): what each model and tool received for a message.
+
+Call it a privacy-preserving (or content-free) audit log, never "zero-knowledge"
+(docs/SECURITY_PLAN.md). It holds only what was actually sent, which is
+already redacted, plus the redaction step's output for the checks below.
+Deleting a message deletes its records (`ON DELETE CASCADE` in L3's store), so
+L3's planned retention cleanup and `DELETE /api/messages/{id}` cover it.
 
 Every pipeline run gets a `PrivacyLog`. L3's `JobRunner` binds it around the job,
 so anything the job calls can record into it without passing it around:
